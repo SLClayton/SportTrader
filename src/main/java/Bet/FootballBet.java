@@ -1,10 +1,11 @@
 package Bet;
 
-import com.github.cliftonlabs.json_simple.JsonArray;
-import com.github.cliftonlabs.json_simple.JsonObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import static tools.printer.*;
 
@@ -53,8 +54,8 @@ class FootballResultBet extends FootballBet{
         return String.format("%s_%s_%s", category, result, type);
     }
 
-    public JsonObject json(){
-        JsonObject j = new JsonObject();
+    public JSONObject json(){
+        JSONObject j = new JSONObject();
         j.put("type", type);
         j.put("result", result);
         j.put("id", id());
@@ -88,6 +89,18 @@ class FootballResultBet extends FootballBet{
 
     }
 
+    public Boolean possibleScore(FootballScoreBet scoreBet){
+        if (scoreBet.isLay()){
+            return true;
+        }
+
+        if (isBack()){
+            return scoreBet.result() == result;
+        }else{
+            return scoreBet.result() != result;
+        }
+    }
+
 }
 
 
@@ -119,8 +132,8 @@ class FootballScoreBet extends FootballBet{
                              type);
     }
 
-    public JsonObject json(){
-        JsonObject j = new JsonObject();
+    public JSONObject json(){
+        JSONObject j = new JSONObject();
         j.put("type", type);
         j.put("id", id());
         j.put("score_a", score_a);
@@ -160,8 +173,8 @@ class FootballScoreBet extends FootballBet{
         return score_b - score_a;
     }
 
-    public static JsonArray listJSON(ArrayList<FootballScoreBet> bets){
-        JsonArray j = new JsonArray();
+    public static JSONArray listJSON(ArrayList<FootballScoreBet> bets){
+        JSONArray j = new JSONArray();
         for (int i=0; i<bets.size(); i++){
             j.add(bets.get(i).json());
         }
@@ -194,8 +207,8 @@ class FootballOtherScoreBet extends FootballBet{
         return String.format("%s_%s-%s_%s_%s", category, over_score, over_score, result, type);
     }
 
-    public JsonObject json(){
-        JsonObject j = new JsonObject();
+    public JSONObject json(){
+        JSONObject j = new JSONObject();
         j.put("type", type);
         j.put("id", id());
         j.put("over_score", over_score);
@@ -227,8 +240,8 @@ class FootballOverUnderBet extends FootballBet{
         return String.format("%s_%s_%s", side, goals.toString(), type);
     }
 
-    public JsonObject json(){
-        JsonObject j = new JsonObject();
+    public JSONObject json(){
+        JSONObject j = new JSONObject();
         j.put("type", type);
         j.put("id", id());
         j.put("side", side);
@@ -269,8 +282,8 @@ class FootballHandicapBet extends FootballBet{
         return String.format("HCP-A%s%s_%s_%s", addition, a_handicap.toString(), result, type);
     }
 
-    public JsonObject json(){
-        JsonObject j = new JsonObject();
+    public JSONObject json(){
+        JSONObject j = new JSONObject();
         j.put("type", type);
         j.put("id", id());
         j.put("a_handicap", a_handicap.toString());

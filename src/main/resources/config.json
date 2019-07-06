@@ -1,0 +1,12 @@
+{
+    "MAX_MATCHES": 100,
+    "IN_PLAY": false,
+    "HOURS_AHEAD": 72,
+    "PLACE_BETS": false,
+
+    "SITES": {
+    	"betfair": true,
+    	"matchbook": true
+    }
+
+}

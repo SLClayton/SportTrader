@@ -2,11 +2,22 @@ package Bet;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import Bet.Bet.*;
 import Bet.*;
-import tools.printer;
+import tools.printer.*;
+
+import static tools.printer.p;
+import static tools.printer.print;
+
+import java.util.HashSet;
+import java.util.logging.Logger;
+
 
 public class FootballBetGenerator {
+
+    private static final Logger log = Logger.getLogger(FootballBetGenerator.class.getName());
 
     static int GOALSCOUNT_MAX = 9;
     static int OTHERGOALS_MIN = 3;
@@ -50,7 +61,6 @@ public class FootballBetGenerator {
         all_bets.addAll(over_under_bets);
         return all_bets;
     }
-
 
 
     public ArrayList<FootballScoreBet> getScoreBets(int highest, Boolean halftime){
@@ -110,6 +120,7 @@ public class FootballBetGenerator {
         return bets;
     }
 
+
     public ArrayList<FootballHandicapBet> getHandicapBets(int highest){
         ArrayList<FootballHandicapBet> bets = new ArrayList<FootballHandicapBet>();
 
@@ -129,6 +140,7 @@ public class FootballBetGenerator {
         }
         return bets;
     }
+
 
     public ArrayList<FootballOverUnderBet> getOverUnderBets(int highest){
         ArrayList<FootballOverUnderBet> bets = new ArrayList<FootballOverUnderBet>();
@@ -152,13 +164,355 @@ public class FootballBetGenerator {
     }
 
 
+    // ------------------------------------------------------------------------
 
 
-    public static void main(String[] args){
-        FootballBetGenerator g = new FootballBetGenerator();
-        ArrayList<Bet> all_bets = g.getAllBets();
-        printer.p(Bet.allJSONArray(all_bets));
+    public Bet[][] getAllTautologies(){
+        ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
+
+        tauts.addAll(tautsBackWithLay());
+        tauts.addAll(tautsResultsWithScores());
+        tauts.addAll(tautsResultsWithScoresHT());
+        tauts.addAll(tautsScoresOtherGoalsHT());
+        tauts.addAll(tautsTotalGoalsWithScores());
+        tauts.addAll(tautsAllScores());
+        tauts.addAll(tautTotalGoalsSandwich());
+
+        tauts.addAll(getTwinSwaps(getTwins(), tauts));
+
+        HashSet<String> hashes = new HashSet<String>();
+        int duplicates = 0;
+        for (int i=0; i<tauts.size(); i++){
+            Bet[] taut = tauts.get(i);
+
+            if (taut.length <= 1){
+                print("SIZE LESS THAN 2");
+                tauts.remove(i);
+                i--;
+                continue;
+            }
+
+            String[] ids = new String[taut.length];
+            for (int j=0; j<taut.length; j++){
+                ids[j] = taut[j].id();
+            }
+            Arrays.sort(ids);
+
+            String hash = "";
+            for (String id: ids){
+                hash += id;
+            }
+
+            if (hashes.contains(hash)){
+                duplicates++;
+                tauts.remove(i);
+                i--;
+                continue;
+            } else{
+                hashes.add(hash);
+            }
+        }
+        log.info(String.format("%d duplicate tautologies found.", duplicates));
+
+        Bet[][] array = new Bet[tauts.size()][];
+        for (int i=0; i<tauts.size(); i++){
+            array[i] = tauts.get(i);
+        }
+
+        log.info(String.format("Returning %d generated tautologies.", array.length));
+        return array;
     }
+
+
+    public ArrayList<Bet[]> tautsBackWithLay(){
+        ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
+        ArrayList<Bet> all_bets = getAllBets();
+
+        for (int i=0; i<all_bets.size(); i++){
+            Bet bet = all_bets.get(i);
+
+            if (bet.isBack()){
+                String lay_id = bet.id().replace("BACK", "LAY");
+
+                for (int j=0; j<all_bets.size(); j++) {
+                    Bet check_bet = all_bets.get(j);
+
+                    if (check_bet.id().equals(lay_id)) {
+                        tauts.add(new Bet[]{bet, check_bet});
+                    }
+                }
+            }
+        }
+        return tauts;
+    }
+
+
+    public ArrayList<Bet[]> tautsResultsWithScores(){
+        ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
+
+        for (int max_score=OTHERGOALS_MIN; max_score<=OTHERGOALS_MAX; max_score++){
+            for (FootballResultBet rb: result_bets){
+
+                ArrayList<Bet> taut = new ArrayList<Bet>();
+                taut.add(rb);
+
+                for (FootballOtherScoreBet osb: other_score_bets){
+                    try {
+                        if (osb.isBack() && osb.over_score == max_score && !(rb.overlap(osb))){
+                            taut.add(osb);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                for (FootballScoreBet sb: score_bets){
+
+                    if (sb.isBack() && sb.score_a <= max_score
+                            && sb.score_b <= max_score && !(rb.possibleScore(sb))){
+
+                        taut.add(sb);
+                    }
+                }
+                tauts.add(toArray(taut));
+            }
+        }
+        return tauts;
+    }
+
+
+    public ArrayList<Bet[]> tautsResultsWithScoresHT(){
+        ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
+
+        for (int max_score=OTHERGOALS_HT_MIN; max_score<=OTHERGOALS_HT_MAX; max_score++){
+            for (FootballResultBet rb: result_bets_ht){
+
+                ArrayList<Bet> taut = new ArrayList<Bet>();
+                taut.add(rb);
+
+                for (FootballOtherScoreBet osb: other_score_bets_ht){
+                    if (osb.isBack() && osb.over_score == max_score){
+                        taut.add(osb);
+                    }
+                }
+
+                for (FootballScoreBet sb: score_bets_ht){
+                    if (sb.isBack() && sb.score_a <= max_score
+                            && sb.score_b <= max_score && !(rb.possibleScore(sb))){
+                        taut.add(sb);
+                    }
+                }
+
+                tauts.add(toArray(taut));
+            }
+        }
+        return tauts;
+    }
+
+
+    public ArrayList<Bet[]> tautsScoresOtherGoalsHT(){
+        ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
+
+        for (int max_score=OTHERGOALS_HT_MIN; max_score<=OTHERGOALS_HT_MAX; max_score++){
+            ArrayList<Bet> taut = new ArrayList<Bet>();
+
+            for (FootballOtherScoreBet osb: other_score_bets_ht){
+                if (osb.isBack() && osb.over_score == max_score){
+                    taut.add(osb);
+                }
+            }
+            for (FootballScoreBet sb: score_bets_ht){
+                if (sb.isBack() && sb.score_a <= max_score && sb.score_b <= max_score){
+                    taut.add(sb);
+                }
+            }
+            tauts.add(toArray(taut));
+        }
+        return tauts;
+    }
+
+
+    public ArrayList<Bet[]> tautsTotalGoalsWithScores(){
+        ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
+
+        for (int max_score=OTHERGOALS_MIN; max_score<=OTHERGOALS_MAX; max_score++){
+            for (FootballOverUnderBet oub: over_under_bets){
+                if (oub.isLay() || oub.goals.compareTo(new BigDecimal(max_score)) == 1){
+                    continue;
+                }
+
+                ArrayList<Bet> taut = new ArrayList<Bet>();
+                taut.add(oub);
+
+                if (oub.under()){
+                    for (FootballOtherScoreBet osb: other_score_bets){
+                        if (osb.isBack() && osb.over_score == max_score){
+                            taut.add(osb);
+                        }
+                    }
+                }
+
+                for (FootballScoreBet sb: score_bets){
+                    if (sb.isLay() || sb.score_a > max_score || sb.score_b > max_score){
+                        continue;
+                    }
+
+                    if (oub.under() && (new BigDecimal(sb.total_goals())).compareTo(oub.goals) == 1){
+                        taut.add(sb);
+                    }
+                    else if (oub.over() && (new BigDecimal(sb.total_goals())).compareTo(oub.goals) == -1){
+                        taut.add(sb);
+                    }
+                }
+                tauts.add(toArray(taut));
+            }
+        }
+        return tauts;
+    }
+
+
+    public ArrayList<Bet[]> tautsAllScores(){
+        ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
+
+        for (int max_score=OTHERGOALS_MIN; max_score<=OTHERGOALS_MAX; max_score++){
+            ArrayList<Bet> taut = new ArrayList<Bet>();
+
+            for (FootballOtherScoreBet osb: other_score_bets){
+                if (osb.isBack() && osb.over_score == max_score){
+                    taut.add(osb);
+                }
+            }
+            for (FootballScoreBet sb: score_bets){
+                if (sb.isBack() && sb.score_a <= max_score && sb.score_b <= max_score){
+                    taut.add(sb);
+                }
+            }
+            tauts.add(toArray(taut));
+        }
+        return tauts;
+    }
+
+
+    public ArrayList<Bet[]> tautTotalGoalsSandwich(){
+        ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
+
+        ArrayList<FootballOverUnderBet> under_back_bets = new ArrayList<FootballOverUnderBet>();
+        ArrayList<FootballOverUnderBet> over_back_bets = new ArrayList<FootballOverUnderBet>();
+        for (FootballOverUnderBet oub: over_under_bets){
+            if (oub.isBack()){
+                if (oub.under()){
+                    under_back_bets.add(oub);
+                }
+                else if (oub.over()){
+                    over_back_bets.add(oub);
+                }
+            }
+        }
+
+        for (FootballOverUnderBet underbet: under_back_bets){
+            for (FootballOverUnderBet overbet: over_back_bets){
+
+                if (underbet.goals.compareTo(overbet.goals) != -1){
+                    continue;
+                }
+
+                ArrayList<Bet> taut = new ArrayList<Bet>();
+                taut.add(underbet);
+                taut.add(overbet);
+
+                for (FootballScoreBet sb: score_bets){
+                    BigDecimal totalGoals = new BigDecimal(sb.total_goals());
+                    if (sb.isBack() && underbet.goals.compareTo(totalGoals) == -1
+                            && totalGoals.compareTo(overbet.goals) == -1){
+
+                        taut.add(sb);
+                    }
+                }
+                tauts.add(toArray(taut));
+            }
+        }
+        return tauts;
+    }
+
+
+    public ArrayList<Bet[]> getTwins(){
+        ArrayList<Bet[]> twins = new ArrayList<Bet[]>();
+        for (FootballOverUnderBet oub: over_under_bets){
+            if (oub.isLay()){
+                continue;
+            }
+
+            if (oub.over()){
+                String match_id = oub.id().replace(FootballOverUnderBet.OVER,
+                                                   FootballOverUnderBet.UNDER)
+                                          .replace(Bet.BACK, Bet.LAY);
+
+                for (FootballOverUnderBet twinbet: over_under_bets){
+                    if (twinbet.id().equals(match_id)){
+                        twins.add(new Bet[] {oub, twinbet});
+                    }
+                }
+            }
+            else if (oub.under()){
+                String match_id = oub.id().replace(FootballOverUnderBet.UNDER,
+                                                   FootballOverUnderBet.OVER)
+                                          .replace(Bet.BACK, Bet.LAY);
+                for (FootballOverUnderBet twinbet: over_under_bets){
+                    if (twinbet.id().equals(match_id)){
+                        twins.add(new Bet[] {oub, twinbet});
+                    }
+                }
+            }
+        }
+        return twins;
+    }
+
+
+    public ArrayList<Bet[]> getTwinSwaps(ArrayList<Bet[]> twins, ArrayList<Bet[]> tauts){
+        ArrayList<Bet[]> new_tauts = new ArrayList<Bet[]>();
+
+        for (Bet[] tautology: tauts){
+            for (Bet[] pair: twins){
+
+                ArrayList<Bet> new_taut_0 = removeIfContains(tautology, pair[0]);
+                ArrayList<Bet> new_taut_1 = removeIfContains(tautology, pair[1]);
+                if (new_taut_0.size() < tautology.length && new_taut_1.size() < tautology.length){
+                    continue;
+                }
+                else if (new_taut_0.size() < tautology.length){
+                    new_taut_0.add(pair[1]);
+                    new_tauts.add(toArray(new_taut_0));
+                }
+                else if (new_taut_1.size() < tautology.length){
+                    new_taut_1.add(pair[0]);
+                    new_tauts.add(toArray(new_taut_1));
+                }
+
+            }
+        }
+        return new_tauts;
+    }
+
+
+    public ArrayList<Bet> removeIfContains(Bet[] array, Bet bet){
+        ArrayList<Bet> newlist = new ArrayList<Bet>();
+        for (Bet bet_inarray: array){
+            if (!(bet_inarray.equals(bet))){
+                newlist.add(bet_inarray);
+            }
+        }
+        return newlist;
+    }
+
+
+    public Bet[] toArray(ArrayList<Bet> bet_list){
+        Bet[] bets = new Bet[bet_list.size()];
+        for (int i=0; i<bets.length; i++){
+            bets[i] = bet_list.get(i);
+        }
+        return bets;
+    }
+
 
 
 }

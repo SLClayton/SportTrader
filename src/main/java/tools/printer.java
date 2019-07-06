@@ -1,13 +1,17 @@
 package tools;
 
-import com.github.cliftonlabs.json_simple.JsonArray;
+
 import com.google.gson.*;
-import com.google.gson.JsonElement;
-import com.github.cliftonlabs.json_simple.JsonObject;
+import org.json.simple.*;
 
-import java.io.*;
-import java.lang.reflect.Type;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.FileSystems;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public abstract class printer {
 
@@ -20,14 +24,14 @@ public abstract class printer {
     }
 
     public static void p(JsonObject j, String filename){
-        JsonElement jsonElement = new JsonParser().parse(j.toJson());
+        JsonElement jsonElement = new JsonParser().parse(j.toString());
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String prettjson = gson.toJson(jsonElement);
         toFile(prettjson, filename);
     }
 
     public static void p(JsonArray j, String filename){
-        JsonElement jsonElement = new JsonParser().parse(j.toJson());
+        JsonElement jsonElement = new JsonParser().parse(j.toString());
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String prettjson = gson.toJson(jsonElement);
         toFile(prettjson, filename);
@@ -55,13 +59,32 @@ public abstract class printer {
         }
     }
 
+    public static Map getJSONResource(String filename) throws FileNotFoundException {
+        filename = "src/main/resources/" + filename;
+        String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
+        Gson gson = new Gson();
+        Map map = gson.fromJson(jsonString, Map.class);
+        return map;
+    }
+
+    public static Map getJSON(String filename) throws FileNotFoundException {
+        String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
+        Gson gson = new Gson();
+        Map map = gson.fromJson(jsonString, Map.class);
+        return map;
+    }
+
 
     public static void main(String[] args){
-        JsonObject j = new JsonObject();
-        j.put("name", "Test");
-        j.put("age", 34);
-        j.put("occupation", "Testing");
-        p(j);
+        Map json = null;
+        try {
+            json = getJSON("config.json");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        print(json.get("HOURS_AHEAD").toString());
+        print(FileSystems.getDefault().getPath(".").toAbsolutePath().toString());
     }
 
 
