@@ -3,6 +3,8 @@ package tools;
 
 import com.google.gson.*;
 import org.json.simple.*;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,25 +25,26 @@ public abstract class printer {
         System.out.println(output);
     }
 
-    public static void p(JsonObject j, String filename){
+    public static void p(JSONObject j, String filename){
+
         JsonElement jsonElement = new JsonParser().parse(j.toString());
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String prettjson = gson.toJson(jsonElement);
         toFile(prettjson, filename);
     }
 
-    public static void p(JsonArray j, String filename){
+    public static void p(JSONArray j, String filename){
         JsonElement jsonElement = new JsonParser().parse(j.toString());
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String prettjson = gson.toJson(jsonElement);
         toFile(prettjson, filename);
     }
 
-    public static void p(JsonObject j){
+    public static void p(JSONObject j){
         p(j, "output.json");
     }
 
-    public static void p(JsonArray j){
+    public static void p(JSONArray j){
         p(j, "output.json");
     }
 
@@ -78,7 +81,7 @@ public abstract class printer {
     public static void main(String[] args){
         Map json = null;
         try {
-            json = getJSON("config.json");
+            json = getJSONResource("config.json");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

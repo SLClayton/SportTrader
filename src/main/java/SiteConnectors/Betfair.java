@@ -1,37 +1,37 @@
 package SiteConnectors;
 
+import Bet.Bet;
 import net.dongliu.requests.Requests;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import tools.Requester;
 import tools.printer;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.net.ssl.*;
+import java.io.*;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.net.*;
 import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -43,13 +43,29 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
+import static net.dongliu.commons.Prints.print;
+import static tools.printer.p;
+
 public class Betfair extends BettingSite {
 
-    public String url = "https://api.betfair.com/exchange/betting/json-rpc/v1";
-    public BigDecimal min_bet;
-    public BigDecimal commission_discount;
+    private static final Logger log = Logger.getLogger(Betfair.class.getName());
+
+    public static final int FOOTBALL = 1;
+
+    public String hostname = "https://api.betfair.com/";
+    public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
+    public String accounts_endpoint = hostname + "/exchange/account/json-rpc/v1";
+    public BigDecimal min_bet = new BigDecimal("2.00");
     public String app_id = "3BD65v2qKzw9ETp9";
     public String app_id_dev = "DfgkZAnb0qi6Wmk1";
+    public String token;
+
+    public Requester requester;
+
+    public BigDecimal commission_discount = BigDecimal.ZERO;
+    public BigDecimal balance;
+    public long betfairPoints = 0;
+
 
     public static String[] football_market_types = new String[] {
             "OVER_UNDER_05",
@@ -65,16 +81,65 @@ public class Betfair extends BettingSite {
             "CORRECT_SCORE"};
 
 
-    public Betfair() throws MalformedURLException {
+    public Betfair() throws IOException, CertificateException, UnrecoverableKeyException,
+            NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException {
 
-        min_bet = new BigDecimal("2.00");
-        commission_discount = BigDecimal.ZERO;
+        log.info(String.format("Creating new instance of %s.", this.getClass().getName()));
 
+        token = getSessionToken();
+        requester = new Requester(hostname);
+        requester.setHeader("X-Application", app_id);
+        requester.setHeader("X-Authentication", token);
+
+        balance = BigDecimal.ZERO;
+        updateAccountDetails();
     }
 
+    public void updateAccountDetails() throws IOException, URISyntaxException {
+        JSONObject j = new JSONObject();
+        j.put("id", 1);
+        j.put("jsonrpc", "2.0");
+        j.put("method", "AccountAPING/v1.0/getAccountFunds");
+        j.put("params", new JSONObject());
+
+
+        JSONObject r = (JSONObject) ((JSONObject) requester.post(accounts_endpoint, j)).get("result");
+
+        balance = new BigDecimal(Double.toString((double)r.get("availableToBetBalance")));
+        betfairPoints = (long) r.get("pointsBalance");
+        commission_discount = new BigDecimal(Double.toString((double)r.get("discountRate")));
+    }
+
+
+    public JSONArray getEvents(JSONObject filter) throws IOException, URISyntaxException {
+        JSONObject params = new JSONObject();
+        params.put("filter", filter);
+
+        JSONObject j = new JSONObject();
+        j.put("id", 1);
+        j.put("jsonrpc", "2.0");
+        j.put("method", "SportsAPING/v1.0/listEvents");
+        j.put("params", params);
+
+        JSONObject r = (JSONObject) requester.post(betting_endpoint, j);
+        return (JSONArray) r.get("result");
+    }
+
+    public JSONArray getMarketCatalogue(JSONObject params) throws IOException, URISyntaxException {
+        JSONObject j = new JSONObject();
+        j.put("id", 1);
+        j.put("jsonrpc", "2.0");
+        j.put("method", "SportsAPING/v1.0/listMarketCatalogue");
+        j.put("params", params);
+
+        JSONObject r = (JSONObject) requester.post(betting_endpoint, j);
+        return (JSONArray) r.get("result");
+    }
+
+
     @Override
-    public String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, UnrecoverableKeyException {
+    public String getSessionToken() throws CertificateException, NoSuchAlgorithmException, KeyStoreException,
+            IOException, UnrecoverableKeyException, KeyManagementException {
 
         String loginurl = "https://identitysso-cert.betfair.com/api/certlogin";
 
@@ -82,47 +147,45 @@ public class Betfair extends BettingSite {
         String username = login_details.get("u").toString();
         String password = login_details.get("p").toString();
 
-        String payload = String.format("username=%s&password=%s".format(username, password));
-        HashMap<String, String> params = new HashMap<String, String>();
-
-        SSLContext sslcontext = SSLContexts.custom()
-                .loadTrustMaterial(new File(ssldir + "betfair-client-2048.crt"), null, new TrustSelfSignedStrategy())
-                .loadKeyMaterial(new File(ssldir + "betfair-client-2048.key"), null, null)
-                .build();
 
 
-        HttpClient client = HttpClient.newBuilder()
-                .sslContext(sslcontext)
-                .build();
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .header("X-Application", app_id)
-                .header("Content-type", "application/x-www-form-urlencoded")
-                .POST()
-                .build();
+        KeyStore ks = KeyStore.getInstance("JKS");
+        FileInputStream fis = new FileInputStream(ssldir + "bf-ks.jks");
+        ks.load(fis, "password".toCharArray());
+        fis.close();
+        SSLContext sslContext = SSLContexts.custom().loadKeyMaterial(ks, "password".toCharArray()).build();
+        CloseableHttpClient httpclient = HttpClients.custom().setSSLContext(sslContext).build();
 
-        HttpPost httppost = new HttpPost("http://www.a-domain.com/foo/");
-        httppost.setEntity();
 
-        // Request parameters and other properties.
-        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
-        params.add(new BasicNameValuePair("param-1", "12345"));
-        params.add(new BasicNameValuePair("param-2", "Hello!"));
-        httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+        String uri = String.format("%s?username=%s&password=%s", loginurl, username, password);
 
-        //Execute and get the response.
-        HttpResponse response = httpclient.execute(httppost);
-        HttpEntity entity = response.getEntity();
+        HttpPost request = new HttpPost(uri);
+        request.addHeader("X-Application", app_id);
+        request.addHeader("Application-Type", "application/x-www-form-urlencoded");
 
-        if (entity != null) {
-            try (InputStream instream = entity.getContent()) {
-                // do something useful
-            }
+        CloseableHttpResponse response = httpclient.execute(request);
+
+        int status_code = response.getStatusLine().getStatusCode();
+        if (status_code < 200 || status_code >= 300){
+            String msg = String.format("ERROR in HTTP request betfair login - %s - %s",
+                    response.toString(), response.getStatusLine().toString());
+            log.severe(msg);
+            throw new IOException(msg);
         }
 
+        String response_body = EntityUtils.toString(response.getEntity());
+        response.close();
+        JSONObject jsonresponse = (JSONObject) JSONValue.parse(response_body);
+        String loginstatus = (String) jsonresponse.get("loginStatus");
 
+        if (!(loginstatus.toUpperCase().equals("SUCCESS"))){
+            String msg = String.format("Error Login to betfair status %s", loginstatus);
+            log.severe(msg);
+            throw new IOException(msg);
+        }
 
-
+        return (String) jsonresponse.get("sessionToken");
     }
 
 
@@ -133,14 +196,40 @@ public class Betfair extends BettingSite {
 
     @Override
     public BigDecimal minBet() {
-        return null;
+        return min_bet;
+    }
+
+    @Override
+    public SiteEventTracker getEventTracker(){
+        return new BetfairEventTracker(this);
     }
 
 
     public static void main(String[] args){
+        String token = null;
         try {
             Betfair b = new Betfair();
-        } catch (MalformedURLException e) {
+
+            JSONObject params = new JSONObject();
+            JSONObject filter = new JSONObject();
+            JSONArray eventTypes = new JSONArray();
+            eventTypes.add(1);
+            filter.put("eventTypeIds", eventTypes);
+            params.put("filter", filter);
+
+            b.getEvents(params);
+
+
+
+
+
+
+
+
+
+
+
+        } catch (URISyntaxException | IOException | CertificateException | UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
             e.printStackTrace();
         }
     }

@@ -37,6 +37,8 @@ public abstract class BettingSite {
 
     public abstract BigDecimal minBet();
 
+    public abstract SiteEventTracker getEventTracker();
+
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
         // Default ROI, commission on profits only
 
