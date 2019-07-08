@@ -1,6 +1,8 @@
 package SiteConnectors;
 
 import Bet.BetOffer;
+import Trader.SportsTrader;
+import tools.MyLogHandler;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,8 +13,11 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.logging.Logger;
 
 public abstract class BettingSite {
+
+    public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public String name;
     public String ssldir;

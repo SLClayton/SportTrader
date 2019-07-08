@@ -17,6 +17,29 @@ import java.util.Scanner;
 
 public abstract class printer {
 
+
+    public static String ps(JSONArray j){
+        JsonElement jsonElement = new JsonParser().parse(j.toString());
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String prettjson = gson.toJson(jsonElement);
+        return prettjson;
+    }
+
+    public static String ps(JSONObject j){
+        JsonElement jsonElement = new JsonParser().parse(j.toString());
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String prettjson = gson.toJson(jsonElement);
+        return prettjson;
+    }
+
+    public static void pp(JSONArray j){
+        print(ps(j));
+    }
+
+    public static void pp(JSONObject j){
+        print(ps(j));
+    }
+
     public static void print(String output){
         System.out.println(output);
     }
@@ -26,18 +49,11 @@ public abstract class printer {
     }
 
     public static void p(JSONObject j, String filename){
-
-        JsonElement jsonElement = new JsonParser().parse(j.toString());
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String prettjson = gson.toJson(jsonElement);
-        toFile(prettjson, filename);
+        toFile(ps(j), filename);
     }
 
     public static void p(JSONArray j, String filename){
-        JsonElement jsonElement = new JsonParser().parse(j.toString());
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String prettjson = gson.toJson(jsonElement);
-        toFile(prettjson, filename);
+        toFile(ps(j), filename);
     }
 
     public static void p(JSONObject j){

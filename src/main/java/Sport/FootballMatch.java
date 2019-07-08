@@ -11,6 +11,8 @@ public class FootballMatch extends Match{
     public String team_b;
 
     public FootballMatch(Instant START, String NAME) throws Exception {
+        super();
+
         start_time = START;
         name = NAME;
 
@@ -40,14 +42,15 @@ public class FootballMatch extends Match{
 
 
     public boolean same_match(FootballMatch match){
-        log.fine(String.format("Checking match for %s and %s.", this, match));
+        log.info(String.format("Checking match for %s and %s.", this, match));
 
         if (start_time.equals(match.start_time)
                 && same_team(team_a, match.team_a) && same_team(team_b, match.team_b)){
-            log.fine(String.format("Same match for %s and %s.", this, match));
+            log.fine(String.format("Match found for %s and %s.", this, match));
             return true;
         }
 
+        log.info(String.format("No match for %s and %s.", this, match));
         return false;
 
     }
@@ -56,27 +59,31 @@ public class FootballMatch extends Match{
         log.fine(String.format("Checking teams match for %s and %s.", T1, T2));
 
         if (T1.equals(T2)){
+            log.fine(String.format("Match found for teams '%s' & '%s'. Exact.", T1, T2));
             return true;
         }
 
         String t1 = Normalizer.normalize(T1.trim().toLowerCase(), Normalizer.Form.NFD)
-                .replaceAll("\\p{L}", "");
+                .replaceAll("\\p{P}", "");
         String t2 = Normalizer.normalize(T2.trim().toLowerCase(), Normalizer.Form.NFD)
-                .replaceAll("\\p{L}", "");
+                .replaceAll("\\p{P}", "");
 
         if (t1.equals(t2)){
+            log.fine(String.format("Match found for teams '%s' & '%s'. Normalised '%s' & '%s'.", T1, T2, t1, t2));
             return true;
         }
 
         String[] p1 = t1.split("\\s+");
-        String[] p2 = t1.split("\\s+");
+        String[] p2 = t2.split("\\s+");
         if (p1.equals(p2)){
+            log.fine(String.format("Match found for teams '%s' & '%s'. Same words %s %s.", T1, T2, p1, p2));
             return true;
         }
 
         HashSet<String> s1 = new HashSet<String>(Arrays.asList(p1));
         HashSet<String> s2 = new HashSet<String>(Arrays.asList(p2));
         if (s1.equals(s2)){
+            log.fine(String.format("Match found for teams '%s' & '%s'. Mixed order %s %s.", T1, T2, s1, s2));
             return true;
         }
 
