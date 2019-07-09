@@ -14,6 +14,7 @@ public abstract class SiteEventTracker {
 
     public abstract boolean setupMatch(FootballMatch match);
 
+
     public SiteEventTracker(){
     }
 

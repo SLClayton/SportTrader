@@ -28,10 +28,9 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Logger;
 
@@ -69,6 +68,10 @@ public class Betfair extends BettingSite {
     public BigDecimal balance;
     public long betfairPoints = 0;
 
+    int weight_per_market = 17;  // Get marketbook request weight per market requested
+    int max_weight_per_req = 200;        // Max weight
+    int markets_per_req = (int) (max_weight_per_req / weight_per_market);
+
 
     public static String[] football_market_types = new String[] {
             "OVER_UNDER_05",
@@ -98,15 +101,17 @@ public class Betfair extends BettingSite {
         balance = BigDecimal.ZERO;
         updateAccountDetails();
 
-        rpcRequestHandlerQueue = new LinkedBlockingQueue();
+        rpcRequestHandlerQueue = new LinkedBlockingQueue<>();
         rpcRequestHandler = new RPCRequestHandler(rpcRequestHandlerQueue);
-        rpcRequestHandler.run();
+        Thread rpcRequestHandlerThread = new Thread(rpcRequestHandler);
+        rpcRequestHandlerThread.start();
     }
 
     public class RPCRequestHandler implements Runnable{
 
         public int MAX_BATCH_SIZE = 10;
         public int REQUEST_THREADS = 10;
+        public long WAIT_MILLISECONDS = 5;
 
         public BlockingQueue<JsonHandler> requestQueue;
 
@@ -125,9 +130,11 @@ public class Betfair extends BettingSite {
             long milliseconds_to_wait;
 
             // Start workers
-            for (RPCRequestSender rs: workers){
-                rs = new RPCRequestSender(workerQueue);
-                rs.run();
+            workerQueue = new LinkedBlockingQueue<ArrayList<JsonHandler>>();
+            RPCRequestSender rs = new RPCRequestSender(workerQueue);
+            for (int i=0; i<REQUEST_THREADS; i++){
+                Thread t = new Thread(rs);
+                t.start();
             }
 
             while (true) {
@@ -135,15 +142,18 @@ public class Betfair extends BettingSite {
                 try {
                     if (wait_until == null){
                         new_handler = (JsonHandler) requestQueue.take();
+                        wait_until = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
                     }
                     else {
                         milliseconds_to_wait = wait_until.toEpochMilli() - Instant.now().toEpochMilli();
                         new_handler = (JsonHandler) requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
                     }
 
-                    jsonHandlers.add(new_handler);
+                    if (new_handler != null) {
+                        jsonHandlers.add(new_handler);
+                    }
 
-                    if (jsonHandlers.size() > MAX_BATCH_SIZE || Instant.now().isAfter(wait_until)){
+                    if (new_handler == null || jsonHandlers.size() > MAX_BATCH_SIZE || Instant.now().isAfter(wait_until)){
                         workerQueue.put(jsonHandlers);
                         wait_until = null;
                         jsonHandlers = new ArrayList<>();
@@ -167,19 +177,20 @@ public class Betfair extends BettingSite {
 
         @Override
         public void run() {
-            ArrayList<JsonHandler> rpc_requests;
+            ArrayList<JsonHandler> jsonHandlers;
             JSONArray final_request = new JSONArray();
 
             while (true){
                 try {
-                    rpc_requests = jobQueue.take();
+                    jsonHandlers = jobQueue.take();
 
                     // Build final rpc request
-                    for (int i=0; i<rpc_requests.size(); i++){
-                        for (Object single_rpc_obj: rpc_requests.get(i).request){
+                    for (int i=0; i<jsonHandlers.size(); i++){
+                        for (Object single_rpc_obj: jsonHandlers.get(i).request){
                             JSONObject single_rpc = (JSONObject) single_rpc_obj;
 
                             single_rpc.put("id", i);
+                            single_rpc.put("jsonrpc", "2.0");
                             final_request.add(single_rpc);
                         }
                     }
@@ -187,14 +198,13 @@ public class Betfair extends BettingSite {
                     // Send request
                     JSONArray full_response = (JSONArray) requester.post(betting_endpoint, final_request);
 
-
                     // Prepare empty responses to be added to
-                    JSONArray[] responses = new JSONArray[rpc_requests.size()];
+                    JSONArray[] responses = new JSONArray[jsonHandlers.size()];
 
                     // For each response, put in correct JSONArray for responding back to handler
                     for (Object response_obj: full_response){
                         JSONObject response = (JSONObject) response_obj;
-                        int id = (int) response.get("id");
+                        int id = ((Long) response.get("id")).intValue();
 
                         if (responses[id] == null){
                             responses[id] = new JSONArray();
@@ -204,7 +214,8 @@ public class Betfair extends BettingSite {
 
                     // Send each JSONArray back off to handler
                     for (int i=0; i<responses.length; i++){
-                        rpc_requests.get(i).setResponse(responses[i]);
+                        JsonHandler jh = jsonHandlers.get(i);
+                        jh.setResponse(responses[i]);
                     }
 
 
@@ -213,59 +224,6 @@ public class Betfair extends BettingSite {
                 }
             }
         }
-    }
-
-    // TODO Request handler done, now send it some requests
-
-
-    public void updateAccountDetails() throws IOException, URISyntaxException {
-        JSONObject j = new JSONObject();
-        j.put("id", 1);
-        j.put("jsonrpc", "2.0");
-        j.put("method", "AccountAPING/v1.0/getAccountFunds");
-        j.put("params", new JSONObject());
-
-
-        JSONObject r = (JSONObject) ((JSONObject) requester.post(accounts_endpoint, j)).get("result");
-
-        balance = new BigDecimal(Double.toString((double)r.get("availableToBetBalance")));
-        betfairPoints = (long) r.get("pointsBalance");
-        commission_discount = new BigDecimal(Double.toString((double)r.get("discountRate")));
-    }
-
-
-    public JSONArray getEvents(JSONObject filter) throws IOException, URISyntaxException {
-        JSONObject params = new JSONObject();
-        params.put("filter", filter);
-
-        JSONObject j = new JSONObject();
-        j.put("id", 1);
-        j.put("jsonrpc", "2.0");
-        j.put("method", "SportsAPING/v1.0/listEvents");
-        j.put("params", params);
-
-        JSONObject r = (JSONObject) requester.post(betting_endpoint, j);
-        return (JSONArray) r.get("result");
-    }
-
-
-    public JSONArray getMarketCatalogue(JSONObject params) throws Exception {
-        params.put("maxResults", 1000);
-
-        JSONObject j = new JSONObject();
-        j.put("id", 1);
-        j.put("jsonrpc", "2.0");
-        j.put("method", "SportsAPING/v1.0/listMarketCatalogue");
-        j.put("params", params);
-
-        JSONObject r = (JSONObject) requester.post(betting_endpoint, j);
-
-        if (r.containsKey("error")){
-            String msg = String.format("Error getting market catalogue from betfair.\nparams\n%s\nresult\n%s", ps(params), ps(r));
-            throw new Exception(msg);
-        }
-
-        return (JSONArray) r.get("result");
     }
 
 
@@ -326,15 +284,134 @@ public class Betfair extends BettingSite {
         return new BigDecimal("0.05").subtract(commission_discount);
     }
 
+
     @Override
     public BigDecimal minBet() {
         return min_bet;
     }
 
+
     @Override
     public SiteEventTracker getEventTracker(){
         return new BetfairEventTracker(this);
     }
+
+
+    public JSONArray getMarketOdds(String[] market_ids) throws InterruptedException {
+        log.fine(String.format("Getting market odds for market ids: %s", market_ids));
+
+        ArrayList<ArrayList<String>> market_id_chunks = shard(market_ids, markets_per_req);
+
+        // Build rpc request from market id chunks
+        JSONArray rpc_requests = new JSONArray();
+        for (ArrayList<String> market_ids_chunk: market_id_chunks){
+
+            JSONArray priceData = new JSONArray();
+            priceData.add("EX_ALL_OFFERS");
+
+            JSONObject priceProjection = new JSONObject();
+            priceProjection.put("priceData", priceData);
+
+            JSONArray marketIds = new JSONArray();
+            for (String id: market_ids_chunk){
+                marketIds.add(id);
+            }
+
+            JSONObject params = new JSONObject();
+            params.put("priceProjection", priceProjection);
+            params.put("marketIds", marketIds);
+
+            JSONObject rpc_request = new JSONObject();
+            rpc_request.put("method", "SportsAPING/v1.0/listMarketBook");
+            rpc_request.put("params", params);
+
+            rpc_requests.add(rpc_request);
+        }
+
+        // Create JSON handler and put it in the queue to be sent off
+        JsonHandler jh = new JsonHandler();
+        jh.request = rpc_requests;
+        rpcRequestHandlerQueue.put(jh);
+
+        // Put all responses together in one jsonarray
+        JSONArray response = jh.getResponse();
+        JSONArray results = new JSONArray();
+        for (Object rpc_return_obj: response){
+            JSONObject rpc_return = (JSONObject) rpc_return_obj;
+            if (rpc_return.containsKey("result")){
+                JSONArray result = (JSONArray) rpc_return.get("result");
+                results.addAll(result);
+            }
+        }
+
+        p(results);
+        return results;
+    }
+
+    public JSONArray getMarketOdds(Set<String> market_ids) throws InterruptedException {
+        String[] market_id_array = new String[market_ids.size()];
+
+        int i = 0;
+        for (String s: market_ids){
+            market_id_array[i] = s;
+            i++;
+        }
+        return getMarketOdds(market_id_array);
+    }
+
+
+    public void updateAccountDetails() throws IOException, URISyntaxException {
+        JSONObject j = new JSONObject();
+        j.put("id", 1);
+        j.put("jsonrpc", "2.0");
+        j.put("method", "AccountAPING/v1.0/getAccountFunds");
+        j.put("params", new JSONObject());
+
+
+        JSONObject r = (JSONObject) ((JSONObject) requester.post(accounts_endpoint, j)).get("result");
+
+        balance = new BigDecimal(Double.toString((double)r.get("availableToBetBalance")));
+        betfairPoints = (long) r.get("pointsBalance");
+        commission_discount = new BigDecimal(Double.toString((double)r.get("discountRate")));
+    }
+
+
+    public JSONArray getEvents(JSONObject filter) throws IOException, URISyntaxException {
+        JSONObject params = new JSONObject();
+        params.put("filter", filter);
+
+        JSONObject j = new JSONObject();
+        j.put("id", 1);
+        j.put("jsonrpc", "2.0");
+        j.put("method", "SportsAPING/v1.0/listEvents");
+        j.put("params", params);
+
+        JSONObject r = (JSONObject) requester.post(betting_endpoint, j);
+        return (JSONArray) r.get("result");
+    }
+
+
+    public JSONArray getMarketCatalogue(JSONObject params) throws Exception {
+        params.put("maxResults", 1000);
+
+        JSONObject j = new JSONObject();
+        j.put("id", 1);
+        j.put("jsonrpc", "2.0");
+        j.put("method", "SportsAPING/v1.0/listMarketCatalogue");
+        j.put("params", params);
+
+        JSONObject r = (JSONObject) requester.post(betting_endpoint, j);
+
+        if (r.containsKey("error")){
+            String msg = String.format("Error getting market catalogue from betfair.\nparams\n%s\nresult\n%s", ps(params), ps(r));
+            throw new Exception(msg);
+        }
+
+        return (JSONArray) r.get("result");
+    }
+
+
+
 
 
     public static void main(String[] args){

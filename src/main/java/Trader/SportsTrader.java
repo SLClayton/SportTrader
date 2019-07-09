@@ -20,6 +20,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import static java.lang.Thread.sleep;
+
 public class SportsTrader {
 
     private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
@@ -46,24 +48,15 @@ public class SportsTrader {
             Betfair b = new Betfair();
 
             BetfairEventTracker be = (BetfairEventTracker) b.getEventTracker();
-            FootballMatch fm = new FootballMatch(Instant.parse("2019-07-08T19:00:00.000Z"), "Ghana", "Tunisia");
+            FootballMatch fm = new FootballMatch(Instant.parse("2019-07-09T22:15:00.000Z"), "Vitoria BA ", "Cuiaba");
+
             be.setupMatch(fm);
+            sleep(20000);
+            be.updateMarketData();
 
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -2,7 +2,6 @@ package tools;
 
 
 import com.google.gson.*;
-import org.json.simple.*;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 
@@ -11,9 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public abstract class printer {
 
@@ -91,6 +88,24 @@ public abstract class printer {
         Gson gson = new Gson();
         Map map = gson.fromJson(jsonString, Map.class);
         return map;
+    }
+
+
+    public static ArrayList<ArrayList<String>> shard(String[] unchunked_list, int shard_size){
+
+        ArrayList<ArrayList<String>> chunked_list = new ArrayList<ArrayList<String>>();
+        ArrayList<String> this_chunk = new ArrayList<String>();
+
+        for (int i=0; i<unchunked_list.length; i++){
+
+            this_chunk.add(unchunked_list[i]);
+
+            if (this_chunk.size() >= shard_size || i == (unchunked_list.length - 1)){
+                chunked_list.add(this_chunk);
+                this_chunk = new ArrayList<String>();
+            }
+        }
+        return chunked_list;
     }
 
 

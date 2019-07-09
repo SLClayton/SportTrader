@@ -5,13 +5,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static tools.printer.p;
-import static tools.printer.print;
+import static tools.printer.*;
 
 public class BetfairEventTracker extends SiteEventTracker {
 
@@ -139,8 +139,57 @@ public class BetfairEventTracker extends SiteEventTracker {
             market_name_id_map.put(market_type, market_id);
         }
 
-
         return true;
+    }
+
+
+    public void updateMarketData() throws Exception {
+
+        JSONObject OLD = (JSONObject) new JSONObject(eventMarketData).clone();
+        p(OLD, "outputold.json");
+
+        // Get new market data for markets in this event
+        JSONArray market_odds = betfair.getMarketOdds(eventMarketData.keySet());
+
+        // Update the runners in the existing market data
+        for (Object new_md_obj: market_odds){
+            JSONObject new_md = (JSONObject) new_md_obj;
+
+            String market_id = (String) new_md.get("marketId");
+
+            JSONArray new_runners = (JSONArray) new_md.get("runners");
+            JSONArray old_runners = (JSONArray) eventMarketData.get(market_id).get("runners");
+
+            for (Object this_runner_obj: new_runners){
+                JSONObject this_runner = (JSONObject) this_runner_obj;
+                Long runner_id = (Long) this_runner.get("selectionId");
+
+                // Find matching old runner from the new
+                JSONObject old_runner = null;
+                for (Object r_ojb: old_runners){
+                    JSONObject r = (JSONObject) r_ojb;
+
+                    if (((Long) r.get("selectionId")).equals(runner_id)){
+                        old_runner = r;
+                        break;
+                    }
+                }
+                if (old_runner == null){
+                    throw new Exception(String.format("New runner mismatch old runners.\nold\n%s\nnew\n%s", ps(old_runners), ps(new_runners)));
+                }
+
+                // Overwrite new values in the original runner
+                Set<String> keys = this_runner.keySet();
+                for (String key: keys){
+                    Object new_value = this_runner.get(key);
+                    old_runner.put(key, new_value);
+                }
+
+            }
+
+        }
+        lastMarketDataUpdate = Instant.now();
+        // Market is updated during the code so no need to set anything at the end.
     }
 
 

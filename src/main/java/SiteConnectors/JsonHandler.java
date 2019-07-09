@@ -1,21 +1,27 @@
 package SiteConnectors;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
 
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class JsonHandler {
 
     public JSONArray request;
     public JSONArray response;
+    public BlockingQueue<JSONArray> responseQueue;
+
 
     public JsonHandler(){
-        // Nothing to do
+        responseQueue = new ArrayBlockingQueue<>(1);
     }
 
-    public void setResponse(JSONArray resp){
+    public void setResponse(JSONArray resp) throws InterruptedException {
         response = resp;
-        this.notifyAll();
+        responseQueue.put(response);
+    }
+
+    public JSONArray getResponse() throws InterruptedException {
+        return responseQueue.take();
     }
 }
