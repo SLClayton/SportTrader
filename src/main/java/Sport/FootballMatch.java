@@ -42,15 +42,15 @@ public class FootballMatch extends Match{
 
 
     public boolean same_match(FootballMatch match){
-        log.info(String.format("Checking match for %s and %s.", this, match));
+        log.fine(String.format("Checking match for %s and %s.", this, match));
 
         if (start_time.equals(match.start_time)
                 && same_team(team_a, match.team_a) && same_team(team_b, match.team_b)){
-            log.fine(String.format("Match found for %s and %s.", this, match));
+            log.info(String.format("Match found for %s and %s.", this, match));
             return true;
         }
 
-        log.info(String.format("No match for %s and %s.", this, match));
+        log.fine(String.format("No match for %s and %s.", this, match));
         return false;
 
     }

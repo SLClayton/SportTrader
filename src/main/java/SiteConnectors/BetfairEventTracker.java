@@ -1,11 +1,17 @@
 package SiteConnectors;
 
+import Bet.Bet;
+import Bet.BetOffer;
+import Bet.FootballBet.FootballBet;
+import Bet.FootballBet.FootballOverUnderBet;
+import Bet.FootballBet.FootballResultBet;
+import Bet.FootballBet.FootballScoreBet;
 import Sport.FootballMatch;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -38,10 +44,10 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     @Override
-    public boolean setupMatch(FootballMatch match) {
-        log.info(String.format("Attempting to setup match for %s in betfair.", match.toString()));
-        Instant start = match.start_time.minus(1, ChronoUnit.SECONDS);
-        Instant end = match.start_time.plus(1, ChronoUnit.SECONDS);
+    public boolean setupMatch(FootballMatch setup_match) {
+        log.info(String.format("Attempting to setup match for %s in betfair.", setup_match.toString()));
+        Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
+        Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
 
         // Build filter for request to get events
         JSONObject time = new JSONObject();
@@ -76,14 +82,14 @@ public class BetfairEventTracker extends SiteEventTracker {
             FootballMatch possible_match;
             try {
                 possible_match = new FootballMatch(eventtime, eventname);
-                match.id = id;
+                possible_match.id = id;
             } catch (Exception e) {
                 e.printStackTrace();
                 continue;
             }
 
             all_events.add(possible_match);
-            if (match.same_match(possible_match)){
+            if (setup_match.same_match(possible_match)){
                 matching_events.add(possible_match);
             }
         }
@@ -91,13 +97,14 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Error if not only one found
         if (matching_events.size() != 1) {
             log.warning(String.format("No matches found for %s in betfair. Checked %d: %s",
-                    match.toString(), all_events.size(), all_events.toString()));
+                    setup_match.toString(), all_events.size(), all_events.toString()));
             return false;
         }
 
         // Match found
-        log.info(String.format("Corresponding match found in Betfair for %s", match));
-        this.match = match;
+        log.info(String.format("Corresponding match found in Betfair for %s", setup_match));
+        match = matching_events.get(0);
+        print(matching_events.get(0).toString());
 
 
         // Build params for market catalogue request
@@ -140,6 +147,205 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
 
         return true;
+    }
+
+
+    @Override
+    public HashMap<String, BetOffer[]> getMarketOddsReport(FootballBet[] bets) throws Exception {
+
+
+
+        if (match == null){
+            log.severe("Trying to get market odds report on null event.");
+            return null;
+        }
+        // Update the raw data before extracting for report.
+        updateMarketData();
+
+        HashMap<String, BetOffer[]> full_event_market_report = new HashMap<String, BetOffer[]>();
+
+        for (FootballBet bet: bets){
+            if (bet_blacklist.contains(bet.id())){
+                continue;
+            }
+
+            // Extract runner from market data depending on category.
+            JSONObject runner = null;
+            switch (bet.category) {
+                case "RESULT":
+                    runner = extractRunnerRESULT(bet);
+                    break;
+                case "CORRECT-SCORE":
+                    runner = extractRunnerSCORE(bet);
+                    break;
+                case "OVER-UNDER":
+                    runner = extractRunnerOVERUNDER(bet);
+                    break;
+                default:
+                    // Nothing
+            }
+
+            // Ensure runner is valid
+            if (runner == null){
+                bet_blacklist.add(bet.id());
+                log.fine(String.format("No %s bet found in betfair for %s", bet.id(), match));
+                continue;
+            }
+            else if (!(runner.containsKey("ex")) || !(runner.containsKey("status"))
+                    || !(runner.get("status").toString().equals("ACTIVE"))){
+
+                log.warning(String.format("Invalid runner found in bet %s for %s in betfair.", bet, match));
+                continue;
+            }
+
+            // Get the back or lay odds from the runner
+            JSONArray betfair_offers = null;
+            if (bet.isLay()){
+                betfair_offers = (JSONArray) ((JSONObject) runner.get("ex")).get("availableToLay");
+            }
+            else{
+                betfair_offers = (JSONArray) ((JSONObject) runner.get("ex")).get("availableToBack");
+            }
+
+            // Create a list of bet offers from those retrieved
+            BetOffer[] betOffers = new BetOffer[betfair_offers.size()];
+            for (int i=0; i<betfair_offers.size(); i++){
+                JSONObject bf_offer = (JSONObject) betfair_offers.get(i);
+
+                BigDecimal odds = new BigDecimal(bf_offer.get("price").toString());
+                BigDecimal volume = new BigDecimal(bf_offer.get("size").toString());
+                HashMap<String, String> metadata = new HashMap<String, String>();
+                metadata.put("selection_id", runner.get("selectionId").toString());
+                metadata.put("market_id", runner.get("market_id").toString());
+
+                betOffers[i] = new BetOffer(match, bet, betfair, odds, volume, metadata);
+            }
+
+            full_event_market_report.put(bet.id(), betOffers);
+        }
+
+        return full_event_market_report;
+    }
+
+
+    private JSONObject extractRunnerOVERUNDER(FootballBet BET) {
+        FootballOverUnderBet bet = (FootballOverUnderBet) BET;
+        JSONObject runner = null;
+        String bf_market_name = String.format("OVER_UNDER_%s", bet.goals.toString().replace(".", ""));
+
+        // Find market id for this market in this event from map
+        String market_id = market_name_id_map.get(bf_market_name);
+        if (market_id == null){
+            log.fine(String.format("%s not found for %s in market id map.", bf_market_name, match));
+            return null;
+        }
+
+        JSONArray runners = (JSONArray) eventMarketData.get(market_id).get("runners");
+        String runner_name = String.format("%s %s goals", bet.side, bet.goals.toString()).toLowerCase();
+
+        for (Object r_obj: runners){
+            JSONObject r = (JSONObject) r_obj;
+            if (r.get("runnerName").toString().toLowerCase().equals(runner_name)){
+                runner = r;
+                break;
+            }
+        }
+
+        if (runner != null){
+            runner.put("market_id", market_id);
+        }
+        return runner;
+    }
+
+
+    private JSONObject extractRunnerSCORE(FootballBet BET) {
+        FootballScoreBet bet = (FootballScoreBet) BET;
+        JSONObject runner = null;
+
+        // Find market id for this market in this event from map
+        String market_id = market_name_id_map.get("CORRECT_SCORE");
+        if (market_id == null){
+            log.severe(String.format("CORRECT_SCORE not found for %s in market id map when it should be.", match));
+            return null;
+        }
+
+        JSONArray runners = (JSONArray) eventMarketData.get(market_id).get("runners");
+        String runner_name = String.format("%d - %d", bet.score_a, bet.score_b);
+
+        for (Object r_obj: runners){
+            JSONObject r = (JSONObject) r_obj;
+
+            if (((String) r.get("runnerName")).equals(runner_name)){
+                runner = r;
+                break;
+            }
+        }
+
+        if (runner != null){
+            runner.put("market_id", market_id);
+        }
+
+        return runner;
+    }
+
+
+    private JSONObject extractRunnerRESULT(FootballBet BET) {
+        log.fine(String.format("Getting runner result from %s for %s.", match, BET.id()));
+
+        FootballResultBet bet = (FootballResultBet) BET;
+        JSONObject runner = null;
+
+        // Find market id for this market in this event from map
+        String market_id = market_name_id_map.get("MATCH_ODDS");
+        if (market_id == null){
+            log.severe(String.format("MATCH_ODDS not found for %s in market id map when it should be.", match));
+            return null;
+        }
+
+
+
+        // Check it has 3 runners TEAMA DRAW and TEAMB
+        JSONArray runners = (JSONArray) eventMarketData.get(market_id).get("runners");
+        if (runners.size() != 3){
+            log.severe(String.format("RESULT market for %s has %d runners and not 3.", match, runners.size()));
+            return null;
+        }
+
+        if (bet.winnerA()){
+            runner = (JSONObject) runners.get(0);
+            String team_in_runner = runner.get("runnerName").toString();
+            if (!(FootballMatch.same_team(match.team_a, team_in_runner))){
+                log.severe(String.format("Betfair runner mismatch with team_a '%s' in RESULT_BET.\n%s",
+                        match.team_a, runner.toString()));
+                return null;
+            }
+        }
+        else if (bet.winnerB()){
+            runner = (JSONObject) runners.get(1);
+            String team_in_runner = runner.get("runnerName").toString();
+            if (!(FootballMatch.same_team(match.team_b, team_in_runner))){
+                log.severe(String.format("Betfair runner mismatch with team_b '%s' in RESULT_BET.\n%s",
+                        match.team_b, runner.toString()));
+                return null;
+            }
+        }
+        else if (bet.isDraw()){
+            runner = (JSONObject) runners.get(2);
+            String runner_name = runner.get("runnerName").toString().toLowerCase();
+            if (!(runner_name.equals("the draw"))){
+                log.severe(String.format("Betfair runner mismatch with 'the draw' / '%s' in RESULT_BET.", runner_name));
+                return null;
+            }
+        }
+        else{
+            log.severe(String.format("Betfair runner invalid for in RESULT_BET for match %s bet %s.", match, bet));
+        }
+
+        if (runner != null){
+            runner.put("market_id", market_id);
+        }
+
+        return runner;
     }
 
 
@@ -193,4 +399,5 @@ public class BetfairEventTracker extends SiteEventTracker {
     }
 
 
+    // TODO Create getmarketodds
 }

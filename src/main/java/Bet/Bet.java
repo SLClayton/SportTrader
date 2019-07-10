@@ -7,11 +7,12 @@ import java.util.ArrayList;
 
 public abstract class Bet {
 
-    static String BACK = "BACK";
-    static String LAY = "LAY";
-    static String[] BET_TYPES = {BACK, LAY};
+    public static String BACK = "BACK";
+    public static String LAY = "LAY";
+    public static String[] BET_TYPES = {BACK, LAY};
 
-    String type;
+    public String category;
+    public String type;
 
     public Bet(String bet_type) {
         type = bet_type;
@@ -29,9 +30,19 @@ public abstract class Bet {
 
     public abstract String id();
 
+    @Override
+    public String toString(){
+        return id();
+    }
+
     public Boolean equals(Bet bet){
         return id().equals(bet.id());
     }
+
+
+
+
+
 
     public static JSONArray allJSONArray(ArrayList<Bet> bets){
         JSONArray j = new JSONArray();

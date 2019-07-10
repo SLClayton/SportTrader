@@ -1,12 +1,11 @@
-package Bet;
+package Bet.FootballBet;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import Bet.Bet;
 import Bet.Bet.*;
-import Bet.*;
-import tools.printer.*;
 
 import static tools.printer.p;
 import static tools.printer.print;
@@ -50,17 +49,29 @@ public class FootballBetGenerator {
         over_under_bets = getOverUnderBets(GOALSCOUNT_MAX);
     }
 
-    public ArrayList<Bet> getAllBets(){
-        ArrayList<Bet> all_bets = new ArrayList<Bet>();
+    public ArrayList<FootballBet> getAllBetsList(){
+        ArrayList<FootballBet> all_bets = new ArrayList<FootballBet>();
         all_bets.addAll(score_bets);
         all_bets.addAll(score_bets_ht);
         all_bets.addAll(other_score_bets);
         all_bets.addAll(other_score_bets_ht);
+        all_bets.addAll(result_bets);
         all_bets.addAll(result_bets_ht);
         all_bets.addAll(handicap_bets);
         all_bets.addAll(over_under_bets);
         return all_bets;
     }
+
+    public FootballBet[] getAllBets(){
+        ArrayList<FootballBet> betlist = getAllBetsList();
+        FootballBet[] bets = new FootballBet[betlist.size()];
+        for (int i=0; i<bets.length; i++){
+            bets[i] = betlist.get(i);
+        }
+        return bets;
+    }
+
+
 
 
     public ArrayList<FootballScoreBet> getScoreBets(int highest, Boolean halftime){
@@ -86,7 +97,8 @@ public class FootballBetGenerator {
                 for (int j=0; j<Bet.BET_TYPES.length; j++){
                     String type = Bet.BET_TYPES[j];
 
-                    bets.add(new FootballOtherScoreBet(type, score, result, false));
+                    FootballOtherScoreBet b = new FootballOtherScoreBet(type, score, result, false);
+                    bets.add(b);
                 }
             }
         }
@@ -226,7 +238,7 @@ public class FootballBetGenerator {
 
     public ArrayList<Bet[]> tautsBackWithLay(){
         ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
-        ArrayList<Bet> all_bets = getAllBets();
+        ArrayList<FootballBet> all_bets = getAllBetsList();
 
         for (int i=0; i<all_bets.size(); i++){
             Bet bet = all_bets.get(i);

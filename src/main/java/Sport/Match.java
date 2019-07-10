@@ -1,15 +1,8 @@
 package Sport;
 
-import Bet.FootballBet;
-import SiteConnectors.Betfair;
 import Trader.SportsTrader;
-import tools.MyLogHandler;
 
-import java.text.Normalizer;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.logging.Logger;
 
 public abstract class Match {

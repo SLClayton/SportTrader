@@ -1,10 +1,11 @@
 package SiteConnectors;
 
+import Bet.BetOffer;
+import Bet.FootballBet.FootballBet;
 import Sport.FootballMatch;
-import Sport.Match;
 import Trader.SportsTrader;
-import tools.MyLogHandler;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public abstract class SiteEventTracker {
@@ -13,6 +14,8 @@ public abstract class SiteEventTracker {
 
 
     public abstract boolean setupMatch(FootballMatch match);
+
+    public abstract HashMap<String, BetOffer[]> getMarketOddsReport(FootballBet[] bets) throws Exception;
 
 
     public SiteEventTracker(){
