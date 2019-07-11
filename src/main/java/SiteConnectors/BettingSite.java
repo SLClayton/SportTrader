@@ -36,6 +36,8 @@ public abstract class BettingSite {
         balance = new BigDecimal("0.00");
     }
 
+    public abstract void initialize();
+
     public abstract String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnrecoverableKeyException;
 
     public abstract BigDecimal commission();

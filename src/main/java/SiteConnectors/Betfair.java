@@ -1,6 +1,7 @@
 package SiteConnectors;
 
 import Bet.Bet;
+import Sport.FootballMatch;
 import net.dongliu.requests.Requests;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -26,6 +27,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -49,8 +51,9 @@ import static tools.printer.*;
 
 public class Betfair extends BettingSite {
 
+    public static final String name = "betfair";
+    public static final int FOOTBALL_ID = 1;
 
-    public static final int FOOTBALL = 1;
 
     public String hostname = "https://api.betfair.com/";
     public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
@@ -106,6 +109,12 @@ public class Betfair extends BettingSite {
         Thread rpcRequestHandlerThread = new Thread(rpcRequestHandler);
         rpcRequestHandlerThread.start();
     }
+
+    @Override
+    public void initialize() {
+
+    }
+
 
     public class RPCRequestHandler implements Runnable{
 
@@ -388,6 +397,40 @@ public class Betfair extends BettingSite {
 
         JSONObject r = (JSONObject) requester.post(betting_endpoint, j);
         return (JSONArray) r.get("result");
+    }
+
+
+    public ArrayList<FootballMatch> getFootballMatches(Instant start, Instant end) throws IOException, URISyntaxException {
+
+        // Build filter for request to get events
+        JSONObject time = new JSONObject();
+        time.put("from", start.toString());
+        time.put("to", end.toString());
+        JSONArray event_types = new JSONArray();
+        event_types.add(1);
+        JSONObject filter = new JSONObject();
+        filter.put("marketStartTime", time);
+        filter.put("eventTypeIds", event_types);
+
+        // Get response
+        JSONArray events = getEvents(filter);
+
+        // Build match object for each return
+        ArrayList<FootballMatch> footballMatches = new ArrayList<FootballMatch>();
+        for (Object event_obj: events){
+            JSONObject event = (JSONObject) ((JSONObject) event_obj).get("event");
+
+            FootballMatch fm;
+            try {
+                fm = FootballMatch.parse((String) event.get("openDate"),
+                                         (String) event.get("name"));
+            }
+            catch (ParseException e){
+                continue;
+            }
+            footballMatches.add(fm);
+        }
+        return footballMatches;
     }
 
 

@@ -79,7 +79,7 @@ public abstract class printer {
         filename = "src/main/resources/" + filename;
         String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
         Gson gson = new Gson();
-        Map map = gson.fromJson(jsonString, Map.class);
+        Map map = gson.fromJson(jsonString, HashMap.class);
         return map;
     }
 

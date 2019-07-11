@@ -1,6 +1,7 @@
 package Sport;
 
 import java.text.Normalizer;
+import java.text.ParseException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -34,6 +35,18 @@ public class FootballMatch extends Match{
         team_a = TEAM_A;
         team_b = TEAM_B;
         name = team_a + " v " + team_b;
+    }
+
+    public static FootballMatch parse(String start, String name) throws ParseException {
+        Instant start_time = Instant.parse(start);
+
+        String[] teams = name.trim().split("\\sv\\s|\\sV\\s|\\svs\\s|\\sVS\\s|\\sVs\\s");
+        if (teams.length != 2){
+            String msg = String.format("Cannot parse Match name '%s'", name);
+            log.warning(msg);
+            throw new ParseException(msg, 1);
+        }
+        return new FootballMatch(start_time, teams[0], teams[1]);
     }
 
     public String toString(){

@@ -398,6 +398,4 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Market is updated during the code so no need to set anything at the end.
     }
 
-
-    // TODO Create getmarketodds
 }
