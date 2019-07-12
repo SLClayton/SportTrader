@@ -45,8 +45,8 @@ public class SportsTrader {
 
     private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public static HashMap<String, Class> siteClasses = new HashMap<String, Class>();
-    public HashMap<String, BettingSite> siteObjects = new HashMap<String, BettingSite>();
+    public HashMap<String, Class> siteClasses;
+    public HashMap<String, BettingSite> siteObjects;
 
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<EventTrader> eventTraders;
@@ -66,14 +66,18 @@ public class SportsTrader {
             System.exit(1);
         }
 
+        siteClasses = new HashMap<String, Class>();
         siteClasses.put("betfair", Betfair.class);
+
+        siteObjects = new HashMap<String, BettingSite>();
+        eventTraders = new ArrayList<EventTrader>();
     }
 
     private void setupConfig(String config_filename) throws Exception {
         Map config = getJSONResource(config_filename);
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "PLACE_BETS", "ACTIVE_SITES"};
 
-        print(config.toString());
+        log.info(String.format("Setting up config %s", config.toString()));
 
         for (String field: required){
             if (!(config.keySet().contains(field))){
@@ -126,7 +130,7 @@ public class SportsTrader {
         }
         int total_matches_found = footballMatches.size();
         if (MAX_MATCHES > 0){
-            footballMatches = (ArrayList<FootballMatch>) footballMatches.subList(0, MAX_MATCHES);
+            footballMatches = new ArrayList<FootballMatch>(footballMatches.subList(0, MAX_MATCHES));
         }
         footballMatches.trimToSize();
         log.info(String.format("%d Football matches found. Using %d.", total_matches_found, footballMatches.size()));

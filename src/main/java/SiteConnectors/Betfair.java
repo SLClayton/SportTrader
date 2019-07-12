@@ -107,6 +107,7 @@ public class Betfair extends BettingSite {
         rpcRequestHandlerQueue = new LinkedBlockingQueue<>();
         rpcRequestHandler = new RPCRequestHandler(rpcRequestHandlerQueue);
         Thread rpcRequestHandlerThread = new Thread(rpcRequestHandler);
+        rpcRequestHandlerThread.setDaemon(true);
         rpcRequestHandlerThread.start();
     }
 

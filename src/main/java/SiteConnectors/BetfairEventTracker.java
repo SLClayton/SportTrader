@@ -1,6 +1,5 @@
 package SiteConnectors;
 
-import Bet.Bet;
 import Bet.BetOffer;
 import Bet.FootballBet.FootballBet;
 import Bet.FootballBet.FootballOverUnderBet;
@@ -25,6 +24,8 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     public String event_id;
     public FootballMatch match;
+    public HashMap<String, BetOffer[]> marketOddsReport;
+
     public HashMap<String, JSONObject> eventMarketData;
     public Instant lastMarketDataUpdate;
     public HashMap<String, String> market_name_id_map;
@@ -44,7 +45,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     @Override
-    public boolean setupMatch(FootballMatch setup_match) {
+    public boolean setupMatch(FootballMatch setup_match) throws Exception {
         log.info(String.format("Attempting to setup match for %s in betfair.", setup_match.toString()));
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
         Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
@@ -65,7 +66,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             log.warning("Error getting events from betfair.");
-            return false;
+            throw e;
         }
 
 
@@ -96,15 +97,18 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         // Error if not only one found
         if (matching_events.size() != 1) {
+            String fails = "";
+            for (FootballMatch m: all_events){
+                fails = fails + "\n" + m.toString();
+            }
             log.warning(String.format("No matches found for %s in betfair. Checked %d: %s",
-                    setup_match.toString(), all_events.size(), all_events.toString()));
+                    setup_match.toString(), all_events.size(), fails));
             return false;
         }
 
         // Match found
         log.info(String.format("Corresponding match found in Betfair for %s", setup_match));
         match = matching_events.get(0);
-        print(matching_events.get(0).toString());
 
 
         // Build params for market catalogue request
@@ -130,7 +134,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             markets = (JSONArray) betfair.getMarketCatalogue(params);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            throw e;
         }
 
 
@@ -151,13 +155,10 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     @Override
-    public HashMap<String, BetOffer[]> getMarketOddsReport(FootballBet[] bets) throws Exception {
-
-
-
+    public void updateMarketOddsReport(FootballBet[] bets) throws Exception {
         if (match == null){
             log.severe("Trying to get market odds report on null event.");
-            return null;
+            return;
         }
         // Update the raw data before extracting for report.
         updateMarketData();
@@ -224,7 +225,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             full_event_market_report.put(bet.id(), betOffers);
         }
 
-        return full_event_market_report;
+        marketOddsReport = full_event_market_report;
     }
 
 
