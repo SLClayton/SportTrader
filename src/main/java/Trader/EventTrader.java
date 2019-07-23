@@ -1,6 +1,6 @@
 package Trader;
 
-import Bet.Bet;
+import Bet.*;
 import Bet.FootballBet.FootballBet;
 import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.BettingSite;
@@ -11,9 +11,13 @@ import Sport.Match;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+
+import static tools.printer.print;
 
 public class EventTrader implements Runnable {
 
@@ -24,6 +28,7 @@ public class EventTrader implements Runnable {
     public FootballMatch match;
     public HashMap<String, BettingSite> sites;
     public HashMap<String, SiteEventTracker> siteEventTrackers;
+    public BlockingQueue<String> siteMarketOddsToGetQueue;
 
     public FootballBetGenerator footballBetGenerator;
     public Bet[][] tautologies;
@@ -33,6 +38,7 @@ public class EventTrader implements Runnable {
         this.sites = sites;
         this.footballBetGenerator = footballBetGenerator;
         siteEventTrackers = new HashMap<String, SiteEventTracker>();
+        siteMarketOddsToGetQueue = new LinkedBlockingQueue<>();
     }
 
 
@@ -75,10 +81,21 @@ public class EventTrader implements Runnable {
             log.info(String.format("All sites failed to setup %s. Finishing Event Trader", match));
             return;
         }
+
+        // Start MarketOddsReportWorker threads, 1 for each site
+        for (int i=0; i<sites.size(); i++){
+            MarketOddsReportWorker morw = new MarketOddsReportWorker(siteMarketOddsToGetQueue, siteEventTrackers);
+            Thread thread = new Thread(morw);
+            thread.start();
+        }
         
-        
+        // Check for arbs constantly
         for (int i=0; true; i++){
-            checkArbs();
+            try {
+                checkArbs();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -100,7 +117,11 @@ public class EventTrader implements Runnable {
                 // Get site name from queue and update the corresponding event trader
                 try {
                     String site_name = job_queue.take();
+                    SiteEventTracker siteEventTracker = siteEventTrackers.get(site_name);
                     siteEventTrackers.get(site_name).updateMarketOddsReport(footballBetGenerator.getAllBets());
+                    synchronized (siteEventTracker) {
+                        siteEventTracker.notifyAll();
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
@@ -112,8 +133,27 @@ public class EventTrader implements Runnable {
     }
 
 
-    private void checkArbs() {
+    private void checkArbs() throws InterruptedException {
 
-        // TODO setup the launch of the worker threads and do checkArbs
+        // Add each site name to the queue to have its odds updated
+        for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()){
+            String site_name = entry.getKey();
+            siteMarketOddsToGetQueue.put(site_name);
+        }
+        ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
+        // Wait for results and add them to list
+        for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()) {
+            SiteEventTracker siteEventTracker = entry.getValue();
+            synchronized (siteEventTracker){
+                siteEventTracker.wait();
+            }
+            marketOddsReports.add(siteEventTracker.marketOddsReport);
+        }
+
+
+
+
+
+
     }
 }

@@ -5,6 +5,7 @@ import Bet.FootballBet.FootballBet;
 import Bet.FootballBet.FootballOverUnderBet;
 import Bet.FootballBet.FootballResultBet;
 import Bet.FootballBet.FootballScoreBet;
+import Bet.MarketOddsReport;
 import Sport.FootballMatch;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +25,6 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     public String event_id;
     public FootballMatch match;
-    public HashMap<String, BetOffer[]> marketOddsReport;
 
     public HashMap<String, JSONObject> eventMarketData;
     public Instant lastMarketDataUpdate;
@@ -163,7 +163,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Update the raw data before extracting for report.
         updateMarketData();
 
-        HashMap<String, BetOffer[]> full_event_market_report = new HashMap<String, BetOffer[]>();
+        HashMap<String, ArrayList<BetOffer>> full_event_market_report = new HashMap<String, ArrayList<BetOffer>>();
 
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
@@ -209,7 +209,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             }
 
             // Create a list of bet offers from those retrieved
-            BetOffer[] betOffers = new BetOffer[betfair_offers.size()];
+            ArrayList<BetOffer> betOffers = new ArrayList<BetOffer>();
             for (int i=0; i<betfair_offers.size(); i++){
                 JSONObject bf_offer = (JSONObject) betfair_offers.get(i);
 
@@ -219,13 +219,13 @@ public class BetfairEventTracker extends SiteEventTracker {
                 metadata.put("selection_id", runner.get("selectionId").toString());
                 metadata.put("market_id", runner.get("market_id").toString());
 
-                betOffers[i] = new BetOffer(match, bet, betfair, odds, volume, metadata);
+                betOffers.add(new BetOffer(match, bet, betfair, odds, volume, metadata));
             }
 
             full_event_market_report.put(bet.id(), betOffers);
         }
 
-        marketOddsReport = full_event_market_report;
+        marketOddsReport = new MarketOddsReport(full_event_market_report);
     }
 
 

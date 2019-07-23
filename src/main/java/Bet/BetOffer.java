@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BetOffer {
+public class BetOffer implements Comparable<BetOffer> {
 
     public Match match;
     public Bet bet;
@@ -104,5 +104,11 @@ public class BetOffer {
             stake = stake.setScale(2, RoundingMode.HALF_UP);
         }
         return stake;
+    }
+
+
+    @Override
+    public int compareTo(BetOffer betOffer) {
+        return this.roi_ratio.compareTo(betOffer.roi_ratio);
     }
 }

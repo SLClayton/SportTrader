@@ -1,6 +1,7 @@
 package SiteConnectors;
 
 import Bet.FootballBet.FootballBet;
+import Bet.MarketOddsReport;
 import Sport.FootballMatch;
 import Trader.SportsTrader;
 
@@ -9,6 +10,8 @@ import java.util.logging.Logger;
 public abstract class SiteEventTracker {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+
+    public MarketOddsReport marketOddsReport;
 
 
     public abstract boolean setupMatch(FootballMatch match) throws Exception;
