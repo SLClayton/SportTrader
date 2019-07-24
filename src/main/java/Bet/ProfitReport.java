@@ -1,12 +1,23 @@
 package Bet;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ProfitReport {
+import static tools.printer.pp;
+import static tools.printer.ps;
 
-    public BetOrder[] bet_orders;
+public class ProfitReport implements Comparable<ProfitReport> {
+    /*
+    // A collection of Bet Orders, with attributes calculated such as total stake
+    // and profit/loss ratio.
+     */
+
+    public ArrayList<BetOrder> bet_orders;
     public BigDecimal total_investment;
 
     public BigDecimal min_return;
@@ -18,8 +29,9 @@ public class ProfitReport {
 
     public  BigDecimal profit_ratio;
 
-    public ProfitReport(BetOrder[] BETORDERS){
+    public ProfitReport(ArrayList<BetOrder> BETORDERS) throws Exception {
         bet_orders = BETORDERS;
+        bet_orders.trimToSize();
 
         total_investment = BigDecimal.ZERO;
         for (BetOrder bo: bet_orders){
@@ -39,12 +51,22 @@ public class ProfitReport {
 
         guaranteed_profit = min_return.subtract(total_investment);
         max_profit = max_return.subtract(total_investment);
-        profit_ratio = guaranteed_profit.divide(total_investment);
+
+        if (total_investment.equals(BigDecimal.ZERO)){
+            throw new Exception("0 total investment");
+        }
+        else{
+            profit_ratio = guaranteed_profit.divide(total_investment, 20, RoundingMode.HALF_UP);
+        }
     }
 
 
     public String toString(boolean full){
-        HashMap<String, String> m = new HashMap<String, String>();
+        return ps(toJSON(full));
+    }
+
+    public JSONObject toJSON(boolean full){
+        JSONObject m = new JSONObject();
         m.put("total_investment", total_investment.toString());
         m.put("min_return", min_return.toString());
         m.put("max_return", max_return.toString());
@@ -52,14 +74,14 @@ public class ProfitReport {
         m.put("max_profit", max_profit.toString());
         m.put("profit_ratio", profit_ratio.toString());
         if (full){
-            ArrayList<String> orders = new ArrayList<String>();
+            JSONArray orders = new JSONArray();
             for (BetOrder bo: bet_orders){
                 orders.add(bo.toString());
             }
             m.put("bet_orders", orders.toString());
         }
 
-        return m.toString();
+        return m;
     }
 
     public ProfitReport newProfitReport(BigDecimal target_return) throws Exception {
@@ -67,11 +89,53 @@ public class ProfitReport {
             throw new Exception("Target return not possible within possible bet ranges.");
         }
 
-        BetOrder[] new_bet_orders = new BetOrder[bet_orders.length];
-        for (int i=0; i< bet_orders.length; i++){
-            new_bet_orders[i] = new BetOrder(bet_orders[i].bet_offer, target_return, true);
+        ArrayList<BetOrder> new_bet_orders = new ArrayList<BetOrder>();
+        for (int i=0; i< bet_orders.size(); i++){
+            new_bet_orders.add(new BetOrder(bet_orders.get(i).bet_offer, target_return, true));
         }
 
         return new ProfitReport(new_bet_orders);
+    }
+
+    public static ArrayList<ProfitReport> getTautologyProfitReports(Bet[][] tautologies, MarketOddsReport marketOddsReport){
+        /*
+        // Using a list of tautologies and the market odds report, generate a profit report
+        // for each tautology which
+         */
+
+        // Calculate profitReport for each tautology using the best ROI for each bet
+        ArrayList<ProfitReport> tautologyProfitReports = new ArrayList<ProfitReport>();
+        for (Bet[] tautology: tautologies){
+
+            // Ensure all bets exist before continuing
+            boolean skip = false;
+            for (int i=9; i<tautology.length; i++){
+                if (!marketOddsReport.contains(tautology[i].id())){
+                    skip = true;
+                    break;
+                }
+            }
+            if (skip){
+                break;
+            }
+
+            try {
+                // Generate a list of ratio profitReport using the best offer for each bet
+                ArrayList<BetOrder> betOrders = new ArrayList<BetOrder>();
+                for (Bet bet: tautology){
+                    BetOffer best_offer = marketOddsReport.get(bet.id()).get(0);
+                    betOrders.add(new BetOrder(best_offer, BigDecimal.ONE, false));
+                }
+
+                ProfitReport pr = new ProfitReport(betOrders);
+                tautologyProfitReports.add(pr);
+            } catch (Exception e) {}
+        }
+        return tautologyProfitReports;
+    }
+
+    @Override
+    public int compareTo(ProfitReport profitReport) {
+        return this.profit_ratio.compareTo(profitReport.profit_ratio);
     }
 }

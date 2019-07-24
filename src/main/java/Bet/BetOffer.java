@@ -2,6 +2,7 @@ package Bet;
 
 import SiteConnectors.BettingSite;
 import Sport.Match;
+import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,6 +27,7 @@ public class BetOffer implements Comparable<BetOffer> {
         odds = ODDS;
         volume = VOLUME;
         metadata = METADATA;
+        roi_ratio = ROI(BigDecimal.ONE, false);
     }
 
     public String toString(){
@@ -37,6 +39,17 @@ public class BetOffer implements Comparable<BetOffer> {
         m.put("volume", volume.toString());
         m.put("metadata", metadata.toString());
         return m.toString();
+    }
+
+    public JSONObject toJSON(){
+        JSONObject m = new JSONObject();
+        m.put("match", match.name);
+        m.put("bet", bet.id());
+        m.put("site", site.name);
+        m.put("odds", odds.toString());
+        m.put("volume", volume.toString());
+        m.put("metadata", metadata.toString());
+        return m;
     }
 
     public BigDecimal commission(){
@@ -91,7 +104,7 @@ public class BetOffer implements Comparable<BetOffer> {
 
 
     public static BigDecimal getLayFromStake(BigDecimal odds, BigDecimal stake, boolean real){
-        BigDecimal lay = stake.divide( odds.subtract(BigDecimal.ONE) );
+        BigDecimal lay = stake.divide( odds.subtract(BigDecimal.ONE), 20, RoundingMode.HALF_UP );
         if (real){
             lay = lay.setScale(2, RoundingMode.HALF_UP);
         }

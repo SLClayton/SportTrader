@@ -19,7 +19,7 @@ public class BetOrder {
         bet_offer = BET_OFFER;
         target_return = TARGET_RETURN;
 
-        investment = target_return.divide(bet_offer.roi_ratio);
+        investment = target_return.divide(bet_offer.roi_ratio, 20, RoundingMode.HALF_UP);
         if (real){
             investment = investment.setScale(2, RoundingMode.HALF_UP);
         }

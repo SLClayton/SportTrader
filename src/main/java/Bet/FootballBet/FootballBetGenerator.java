@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import Bet.Bet;
 import Bet.Bet.*;
+import Trader.SportsTrader;
 
 import static tools.printer.p;
 import static tools.printer.print;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
 
 public class FootballBetGenerator {
 
-    private static final Logger log = Logger.getLogger(FootballBetGenerator.class.getName());
+    public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     static int GOALSCOUNT_MAX = 9;
     static int OTHERGOALS_MIN = 3;

@@ -1,1478 +1,11 @@
 {
-  "1.160661754": {
-    "marketName": "Match Odds",
-    "totalMatched": 396.23,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003ca href\u003d\"http://www.stats.betradar.com/statistics/betfaircom/?language\u003den\" target\u003d\"_blank\"\u003e\u003cimg src\u003d\"http://content-cache.betfair.com/images/en_GB/mr_fg.gif\" title\u003d\"Form Guide\" border\u003d\"0\"\u003e\u003c/a\u003e\u003ca href\u003d\"http://www.livescore.betradar.com/?alias\u003dbetfair\u0026language\u003den\" target\u003d\"_blank\"\u003e\u003cimg src\u003d\"http://content-cache.betfair.com/images/en_GB/mr_ls.gif\" title\u003d\"Live Scores\" border\u003d\"0\"\u003e\u003c/a\u003e\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003ePredict the result of this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "MATCH_ODDS",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "totalMatched": 240.73,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 21.28,
-              "price": 2.08
-            },
-            {
-              "size": 208.16,
-              "price": 2.06
-            },
-            {
-              "size": 14.08,
-              "price": 2.04
-            },
-            {
-              "size": 180.99,
-              "price": 2.02
-            },
-            {
-              "size": 97.87,
-              "price": 1.97
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            },
-            {
-              "size": 2.0,
-              "price": 1.02
-            },
-            {
-              "size": 189.49,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 37.54,
-              "price": 2.16
-            },
-            {
-              "size": 168.56,
-              "price": 2.2
-            },
-            {
-              "size": 16.22,
-              "price": 2.22
-            },
-            {
-              "size": 144.25,
-              "price": 2.24
-            },
-            {
-              "size": 0.15,
-              "price": 800.0
-            },
-            {
-              "size": 0.05,
-              "price": 1000.0
-            }
-          ]
-        },
-        "lastPriceTraded": 2.08,
-        "selectionId": 4516149,
-        "runnerName": "America MG",
-        "handicap": 0.0,
-        "market_id": "1.160661754",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 2,
-        "totalMatched": 53.97,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 15.02,
-              "price": 4.4
-            },
-            {
-              "size": 60.38,
-              "price": 4.3
-            },
-            {
-              "size": 57.34,
-              "price": 4.1
-            },
-            {
-              "size": 12.26,
-              "price": 4.0
-            },
-            {
-              "size": 13.58,
-              "price": 3.9
-            },
-            {
-              "size": 33.9,
-              "price": 3.8
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            },
-            {
-              "size": 2.0,
-              "price": 1.02
-            },
-            {
-              "size": 189.49,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 11.85,
-              "price": 4.6
-            },
-            {
-              "size": 68.85,
-              "price": 4.7
-            },
-            {
-              "size": 43.77,
-              "price": 4.8
-            },
-            {
-              "size": 2.12,
-              "price": 4.9
-            },
-            {
-              "size": 5.38,
-              "price": 5.0
-            },
-            {
-              "size": 12.22,
-              "price": 5.4
-            },
-            {
-              "size": 13.34,
-              "price": 5.5
-            },
-            {
-              "size": 0.15,
-              "price": 800.0
-            },
-            {
-              "size": 0.05,
-              "price": 1000.0
-            }
-          ]
-        },
-        "lastPriceTraded": 4.4,
-        "selectionId": 3618374,
-        "runnerName": "Oeste",
-        "handicap": 0.0,
-        "market_id": "1.160661754",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 3,
-        "totalMatched": 105.66,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 13.99,
-              "price": 3.25
-            },
-            {
-              "size": 268.79,
-              "price": 3.2
-            },
-            {
-              "size": 313.59,
-              "price": 3.15
-            },
-            {
-              "size": 363.83,
-              "price": 3.1
-            },
-            {
-              "size": 310.9,
-              "price": 3.05
-            },
-            {
-              "size": 13.72,
-              "price": 2.98
-            },
-            {
-              "size": 12.86,
-              "price": 2.96
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            },
-            {
-              "size": 19.49,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 20.25,
-              "price": 3.35
-            },
-            {
-              "size": 134.59,
-              "price": 3.4
-            },
-            {
-              "size": 268.79,
-              "price": 3.45
-            },
-            {
-              "size": 84.2,
-              "price": 3.5
-            },
-            {
-              "size": 13.41,
-              "price": 3.55
-            },
-            {
-              "size": 0.15,
-              "price": 800.0
-            },
-            {
-              "size": 2.2,
-              "price": 950.0
-            },
-            {
-              "size": 0.05,
-              "price": 1000.0
-            }
-          ]
-        },
-        "lastPriceTraded": 3.25,
-        "selectionId": 58805,
-        "runnerName": "The Draw",
-        "handicap": 0.0,
-        "market_id": "1.160661754",
-        "status": "ACTIVE"
-      }
-    ],
-    "marketId": "1.160661754"
-  },
-  "1.160661757": {
-    "marketName": "Over/Under 2.5 Goals",
-    "totalMatched": 79.82,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_25",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "totalMatched": 66.78,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 35.85,
-              "price": 1.52
-            },
-            {
-              "size": 279.81,
-              "price": 1.51
-            },
-            {
-              "size": 179.2,
-              "price": 1.49
-            },
-            {
-              "size": 388.37,
-              "price": 1.44
-            },
-            {
-              "size": 7.71,
-              "price": 1.42
-            },
-            {
-              "size": 438.16,
-              "price": 1.39
-            },
-            {
-              "size": 2.0,
-              "price": 1.38
-            },
-            {
-              "size": 13.0,
-              "price": 1.2
-            },
-            {
-              "size": 104.43,
-              "price": 1.06
-            },
-            {
-              "size": 182.76,
-              "price": 1.05
-            },
-            {
-              "size": 237.34,
-              "price": 1.04
-            },
-            {
-              "size": 487.62,
-              "price": 1.03
-            },
-            {
-              "size": 715.16,
-              "price": 1.02
-            },
-            {
-              "size": 745.45,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 34.51,
-              "price": 1.58
-            },
-            {
-              "size": 199.89,
-              "price": 1.59
-            },
-            {
-              "size": 179.2,
-              "price": 1.6
-            },
-            {
-              "size": 5.32,
-              "price": 1.65
-            },
-            {
-              "size": 0.05,
-              "price": 1000.0
-            }
-          ]
-        },
-        "lastPriceTraded": 1.54,
-        "selectionId": 47972,
-        "runnerName": "Under 2.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661757",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 2,
-        "totalMatched": 13.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 17.21,
-              "price": 2.72
-            },
-            {
-              "size": 217.93,
-              "price": 2.7
-            },
-            {
-              "size": 106.62,
-              "price": 2.68
-            },
-            {
-              "size": 106.8,
-              "price": 2.6
-            },
-            {
-              "size": 2.63,
-              "price": 2.54
-            },
-            {
-              "size": 2.0,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 18.53,
-              "price": 2.94
-            },
-            {
-              "size": 144.12,
-              "price": 2.96
-            },
-            {
-              "size": 89.6,
-              "price": 3.0
-            },
-            {
-              "size": 0.05,
-              "price": 1000.0
-            }
-          ]
-        },
-        "lastPriceTraded": 2.72,
-        "selectionId": 47973,
-        "runnerName": "Over 2.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661757",
-        "status": "ACTIVE"
-      }
-    ],
-    "marketId": "1.160661757"
-  },
-  "1.160661758": {
-    "marketName": "Over/Under 3.5 Goals",
-    "totalMatched": 98.2,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_35",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "totalMatched": 106.17,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 37.18,
-              "price": 1.19
-            },
-            {
-              "size": 178.68,
-              "price": 1.18
-            },
-            {
-              "size": 412.61,
-              "price": 1.11
-            },
-            {
-              "size": 104.43,
-              "price": 1.06
-            },
-            {
-              "size": 114.87,
-              "price": 1.05
-            },
-            {
-              "size": 110.05,
-              "price": 1.04
-            },
-            {
-              "size": 122.9,
-              "price": 1.03
-            },
-            {
-              "size": 253.03,
-              "price": 1.02
-            },
-            {
-              "size": 288.33,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 48.9,
-              "price": 1.21
-            },
-            {
-              "size": 179.2,
-              "price": 1.22
-            }
-          ]
-        },
-        "lastPriceTraded": 1.19,
-        "selectionId": 1222344,
-        "runnerName": "Under 3.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661758",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 2,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 7.81,
-              "price": 5.6
-            },
-            {
-              "size": 39.42,
-              "price": 5.5
-            },
-            {
-              "size": 10.31,
-              "price": 5.4
-            },
-            {
-              "size": 2.0,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 7.08,
-              "price": 6.4
-            },
-            {
-              "size": 31.36,
-              "price": 6.6
-            }
-          ]
-        },
-        "selectionId": 1222345,
-        "runnerName": "Over 3.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661758",
-        "status": "ACTIVE"
-      }
-    ],
-    "marketId": "1.160661758"
-  },
-  "1.160661755": {
-    "marketName": "Correct Score",
-    "totalMatched": 0.16,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e Predict the score of this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included. This market will not be partially settled during the fixture and will be fully settled at full time. \u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e\u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b.\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "CORRECT_SCORE",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 7.17,
-              "price": 7.6
-            },
-            {
-              "size": 31.01,
-              "price": 7.4
-            },
-            {
-              "size": 29.57,
-              "price": 7.0
-            },
-            {
-              "size": 18.14,
-              "price": 6.2
-            },
-            {
-              "size": 60.0,
-              "price": 6.0
-            },
-            {
-              "size": 50.41,
-              "price": 5.4
-            },
-            {
-              "size": 55.45,
-              "price": 5.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 60.57,
-              "price": 8.2
-            },
-            {
-              "size": 22.4,
-              "price": 8.8
-            }
-          ]
-        },
-        "selectionId": 1,
-        "runnerName": "0 - 0",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 2,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 35.73,
-              "price": 10.0
-            },
-            {
-              "size": 20.61,
-              "price": 9.4
-            },
-            {
-              "size": 38.46,
-              "price": 8.8
-            },
-            {
-              "size": 35.77,
-              "price": 7.2
-            },
-            {
-              "size": 41.07,
-              "price": 6.4
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 42.7,
-              "price": 11.5
-            },
-            {
-              "size": 16.13,
-              "price": 12.0
-            },
-            {
-              "size": 11.97,
-              "price": 13.0
-            }
-          ]
-        },
-        "selectionId": 4,
-        "runnerName": "0 - 1",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 3,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 8.33,
-              "price": 25.0
-            },
-            {
-              "size": 8.06,
-              "price": 23.0
-            },
-            {
-              "size": 15.0,
-              "price": 21.0
-            },
-            {
-              "size": 16.43,
-              "price": 14.5
-            },
-            {
-              "size": 19.28,
-              "price": 12.5
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 34.0,
-              "price": 34.0
-            }
-          ]
-        },
-        "selectionId": 9,
-        "runnerName": "0 - 2",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 4,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 2.02,
-              "price": 100.0
-            },
-            {
-              "size": 3.79,
-              "price": 80.0
-            },
-            {
-              "size": 5.0,
-              "price": 48.0
-            },
-            {
-              "size": 5.68,
-              "price": 40.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 5.21,
-              "price": 160.0
-            }
-          ]
-        },
-        "selectionId": 16,
-        "runnerName": "0 - 3",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 5,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 47.8,
-              "price": 6.0
-            },
-            {
-              "size": 36.74,
-              "price": 5.8
-            },
-            {
-              "size": 33.09,
-              "price": 5.5
-            },
-            {
-              "size": 78.94,
-              "price": 4.8
-            },
-            {
-              "size": 65.24,
-              "price": 4.4
-            },
-            {
-              "size": 73.94,
-              "price": 4.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 8.42,
-              "price": 6.6
-            },
-            {
-              "size": 72.37,
-              "price": 6.8
-            },
-            {
-              "size": 28.67,
-              "price": 7.2
-            },
-            {
-              "size": 24.9,
-              "price": 7.4
-            }
-          ]
-        },
-        "selectionId": 2,
-        "runnerName": "1 - 0",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 6,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 6.69,
-              "price": 7.0
-            },
-            {
-              "size": 34.23,
-              "price": 6.8
-            },
-            {
-              "size": 48.47,
-              "price": 6.6
-            },
-            {
-              "size": 60.0,
-              "price": 6.0
-            },
-            {
-              "size": 56.87,
-              "price": 4.9
-            },
-            {
-              "size": 63.37,
-              "price": 4.5
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 59.4,
-              "price": 7.6
-            },
-            {
-              "size": 24.19,
-              "price": 8.2
-            },
-            {
-              "size": 13.85,
-              "price": 8.4
-            }
-          ]
-        },
-        "selectionId": 3,
-        "runnerName": "1 - 1",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 7,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 7.62,
-              "price": 18.5
-            },
-            {
-              "size": 11.76,
-              "price": 18.0
-            },
-            {
-              "size": 10.75,
-              "price": 16.5
-            },
-            {
-              "size": 22.22,
-              "price": 14.5
-            },
-            {
-              "size": 21.12,
-              "price": 11.5
-            },
-            {
-              "size": 25.2,
-              "price": 9.8
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 31.57,
-              "price": 21.0
-            },
-            {
-              "size": 8.06,
-              "price": 23.0
-            },
-            {
-              "size": 4.21,
-              "price": 26.0
-            }
-          ]
-        },
-        "selectionId": 8,
-        "runnerName": "1 - 2",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 8,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 3.39,
-              "price": 60.0
-            },
-            {
-              "size": 3.58,
-              "price": 50.0
-            },
-            {
-              "size": 6.66,
-              "price": 46.0
-            },
-            {
-              "size": 5.99,
-              "price": 38.0
-            },
-            {
-              "size": 7.64,
-              "price": 30.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 6.59,
-              "price": 110.0
-            }
-          ]
-        },
-        "selectionId": 15,
-        "runnerName": "1 - 3",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 9,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 27.78,
-              "price": 10.0
-            },
-            {
-              "size": 22.4,
-              "price": 9.0
-            },
-            {
-              "size": 46.3,
-              "price": 8.6
-            },
-            {
-              "size": 38.24,
-              "price": 6.8
-            },
-            {
-              "size": 44.36,
-              "price": 6.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 16.24,
-              "price": 11.0
-            },
-            {
-              "size": 73.91,
-              "price": 11.5
-            }
-          ]
-        },
-        "selectionId": 5,
-        "runnerName": "2 - 0",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 10,
-        "totalMatched": 0.16,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 37.37,
-              "price": 10.5
-            },
-            {
-              "size": 19.71,
-              "price": 10.0
-            },
-            {
-              "size": 37.5,
-              "price": 9.0
-            },
-            {
-              "size": 35.77,
-              "price": 7.2
-            },
-            {
-              "size": 41.07,
-              "price": 6.4
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 4.54,
-              "price": 12.0
-            },
-            {
-              "size": 51.33,
-              "price": 12.5
-            },
-            {
-              "size": 14.34,
-              "price": 13.5
-            },
-            {
-              "size": 8.34,
-              "price": 15.0
-            }
-          ]
-        },
-        "lastPriceTraded": 10.5,
-        "selectionId": 6,
-        "runnerName": "2 - 1",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 11,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 10.33,
-              "price": 25.0
-            },
-            {
-              "size": 8.06,
-              "price": 22.0
-            },
-            {
-              "size": 15.0,
-              "price": 21.0
-            },
-            {
-              "size": 16.43,
-              "price": 14.5
-            },
-            {
-              "size": 19.28,
-              "price": 12.5
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 45.45,
-              "price": 32.0
-            },
-            {
-              "size": 2.0,
-              "price": 36.0
-            }
-          ]
-        },
-        "selectionId": 7,
-        "runnerName": "2 - 2",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 12,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 3.13,
-              "price": 65.0
-            },
-            {
-              "size": 5.08,
-              "price": 60.0
-            },
-            {
-              "size": 5.0,
-              "price": 55.0
-            },
-            {
-              "size": 5.15,
-              "price": 44.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 16.85,
-              "price": 150.0
-            }
-          ]
-        },
-        "selectionId": 14,
-        "runnerName": "2 - 3",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 13,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 35.27,
-              "price": 20.0
-            },
-            {
-              "size": 3.25,
-              "price": 19.5
-            },
-            {
-              "size": 16.43,
-              "price": 14.5
-            },
-            {
-              "size": 19.28,
-              "price": 12.5
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 20.3,
-              "price": 27.0
-            },
-            {
-              "size": 6.27,
-              "price": 29.0
-            }
-          ]
-        },
-        "selectionId": 10,
-        "runnerName": "3 - 0",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 14,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 17.58,
-              "price": 22.0
-            },
-            {
-              "size": 15.0,
-              "price": 21.0
-            },
-            {
-              "size": 14.31,
-              "price": 16.5
-            },
-            {
-              "size": 16.43,
-              "price": 14.5
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 48.3,
-              "price": 34.0
-            }
-          ]
-        },
-        "selectionId": 11,
-        "runnerName": "3 - 1",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 15,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 4.08,
-              "price": 50.0
-            },
-            {
-              "size": 3.58,
-              "price": 46.0
-            },
-            {
-              "size": 8.1,
-              "price": 38.0
-            },
-            {
-              "size": 6.72,
-              "price": 34.0
-            },
-            {
-              "size": 8.21,
-              "price": 28.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 5.4,
-              "price": 90.0
-            },
-            {
-              "size": 2.0,
-              "price": 95.0
-            }
-          ]
-        },
-        "selectionId": 12,
-        "runnerName": "3 - 2",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 16,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 1.34,
-              "price": 150.0
-            },
-            {
-              "size": 2.15,
-              "price": 140.0
-            },
-            {
-              "size": 2.0,
-              "price": 100.0
-            },
-            {
-              "size": 5.0,
-              "price": 95.0
-            },
-            {
-              "size": 5.0,
-              "price": 75.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 8.27,
-              "price": 340.0
-            }
-          ]
-        },
-        "selectionId": 13,
-        "runnerName": "3 - 3",
-        "handicap": 0.0,
-        "market_id": "1.160661755",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 17,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 23.8,
-              "price": 22.0
-            },
-            {
-              "size": 12.07,
-              "price": 21.0
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 53.1,
-              "price": 29.0
-            },
-            {
-              "size": 2.15,
-              "price": 32.0
-            }
-          ]
-        },
-        "selectionId": 9063254,
-        "runnerName": "Any Other Home Win",
-        "handicap": 0.0,
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 18,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 4.02,
-              "price": 100.0
-            },
-            {
-              "size": 3.57,
-              "price": 85.0
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 16.19,
-              "price": 160.0
-            },
-            {
-              "size": 2.0,
-              "price": 210.0
-            }
-          ]
-        },
-        "selectionId": 9063255,
-        "runnerName": "Any Other Away Win",
-        "handicap": 0.0,
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 19,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 0.2,
-              "price": 1000.0
-            },
-            {
-              "size": 0.65,
-              "price": 460.0
-            },
-            {
-              "size": 1.94,
-              "price": 12.5
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            }
-          ],
-          "availableToLay": []
-        },
-        "selectionId": 9063256,
-        "runnerName": "Any Other Draw",
-        "handicap": 0.0,
-        "status": "ACTIVE"
-      }
-    ],
-    "marketId": "1.160661755"
-  },
-  "1.160661756": {
+  "1.160627669": {
     "marketName": "Over/Under 1.5 Goals",
-    "totalMatched": 8.98,
+    "totalMatched": 15.46,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
+      "suspendTime": "2019-07-25T11:30:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -1484,422 +17,32 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
+      "marketTime": "2019-07-25T11:30:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
       {
         "sortPriority": 1,
-        "totalMatched": 8.96,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 21.29,
-              "price": 2.56
-            },
-            {
-              "size": 129.62,
-              "price": 2.54
-            },
-            {
-              "size": 119.16,
-              "price": 2.5
-            },
-            {
-              "size": 39.69,
-              "price": 2.46
-            },
-            {
-              "size": 2.32,
-              "price": 2.4
-            },
-            {
-              "size": 2.0,
-              "price": 1.03
-            },
-            {
-              "size": 117.46,
-              "price": 1.02
-            },
-            {
-              "size": 124.46,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 19.89,
-              "price": 2.74
-            },
-            {
-              "size": 140.52,
-              "price": 2.76
-            },
-            {
-              "size": 99.45,
-              "price": 2.8
-            }
-          ]
-        },
-        "lastPriceTraded": 2.74,
         "selectionId": 1221385,
         "runnerName": "Under 1.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661756",
-        "status": "ACTIVE"
+        "handicap": 0.0
       },
       {
         "sortPriority": 2,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 34.49,
-              "price": 1.58
-            },
-            {
-              "size": 226.57,
-              "price": 1.57
-            },
-            {
-              "size": 179.2,
-              "price": 1.55
-            },
-            {
-              "size": 109.35,
-              "price": 1.53
-            },
-            {
-              "size": 8.47,
-              "price": 1.48
-            },
-            {
-              "size": 2.0,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 33.22,
-              "price": 1.64
-            },
-            {
-              "size": 202.4,
-              "price": 1.65
-            },
-            {
-              "size": 179.2,
-              "price": 1.67
-            },
-            {
-              "size": 2.13,
-              "price": 1.87
-            },
-            {
-              "size": 2.0,
-              "price": 3.4
-            }
-          ]
-        },
         "selectionId": 1221386,
         "runnerName": "Over 1.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661756",
-        "status": "ACTIVE"
+        "handicap": 0.0
       }
     ],
-    "marketId": "1.160661756"
+    "marketId": "1.160627669"
   },
-  "1.160661806": {
-    "marketName": "Over/Under 7.5 Goals",
-    "totalMatched": 0.0,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_75",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [],
-          "availableToLay": [
-            {
-              "size": 1.96,
-              "price": 1.02
-            }
-          ]
-        },
-        "selectionId": 1485572,
-        "runnerName": "Under 7.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661806",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 2,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 1.96,
-              "price": 36.0
-            }
-          ],
-          "availableToLay": []
-        },
-        "selectionId": 1485573,
-        "runnerName": "Over 7.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661806",
-        "status": "ACTIVE"
-      }
-    ],
-    "marketId": "1.160661806"
-  },
-  "1.160661759": {
-    "marketName": "Over/Under 4.5 Goals",
-    "totalMatched": 0.0,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_45",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 44.18,
-              "price": 1.06
-            },
-            {
-              "size": 114.87,
-              "price": 1.05
-            },
-            {
-              "size": 110.05,
-              "price": 1.04
-            },
-            {
-              "size": 122.9,
-              "price": 1.03
-            },
-            {
-              "size": 253.03,
-              "price": 1.02
-            },
-            {
-              "size": 278.33,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 233.98,
-              "price": 1.08
-            }
-          ]
-        },
-        "selectionId": 1222347,
-        "runnerName": "Under 4.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661759",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 2,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 16.38,
-              "price": 13.5
-            },
-            {
-              "size": 10.0,
-              "price": 13.0
-            },
-            {
-              "size": 2.0,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 2.02,
-              "price": 18.0
-            },
-            {
-              "size": 9.86,
-              "price": 18.5
-            }
-          ]
-        },
-        "selectionId": 1222346,
-        "runnerName": "Over 4.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661759",
-        "status": "ACTIVE"
-      }
-    ],
-    "marketId": "1.160661759"
-  },
-  "1.160661804": {
-    "marketName": "Over/Under 0.5 Goals",
-    "totalMatched": 0.0,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_05",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 6.5,
-              "price": 7.2
-            },
-            {
-              "size": 29.57,
-              "price": 7.0
-            },
-            {
-              "size": 11.2,
-              "price": 5.9
-            },
-            {
-              "size": 112.46,
-              "price": 1.02
-            },
-            {
-              "size": 112.46,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 6.46,
-              "price": 8.6
-            },
-            {
-              "size": 22.4,
-              "price": 8.8
-            },
-            {
-              "size": 10.65,
-              "price": 15.0
-            }
-          ]
-        },
-        "selectionId": 5851482,
-        "runnerName": "Under 0.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661804",
-        "status": "ACTIVE"
-      },
-      {
-        "sortPriority": 2,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 228.39,
-              "price": 1.13
-            },
-            {
-              "size": 784.19,
-              "price": 1.07
-            },
-            {
-              "size": 136.27,
-              "price": 1.06
-            },
-            {
-              "size": 2.0,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 51.0,
-              "price": 1.16
-            },
-            {
-              "size": 179.2,
-              "price": 1.17
-            }
-          ]
-        },
-        "selectionId": 5851483,
-        "runnerName": "Over 0.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661804",
-        "status": "ACTIVE"
-      }
-    ],
-    "marketId": "1.160661804"
-  },
-  "1.160661809": {
+  "1.160627726": {
     "marketName": "Over/Under 8.5 Goals",
     "totalMatched": 0.0,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
+      "suspendTime": "2019-07-25T11:30:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -1911,58 +54,288 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
+      "marketTime": "2019-07-25T11:30:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
       {
         "sortPriority": 1,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [],
-          "availableToLay": [
-            {
-              "size": 1.92,
-              "price": 1.02
-            }
-          ]
-        },
         "selectionId": 2407528,
         "runnerName": "Under 8.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661809",
-        "status": "ACTIVE"
+        "handicap": 0.0
       },
       {
         "sortPriority": 2,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 1.92,
-              "price": 36.0
-            }
-          ],
-          "availableToLay": []
-        },
         "selectionId": 2407529,
         "runnerName": "Over 8.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661809",
-        "status": "ACTIVE"
+        "handicap": 0.0
       }
     ],
-    "marketId": "1.160661809"
+    "marketId": "1.160627726"
   },
-  "1.160661760": {
-    "marketName": "Over/Under 5.5 Goals",
+  "1.160627716": {
+    "marketName": "Over/Under 0.5 Goals",
+    "totalMatched": 71.32,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_05",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-25T11:30:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 5851482,
+        "runnerName": "Under 0.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 5851483,
+        "runnerName": "Over 0.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160627716"
+  },
+  "1.160627721": {
+    "marketName": "Over/Under 7.5 Goals",
     "totalMatched": 0.0,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
+      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_75",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-25T11:30:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 1485572,
+        "runnerName": "Under 7.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 1485573,
+        "runnerName": "Over 7.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160627721"
+  },
+  "1.160627667": {
+    "marketName": "Match Odds",
+    "totalMatched": 5375.19,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "rules": "\u003cbr\u003e\u003ca href\u003d\"http://www.stats.betradar.com/statistics/betfaircom/?language\u003den\" target\u003d\"_blank\"\u003e\u003cimg src\u003d\"http://content-cache.betfair.com/images/en_GB/mr_fg.gif\" title\u003d\"Form Guide\" border\u003d\"0\"\u003e\u003c/a\u003e\u003ca href\u003d\"http://www.livescore.betradar.com/?alias\u003dbetfair\u0026language\u003den\" target\u003d\"_blank\"\u003e\u003cimg src\u003d\"http://content-cache.betfair.com/images/en_GB/mr_ls.gif\" title\u003d\"Live Scores\" border\u003d\"0\"\u003e\u003c/a\u003e\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003ePredict the result of this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "MATCH_ODDS",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-25T11:30:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 48224,
+        "runnerName": "Tottenham",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 48351,
+        "runnerName": "Man Utd",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 3,
+        "selectionId": 58805,
+        "runnerName": "The Draw",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160627667"
+  },
+  "1.160627668": {
+    "marketName": "Correct Score",
+    "totalMatched": 208.74,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e Predict the score of this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included. This market will not be partially settled during the fixture and will be fully settled at full time. \u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e\u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b.\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "CORRECT_SCORE",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-25T11:30:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 1,
+        "runnerName": "0 - 0",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 4,
+        "runnerName": "0 - 1",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 3,
+        "selectionId": 9,
+        "runnerName": "0 - 2",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 4,
+        "selectionId": 16,
+        "runnerName": "0 - 3",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 5,
+        "selectionId": 2,
+        "runnerName": "1 - 0",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 6,
+        "selectionId": 3,
+        "runnerName": "1 - 1",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 7,
+        "selectionId": 8,
+        "runnerName": "1 - 2",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 8,
+        "selectionId": 15,
+        "runnerName": "1 - 3",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 9,
+        "selectionId": 5,
+        "runnerName": "2 - 0",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 10,
+        "selectionId": 6,
+        "runnerName": "2 - 1",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 11,
+        "selectionId": 7,
+        "runnerName": "2 - 2",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 12,
+        "selectionId": 14,
+        "runnerName": "2 - 3",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 13,
+        "selectionId": 10,
+        "runnerName": "3 - 0",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 14,
+        "selectionId": 11,
+        "runnerName": "3 - 1",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 15,
+        "selectionId": 12,
+        "runnerName": "3 - 2",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 16,
+        "selectionId": 13,
+        "runnerName": "3 - 3",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 17,
+        "selectionId": 9063254,
+        "runnerName": "Any Other Home Win",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 18,
+        "selectionId": 9063255,
+        "runnerName": "Any Other Away Win",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 19,
+        "selectionId": 9063256,
+        "runnerName": "Any Other Draw",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160627668"
+  },
+  "1.160627730": {
+    "marketName": "Over/Under 5.5 Goals",
+    "totalMatched": 4.0,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-25T11:30:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -1974,63 +347,69 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
+      "marketTime": "2019-07-25T11:30:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
       {
         "sortPriority": 1,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 466.32,
-              "price": 1.01
-            }
-          ],
-          "availableToLay": [
-            {
-              "size": 179.2,
-              "price": 1.03
-            }
-          ]
-        },
         "selectionId": 1485567,
         "runnerName": "Under 5.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661760",
-        "status": "ACTIVE"
+        "handicap": 0.0
       },
       {
         "sortPriority": 2,
-        "totalMatched": 0.0,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [
-            {
-              "size": 4.48,
-              "price": 36.0
-            }
-          ],
-          "availableToLay": []
-        },
         "selectionId": 1485568,
         "runnerName": "Over 5.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661760",
-        "status": "ACTIVE"
+        "handicap": 0.0
       }
     ],
-    "marketId": "1.160661760"
+    "marketId": "1.160627730"
   },
-  "1.160661761": {
+  "1.160627728": {
+    "marketName": "Over/Under 4.5 Goals",
+    "totalMatched": 53.39,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_45",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-25T11:30:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 1222347,
+        "runnerName": "Under 4.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 1222346,
+        "runnerName": "Over 4.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160627728"
+  },
+  "1.160627729": {
     "marketName": "Over/Under 6.5 Goals",
     "totalMatched": 0.0,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-24T00:30:00.000Z",
+      "suspendTime": "2019-07-25T11:30:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -2042,37 +421,97 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-24T00:30:00.000Z",
+      "marketTime": "2019-07-25T11:30:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
       {
         "sortPriority": 1,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [],
-          "availableToLay": []
-        },
         "selectionId": 2542448,
         "runnerName": "Under 6.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661761",
-        "status": "ACTIVE"
+        "handicap": 0.0
       },
       {
         "sortPriority": 2,
-        "ex": {
-          "tradedVolume": [],
-          "availableToBack": [],
-          "availableToLay": []
-        },
         "selectionId": 2542449,
         "runnerName": "Over 6.5 Goals",
-        "handicap": 0.0,
-        "market_id": "1.160661761",
-        "status": "ACTIVE"
+        "handicap": 0.0
       }
     ],
-    "marketId": "1.160661761"
+    "marketId": "1.160627729"
+  },
+  "1.160627670": {
+    "marketName": "Over/Under 2.5 Goals",
+    "totalMatched": 120.45,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_25",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-25T11:30:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 47972,
+        "runnerName": "Under 2.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 47973,
+        "runnerName": "Over 2.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160627670"
+  },
+  "1.160627671": {
+    "marketName": "Over/Under 3.5 Goals",
+    "totalMatched": 2.96,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_35",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-25T11:30:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 1222344,
+        "runnerName": "Under 3.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 1222345,
+        "runnerName": "Over 3.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160627671"
   }
 }

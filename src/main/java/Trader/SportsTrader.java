@@ -54,7 +54,7 @@ public class SportsTrader {
 
     public SportsTrader(){
         log.setUseParentHandlers(false);
-        log.setLevel(Level.INFO);
+        log.setLevel(Level.FINE);
         log.addHandler(new MyLogHandler());
 
 
