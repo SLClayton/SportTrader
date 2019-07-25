@@ -3,13 +3,12 @@ package Bet;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import javax.naming.directory.InvalidAttributesException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import static tools.printer.pp;
-import static tools.printer.ps;
+import static tools.printer.*;
 
 public class ProfitReport implements Comparable<ProfitReport> {
     /*
@@ -29,13 +28,16 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
     public  BigDecimal profit_ratio;
 
-    public ProfitReport(ArrayList<BetOrder> BETORDERS) throws Exception {
+    public ProfitReport(ArrayList<BetOrder> BETORDERS) throws InstantiationException {
         bet_orders = BETORDERS;
         bet_orders.trimToSize();
 
         total_investment = BigDecimal.ZERO;
         for (BetOrder bo: bet_orders){
-            total_investment.add(bo.investment);
+            print("adding betorder to profitreport");
+            total_investment = total_investment.add(bo.investment);
+            print("inv: " + bo.investment.toString());
+            print("total inv: " + total_investment.toString());
 
             if (min_return == null || bo.real_return.compareTo(min_return) == -1){
                 min_return = bo.real_return;
@@ -52,8 +54,10 @@ public class ProfitReport implements Comparable<ProfitReport> {
         guaranteed_profit = min_return.subtract(total_investment);
         max_profit = max_return.subtract(total_investment);
 
+        print("total inv: " + total_investment.toString());
+
         if (total_investment.equals(BigDecimal.ZERO)){
-            throw new Exception("0 total investment");
+            throw new InstantiationException("0 total investment");
         }
         else{
             profit_ratio = guaranteed_profit.divide(total_investment, 20, RoundingMode.HALF_UP);
@@ -64,6 +68,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
     public String toString(boolean full){
         return ps(toJSON(full));
     }
+
 
     public JSONObject toJSON(boolean full){
         JSONObject m = new JSONObject();
@@ -76,17 +81,18 @@ public class ProfitReport implements Comparable<ProfitReport> {
         if (full){
             JSONArray orders = new JSONArray();
             for (BetOrder bo: bet_orders){
-                orders.add(bo.toString());
+                orders.add(bo.toJSON());
             }
-            m.put("bet_orders", orders.toString());
+            m.put("bet_orders", orders);
         }
 
         return m;
     }
 
-    public ProfitReport newProfitReport(BigDecimal target_return) throws Exception {
+
+    public ProfitReport newProfitReport(BigDecimal target_return) throws InvalidAttributesException, InstantiationException {
         if (target_return.compareTo(largest_min_return) != -1){
-            throw new Exception("Target return not possible within possible bet ranges.");
+            throw new InvalidAttributesException("Target return is smaller than largest min return");
         }
 
         ArrayList<BetOrder> new_bet_orders = new ArrayList<BetOrder>();
@@ -97,7 +103,8 @@ public class ProfitReport implements Comparable<ProfitReport> {
         return new ProfitReport(new_bet_orders);
     }
 
-    public static ArrayList<ProfitReport> getTautologyProfitReports(Bet[][] tautologies, MarketOddsReport marketOddsReport){
+
+    public static ArrayList<ProfitReport> getTautologyProfitReports(ArrayList<Tautology> tautologies, MarketOddsReport marketOddsReport){
         /*
         // Using a list of tautologies and the market odds report, generate a profit report
         // for each tautology which
@@ -105,32 +112,49 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
         // Calculate profitReport for each tautology using the best ROI for each bet
         ArrayList<ProfitReport> tautologyProfitReports = new ArrayList<ProfitReport>();
-        for (Bet[] tautology: tautologies){
+        for (Tautology tautology: tautologies){
+            print("Trying tautology size " + String.valueOf(tautology.size()) + " " + tautology.toString());
 
             // Ensure all bets exist before continuing
             boolean skip = false;
-            for (int i=9; i<tautology.length; i++){
-                if (!marketOddsReport.contains(tautology[i].id())){
+            for (Bet bet: tautology.bets){
+                if (!marketOddsReport.contains(bet.id()) || marketOddsReport.get(bet.id()).size() <= 0){
+                    print("No odds for this bet or odds not present");
                     skip = true;
                     break;
                 }
             }
             if (skip){
-                break;
+                continue;
+            }
+            print("ADDING tautology");
+
+
+            // Generate a list of ratio profitReport using the best offer for each bet
+            ArrayList<BetOrder> betOrders = new ArrayList<BetOrder>();
+            for (Bet bet: tautology.bets){
+                BetOffer best_offer = marketOddsReport.get(bet.id()).get(0);
+                betOrders.add(new BetOrder(best_offer, BigDecimal.ONE, false));
             }
 
-            try {
-                // Generate a list of ratio profitReport using the best offer for each bet
-                ArrayList<BetOrder> betOrders = new ArrayList<BetOrder>();
-                for (Bet bet: tautology){
-                    BetOffer best_offer = marketOddsReport.get(bet.id()).get(0);
-                    betOrders.add(new BetOrder(best_offer, BigDecimal.ONE, false));
-                }
+            print(betOrders.size());
 
-                ProfitReport pr = new ProfitReport(betOrders);
-                tautologyProfitReports.add(pr);
-            } catch (Exception e) {}
+            ProfitReport pr;
+            try {
+                pr = new ProfitReport(betOrders);
+            }
+            catch (InstantiationException e) {
+                print("Instantiation exception!!!!!!!!!!!!!!!!!!!!!!!!!");
+                continue;
+            }
+            print("ADDING tautology TO LIST");
+            tautologyProfitReports.add(pr);
+            print("PR size");
+            print(tautologyProfitReports.size());
         }
+
+        print("Done getting prs");
+        print(tautologyProfitReports.size());
         return tautologyProfitReports;
     }
 

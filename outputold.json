@@ -1,52 +1,15 @@
 {
-  "1.160627669": {
-    "marketName": "Over/Under 1.5 Goals",
-    "totalMatched": 15.46,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_15",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "selectionId": 1221385,
-        "runnerName": "Under 1.5 Goals",
-        "handicap": 0.0
-      },
-      {
-        "sortPriority": 2,
-        "selectionId": 1221386,
-        "runnerName": "Over 1.5 Goals",
-        "handicap": 0.0
-      }
-    ],
-    "marketId": "1.160627669"
-  },
-  "1.160627726": {
-    "marketName": "Over/Under 8.5 Goals",
+  "1.160723779": {
+    "marketName": "Over/Under 4.5 Goals",
     "totalMatched": 0.0,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "suspendTime": "2019-07-26T16:00:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_85",
+      "marketType": "OVER_UNDER_45",
       "rulesHasDate": true,
       "marketBaseRate": 5.0,
       "priceLadderDescription": {
@@ -54,106 +17,32 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
+      "marketTime": "2019-07-26T16:00:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
       {
         "sortPriority": 1,
-        "selectionId": 2407528,
-        "runnerName": "Under 8.5 Goals",
+        "selectionId": 1222347,
+        "runnerName": "Under 4.5 Goals",
         "handicap": 0.0
       },
       {
         "sortPriority": 2,
-        "selectionId": 2407529,
-        "runnerName": "Over 8.5 Goals",
+        "selectionId": 1222346,
+        "runnerName": "Over 4.5 Goals",
         "handicap": 0.0
       }
     ],
-    "marketId": "1.160627726"
+    "marketId": "1.160723779"
   },
-  "1.160627716": {
-    "marketName": "Over/Under 0.5 Goals",
-    "totalMatched": 71.32,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_05",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "selectionId": 5851482,
-        "runnerName": "Under 0.5 Goals",
-        "handicap": 0.0
-      },
-      {
-        "sortPriority": 2,
-        "selectionId": 5851483,
-        "runnerName": "Over 0.5 Goals",
-        "handicap": 0.0
-      }
-    ],
-    "marketId": "1.160627716"
-  },
-  "1.160627721": {
-    "marketName": "Over/Under 7.5 Goals",
-    "totalMatched": 0.0,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_75",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "selectionId": 1485572,
-        "runnerName": "Under 7.5 Goals",
-        "handicap": 0.0
-      },
-      {
-        "sortPriority": 2,
-        "selectionId": 1485573,
-        "runnerName": "Over 7.5 Goals",
-        "handicap": 0.0
-      }
-    ],
-    "marketId": "1.160627721"
-  },
-  "1.160627667": {
+  "1.160723768": {
     "marketName": "Match Odds",
-    "totalMatched": 5375.19,
+    "totalMatched": 0.02,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "suspendTime": "2019-07-26T16:00:00.000Z",
       "rules": "\u003cbr\u003e\u003ca href\u003d\"http://www.stats.betradar.com/statistics/betfaircom/?language\u003den\" target\u003d\"_blank\"\u003e\u003cimg src\u003d\"http://content-cache.betfair.com/images/en_GB/mr_fg.gif\" title\u003d\"Form Guide\" border\u003d\"0\"\u003e\u003c/a\u003e\u003ca href\u003d\"http://www.livescore.betradar.com/?alias\u003dbetfair\u0026language\u003den\" target\u003d\"_blank\"\u003e\u003cimg src\u003d\"http://content-cache.betfair.com/images/en_GB/mr_ls.gif\" title\u003d\"Live Scores\" border\u003d\"0\"\u003e\u003c/a\u003e\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003ePredict the result of this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -165,20 +54,20 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
+      "marketTime": "2019-07-26T16:00:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
       {
         "sortPriority": 1,
-        "selectionId": 48224,
-        "runnerName": "Tottenham",
+        "selectionId": 7362228,
+        "runnerName": "JK Welco Elekter",
         "handicap": 0.0
       },
       {
         "sortPriority": 2,
-        "selectionId": 48351,
-        "runnerName": "Man Utd",
+        "selectionId": 5412351,
+        "runnerName": "Flora Tallinn II",
         "handicap": 0.0
       },
       {
@@ -188,15 +77,52 @@
         "handicap": 0.0
       }
     ],
-    "marketId": "1.160627667"
+    "marketId": "1.160723768"
   },
-  "1.160627668": {
-    "marketName": "Correct Score",
-    "totalMatched": 208.74,
+  "1.160723778": {
+    "marketName": "Over/Under 2.5 Goals",
+    "totalMatched": 0.0,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "suspendTime": "2019-07-26T16:00:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_25",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-26T16:00:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 47972,
+        "runnerName": "Under 2.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 47973,
+        "runnerName": "Over 2.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160723778"
+  },
+  "1.160723777": {
+    "marketName": "Correct Score",
+    "totalMatched": 0.0,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-26T16:00:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e Predict the score of this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included. This market will not be partially settled during the fixture and will be fully settled at full time. \u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e\u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b.\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -208,7 +134,7 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
+      "marketTime": "2019-07-26T16:00:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
@@ -327,15 +253,89 @@
         "handicap": 0.0
       }
     ],
-    "marketId": "1.160627668"
+    "marketId": "1.160723777"
   },
-  "1.160627730": {
-    "marketName": "Over/Under 5.5 Goals",
-    "totalMatched": 4.0,
+  "1.160723766": {
+    "marketName": "Over/Under 8.5 Goals",
+    "totalMatched": 0.0,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "suspendTime": "2019-07-26T16:00:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_85",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-26T16:00:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 2407528,
+        "runnerName": "Under 8.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 2407529,
+        "runnerName": "Over 8.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160723766"
+  },
+  "1.160723820": {
+    "marketName": "Over/Under 7.5 Goals",
+    "totalMatched": 0.0,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-26T16:00:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_75",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-26T16:00:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 1485572,
+        "runnerName": "Under 7.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 1485573,
+        "runnerName": "Over 7.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160723820"
+  },
+  "1.160723776": {
+    "marketName": "Over/Under 5.5 Goals",
+    "totalMatched": 0.0,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-26T16:00:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -347,7 +347,7 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
+      "marketTime": "2019-07-26T16:00:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
@@ -364,52 +364,15 @@
         "handicap": 0.0
       }
     ],
-    "marketId": "1.160627730"
+    "marketId": "1.160723776"
   },
-  "1.160627728": {
-    "marketName": "Over/Under 4.5 Goals",
-    "totalMatched": 53.39,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_45",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "selectionId": 1222347,
-        "runnerName": "Under 4.5 Goals",
-        "handicap": 0.0
-      },
-      {
-        "sortPriority": 2,
-        "selectionId": 1222346,
-        "runnerName": "Over 4.5 Goals",
-        "handicap": 0.0
-      }
-    ],
-    "marketId": "1.160627728"
-  },
-  "1.160627729": {
+  "1.160723774": {
     "marketName": "Over/Under 6.5 Goals",
     "totalMatched": 0.0,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "suspendTime": "2019-07-26T16:00:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -421,7 +384,7 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
+      "marketTime": "2019-07-26T16:00:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
@@ -438,52 +401,15 @@
         "handicap": 0.0
       }
     ],
-    "marketId": "1.160627729"
+    "marketId": "1.160723774"
   },
-  "1.160627670": {
-    "marketName": "Over/Under 2.5 Goals",
-    "totalMatched": 120.45,
-    "description": {
-      "wallet": "UK wallet",
-      "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
-      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
-      "discountAllowed": true,
-      "persistenceEnabled": true,
-      "marketType": "OVER_UNDER_25",
-      "rulesHasDate": true,
-      "marketBaseRate": 5.0,
-      "priceLadderDescription": {
-        "type": "CLASSIC"
-      },
-      "regulator": "GIBRALTAR REGULATOR",
-      "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
-      "bettingType": "ODDS"
-    },
-    "runners": [
-      {
-        "sortPriority": 1,
-        "selectionId": 47972,
-        "runnerName": "Under 2.5 Goals",
-        "handicap": 0.0
-      },
-      {
-        "sortPriority": 2,
-        "selectionId": 47973,
-        "runnerName": "Over 2.5 Goals",
-        "handicap": 0.0
-      }
-    ],
-    "marketId": "1.160627670"
-  },
-  "1.160627671": {
+  "1.160723782": {
     "marketName": "Over/Under 3.5 Goals",
-    "totalMatched": 2.96,
+    "totalMatched": 0.0,
     "description": {
       "wallet": "UK wallet",
       "turnInPlayEnabled": true,
-      "suspendTime": "2019-07-25T11:30:00.000Z",
+      "suspendTime": "2019-07-26T16:00:00.000Z",
       "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
       "discountAllowed": true,
       "persistenceEnabled": true,
@@ -495,7 +421,7 @@
       },
       "regulator": "GIBRALTAR REGULATOR",
       "bspMarket": false,
-      "marketTime": "2019-07-25T11:30:00.000Z",
+      "marketTime": "2019-07-26T16:00:00.000Z",
       "bettingType": "ODDS"
     },
     "runners": [
@@ -512,6 +438,80 @@
         "handicap": 0.0
       }
     ],
-    "marketId": "1.160627671"
+    "marketId": "1.160723782"
+  },
+  "1.160723771": {
+    "marketName": "Over/Under 0.5 Goals",
+    "totalMatched": 0.0,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-26T16:00:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_05",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-26T16:00:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 5851482,
+        "runnerName": "Under 0.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 5851483,
+        "runnerName": "Over 0.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160723771"
+  },
+  "1.160723781": {
+    "marketName": "Over/Under 1.5 Goals",
+    "totalMatched": 0.0,
+    "description": {
+      "wallet": "UK wallet",
+      "turnInPlayEnabled": true,
+      "suspendTime": "2019-07-26T16:00:00.000Z",
+      "rules": "\u003cbr\u003e\u003cbr\u003e\u003cb\u003eMarket Information\u003c/b\u003e\u003cbr\u003e\u003cbr\u003eFor further information please see \u003ca href\u003dhttp://content.betfair.com/aboutus/content.asp?sWhichKey\u003dRules%20and%20Regulations#undefined.do style\u003dcolor:0163ad; text-decoration: underline; target\u003d_blank\u003eRules \u0026 Regs\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e How many goals will be scored in this match. \u003cb\u003e\u003cfont color\u003dred\u003e All bets apply to Full Time according to the match officials, plus any stoppage time.  Extra-time/penalty shoot-outs are not included.\u003c/b\u003e\u003c/font\u003e\u003cbr\u003e\u003cbr\u003e \u003cb\u003e\u003cfont color\u003dblue\u003eIf this market is re-opened for In-Play betting, \u003c/b\u003e\u003c/font\u003e unmatched bets will be cancelled at kick off and the market turned in play. The market will be suspended if it appears that a goal has been scored, a penalty will be given, or a red card will be shown. With the exception of bets for which the \"keep\" option has been selected, unmatched bets will be cancelled if it appears that a goal has been scored or a red card has been shown (notwithstanding that such goal or red card may ultimately not be awarded). Please note that should our data feeds fail we may be unable to manage this game in-play. \u003cbr\u003e\u003cbr\u003eCustomers should be aware that:\u003cb\u003e\u003cbr\u003e\u003cbr\u003e\u003cli\u003eTransmissions described as “live” by some broadcasters may actually be delayed\u003c/li\u003e\u003cbr\u003e\u003cli\u003eThe extent of any such delay may vary, depending on the set-up through which they are receiving pictures or data.\u003c/b\u003e\u003cbr\u003e\u003cbr\u003e If this market is scheduled to go in-play, but due to unforeseen circumstances we are unable to offer the market in-play, then this market will be re-opened for the half-time interval and suspended again an hour after the scheduled kick-off time.  Whilst it is our intention to re-open this market for the half-time interval, in certain circumstances this may not always be possible.\u003cbr\u003e",
+      "discountAllowed": true,
+      "persistenceEnabled": true,
+      "marketType": "OVER_UNDER_15",
+      "rulesHasDate": true,
+      "marketBaseRate": 5.0,
+      "priceLadderDescription": {
+        "type": "CLASSIC"
+      },
+      "regulator": "GIBRALTAR REGULATOR",
+      "bspMarket": false,
+      "marketTime": "2019-07-26T16:00:00.000Z",
+      "bettingType": "ODDS"
+    },
+    "runners": [
+      {
+        "sortPriority": 1,
+        "selectionId": 1221385,
+        "runnerName": "Under 1.5 Goals",
+        "handicap": 0.0
+      },
+      {
+        "sortPriority": 2,
+        "selectionId": 1221386,
+        "runnerName": "Over 1.5 Goals",
+        "handicap": 0.0
+      }
+    ],
+    "marketId": "1.160723781"
   }
 }

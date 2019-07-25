@@ -31,14 +31,7 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
     public String toString(){
-        HashMap<String, String> m = new HashMap<String, String>();
-        m.put("match", match.name);
-        m.put("bet", bet.id());
-        m.put("site", site.name);
-        m.put("odds", odds.toString());
-        m.put("volume", volume.toString());
-        m.put("metadata", metadata.toString());
-        return m.toString();
+        return toJSON().toString();
     }
 
     public JSONObject toJSON(){
@@ -48,6 +41,7 @@ public class BetOffer implements Comparable<BetOffer> {
         m.put("site", site.name);
         m.put("odds", odds.toString());
         m.put("volume", volume.toString());
+        m.put("roi_ratio", roi_ratio.toString());
         m.put("metadata", metadata.toString());
         return m;
     }

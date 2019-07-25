@@ -5,15 +5,12 @@ import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
-import Sport.Match;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import static tools.printer.*;
@@ -30,7 +27,7 @@ public class EventTrader implements Runnable {
     public BlockingQueue<String> siteMarketOddsToGetQueue;
 
     public FootballBetGenerator footballBetGenerator;
-    public Bet[][] tautologies;
+    public ArrayList<Tautology> tautologies;
 
     public EventTrader(FootballMatch match, HashMap<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
         this.match = match;
@@ -156,17 +153,19 @@ public class EventTrader implements Runnable {
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
-        p(fullOddsReport.toJSON());
-        System.exit(0);
-
 
         // Generate profit report for each tautology
         ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);
 
         for (ProfitReport pr: tautologyProfitReports){
-            pp(pr.toJSON(true));
-            print("pr");
+            continue;
         }
+
+
+        pp(tautologyProfitReports.get(0).toJSON(true));
+        System.exit(0);
+
+        //TODO just got the above to work, continue
 
 
 

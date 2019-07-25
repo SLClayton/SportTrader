@@ -1,10 +1,13 @@
 package Bet;
 
 import SiteConnectors.BettingSite;
+import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+
+import static tools.printer.ps;
 
 public class BetOrder {
 
@@ -28,13 +31,17 @@ public class BetOrder {
     }
 
     public String toString(){
-        HashMap<String, String> m = new HashMap<String, String>();
-        m.put("bet_offer", bet_offer.toString());
+        return toJSON().toString();
+    }
+
+    public JSONObject toJSON(){
+        JSONObject m = new JSONObject();
+        m.put("bet_offer", bet_offer.toJSON());
         m.put("target_return", target_return.toString());
         m.put("investment", investment.toString());
         m.put("real_return", real_return.toString());
         m.put("real", Boolean.toString(real));
-        return m.toString();
+        return m;
     }
 
     public BettingSite site(){

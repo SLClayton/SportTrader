@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import Bet.Bet;
-import Bet.Bet.*;
+import Bet.Tautology;
 import Trader.SportsTrader;
 
 import static tools.printer.p;
@@ -180,7 +180,7 @@ public class FootballBetGenerator {
     // ------------------------------------------------------------------------
 
 
-    public Bet[][] getAllTautologies(){
+    public ArrayList<Tautology> getAllTautologies(){
         ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
 
         tauts.addAll(tautsBackWithLay());
@@ -228,12 +228,14 @@ public class FootballBetGenerator {
         log.info(String.format("%d duplicate tautologies found.", duplicates));
 
         Bet[][] array = new Bet[tauts.size()][];
+        ArrayList<Tautology> tautologies = new ArrayList<Tautology>();
+
         for (int i=0; i<tauts.size(); i++){
-            array[i] = tauts.get(i);
+            tautologies.add(new Tautology(new ArrayList<Bet>(Arrays.asList(tauts.get(i)))));
         }
 
         log.info(String.format("Returning %d generated tautologies.", array.length));
-        return array;
+        return tautologies;
     }
 
 

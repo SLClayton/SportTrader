@@ -17,6 +17,10 @@ public class MarketOddsReport {
         return betOffers.get(key);
     }
 
+    public int size(){
+        return betOffers.size();
+    }
+
     public boolean contains(String bet_id){
         return betOffers.containsKey(bet_id);
     }
