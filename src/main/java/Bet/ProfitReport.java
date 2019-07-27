@@ -34,10 +34,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
         total_investment = BigDecimal.ZERO;
         for (BetOrder bo: bet_orders){
-            print("adding betorder to profitreport");
             total_investment = total_investment.add(bo.investment);
-            print("inv: " + bo.investment.toString());
-            print("total inv: " + total_investment.toString());
 
             if (min_return == null || bo.real_return.compareTo(min_return) == -1){
                 min_return = bo.real_return;
@@ -53,8 +50,6 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
         guaranteed_profit = min_return.subtract(total_investment);
         max_profit = max_return.subtract(total_investment);
-
-        print("total inv: " + total_investment.toString());
 
         if (total_investment.equals(BigDecimal.ZERO)){
             throw new InstantiationException("0 total investment");
@@ -113,13 +108,11 @@ public class ProfitReport implements Comparable<ProfitReport> {
         // Calculate profitReport for each tautology using the best ROI for each bet
         ArrayList<ProfitReport> tautologyProfitReports = new ArrayList<ProfitReport>();
         for (Tautology tautology: tautologies){
-            print("Trying tautology size " + String.valueOf(tautology.size()) + " " + tautology.toString());
 
             // Ensure all bets exist before continuing
             boolean skip = false;
             for (Bet bet: tautology.bets){
                 if (!marketOddsReport.contains(bet.id()) || marketOddsReport.get(bet.id()).size() <= 0){
-                    print("No odds for this bet or odds not present");
                     skip = true;
                     break;
                 }
@@ -127,8 +120,6 @@ public class ProfitReport implements Comparable<ProfitReport> {
             if (skip){
                 continue;
             }
-            print("ADDING tautology");
-
 
             // Generate a list of ratio profitReport using the best offer for each bet
             ArrayList<BetOrder> betOrders = new ArrayList<BetOrder>();
@@ -137,25 +128,25 @@ public class ProfitReport implements Comparable<ProfitReport> {
                 betOrders.add(new BetOrder(best_offer, BigDecimal.ONE, false));
             }
 
-            print(betOrders.size());
-
             ProfitReport pr;
             try {
                 pr = new ProfitReport(betOrders);
             }
             catch (InstantiationException e) {
-                print("Instantiation exception!!!!!!!!!!!!!!!!!!!!!!!!!");
                 continue;
             }
-            print("ADDING tautology TO LIST");
             tautologyProfitReports.add(pr);
-            print("PR size");
-            print(tautologyProfitReports.size());
         }
 
-        print("Done getting prs");
-        print(tautologyProfitReports.size());
         return tautologyProfitReports;
+    }
+
+    public static JSONArray listToJSON(ArrayList<ProfitReport> profitReports, boolean full){
+        JSONArray prs = new JSONArray();
+        for (ProfitReport pr: profitReports){
+            prs.add(pr.toJSON(full));
+        }
+        return prs;
     }
 
     @Override

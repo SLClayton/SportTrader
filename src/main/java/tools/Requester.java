@@ -3,6 +3,7 @@ package tools;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
@@ -26,6 +27,7 @@ public class Requester {
 
     HttpClient httpClient;
     HttpPost httpPost;
+    HttpGet httpGet;
 
 
     public Requester(String hostname) throws KeyStoreException, IOException, CertificateException,
@@ -33,9 +35,15 @@ public class Requester {
 
 
         httpClient = HttpClients.createDefault();
+
         httpPost = new HttpPost(hostname);
         httpPost.setHeader("content-type", "application/json");
         httpPost.setHeader("Accept", "application/json");
+
+        httpGet = new HttpGet(hostname);
+        httpGet.setHeader("content-type", "application/json");
+        httpGet.setHeader("Accept", "application/json");
+
     }
 
     public void setHeader(String key, String value){
@@ -45,7 +53,10 @@ public class Requester {
 
 
     public Object post(String url, String json, Map<String, String> headers) throws IOException, URISyntaxException {
-        httpPost.setURI(new URI(url));
+
+        if (!url.equals(httpPost.getURI().toString())){
+            httpPost.setURI(new URI(url));
+        }
 
         // Set headers if given
         if (headers != null){
@@ -78,6 +89,31 @@ public class Requester {
 
     public Object post(String url, JSONArray json, Map<String, String> headers) throws IOException, URISyntaxException {
         return post(url, json.toString(), headers);
+    }
+
+
+    public Object get(String url, JSONObject params) throws IOException, URISyntaxException {
+
+        if (!url.equals(httpPost.getURI().toString())){
+            httpPost.setURI(new URI(url));
+        }
+
+        // Pass in JSON as string to body entity then send request
+        httpPost.setEntity(new StringEntity(json));
+        HttpResponse response = httpClient.execute(httpPost);
+
+        // Check response code is valid
+        int status_code = response.getStatusLine().getStatusCode();
+        if (status_code < 200 || status_code >= 300){
+            String msg = String.format("ERROR in HTTP request - %s - %s",
+                    response.toString(), response.getStatusLine().toString());
+            log.severe(msg);
+            throw new IOException(msg);
+        }
+
+        // Convert body to json and return
+        String response_body = EntityUtils.toString(response.getEntity());
+        return JSONValue.parse(response_body);
     }
 
 

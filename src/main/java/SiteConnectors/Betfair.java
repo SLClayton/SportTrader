@@ -111,11 +111,6 @@ public class Betfair extends BettingSite {
         rpcRequestHandlerThread.start();
     }
 
-    @Override
-    public void initialize() {
-
-    }
-
 
     public class RPCRequestHandler implements Runnable{
 

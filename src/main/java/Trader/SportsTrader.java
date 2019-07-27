@@ -54,7 +54,7 @@ public class SportsTrader {
 
     public SportsTrader(){
         log.setUseParentHandlers(false);
-        log.setLevel(Level.FINE);
+        log.setLevel(Level.INFO);
         log.addHandler(new MyLogHandler());
 
 
@@ -117,6 +117,12 @@ public class SportsTrader {
             }
 
             log.info(String.format("Successfully setup betting site connector for %s.", site_name));
+        }
+
+        // Exit if no sites have worked.
+        if (siteObjects.size() <= 0){
+            log.severe("None of the sites could be instantiated, exiting");
+            return;
         }
 
         // Collect initial football matches

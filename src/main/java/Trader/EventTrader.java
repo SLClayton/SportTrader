@@ -5,8 +5,12 @@ import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
+import org.json.simple.JSONArray;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -89,7 +93,12 @@ public class EventTrader implements Runnable {
         // Check for arbs constantly
         for (int i=0; true; i++){
             try {
+                Instant start = Instant.now();
                 checkArbs();
+                Instant end = Instant.now();
+                long ms = end.toEpochMilli() - start.toEpochMilli();
+
+                log.info(String.format("Arbs checked for %s in %dms", match, ms));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -129,7 +138,6 @@ public class EventTrader implements Runnable {
         }
     }
 
-
     private void checkArbs() throws InterruptedException {
 
         // Add each site name to the queue to have its odds updated
@@ -148,27 +156,30 @@ public class EventTrader implements Runnable {
         }
         log.fine(String.format("Found %d site odds for %s.", marketOddsReports.size(), match));
 
-
         // Combine all odds reports into one.
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
-
-        // Generate profit report for each tautology
+        // Generate profit report for each tautology and order by profit ratio
         ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);
+        Collections.sort(tautologyProfitReports, Collections.reverseOrder());
 
+        // Ceate list of profit reports with profits over min_prof_margain
+        BigDecimal min_profit_margain = new BigDecimal("0.00");
+        ArrayList<ProfitReport> in_profit = new ArrayList<ProfitReport>();
         for (ProfitReport pr: tautologyProfitReports){
-            continue;
+            if (pr.profit_ratio.compareTo(min_profit_margain) == 1){
+                in_profit.add(pr);
+            }
+            else{
+                // List is ordered so break on first to not fit criteria.
+                break;
+            }
         }
 
-
-        pp(tautologyProfitReports.get(0).toJSON(true));
-        System.exit(0);
-
-        //TODO just got the above to work, continue
-
-
-
-
+        // If any profit reports are found to be IN profit
+        if (in_profit.size() > 0){
+            log.info(String.format("PROFIT FOUND IN %s", match));
+        }
     }
 }

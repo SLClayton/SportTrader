@@ -24,16 +24,13 @@ public class BetfairEventTracker extends SiteEventTracker {
     public Betfair betfair;
 
     public String event_id;
-    public FootballMatch match;
 
     public HashMap<String, JSONObject> eventMarketData;
     public Instant lastMarketDataUpdate;
     public HashMap<String, String> market_name_id_map;
-    public Set<String> bet_blacklist;
 
     public BetfairEventTracker(Betfair BETFAIR){
         super();
-
         betfair = BETFAIR;
 
         match = null;

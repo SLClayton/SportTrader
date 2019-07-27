@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -36,9 +37,7 @@ public abstract class BettingSite {
         balance = new BigDecimal("0.00");
     }
 
-    public abstract void initialize();
-
-    public abstract String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnrecoverableKeyException;
+    public abstract String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException;
 
     public abstract BigDecimal commission();
 

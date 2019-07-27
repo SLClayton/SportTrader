@@ -1,5 +1,6 @@
 package tools;
 
+import java.time.Instant;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -13,12 +14,13 @@ public class MyLogHandler extends Handler {
     @Override
     public void publish(LogRecord record) {
         StringBuilder sb = new StringBuilder();
-        sb.append(record.getInstant().toString().replace("T", " "))
-                .append(" [")
+        String timestring = record.getInstant().toString()
+                .replace("T", " ")
+                .substring(0, 24);
+        sb.append(timestring)
+                .append(String.format(" [%s] ", record.getLevel().toString()))
                 //.append(record.getSourceClassName())
                 //.append(".")
-                .append(record.getLevel().toString())
-                .append("] ")
                 .append(record.getSourceMethodName())
                 .append(": ")
                 .append(record.getMessage());
