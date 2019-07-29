@@ -30,17 +30,16 @@ public class Requester {
     HttpGet httpGet;
 
 
-    public Requester(String hostname) throws KeyStoreException, IOException, CertificateException,
-            NoSuchAlgorithmException, UnrecoverableKeyException, KeyManagementException {
+    public Requester(String hostname) {
 
 
         httpClient = HttpClients.createDefault();
 
-        httpPost = new HttpPost(hostname);
+        httpPost = new HttpPost();
         httpPost.setHeader("content-type", "application/json");
         httpPost.setHeader("Accept", "application/json");
 
-        httpGet = new HttpGet(hostname);
+        httpGet = new HttpGet();
         httpGet.setHeader("content-type", "application/json");
         httpGet.setHeader("Accept", "application/json");
 
@@ -94,12 +93,15 @@ public class Requester {
 
     public Object get(String url, JSONObject params) throws IOException, URISyntaxException {
 
-        if (!url.equals(httpPost.getURI().toString())){
-            httpPost.setURI(new URI(url));
+        if (!url.equals(httpGet.getURI().toString())){
+            httpGet.setURI(new URI(url));
         }
 
         // Pass in JSON as string to body entity then send request
-        httpPost.setEntity(new StringEntity(json));
+        httpGet.setEntity(new StringEntity(json));
+        httpGet.setParameter
+
+                //TODO Sort this shit out
         HttpResponse response = httpClient.execute(httpPost);
 
         // Check response code is valid

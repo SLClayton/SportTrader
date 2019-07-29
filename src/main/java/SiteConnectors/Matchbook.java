@@ -34,13 +34,13 @@ public class Matchbook extends BettingSite {
             "correct_score"};
     public static String FOOTBALL_ID = "15";
 
-
+    public Requester requester;
     public BigDecimal commission = new BigDecimal("0.017");
     public BigDecimal min_bet = new BigDecimal("0.10");
 
 
     public Matchbook(){
-
+        requester = new Requester(baseurl);
     }
 
     @Override
@@ -90,7 +90,33 @@ public class Matchbook extends BettingSite {
         long start = before.toEpochMilli() / 1000;
         long end = after.toEpochMilli() / 1000;
 
-        // TODO getEvents for matchbook
+        ArrayList<FootballMatch> events = new ArrayList<FootballMatch>();
+
+        JSONObject params = new JSONObject();
+        params.put("after", start);
+        params.put("before", end);
+        params.put("offset", 0);
+        params.put("per-page", 1000);
+        params.put("states", "open");
+        params.put("exchange-type", "back-lay");
+        params.put("odds-type", "DECIMAL");
+        params.put("include-prices", "false");
+        params.put("include-event-participants", "false");
+
+        if (event_types != null){
+            StringBuilder s = new StringBuilder();
+            for (int i=0; i<event_types.length; i++){
+                s.append(event_types[i]);
+
+                if (i < event_types.length-1){
+                    s.append(",");
+                }
+            }
+
+            params.put("sport-ids", s.toString());
+        }
+
+
     }
 
 
