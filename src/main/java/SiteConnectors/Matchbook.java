@@ -8,13 +8,17 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.text.ParseException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import Sport.FootballMatch;
 import Sport.Match;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.Requester;
 import tools.printer;
@@ -39,8 +43,11 @@ public class Matchbook extends BettingSite {
     public BigDecimal min_bet = new BigDecimal("0.10");
 
 
-    public Matchbook(){
-        requester = new Requester(baseurl);
+    public Matchbook() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
+            IOException, KeyManagementException, KeyStoreException, URISyntaxException {
+
+        requester = new Requester();
+        requester.setHeader("session-token", getSessionToken());
     }
 
     @Override
@@ -55,7 +62,7 @@ public class Matchbook extends BettingSite {
         data.put("password", creds.get("p"));
 
         String url = "https://api.matchbook.com/bpapi/rest/security/session";
-        Requester requester = new Requester(url);
+        Requester requester = new Requester();
         requester.setHeader("Content-Type", "application/json");
 
         JSONObject r = (JSONObject) requester.post(url, data);
@@ -86,15 +93,13 @@ public class Matchbook extends BettingSite {
     }
 
 
-    public ArrayList<FootballMatch> getEvents(Instant before, Instant after, String[] event_types){
-        long start = before.toEpochMilli() / 1000;
-        long end = after.toEpochMilli() / 1000;
+    public ArrayList<FootballMatch> getEvents(Instant before, Instant after, String[] event_types) throws IOException,
+            URISyntaxException {
 
-        ArrayList<FootballMatch> events = new ArrayList<FootballMatch>();
-
+        // Setup paramters
         JSONObject params = new JSONObject();
-        params.put("after", start);
-        params.put("before", end);
+        params.put("after", before.toEpochMilli() / 1000);
+        params.put("before", after.toEpochMilli() / 1000);
         params.put("offset", 0);
         params.put("per-page", 1000);
         params.put("states", "open");
@@ -112,11 +117,26 @@ public class Matchbook extends BettingSite {
                     s.append(",");
                 }
             }
-
             params.put("sport-ids", s.toString());
         }
 
+        JSONObject r = (JSONObject) requester.get(baseurl + "/events", params);
 
+        // Build footballmatch objects from return json events
+        ArrayList<FootballMatch> events = new ArrayList<FootballMatch>();
+        for (Object json_event_obj: (JSONArray) r.get("events")){
+            JSONObject json_event = (JSONObject) json_event_obj;
+
+            try {
+                events.add(FootballMatch.parse((String) json_event.get("start"), (String) json_event.get("name")));
+            } catch (ParseException e) {
+                log.severe(e.toString());
+                e.printStackTrace();
+                continue;
+            }
+        }
+
+        return events;
     }
 
 
@@ -125,8 +145,8 @@ public class Matchbook extends BettingSite {
 
         try {
             Matchbook m = new Matchbook();
-            String token = m.getSessionToken();
-            print(token);
+
+            m.getEvents(Instant.now(), Instant.now().plus(48, ChronoUnit.HOURS), new String[]{FOOTBALL_ID});
 
 
 

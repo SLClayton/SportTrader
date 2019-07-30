@@ -97,7 +97,7 @@ public class Betfair extends BettingSite {
         log.info(String.format("Creating new instance of %s.", this.getClass().getName()));
 
         token = getSessionToken();
-        requester = new Requester(hostname);
+        requester = new Requester();
         requester.setHeader("X-Application", app_id);
         requester.setHeader("X-Authentication", token);
 

@@ -5,6 +5,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -30,7 +31,7 @@ public class Requester {
     HttpGet httpGet;
 
 
-    public Requester(String hostname) {
+    public Requester() {
 
 
         httpClient = HttpClients.createDefault();
@@ -53,9 +54,8 @@ public class Requester {
 
     public Object post(String url, String json, Map<String, String> headers) throws IOException, URISyntaxException {
 
-        if (!url.equals(httpPost.getURI().toString())){
-            httpPost.setURI(new URI(url));
-        }
+
+        httpPost.setURI(new URI(url));
 
         // Set headers if given
         if (headers != null){
@@ -90,19 +90,27 @@ public class Requester {
         return post(url, json.toString(), headers);
     }
 
+    public Object post(String url, JSONObject json) throws IOException, URISyntaxException {
+        return post(url, json, null);
+    }
 
-    public Object get(String url, JSONObject params) throws IOException, URISyntaxException {
+    public Object post(String url, JSONArray json) throws IOException, URISyntaxException {
+        return post(url, json, null);
+    }
 
-        if (!url.equals(httpGet.getURI().toString())){
-            httpGet.setURI(new URI(url));
+
+    public Object get(String url, Map<String, Object> params) throws IOException, URISyntaxException {
+
+        // Add in the paramters as the uri is made
+        URIBuilder uriBuilder = new URIBuilder(url);
+        if (params != null) {
+            for (Entry<String, Object> entry : params.entrySet()) {
+                uriBuilder.addParameter(entry.getKey(), entry.getValue().toString());
+            }
         }
+        httpGet.setURI(uriBuilder.build());
 
-        // Pass in JSON as string to body entity then send request
-        httpGet.setEntity(new StringEntity(json));
-        httpGet.setParameter
-
-                //TODO Sort this shit out
-        HttpResponse response = httpClient.execute(httpPost);
+        HttpResponse response = httpClient.execute(httpGet);
 
         // Check response code is valid
         int status_code = response.getStatusLine().getStatusCode();
@@ -116,14 +124,5 @@ public class Requester {
         // Convert body to json and return
         String response_body = EntityUtils.toString(response.getEntity());
         return JSONValue.parse(response_body);
-    }
-
-
-    public Object post(String url, JSONObject json) throws IOException, URISyntaxException {
-        return post(url, json, null);
-    }
-
-    public Object post(String url, JSONArray json) throws IOException, URISyntaxException {
-        return post(url, json, null);
     }
 }
