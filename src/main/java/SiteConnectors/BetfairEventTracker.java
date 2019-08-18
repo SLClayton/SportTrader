@@ -349,9 +349,6 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     public void updateMarketData() throws Exception {
 
-        JSONObject OLD = (JSONObject) new JSONObject(eventMarketData).clone();
-        p(OLD, "outputold.json");
-
         // Get new market data for markets in this event
         JSONArray market_odds = betfair.getMarketOdds(eventMarketData.keySet());
 

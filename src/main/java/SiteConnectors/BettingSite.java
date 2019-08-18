@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public abstract class BettingSite {
 
-    public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+    public static Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public String name;
     public String ssldir;

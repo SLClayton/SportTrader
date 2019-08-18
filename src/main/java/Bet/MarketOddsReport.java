@@ -13,6 +13,10 @@ public class MarketOddsReport {
         this.betOffers = betOffers;
     }
 
+    public MarketOddsReport(){
+        betOffers = new HashMap<String, ArrayList<BetOffer>>();
+    }
+
     public ArrayList<BetOffer> get(String key){
         return betOffers.get(key);
     }

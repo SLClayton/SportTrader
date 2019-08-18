@@ -10,17 +10,17 @@ import org.json.simple.JSONObject;
 
 public abstract class FootballBet extends Bet {
 
-    static String TEAM_A = "TEAM-A";
-    static String TEAM_B = "TEAM-B";
-    static String DRAW = "DRAW";
-    static String[] RESULTS = {TEAM_A, TEAM_B, DRAW};
+    public static String TEAM_A = "TEAM-A";
+    public static String TEAM_B = "TEAM-B";
+    public static String DRAW = "DRAW";
+    public  static String[] RESULTS = {TEAM_A, TEAM_B, DRAW};
 
-    static String OVER = "OVER";
-    static String UNDER = "UNDER";
-    static String[] OVER_UNDER = {OVER, UNDER};
+    public static String OVER = "OVER";
+    public static String UNDER = "UNDER";
+    public static String[] OVER_UNDER = {OVER, UNDER};
 
-    static String ANY = "ANY";
-    static String[] RESULTS_HT = {ANY};
+    public static String ANY = "ANY";
+    public static String[] RESULTS_HT = {ANY};
 
 
 

@@ -119,8 +119,6 @@ public class Betfair extends BettingSite {
         public long WAIT_MILLISECONDS = 5;
 
         public BlockingQueue<JsonHandler> requestQueue;
-
-        public RPCRequestSender[] workers = new RPCRequestSender[REQUEST_THREADS];
         public BlockingQueue<ArrayList<JsonHandler>> workerQueue;
 
         public RPCRequestHandler(BlockingQueue requestQueue){
@@ -135,7 +133,7 @@ public class Betfair extends BettingSite {
             long milliseconds_to_wait;
 
             // Start workers
-            workerQueue = new LinkedBlockingQueue<ArrayList<JsonHandler>>();
+            workerQueue = new LinkedBlockingQueue<>();
             RPCRequestSender rs = new RPCRequestSender(workerQueue);
             for (int i=0; i<REQUEST_THREADS; i++){
                 Thread t = new Thread(rs);
