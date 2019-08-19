@@ -47,9 +47,11 @@ public class EventTrader implements Runnable {
     public void run() {
         log.info(String.format("Running new Event Trader for %s.", match));
 
-        // Create and setup new SiteEventTracker for each site
+        // Create and setup new SiteEventTracker for each site, this manages the data for this particular
+        // match for each particular betting site.
         ArrayList<String> failed_sites = new ArrayList<String>();
         int total_sites = sites.size();
+        HashMap<String, BettingSite> accepted_sites = new HashMap<>();
         for (Map.Entry<String, BettingSite> entry: sites.entrySet()){
             String site_name = entry.getKey();
             BettingSite site = entry.getValue();
@@ -65,17 +67,19 @@ public class EventTrader implements Runnable {
             }
             if (!(setup_success)){
                 log.warning(String.format("Unsuccessful setup of %s for %s event tracker", match, site_name));
-                sites.remove(site_name);
                 continue;
             }
+            accepted_sites.put(site_name, site);
 
             // Add tracker to map
             siteEventTrackers.put(site_name, eventTracker);
             log.info(String.format("Successfully setup %s in %s event tracker.", match, site_name));
         }
 
+        sites = accepted_sites;
         log.info(String.format("%d/%d sites setup %s successfully. Failures %s",
                 siteEventTrackers.size(), total_sites, match, failed_sites.toString()));
+
 
         // End thread if all setups fail
         if (siteEventTrackers.size() == 0){
@@ -84,6 +88,7 @@ public class EventTrader implements Runnable {
         }
 
         // Start MarketOddsReportWorker threads, 1 for each site
+        // This is a thread for each site to go off and collect new odds report asynchronously
         for (int i=0; i<sites.size(); i++){
             MarketOddsReportWorker morw = new MarketOddsReportWorker(siteMarketOddsToGetQueue, siteEventTrackers);
             Thread thread = new Thread(morw);
@@ -105,6 +110,7 @@ public class EventTrader implements Runnable {
         }
     }
 
+
     public class MarketOddsReportWorker implements Runnable{
 
         BlockingQueue<String> job_queue;
@@ -120,14 +126,17 @@ public class EventTrader implements Runnable {
 
             while (true){
 
-                // Get site name from queue and update the corresponding event trader
                 try {
+                    // Get site name from queue to represent job to update its odds report
                     String site_name = job_queue.take();
+
+                    // Find the object from its name and update this objects odds report
                     SiteEventTracker siteEventTracker = siteEventTrackers.get(site_name);
                     siteEventTrackers.get(site_name).updateMarketOddsReport(footballBetGenerator.getAllBets());
-                    synchronized (siteEventTracker) {
-                        siteEventTracker.notifyAll();
-                    }
+
+                    // Add value to blocking queue to signal update complete.
+                    siteEventTracker.updateComplete.add(true);
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
@@ -138,20 +147,26 @@ public class EventTrader implements Runnable {
         }
     }
 
+
     private void checkArbs() throws InterruptedException {
 
         // Add each site name to the queue to have its odds updated
         for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()){
             String site_name = entry.getKey();
+            SiteEventTracker siteEventTracker = entry.getValue();
+
             siteMarketOddsToGetQueue.put(site_name);
         }
+
+        // Wait for results to be generated in each thread and collect them all
         ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
-        // Wait for results and add them to list
         for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()) {
             SiteEventTracker siteEventTracker = entry.getValue();
-            synchronized (siteEventTracker){
-                siteEventTracker.wait();
-            }
+
+            // Wait for report to finish updating by waiting for queue value to appear and taking.
+            siteEventTracker.updateComplete.take();
+
+            // Add report to report list and remove its lock
             marketOddsReports.add(siteEventTracker.marketOddsReport);
         }
         log.fine(String.format("Found %d site odds for %s.", marketOddsReports.size(), match));
@@ -159,6 +174,16 @@ public class EventTrader implements Runnable {
         // Combine all odds reports into one.
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
+
+
+        //TODO got here, everything seems to be working to this point but verify
+
+        print("END");
+
+        System.exit(0);
+
+
+
 
         // Generate profit report for each tautology and order by profit ratio
         ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);

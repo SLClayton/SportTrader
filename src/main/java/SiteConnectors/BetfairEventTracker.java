@@ -42,6 +42,11 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     @Override
+    public String name() {
+        return betfair.name;
+    }
+
+    @Override
     public boolean setupMatch(FootballMatch setup_match) throws Exception {
         log.info(String.format("Attempting to setup match for %s in betfair.", setup_match.toString()));
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
@@ -82,7 +87,7 @@ public class BetfairEventTracker extends SiteEventTracker {
                 possible_match = new FootballMatch(eventtime, eventname);
                 possible_match.id = id;
             } catch (Exception e) {
-                e.printStackTrace();
+                log.warning(String.format("Failed to setup Football match for '%s' at '%s'.", eventname, eventtime));
                 continue;
             }
 

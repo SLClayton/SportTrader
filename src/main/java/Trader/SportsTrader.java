@@ -3,10 +3,7 @@ package Trader;
 import Bet.*;
 import Bet.FootballBet.FootballBet;
 import Bet.FootballBet.FootballBetGenerator;
-import SiteConnectors.Betfair;
-import SiteConnectors.BetfairEventTracker;
-import SiteConnectors.BettingSite;
-import SiteConnectors.SiteEventTracker;
+import SiteConnectors.*;
 import Sport.FootballMatch;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.logging.Log;
@@ -68,10 +65,12 @@ public class SportsTrader {
 
         siteClasses = new HashMap<String, Class>();
         siteClasses.put("betfair", Betfair.class);
+        siteClasses.put("matchbook", Matchbook.class);
 
         siteObjects = new HashMap<String, BettingSite>();
         eventTraders = new ArrayList<EventTrader>();
     }
+
 
     private void setupConfig(String config_filename) throws Exception {
         Map config = getJSONResource(config_filename);
@@ -106,13 +105,25 @@ public class SportsTrader {
             String site_name = entry.getKey();
             Class site_class = entry.getValue();
 
+            // Check config status of this site
+            if (!ACTIVE_SITES.containsKey(site_name)){
+                log.severe("Site %s appears in class list but has no config entry. Skipping.");
+                continue;
+            }
+            boolean site_active = ACTIVE_SITES.get(site_name);
+            if (!site_active){
+                log.info("Site %s not activated in config. Skipping.");
+                continue;
+            }
+
+            // Initialize Site object
             try {
                 BettingSite site_obj = (BettingSite) site_class.getConstructor().newInstance();
                 siteObjects.put(site_name, site_obj);
 
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
-                log.severe(String.format("Error instanciating site object for %s", site_name));
+                log.severe(String.format("Error instantiating site object for %s", site_name));
                 continue;
             }
 
@@ -154,8 +165,9 @@ public class SportsTrader {
         log.info("All Event Traders spawned.");
     }
 
+
     private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException {
-        Betfair bf = (Betfair) siteObjects.get("betfair");
+        BettingSite site = siteObjects.get("matchbook");
         Instant from;
         Instant until;
         Instant now = Instant.now();
@@ -170,7 +182,7 @@ public class SportsTrader {
         }
         until = now.plus(HOURS_AHEAD, ChronoUnit.HOURS);
 
-        return bf.getFootballMatches(from, until);
+        return site.getFootballMatches(from, until);
      }
 
 

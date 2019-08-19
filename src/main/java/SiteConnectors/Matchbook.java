@@ -224,6 +224,10 @@ public class Matchbook extends BettingSite {
         return new MatchbookEventTracker(this);
     }
 
+    @Override
+    public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException {
+        return getEvents(from, until, new String[] {FOOTBALL_ID});
+    }
 
 
     public ArrayList<FootballMatch> getEvents(Instant before, Instant after, String[] event_types) throws IOException,

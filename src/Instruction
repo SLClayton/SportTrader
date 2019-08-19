@@ -1,0 +1,4 @@
+To Add Site connector into main code
+-------------------------------------
+- Put class in SportsTrader.siteClasses in instantiator
+-

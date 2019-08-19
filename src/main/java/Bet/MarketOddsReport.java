@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 
 import java.util.*;
 
+import static net.dongliu.commons.Prints.print;
+
 public class MarketOddsReport {
 
     public HashMap<String, ArrayList<BetOffer>> betOffers;
@@ -15,6 +17,10 @@ public class MarketOddsReport {
 
     public MarketOddsReport(){
         betOffers = new HashMap<String, ArrayList<BetOffer>>();
+    }
+
+    public void addBetOffers(String bet_id, ArrayList<BetOffer> new_betOffers){
+        betOffers.put(bet_id, new_betOffers);
     }
 
     public ArrayList<BetOffer> get(String key){

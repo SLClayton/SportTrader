@@ -1,6 +1,7 @@
 package SiteConnectors;
 
 import Bet.BetOffer;
+import Sport.FootballMatch;
 import Trader.SportsTrader;
 import tools.MyLogHandler;
 
@@ -14,6 +15,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public abstract class BettingSite {
@@ -44,6 +47,8 @@ public abstract class BettingSite {
     public abstract BigDecimal minBet();
 
     public abstract SiteEventTracker getEventTracker();
+
+    public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException;
 
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
         // Default ROI, commission on profits only

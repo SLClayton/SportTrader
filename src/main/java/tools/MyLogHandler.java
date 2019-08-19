@@ -29,7 +29,7 @@ public class MyLogHandler extends Handler {
             System.err.println("\n" + sb.toString() + "\n");
         }
         else if (record.getLevel().equals(Level.WARNING)){
-            System.err.println(sb.toString());
+            System.out.println(sb.toString());
         }
         else {
             System.out.println(sb.toString());
