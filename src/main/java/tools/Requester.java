@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import static net.dongliu.commons.Prints.print;
+
 public class Requester {
 
     private static final Logger log = Logger.getLogger(Requester.class.getName());
@@ -48,6 +50,7 @@ public class Requester {
 
     public void setHeader(String key, String value){
         httpPost.setHeader(key, value);
+        httpGet.setHeader(key, value);
     }
 
 
@@ -115,8 +118,9 @@ public class Requester {
         // Check response code is valid
         int status_code = response.getStatusLine().getStatusCode();
         if (status_code < 200 || status_code >= 300){
-            String msg = String.format("ERROR in HTTP request - %s - %s",
-                    response.toString(), response.getStatusLine().toString());
+            String response_body = EntityUtils.toString(response.getEntity());
+            String msg = String.format("ERROR %d in HTTP request - %s\n%s\n%s",
+                    status_code, response.toString(), response_body, response.getStatusLine().toString());
             log.severe(msg);
             throw new IOException(msg);
         }

@@ -51,7 +51,6 @@ import static tools.printer.*;
 
 public class Betfair extends BettingSite {
 
-    public static final String name = "betfair";
     public static final int FOOTBALL_ID = 1;
 
 
@@ -95,6 +94,7 @@ public class Betfair extends BettingSite {
 
         super();
         log.info(String.format("Creating new instance of %s.", this.getClass().getName()));
+        name = "betfair";
 
         token = getSessionToken();
         requester = new Requester();
@@ -187,7 +187,8 @@ public class Betfair extends BettingSite {
                 try {
                     jsonHandlers = jobQueue.take();
 
-                    // Build final rpc request
+                    // Build final rpc request, give each rpc request the index of the jsonhandler as its id
+                    // This can mean multiple rpc requests have the same id
                     for (int i=0; i<jsonHandlers.size(); i++){
                         for (Object single_rpc_obj: jsonHandlers.get(i).request){
                             JSONObject single_rpc = (JSONObject) single_rpc_obj;
@@ -205,13 +206,22 @@ public class Betfair extends BettingSite {
                     JSONArray[] responses = new JSONArray[jsonHandlers.size()];
 
                     // For each response, put in correct JSONArray for responding back to handler
+
                     for (Object response_obj: full_response){
                         JSONObject response = (JSONObject) response_obj;
                         int id = ((Long) response.get("id")).intValue();
 
-                        if (responses[id] == null){
-                            responses[id] = new JSONArray();
+
+                        try {
+                            if (responses[id] == null) {
+                                responses[id] = new JSONArray();
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e){
+                            p(full_response);
+                            System.exit(0);
                         }
+
+
                         responses[id].add(response);
                     }
 

@@ -146,7 +146,7 @@ public class SportsTrader {
             System.exit(1);
         }
         int total_matches_found = footballMatches.size();
-        if (MAX_MATCHES > 0){
+        if (MAX_MATCHES > 0 && MAX_MATCHES < total_matches_found){
             footballMatches = new ArrayList<FootballMatch>(footballMatches.subList(0, MAX_MATCHES));
         }
         footballMatches.trimToSize();

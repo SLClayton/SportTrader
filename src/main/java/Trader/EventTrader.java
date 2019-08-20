@@ -175,16 +175,6 @@ public class EventTrader implements Runnable {
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
-
-        //TODO got here, everything seems to be working to this point but verify
-
-        print("END");
-
-        System.exit(0);
-
-
-
-
         // Generate profit report for each tautology and order by profit ratio
         ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);
         Collections.sort(tautologyProfitReports, Collections.reverseOrder());

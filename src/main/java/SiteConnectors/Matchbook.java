@@ -31,7 +31,6 @@ import static tools.printer.*;
 
 public class Matchbook extends BettingSite {
 
-    public static String name = "matchbook";
     public static String baseurl = "https://api.matchbook.com/edge/rest";
     public static String[] marketTypes = new String[]{
             "one_x_two",
@@ -59,6 +58,8 @@ public class Matchbook extends BettingSite {
             log.addHandler(new MyLogHandler());
         }
 
+        name = "matchbook";
+
         // Set up a requester to handle HTTP requests
         requester = new Requester();
         requester.setHeader("session-token", getSessionToken());
@@ -72,6 +73,7 @@ public class Matchbook extends BettingSite {
         marketDataRequestHandlerThread.start();
     }
 
+    // TODO: Matchbook arb times are long at start, check settings in request handler
 
     public class marketDataRequestHandler implements Runnable{
 

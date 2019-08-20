@@ -12,6 +12,8 @@ import java.util.List;
 
 public class FootballMatch extends Match{
 
+    public static String[] removable_keywords = {"fc", "town", "city", "women", "w", "of", "and", "&", "stanley"};
+
     public String team_a;
     public String team_b;
 
@@ -120,18 +122,20 @@ public class FootballMatch extends Match{
             return false;
         }
 
-        // Removes FC from names and sees if they match.
-        if (s1.contains("fc") || s2.contains("fc")){
-            p1.remove("fc");
-            p2.remove("fc");
 
-            boolean success = same_team(String.join(" ", p1), String.join(" ", p2), false);
-            if (success){
-                log.fine(String.format("Match found for teams once FC removed '%s' & '%s'.", T1, T2));
-                return true;
+        // Removes keywords such as FC from name to see if match occurs.
+        for (String keyword: removable_keywords){
+            if (s1.contains(keyword) || s2.contains(keyword)){
+                p1.remove(keyword);
+                p2.remove(keyword);
+
+                boolean success = same_team(String.join(" ", p1), String.join(" ", p2), false);
+                if (success){
+                    log.fine(String.format("Match found for teams once '%s' removed. '%s' & '%s'.", keyword, T1, T2));
+                    return true;
+                }
             }
         }
-
 
 
         log.fine(String.format("No match found for %s and %s.", T1, T2));

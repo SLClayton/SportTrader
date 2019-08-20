@@ -9,6 +9,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static tools.printer.print;
+
 public class BetOffer implements Comparable<BetOffer> {
 
     public Match match;
@@ -38,11 +40,11 @@ public class BetOffer implements Comparable<BetOffer> {
         JSONObject m = new JSONObject();
         m.put("match", match.name);
         m.put("bet", bet.id());
-        m.put("site", site.name);
         m.put("odds", odds.toString());
         m.put("volume", volume.toString());
         m.put("roi_ratio", roi_ratio.toString());
         m.put("metadata", metadata.toString());
+        m.put("site", site.name);
         return m;
     }
 

@@ -101,7 +101,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         if (matching_events.size() != 1) {
             String fails = "";
             for (FootballMatch m: all_events){
-                fails = fails + "\n" + m.toString();
+                fails = fails + " " + m.toString();
             }
             log.warning(String.format("No matches found for %s in betfair. Checked %d: %s",
                     setup_match.toString(), all_events.size(), fails));
@@ -364,6 +364,11 @@ public class BetfairEventTracker extends SiteEventTracker {
             String market_id = (String) new_md.get("marketId");
 
             JSONArray new_runners = (JSONArray) new_md.get("runners");
+
+            if (market_id == null){
+                print("YA ITS NULL");
+            }
+
             JSONArray old_runners = (JSONArray) eventMarketData.get(market_id).get("runners");
 
             for (Object this_runner_obj: new_runners){
