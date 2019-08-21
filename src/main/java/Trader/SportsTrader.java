@@ -112,7 +112,7 @@ public class SportsTrader {
             }
             boolean site_active = ACTIVE_SITES.get(site_name);
             if (!site_active){
-                log.info("Site %s not activated in config. Skipping.");
+                log.info(String.format("Site %s not activated in config. Skipping.", site_name));
                 continue;
             }
 

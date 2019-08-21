@@ -5,6 +5,7 @@ import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
+import org.apache.commons.codec.binary.StringUtils;
 import org.json.simple.JSONArray;
 
 import java.math.BigDecimal;
@@ -96,14 +97,31 @@ public class EventTrader implements Runnable {
         }
         
         // Check for arbs constantly
+        ArrayList<Long> arb_times = new ArrayList<>();
+        int max_times = 100;
         for (int i=0; true; i++){
             try {
                 Instant start = Instant.now();
                 checkArbs();
                 Instant end = Instant.now();
                 long ms = end.toEpochMilli() - start.toEpochMilli();
+                arb_times.add(ms);
 
-                log.info(String.format("Arbs checked for %s in %dms", match, ms));
+                if (arb_times.size() >= max_times){
+                    long avg_ms = 0;
+                    for (long arb_time: arb_times){
+                        avg_ms += arb_time;
+                    }
+                    avg_ms = avg_ms / arb_times.size();
+                    String ms_string = String.valueOf(avg_ms);
+                    String padding = "";
+                    while (padding.length() < (4 - ms_string.length())){ padding += " "; }
+
+                    log.info(String.format("Arb Checks. %d avg: %d ms%s for %s", max_times, avg_ms, padding, match ));
+                    arb_times.clear();
+                }
+
+                //log.info(String.format("Arbs checked for %s in %dms", match, ms));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

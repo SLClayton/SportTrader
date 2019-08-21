@@ -5,7 +5,7 @@
     "PLACE_BETS": false,
 
     "ACTIVE_SITES": {
-    	"betfair": false,
+    	"betfair": true,
     	"matchbook": true
     }
 

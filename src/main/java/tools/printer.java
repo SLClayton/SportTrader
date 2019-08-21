@@ -121,6 +121,20 @@ public abstract class printer {
         print(FileSystems.getDefault().getPath(".").toAbsolutePath().toString());
     }
 
+    public static boolean nully(Object obj, boolean printNotNull){
+        if (obj == null){
+            print("Object is NULL.");
+            return true;
+        }
+        if (printNotNull) {
+            print("Object is NOT NULL.");
+        }
+        return false;
+    }
+
+    public static boolean nully(Object obj){
+        return nully(obj, false);
+    }
 
 
 

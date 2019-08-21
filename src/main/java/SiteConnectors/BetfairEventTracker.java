@@ -364,12 +364,19 @@ public class BetfairEventTracker extends SiteEventTracker {
             String market_id = (String) new_md.get("marketId");
 
             JSONArray new_runners = (JSONArray) new_md.get("runners");
+            JSONArray old_runners = null;
+            try {
+                old_runners = (JSONArray) eventMarketData.get(market_id).get("runners");
+            } catch (NullPointerException e){
+                e.printStackTrace();
 
-            if (market_id == null){
-                print("YA ITS NULL");
+                for (Map.Entry<String, JSONObject> entry: eventMarketData.entrySet()){
+                    pp(entry.getValue());
+                }
+
+                print(market_id.toString());
+                System.exit(0);
             }
-
-            JSONArray old_runners = (JSONArray) eventMarketData.get(market_id).get("runners");
 
             for (Object this_runner_obj: new_runners){
                 JSONObject this_runner = (JSONObject) this_runner_obj;

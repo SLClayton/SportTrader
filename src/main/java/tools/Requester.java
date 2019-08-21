@@ -1,7 +1,9 @@
 package tools;
 
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -18,54 +20,55 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import static net.dongliu.commons.Prints.print;
+import static tools.printer.nully;
 
 public class Requester {
 
     private static final Logger log = Logger.getLogger(Requester.class.getName());
 
     HttpClient httpClient;
-    HttpPost httpPost;
-    HttpGet httpGet;
+    HashMap<String, String> headers;
 
 
     public Requester() {
-
-
         httpClient = HttpClients.createDefault();
 
-        httpPost = new HttpPost();
-        httpPost.setHeader("content-type", "application/json");
-        httpPost.setHeader("Accept", "application/json");
-
-        httpGet = new HttpGet();
-        httpGet.setHeader("content-type", "application/json");
-        httpGet.setHeader("Accept", "application/json");
-
+        headers = new HashMap<>();
+        headers.put("content-type", "application/json");
+        headers.put("Accept", "application/json");
     }
 
     public void setHeader(String key, String value){
-        httpPost.setHeader(key, value);
-        httpGet.setHeader(key, value);
+        headers.put(key, value);
     }
 
 
 
     public Object post(String url, String json, Map<String, String> headers) throws IOException, URISyntaxException {
 
+        // Create new http POST object
+        HttpPost httpPost = new HttpPost(new URI(url));
 
-        httpPost.setURI(new URI(url));
 
-        // Set headers if given
+        // Set default headers from requester object
+        for (Entry<String, String> header: this.headers.entrySet()){
+            httpPost.setHeader(header.getKey(), header.getValue());
+        }
+
+        // Set extra headers if given
         if (headers != null){
             for (Entry<String, String> entry : headers.entrySet()) {
                 httpPost.setHeader(entry.getKey(), entry.getValue());
             }
         }
+
         // Pass in JSON as string to body entity then send request
         httpPost.setEntity(new StringEntity(json));
         HttpResponse response = httpClient.execute(httpPost);
@@ -111,7 +114,14 @@ public class Requester {
                 uriBuilder.addParameter(entry.getKey(), entry.getValue().toString());
             }
         }
-        httpGet.setURI(uriBuilder.build());
+
+        // Create http GET object
+        HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+        // Add in default headers form requester object
+        for (Entry<String, String> header: headers.entrySet()){
+            httpGet.setHeader(header.getKey(), header.getValue());
+        }
 
         HttpResponse response = httpClient.execute(httpGet);
 

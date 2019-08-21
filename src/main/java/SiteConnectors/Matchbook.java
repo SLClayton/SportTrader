@@ -149,7 +149,7 @@ public class Matchbook extends BettingSite {
                 try {
                     requestHandlers = jobQueue.take();
 
-                    // list of event ids to get data for
+                    // list event ids from handlers to get data from.
                     String[] event_ids = new String[requestHandlers.size()];
                     for (int i=0; i<requestHandlers.size(); i++){
                         event_ids[i] = requestHandlers.get(i).request;
@@ -321,7 +321,7 @@ public class Matchbook extends BettingSite {
         // Send that request handler to the queue for processing
         marketDataRequestHandlerQueue.put(rh);
 
-        // Wait for its response.
+        // Wait for its response. (getResponse waits)
         JSONObject response = rh.getResponse();
         return response;
     }
