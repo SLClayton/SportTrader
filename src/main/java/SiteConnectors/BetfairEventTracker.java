@@ -13,6 +13,12 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.text.Normalizer;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -46,9 +52,10 @@ public class BetfairEventTracker extends SiteEventTracker {
         return betfair.name;
     }
 
-    @Override
-    public boolean setupMatch(FootballMatch setup_match) throws Exception {
-        log.info(String.format("Attempting to setup match for %s in betfair.", setup_match.toString()));
+
+    public boolean setupMatchMatch(FootballMatch setup_match) throws Exception {
+
+        log.info(String.format("Attempting to setup match in betfair for %s.", setup_match.toString()));
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
         Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
 
@@ -67,10 +74,9 @@ public class BetfairEventTracker extends SiteEventTracker {
             events = betfair.getEvents(filter);
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
-            log.warning("Error getting events from betfair.");
+            log.warning(String.format("Error getting events from betfair while searching for %s.", setup_match));
             throw e;
         }
-
 
         // Check each event returned to find matching events
         ArrayList<FootballMatch> matching_events = new ArrayList<>();
@@ -81,10 +87,16 @@ public class BetfairEventTracker extends SiteEventTracker {
             Instant eventtime = Instant.parse(eventjson.get("openDate").toString());
             String eventname = eventjson.get("name").toString();
             String id = eventjson.get("id").toString();
+            String[] teams = eventname.trim().split(" v ");
+            if (teams.length != 2){
+                continue;
+            }
+            String team_a = teams[0];
+            String team_b = teams[1];
 
             FootballMatch possible_match;
             try {
-                possible_match = new FootballMatch(eventtime, eventname);
+                possible_match = new FootballMatch(eventtime, team_a, team_b);
                 possible_match.id = id;
             } catch (Exception e) {
                 log.warning(String.format("Failed to setup Football match for '%s' at '%s'.", eventname, eventtime));
@@ -112,6 +124,97 @@ public class BetfairEventTracker extends SiteEventTracker {
         log.info(String.format("Corresponding match found in Betfair for %s", setup_match));
         match = matching_events.get(0);
 
+        // Build params for market catalogue request
+        JSONObject params = new JSONObject();
+        JSONArray marketProjection = new JSONArray();
+        params.put("marketProjection", marketProjection);
+        marketProjection.add("MARKET_DESCRIPTION");
+        marketProjection.add("RUNNER_DESCRIPTION");
+        JSONObject filters = new JSONObject();
+        params.put("filter", filters);
+        JSONArray marketTypeCodes = new JSONArray();
+        marketTypeCodes.addAll(Arrays.asList(betfair.football_market_types));
+        filters.put("marketTypeCodes", marketTypeCodes);
+        JSONArray eventIds = new JSONArray();
+        eventIds.add(match.id);
+        filters.put("eventIds", eventIds);
+
+
+        // Get market catalogue for this event
+        JSONArray markets = null;
+        log.info(String.format("Attempting to collect initial market data for %s in Betfair.", match));
+        try {
+            markets = (JSONArray) betfair.getMarketCatalogue(params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+
+        // Initially fill in new market data
+        eventMarketData = new HashMap<>();
+        for (Object market_obj: markets){
+            JSONObject market = (JSONObject) market_obj;
+            String market_id = (String) market.get("marketId");
+            JSONObject desc = (JSONObject) market.get("description");
+            String market_type = desc.get("marketType").toString();
+
+            eventMarketData.put(market_id, market);
+            market_name_id_map.put(market_type, market_id);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean setupMatch(FootballMatch setup_match) throws Exception {
+
+        log.info(String.format("Attempting to setup match in Betfair Event Tracker for %s.", setup_match.toString()));
+        Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
+        Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
+
+        // Build filter for request to get events
+        JSONObject time = new JSONObject();
+        time.put("from", start.toString());
+        time.put("to", end.toString());
+        JSONArray event_types = new JSONArray();
+        event_types.add(1);
+        JSONObject filter = new JSONObject();
+        filter.put("marketStartTime", time);
+        filter.put("eventTypeIds", event_types);
+        filter.put("textQuery", Normalizer.normalize(setup_match.team_a + " " + setup_match.team_b, Normalizer.Form.NFD));
+
+        JSONArray events = null;
+        try {
+            events = betfair.getEvents(filter);
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+            log.warning(String.format("Error getting events from betfair while searching for %s.", setup_match));
+            throw e;
+        }
+
+        // Error if not only one found
+        if (events.size() != 1) {
+            String fails = "";
+            for (Object event_obj: events){
+                JSONObject event = (JSONObject) event_obj;
+                fails = fails + " " + event.get("name").toString();
+            }
+            if (events.size() == 0){
+                log.warning(String.format("Zero events returned in betfair when searching for %s.",
+                        setup_match));
+            }
+            else{
+                log.warning(String.format("More than 1 event returned in betfair when searching for %s.\n%s",
+                        setup_match, ps(events)));
+            }
+
+            return false;
+        }
+
+        // Match found
+        log.info(String.format("Corresponding match found in betfair for %s", setup_match));
+        match = setup_match;
 
         // Build params for market catalogue request
         JSONObject params = new JSONObject();
@@ -293,7 +396,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     private JSONObject extractRunnerRESULT(FootballBet BET) {
-        log.fine(String.format("Getting runner result from %s for %s.", match, BET.id()));
+        //log.fine(String.format("Getting runner result from %s for %s.", match, BET.id()));
 
         FootballResultBet bet = (FootballResultBet) BET;
         JSONObject runner = null;
@@ -319,7 +422,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             String team_in_runner = runner.get("runnerName").toString();
             if (!(FootballMatch.same_team(match.team_a, team_in_runner))){
                 log.severe(String.format("Betfair runner mismatch with team_a '%s' in RESULT_BET.\n%s",
-                        match.team_a, runner.toString()));
+                        match.team_a, ps(runner)));
                 return null;
             }
         }
@@ -328,7 +431,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             String team_in_runner = runner.get("runnerName").toString();
             if (!(FootballMatch.same_team(match.team_b, team_in_runner))){
                 log.severe(String.format("Betfair runner mismatch with team_b '%s' in RESULT_BET.\n%s",
-                        match.team_b, runner.toString()));
+                        match.team_b, ps(runner)));
                 return null;
             }
         }
@@ -364,18 +467,14 @@ public class BetfairEventTracker extends SiteEventTracker {
             String market_id = (String) new_md.get("marketId");
 
             JSONArray new_runners = (JSONArray) new_md.get("runners");
-            JSONArray old_runners = null;
-            try {
-                old_runners = (JSONArray) eventMarketData.get(market_id).get("runners");
-            } catch (NullPointerException e){
-                e.printStackTrace();
-
-                for (Map.Entry<String, JSONObject> entry: eventMarketData.entrySet()){
-                    pp(entry.getValue());
-                }
-
-                print(market_id.toString());
-                System.exit(0);
+            JSONObject old_market = eventMarketData.get(market_id);
+            if (old_market == null){
+                continue;
+            }
+            JSONArray old_runners = (JSONArray) old_market.get("runners");
+            if (old_market == null){
+                log.warning("No runners found in previous market for %s");
+                continue;
             }
 
             for (Object this_runner_obj: new_runners){
@@ -408,6 +507,23 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
         lastMarketDataUpdate = Instant.now();
         // Market is updated during the code so no need to set anything at the end.
+    }
+
+
+    public static void main(String[] args){
+        try {
+            Betfair bf = new Betfair();
+            BetfairEventTracker bet = (BetfairEventTracker) bf.getEventTracker();
+
+            FootballMatch fm = new FootballMatch(Instant.parse("2019-08-28T18:45:00Z"), "Lincoln v Everton");
+
+            bet.setupMatch(fm);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

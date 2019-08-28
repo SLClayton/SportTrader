@@ -68,6 +68,7 @@ public class EventTrader implements Runnable {
             }
             if (!(setup_success)){
                 log.warning(String.format("Unsuccessful setup of %s for %s event tracker", match, site_name));
+                failed_sites.add(site_name);
                 continue;
             }
             accepted_sites.put(site_name, site);
@@ -78,13 +79,18 @@ public class EventTrader implements Runnable {
         }
 
         sites = accepted_sites;
-        log.info(String.format("%d/%d sites setup %s successfully. Failures %s",
+        log.info(String.format("%d/%d sites setup %s successfully. Failures: %s",
                 siteEventTrackers.size(), total_sites, match, failed_sites.toString()));
 
 
         // End thread if all setups fail
         if (siteEventTrackers.size() == 0){
             log.info(String.format("All sites failed to setup %s. Finishing Event Trader", match));
+            return;
+        }
+
+        // Blocker for testing.
+        if (true){
             return;
         }
 

@@ -1,5 +1,6 @@
 package Sport;
 
+import SiteConnectors.Betfair;
 import Trader.SportsTrader;
 
 import java.time.Instant;
@@ -16,6 +17,7 @@ public abstract class Match {
     public String name;
     public String id;
     public Map<String, String> metadata;
+    public String betfairEventId;
 
     public Match(){
         metadata = new HashMap<String, String>();

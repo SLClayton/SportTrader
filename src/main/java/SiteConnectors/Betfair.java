@@ -3,6 +3,7 @@ package SiteConnectors;
 import Bet.Bet;
 import Sport.FootballMatch;
 import net.dongliu.requests.Requests;
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -13,6 +14,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.jsoup.Jsoup;
+import org.jsoup.internal.StringUtil;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import tools.MyLogHandler;
 import tools.Requester;
 import tools.printer;
@@ -127,6 +133,8 @@ public class Betfair extends BettingSite {
 
         @Override
         public void run() {
+            log.info("Running RPC Request Handler for betfair.");
+
             Instant wait_until = null;
             ArrayList<JsonHandler> jsonHandlers = new ArrayList<>();
             JsonHandler new_handler;
@@ -144,12 +152,12 @@ public class Betfair extends BettingSite {
 
                 try {
                     if (wait_until == null){
-                        new_handler = (JsonHandler) requestQueue.take();
+                        new_handler = requestQueue.take();
                         wait_until = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
                     }
                     else {
                         milliseconds_to_wait = wait_until.toEpochMilli() - Instant.now().toEpochMilli();
-                        new_handler = (JsonHandler) requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
+                        new_handler = requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
                     }
 
                     if (new_handler != null) {
@@ -181,9 +189,9 @@ public class Betfair extends BettingSite {
         @Override
         public void run() {
             ArrayList<JsonHandler> jsonHandlers;
-            JSONArray final_request = new JSONArray();
 
             while (true){
+                JSONArray final_request = new JSONArray();
                 try {
                     jsonHandlers = jobQueue.take();
 
@@ -199,6 +207,8 @@ public class Betfair extends BettingSite {
                         }
                     }
 
+                    pp(final_request);
+
                     // Send request
                     JSONArray full_response = (JSONArray) requester.post(betting_endpoint, final_request);
 
@@ -206,21 +216,13 @@ public class Betfair extends BettingSite {
                     JSONArray[] responses = new JSONArray[jsonHandlers.size()];
 
                     // For each response, put in correct JSONArray for responding back to handler
-
                     for (Object response_obj: full_response){
                         JSONObject response = (JSONObject) response_obj;
                         int id = ((Long) response.get("id")).intValue();
 
-
-                        try {
-                            if (responses[id] == null) {
-                                responses[id] = new JSONArray();
-                            }
-                        } catch (ArrayIndexOutOfBoundsException e){
-                            p(full_response);
-                            System.exit(0);
+                        if (responses[id] == null) {
+                            responses[id] = new JSONArray();
                         }
-
 
                         responses[id].add(response);
                     }
@@ -311,7 +313,7 @@ public class Betfair extends BettingSite {
 
 
     public JSONArray getMarketOdds(String[] market_ids) throws InterruptedException {
-        log.fine(String.format("Getting market odds for market ids: %s", market_ids));
+        log.fine(String.format("Getting market odds for market ids: %s", market_ids.toString()));
 
         ArrayList<ArrayList<String>> market_id_chunks = shard(market_ids, markets_per_req);
 
@@ -357,9 +359,9 @@ public class Betfair extends BettingSite {
             }
         }
 
-        p(results);
         return results;
     }
+
 
     public JSONArray getMarketOdds(Set<String> market_ids) throws InterruptedException {
         String[] market_id_array = new String[market_ids.size()];
@@ -428,6 +430,7 @@ public class Betfair extends BettingSite {
             try {
                 fm = FootballMatch.parse((String) event.get("openDate"),
                                          (String) event.get("name"));
+                fm.betfairEventId = (String) event.get("id");
             }
             catch (ParseException e){
                 continue;
@@ -458,7 +461,48 @@ public class Betfair extends BettingSite {
     }
 
 
+    public static String getEventId(String query, Betfair bf){
 
+        // Create HTTP GET to search betfairs regular search for query
+        // returning pure html
+        HashMap<String, String> params = new HashMap<>();
+        params.put("query", query);
+        String html;
+        Requester requester = new Requester();
+        try {
+            html = requester.getRaw("https://www.betfair.com/exchange/search", params);
+        } catch (IOException | URISyntaxException e) {
+            log.warning(String.format("Could not find betfair event id for search query '%s'", query));
+            return null;
+        }
+
+        // Find the correct part of the html for the first item in the search list
+        Document doc = Jsoup.parse(html);
+        Elements firstResult = doc.getElementsByClass("mod-searchresults-ebs-link i13n-ltxt-Event i13n-pos-1 i13n-gen-15 i13n-R-1");
+        Element element = firstResult.get(0);
+
+        print("Element\n" + element.toString());
+
+        // Select the href from the first item
+        // (the url endpoint to the event page, this contains the event ID)
+        String href = element.attributes().get("href");
+
+        // Look for this part of the url
+        String tag = "/event?id=";
+        int id_start = href.indexOf(tag) + tag.length();
+
+        // Extract the event ID
+        String event_id = href.substring(id_start);
+
+        // Check event_id is valid (numeric)
+        if (StringUtil.isNumeric(event_id)){
+            return event_id;
+        }
+
+        log.warning(String.format("Could not find event id in href '%s' from html when searching betfair for '%s'",
+                href, query));
+        return null;
+    }
 
 
     public static void main(String[] args){
@@ -466,18 +510,13 @@ public class Betfair extends BettingSite {
         try {
             Betfair b = new Betfair();
 
-            JSONObject params = new JSONObject();
-            JSONObject filter = new JSONObject();
-            JSONArray eventTypes = new JSONArray();
-            eventTypes.add(1);
-            filter.put("eventTypeIds", eventTypes);
-            params.put("filter", filter);
-
-            b.getEvents(params);
+            String id = b.getEventId("Burnley", b);
+            print(id);
 
 
 
-        } catch (URISyntaxException | IOException | CertificateException | UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+        } catch (URISyntaxException | IOException | CertificateException | UnrecoverableKeyException |
+                NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
             e.printStackTrace();
         }
     }

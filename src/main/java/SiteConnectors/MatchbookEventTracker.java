@@ -40,34 +40,35 @@ public class MatchbookEventTracker extends SiteEventTracker {
     }
 
     @Override
-    public boolean setupMatch(FootballMatch match) throws Exception {
+    public boolean setupMatch(FootballMatch setup_match) throws Exception {
 
-        ArrayList<FootballMatch> events = matchbook.getEvents(match.start_time.minus(1, ChronoUnit.SECONDS),
-                                                              match.start_time.plus(1, ChronoUnit.SECONDS),
+        log.info(String.format("Attempting to setup match in Matchbook Event Tracker for %s.", setup_match.toString()));
+        ArrayList<FootballMatch> events = matchbook.getEvents(setup_match.start_time.minus(1, ChronoUnit.SECONDS),
+                setup_match.start_time.plus(1, ChronoUnit.SECONDS),
                                                               matchbook.FOOTBALL_ID);
 
         // Check each searched for match in matchbook to see if it matches with the desired
         // match we are trying to set up.
         ArrayList<FootballMatch> matching_events = new ArrayList<FootballMatch>();
         for (FootballMatch fm: events){
-            if (match.same_match(fm)){
+            if (setup_match.same_match(fm)){
                 matching_events.add(fm);
             }
         }
 
         // Check for no match or >1 match.
         if (matching_events.size() == 0){
-            log.warning(String.format("No match for %s found in matchbook. Searched events %s.", match, Match.listtostring(events)));
+            log.warning(String.format("No match for %s found in matchbook. Searched events %s.", setup_match, Match.listtostring(events)));
             return false;
         }
         if (matching_events.size() > 1){
-            log.warning(String.format("Multiple matches found for %s in matchbook. Matching events %s.", match, Match.listtostring(matching_events)));
+            log.warning(String.format("Multiple matches found for %s in matchbook. Matching events %s.", setup_match, Match.listtostring(matching_events)));
             return false;
         }
 
         // Match found, set as event for this object
         event_id = matching_events.get(0).metadata.get("matchbook_event_id");
-        this.match = match;
+        this.match = setup_match;
 
         return true;
     }

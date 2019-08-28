@@ -182,7 +182,21 @@ public class SportsTrader {
         }
         until = now.plus(HOURS_AHEAD, ChronoUnit.HOURS);
 
-        return site.getFootballMatches(from, until);
+        ArrayList<FootballMatch> fms = site.getFootballMatches(from, until);
+        ArrayList<FootballMatch> final_fms = new ArrayList<>();
+
+        // Make sure each fm has a betfair ID associated. Skip if not and can't find one.
+        for (FootballMatch fm: fms){
+            if (fm.betfairEventId == null){
+                fm.betfairEventId = Betfair.getEventId(fm.name, (Betfair) siteObjects.get("betfair"));
+                if (fm.betfairEventId == null){
+                    continue;
+                }
+            }
+            final_fms.add(fm);
+        }
+
+        return final_fms;
      }
 
 

@@ -1,5 +1,5 @@
 {
-    "MAX_MATCHES": 50,
+    "MAX_MATCHES": 10,
     "IN_PLAY": false,
     "HOURS_AHEAD": 24,
     "PLACE_BETS": false,

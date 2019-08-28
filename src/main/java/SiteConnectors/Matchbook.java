@@ -73,7 +73,6 @@ public class Matchbook extends BettingSite {
         marketDataRequestHandlerThread.start();
     }
 
-    // TODO: Matchbook arb times are long at start, check settings in request handler
 
     public class marketDataRequestHandler implements Runnable{
 
@@ -337,7 +336,6 @@ public class Matchbook extends BettingSite {
 
             JSONObject r = m.getMarketDataFromHandler(met.event_id);
 
-            p(r);
 
 
 
