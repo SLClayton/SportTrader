@@ -2,14 +2,25 @@ package Trader;
 
 import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
+import SiteConnectors.Betfair;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import org.apache.commons.codec.binary.StringUtils;
 import org.json.simple.JSONArray;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,6 +70,10 @@ public class EventTrader implements Runnable {
 
             // Try to setup match, remove site if fail
             SiteEventTracker eventTracker = site.getEventTracker();
+
+            // Each event tracker needs to use the betfair instance.
+            eventTracker.betfair = (Betfair) sites.get("betfair");
+
             boolean setup_success = false;
             try {
                 setup_success = eventTracker.setupMatch(match);
@@ -67,7 +82,7 @@ public class EventTrader implements Runnable {
                 setup_success = false;
             }
             if (!(setup_success)){
-                log.warning(String.format("Unsuccessful setup of %s for %s event tracker", match, site_name));
+                log.warning(String.format("Unsuccessful setup of match for %s event tracker", site_name));
                 failed_sites.add(site_name);
                 continue;
             }
@@ -75,22 +90,22 @@ public class EventTrader implements Runnable {
 
             // Add tracker to map
             siteEventTrackers.put(site_name, eventTracker);
-            log.info(String.format("Successfully setup %s in %s event tracker.", match, site_name));
+            log.info(String.format("Successfully setup match in %s event tracker.", site_name));
         }
 
         sites = accepted_sites;
-        log.info(String.format("%d/%d sites setup %s successfully. Failures: %s",
-                siteEventTrackers.size(), total_sites, match, failed_sites.toString()));
+        log.info(String.format("%d/%d sites setup successfully. Failures: %s",
+                siteEventTrackers.size(), total_sites, failed_sites.toString()));
 
 
         // End thread if all setups fail
         if (siteEventTrackers.size() == 0){
-            log.info(String.format("All sites failed to setup %s. Finishing Event Trader", match));
+            log.info(String.format("All sites failed to setup. Finishing Event Trader"));
             return;
         }
 
         // Blocker for testing.
-        if (true){
+        if (false){
             return;
         }
 
@@ -123,7 +138,7 @@ public class EventTrader implements Runnable {
                     String padding = "";
                     while (padding.length() < (4 - ms_string.length())){ padding += " "; }
 
-                    log.info(String.format("Arb Checks. %d avg: %d ms%s for %s", max_times, avg_ms, padding, match ));
+                    log.info(String.format("Arb Checks. %d avg: %d ms%s", max_times, avg_ms, padding));
                     arb_times.clear();
                 }
 
@@ -219,6 +234,28 @@ public class EventTrader implements Runnable {
         // If any profit reports are found to be IN profit
         if (in_profit.size() > 0){
             log.info(String.format("PROFIT FOUND IN %s", match));
+
+            profitFound(in_profit);
         }
     }
+
+    public void profitFound(ArrayList<ProfitReport> in_profit){
+
+        // Create profit folder if it does not exist
+        File profit_dir = new File(FileSystems.getDefault().getPath(".") + "/profit");
+        if (!profit_dir.exists()){
+            profit_dir.mkdir();
+        }
+
+
+        String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
+        ProfitReport best = in_profit.get(0);
+        String profitString = best.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
+
+        String filename = timeString + " -  " + match.name + " " + profitString + ".json";
+        p(best.toJSON(true), profit_dir.toString() + "/" + filename);
+    }
+
+
+
 }

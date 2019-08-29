@@ -52,8 +52,8 @@ public class BetfairEventTracker extends SiteEventTracker {
         return betfair.name;
     }
 
-
-    public boolean setupMatchMatch(FootballMatch setup_match) throws Exception {
+    @Override
+    public boolean setupMatch(FootballMatch setup_match) throws Exception {
 
         log.info(String.format("Attempting to setup match in betfair for %s.", setup_match.toString()));
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
@@ -104,7 +104,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             }
 
             all_events.add(possible_match);
-            if (setup_match.same_match(possible_match)){
+            if (setup_match.same_match(possible_match, betfair)){
                 matching_events.add(possible_match);
             }
         }
@@ -166,8 +166,8 @@ public class BetfairEventTracker extends SiteEventTracker {
         return true;
     }
 
-    @Override
-    public boolean setupMatch(FootballMatch setup_match) throws Exception {
+
+    public boolean setupMatchSearch(FootballMatch setup_match) throws Exception {
 
         log.info(String.format("Attempting to setup match in Betfair Event Tracker for %s.", setup_match.toString()));
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);

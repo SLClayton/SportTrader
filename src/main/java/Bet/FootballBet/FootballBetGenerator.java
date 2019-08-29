@@ -37,6 +37,8 @@ public class FootballBetGenerator {
     ArrayList<FootballHandicapBet> handicap_bets;
     ArrayList<FootballOverUnderBet> over_under_bets;
 
+    ArrayList<Tautology> allTautologies;
+
 
 
     public FootballBetGenerator(){
@@ -181,6 +183,10 @@ public class FootballBetGenerator {
 
 
     public ArrayList<Tautology> getAllTautologies(){
+        if (allTautologies != null){
+            return allTautologies;
+        }
+
         ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
 
         tauts.addAll(tautsBackWithLay());
@@ -235,6 +241,8 @@ public class FootballBetGenerator {
         }
 
         log.info(String.format("Returning %d generated tautologies.", array.length));
+
+        allTautologies = tautologies;
         return tautologies;
     }
 

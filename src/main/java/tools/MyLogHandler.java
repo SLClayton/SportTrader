@@ -7,20 +7,28 @@ import java.util.logging.LogRecord;
 
 public class MyLogHandler extends Handler {
 
+
     public MyLogHandler(){
         super();
     }
 
     @Override
     public void publish(LogRecord record) {
+        String threadname = Thread.getAllStackTraces().keySet().stream()
+                .filter(t -> t.getId() == record.getThreadID())
+                .findFirst()
+                .map(Thread::getName)
+                .orElseGet(() -> "TID-" + record.getThreadID());
+
+
+
         StringBuilder sb = new StringBuilder();
         String timestring = record.getInstant().toString()
                 .replace("T", " ")
                 .substring(0, 24);
         sb.append(timestring)
                 .append(String.format(" [%s] ", record.getLevel().toString()))
-                //.append(record.getSourceClassName())
-                //.append(".")
+                .append(String.format("[%s] ", threadname))
                 .append(record.getSourceMethodName())
                 .append(": ")
                 .append(record.getMessage());

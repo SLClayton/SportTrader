@@ -150,7 +150,7 @@ public class SportsTrader {
             footballMatches = new ArrayList<FootballMatch>(footballMatches.subList(0, MAX_MATCHES));
         }
         footballMatches.trimToSize();
-        log.info(String.format("%d Football matches found. Using %d.", total_matches_found, footballMatches.size()));
+        log.info(String.format("Using %d football matches.", footballMatches.size()));
 
 
         // Launch new Event Trader for each match found.
@@ -159,6 +159,7 @@ public class SportsTrader {
             Thread evenTraderThread = new Thread(eventTrader);
             eventTrader.thread = evenTraderThread;
             eventTraders.add(eventTrader);
+            evenTraderThread.setName("ET - " + match.name);
             evenTraderThread.start();
         }
 
@@ -185,15 +186,21 @@ public class SportsTrader {
         ArrayList<FootballMatch> fms = site.getFootballMatches(from, until);
         ArrayList<FootballMatch> final_fms = new ArrayList<>();
 
+        log.info(String.format("Initially found %d matches in time frame.", fms.size()));
+
         // Make sure each fm has a betfair ID associated. Skip if not and can't find one.
         for (FootballMatch fm: fms){
             if (fm.betfairEventId == null){
-                fm.betfairEventId = Betfair.getEventId(fm.name, (Betfair) siteObjects.get("betfair"));
+                log.info(String.format("Attempting to match betfair ID to %s", fm));
+                fm.betfairEventId = Betfair.getEventFromSearch(fm.name, (Betfair) siteObjects.get("betfair"));
                 if (fm.betfairEventId == null){
                     continue;
                 }
             }
             final_fms.add(fm);
+            if (final_fms.size() >= MAX_MATCHES){
+                break;
+            }
         }
 
         return final_fms;

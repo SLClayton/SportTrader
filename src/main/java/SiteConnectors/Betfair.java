@@ -114,6 +114,7 @@ public class Betfair extends BettingSite {
         rpcRequestHandler = new RPCRequestHandler(rpcRequestHandlerQueue);
         Thread rpcRequestHandlerThread = new Thread(rpcRequestHandler);
         rpcRequestHandlerThread.setDaemon(true);
+        rpcRequestHandlerThread.setName("Betfair RH");
         rpcRequestHandlerThread.start();
     }
 
@@ -145,6 +146,7 @@ public class Betfair extends BettingSite {
             RPCRequestSender rs = new RPCRequestSender(workerQueue);
             for (int i=0; i<REQUEST_THREADS; i++){
                 Thread t = new Thread(rs);
+                t.setName("Betfair RH Sender " + String.valueOf(i));
                 t.start();
             }
 
@@ -206,8 +208,6 @@ public class Betfair extends BettingSite {
                             final_request.add(single_rpc);
                         }
                     }
-
-                    pp(final_request);
 
                     // Send request
                     JSONArray full_response = (JSONArray) requester.post(betting_endpoint, final_request);
@@ -461,7 +461,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public static String getEventId(String query, Betfair bf){
+    public static String getEventFromSearch(String query, Betfair bf){
 
         // Create HTTP GET to search betfairs regular search for query
         // returning pure html
@@ -471,7 +471,7 @@ public class Betfair extends BettingSite {
         Requester requester = new Requester();
         try {
             html = requester.getRaw("https://www.betfair.com/exchange/search", params);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException | URISyntaxException | InterruptedException e) {
             log.warning(String.format("Could not find betfair event id for search query '%s'", query));
             return null;
         }
@@ -481,18 +481,35 @@ public class Betfair extends BettingSite {
         Elements firstResult = doc.getElementsByClass("mod-searchresults-ebs-link i13n-ltxt-Event i13n-pos-1 i13n-gen-15 i13n-R-1");
         Element element = firstResult.get(0);
 
-        print("Element\n" + element.toString());
-
         // Select the href from the first item
         // (the url endpoint to the event page, this contains the event ID)
         String href = element.attributes().get("href");
 
-        // Look for this part of the url
-        String tag = "/event?id=";
-        int id_start = href.indexOf(tag) + tag.length();
+        // Whichever tag in the href will tell us what to do next
+        String event_tag = "/event?id=";
+        String market_tag = "market/";
+        String event_id = null;
 
-        // Extract the event ID
-        String event_id = href.substring(id_start);
+        if (href.contains(event_tag)){
+            // Find where the ID begins in the href
+            int id_start = href.indexOf(event_tag) + event_tag.length();
+
+            // Extract the event ID
+            event_id = href.substring(id_start);
+        }
+        else if (href.contains(market_tag)){
+            // Find where the ID begins in the href
+            int id_start = href.indexOf(market_tag) + market_tag.length();
+
+            // Extract the market id and use function to get event id
+            String market_id = href.substring(id_start);
+            event_id = bf.getEventFromMarket(market_id);
+        }
+        else{
+            log.warning(String.format("Could not find either '%s' or '%s' in href '%s' when searching betfair for '%s'",
+                    event_tag, market_tag, href, query));
+            return null;
+        }
 
         // Check event_id is valid (numeric)
         if (StringUtil.isNumeric(event_id)){
@@ -505,13 +522,40 @@ public class Betfair extends BettingSite {
     }
 
 
+    public String getEventFromMarket(String market_id){
+        JSONObject filter = new JSONObject();
+        JSONArray market_ids = new JSONArray();
+        market_ids.add(market_id);
+        filter.put("marketIds", market_ids);
+
+        JSONArray eventsResponse;
+        try {
+            eventsResponse = getEvents(filter);
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+            log.severe(String.format("Error while getting event id from market id in betfair for %s", market_id));
+            return null;
+        }
+
+        if (eventsResponse.size() == 0){
+            log.severe(String.format("No Events found in betfair for market id %s", market_id));
+            return null;
+        }
+        if (eventsResponse.size() > 1){
+            log.severe(String.format("Multiple events found in betfair for market id %s\n%s",
+                    market_id, ps(eventsResponse)));
+            return null;
+        }
+
+        String event_id = (String) ((JSONObject) ((JSONObject) eventsResponse.get(0)).get("event")).get("id");
+
+        return event_id;
+    }
+
+
     public static void main(String[] args){
-        String token = null;
         try {
             Betfair b = new Betfair();
-
-            String id = b.getEventId("Burnley", b);
-            print(id);
 
 
 

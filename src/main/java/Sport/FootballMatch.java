@@ -62,7 +62,7 @@ public class FootballMatch extends Match{
     }
 
 
-    public boolean same_match(FootballMatch match){
+    public boolean same_match(FootballMatch match, Betfair betfair){
         log.fine(String.format("Checking match for %s and %s.", this, match));
 
         // Check Start time
@@ -83,12 +83,10 @@ public class FootballMatch extends Match{
 
         // Get Betfair event IDs for both matches if they have not got them
         if (betfairEventId == null){
-            betfairEventId = Betfair.getEventId(name);
+            betfairEventId = Betfair.getEventFromSearch(name, betfair);
         }
         if (match.betfairEventId == null){
-            match.betfairEventId = Betfair.getEventId(match.name);
-
-            // TODO: Betfair search sometimes returns a marktet id instead of event id. fix that
+            match.betfairEventId = Betfair.getEventFromSearch(match.name, betfair);
         }
         // Check betfair event IDs (again)
         if (betfairEventId.equals(match.betfairEventId)){

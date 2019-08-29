@@ -51,7 +51,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         // match we are trying to set up.
         ArrayList<FootballMatch> matching_events = new ArrayList<FootballMatch>();
         for (FootballMatch fm: events){
-            if (setup_match.same_match(fm)){
+            if (setup_match.same_match(fm, betfair)){
                 matching_events.add(fm);
             }
         }

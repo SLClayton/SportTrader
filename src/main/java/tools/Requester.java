@@ -1,10 +1,13 @@
 package tools;
 
 
+import Trader.SportsTrader;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -38,7 +41,11 @@ public class Requester {
 
 
     public Requester() {
-        httpClient = HttpClients.createDefault();
+        //httpClient = HttpClients.createDefault();
+        httpClient = HttpClients.custom()
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setCookieSpec(CookieSpecs.STANDARD).build())
+                .build();
 
         headers = new HashMap<>();
         headers.put("content-type", "application/json");
@@ -141,7 +148,7 @@ public class Requester {
         return JSONValue.parse(response_body);
     }
 
-    public String getRaw(String url, Map<String, String> params) throws IOException, URISyntaxException {
+    public String getRaw(String url, Map<String, String> params) throws IOException, URISyntaxException, InterruptedException {
 
         // Add in the paramters as the uri is made
         URIBuilder uriBuilder = new URIBuilder(url);
@@ -163,6 +170,13 @@ public class Requester {
 
         // Check response code is valid
         int status_code = response.getStatusLine().getStatusCode();
+        if (status_code == 429){
+            long sleeptime = (long)(Math.random() * 1000 + 200);
+            log.warning(String.format("TOO MANY REQUESTS error for getRaw request '%s', sleeping for %sms and trying again.",
+                    url, String.valueOf(sleeptime)));
+            Thread.sleep(sleeptime);
+            return getRaw(url, params);
+        }
         if (status_code < 200 || status_code >= 300){
             String response_body = EntityUtils.toString(response.getEntity());
             String msg = String.format("ERROR %d in HTTP GET request - %s\n%s\n%s",

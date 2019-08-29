@@ -23,6 +23,7 @@ public abstract class SiteEventTracker {
     public BlockingQueue<Boolean> updateComplete;
     public FootballMatch match;
     public Set<String> bet_blacklist;
+    public Betfair betfair;
 
 
     public SiteEventTracker(){
