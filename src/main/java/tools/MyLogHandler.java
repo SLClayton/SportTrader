@@ -23,7 +23,7 @@ public class MyLogHandler extends Handler {
 
 
         StringBuilder sb = new StringBuilder();
-        String timestring = record.getInstant().toString()
+        String timestring = Instant.now().toString()
                 .replace("T", " ")
                 .substring(0, 24);
         sb.append(timestring)
