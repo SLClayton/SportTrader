@@ -118,10 +118,11 @@ public class SportsTrader {
 
             // Initialize Site object
             try {
-                BettingSite site_obj = (BettingSite) site_class.getConstructor().newInstance();
+                //BettingSite site_obj = (BettingSite) site_class.getConstructor().newInstance();
+                BettingSite site_obj =  (BettingSite) Class.forName(site_class.getName()).newInstance();
                 siteObjects.put(site_name, site_obj);
 
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                 e.printStackTrace();
                 log.severe(String.format("Error instantiating site object for %s", site_name));
                 continue;
