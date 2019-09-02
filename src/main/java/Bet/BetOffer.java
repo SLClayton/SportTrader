@@ -38,7 +38,7 @@ public class BetOffer implements Comparable<BetOffer> {
 
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
-        m.put("match", match.name);
+        m.put("match", match.toString());
         m.put("bet", bet.id());
         m.put("odds", odds.toString());
         m.put("volume", volume.toString());

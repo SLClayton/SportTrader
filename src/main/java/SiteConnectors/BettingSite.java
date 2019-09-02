@@ -40,7 +40,11 @@ public abstract class BettingSite {
         balance = new BigDecimal("0.00");
     }
 
-    public abstract String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException;
+    public abstract void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException;
+
+    public abstract String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException,
+            KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException;
 
     public abstract BigDecimal commission();
 

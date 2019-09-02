@@ -8,10 +8,13 @@ import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import org.apache.commons.codec.binary.StringUtils;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,10 +24,7 @@ import java.time.Year;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
@@ -39,6 +39,7 @@ public class EventTrader implements Runnable {
 
     public FootballMatch match;
     public HashMap<String, BettingSite> sites;
+    public Betfair betfair;
     public HashMap<String, SiteEventTracker> siteEventTrackers;
     public BlockingQueue<String> siteMarketOddsToGetQueue;
 
@@ -49,15 +50,26 @@ public class EventTrader implements Runnable {
         this.match = match;
         this.sites = sites;
         this.footballBetGenerator = footballBetGenerator;
-        tautologies = this.footballBetGenerator.getAllTautologies();
+        tautologies = (ArrayList<Tautology>) this.footballBetGenerator.getAllTautologies().clone();
         siteEventTrackers = new HashMap<String, SiteEventTracker>();
         siteMarketOddsToGetQueue = new LinkedBlockingQueue<>();
+
+
+        betfair = (Betfair) sites.get("betfair");
+        if (betfair == null){
+            log.severe("No betfair object found. Exiting");
+            return;
+        }
     }
 
 
     @Override
     public void run() {
         log.info(String.format("Running new Event Trader for %s.", match));
+        if (betfair == null){
+            log.severe("No betfair object found. Exiting");
+            return;
+        }
 
         // Create and setup new SiteEventTracker for each site, this manages the data for this particular
         // match for each particular betting site.
@@ -117,27 +129,24 @@ public class EventTrader implements Runnable {
             thread.start();
         }
         
-        // Check for arbs constantly
+        // Check for arbs, and update event constantly
         ArrayList<Long> arb_times = new ArrayList<>();
         int max_times = 100;
         for (int i=0; true; i++){
             try {
+
                 Instant start = Instant.now();
+
+
                 checkArbs();
-                Instant end = Instant.now();
-                long ms = end.toEpochMilli() - start.toEpochMilli();
-                arb_times.add(ms);
+
+                arb_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
 
                 if (arb_times.size() >= max_times){
                     long avg_ms = 0;
-                    for (long arb_time: arb_times){
-                        avg_ms += arb_time;
-                    }
+                    for (long arb_time: arb_times){ avg_ms += arb_time; }
                     avg_ms = avg_ms / arb_times.size();
-                    String ms_string = String.valueOf(avg_ms);
-                    String padding = "";
-                    while (padding.length() < (4 - ms_string.length())){ padding += " "; }
-
+                    String padding = String.join("", Collections.nCopies(4 - String.valueOf(avg_ms).length(), " "));
                     log.info(String.format("Arb Checks. %d avg: %d ms%s", max_times, avg_ms, padding));
                     arb_times.clear();
                 }
@@ -239,6 +248,7 @@ public class EventTrader implements Runnable {
         }
     }
 
+
     public void profitFound(ArrayList<ProfitReport> in_profit){
 
         // Create profit folder if it does not exist
@@ -256,6 +266,20 @@ public class EventTrader implements Runnable {
         p(best.toJSON(true), profit_dir.toString() + "/" + filename);
     }
 
+
+    public void updateMatch() throws IOException, URISyntaxException {
+
+        JSONObject filter = new JSONObject();
+        JSONArray event_ids = new JSONArray();
+        event_ids.add(match.betfairEventId);
+        filter.put("eventIds", event_ids);
+
+        JSONArray r = (JSONArray) betfair.getEvents(filter);
+
+        p(r);
+
+        System.exit(0);
+    }
 
 
 }

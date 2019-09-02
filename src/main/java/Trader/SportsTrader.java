@@ -34,16 +34,18 @@ import static tools.printer.*;
 
 public class SportsTrader {
 
+    private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+
     public int MAX_MATCHES;
     public boolean IN_PLAY;
     public int HOURS_AHEAD;
     public boolean PLACE_BETS;
     public Map<String, Boolean> ACTIVE_SITES;
 
-    private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public HashMap<String, Class> siteClasses;
     public HashMap<String, BettingSite> siteObjects;
+    public int session_Update_interval = 4; // in hours
 
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<EventTrader> eventTraders;
@@ -52,8 +54,15 @@ public class SportsTrader {
     public SportsTrader(){
         log.setUseParentHandlers(false);
         log.setLevel(Level.INFO);
-        log.addHandler(new MyLogHandler());
-
+        try {
+            log.addHandler(new MyLogHandler());
+        } catch (Exception e) {
+            e.printStackTrace();
+            String msg = "Error Setting up logging. Exiting";
+            print(msg);
+            log.severe(msg);
+            System.exit(1);
+        }
 
         try {
             setupConfig("config.json");
@@ -96,6 +105,7 @@ public class SportsTrader {
 
     public void run(){
         log.info("Running SportsTrader.");
+        Thread.currentThread().setName("Main");
 
         // Run bet/taut generator
         footballBetGenerator = new FootballBetGenerator();
@@ -163,8 +173,52 @@ public class SportsTrader {
             evenTraderThread.setName("ET - " + match.name);
             evenTraderThread.start();
         }
-
         log.info("All Event Traders spawned.");
+
+        // Start the session updater to keep all sites connected.
+        SessionsUpdater sessionsUpdater = new SessionsUpdater();
+        Thread sessionUpdaterThread = new Thread(sessionsUpdater);
+        sessionUpdaterThread.setName("Session Updater");
+        sessionUpdaterThread.start();
+
+
+    }
+
+
+    public class SessionsUpdater implements Runnable {
+
+        @Override
+        public void run() {
+            log.info("Session updater started.");
+
+            while (true){
+                try {
+                    // Sleep for required amount of hours between updates
+                    sleep(1000*60*60*session_Update_interval);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
+                    String site_name = entry.getKey();
+                    BettingSite bet_site = entry.getValue();
+
+                    try {
+                        bet_site.login();
+                        log.info(String.format("Successfully refreshed session for %s", site_name));
+                    } catch (CertificateException | UnrecoverableKeyException | NoSuchAlgorithmException
+                            | KeyStoreException | KeyManagementException | IOException | URISyntaxException e) {
+
+                        e.printStackTrace();
+
+                        String msg = String.format("Error while trying to refresh session for %s.", site_name);
+                        log.severe(msg);
+                    }
+
+                }
+            }
+
+        }
     }
 
 

@@ -1,2 +1,4 @@
-output.json
+output*
 /target
+/profit
+/logs

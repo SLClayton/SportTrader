@@ -102,10 +102,9 @@ public class Betfair extends BettingSite {
         log.info(String.format("Creating new instance of %s.", this.getClass().getName()));
         name = "betfair";
 
-        token = getSessionToken();
         requester = new Requester();
         requester.setHeader("X-Application", app_id);
-        requester.setHeader("X-Authentication", token);
+        login();
 
         balance = BigDecimal.ZERO;
         updateAccountDetails();
@@ -239,6 +238,15 @@ public class Betfair extends BettingSite {
                 }
             }
         }
+    }
+
+
+    @Override
+    public void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
+            KeyStoreException, KeyManagementException, IOException {
+
+        token = getSessionToken();
+        requester.setHeader("X-Authentication", token);
     }
 
 

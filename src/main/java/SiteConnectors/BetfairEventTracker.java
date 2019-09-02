@@ -460,6 +460,9 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Get new market data for markets in this event
         JSONArray market_odds = betfair.getMarketOdds(eventMarketData.keySet());
 
+        //p(market_odds);
+        //System.exit(0);
+
         // Update the runners in the existing market data
         for (Object new_md_obj: market_odds){
             JSONObject new_md = (JSONObject) new_md_obj;
@@ -468,6 +471,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
             JSONArray new_runners = (JSONArray) new_md.get("runners");
             JSONObject old_market = eventMarketData.get(market_id);
+
             if (old_market == null){
                 continue;
             }

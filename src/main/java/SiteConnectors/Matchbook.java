@@ -62,7 +62,8 @@ public class Matchbook extends BettingSite {
 
         // Set up a requester to handle HTTP requests
         requester = new Requester();
-        requester.setHeader("session-token", getSessionToken());
+        login();
+
 
         // Setup and start marketdata request handler to pool mulitple
         // market data requests to one concurrently.
@@ -72,6 +73,8 @@ public class Matchbook extends BettingSite {
         marketDataRequestHandlerThread.setDaemon(true);
         marketDataRequestHandlerThread.start();
     }
+
+
 
 
     public class marketDataRequestHandler implements Runnable{
@@ -182,6 +185,13 @@ public class Matchbook extends BettingSite {
         }
     }
 
+
+    @Override
+    public void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException {
+
+        requester.setHeader("session-token", getSessionToken());
+    }
 
     @Override
     public String getSessionToken() throws IOException, CertificateException,

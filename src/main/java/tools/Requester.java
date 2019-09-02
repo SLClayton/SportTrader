@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import static net.dongliu.commons.Prints.print;
@@ -38,6 +40,8 @@ public class Requester {
 
     HttpClient httpClient;
     HashMap<String, String> headers;
+    ReentrantLock headerLock = new ReentrantLock();
+
 
 
     public Requester() {
@@ -53,7 +57,9 @@ public class Requester {
     }
 
     public void setHeader(String key, String value){
+        headerLock.lock();
         headers.put(key, value);
+        headerLock.unlock();
     }
 
 
@@ -65,9 +71,11 @@ public class Requester {
 
 
         // Set default headers from requester object
+        headerLock.lock();
         for (Entry<String, String> header: this.headers.entrySet()){
             httpPost.setHeader(header.getKey(), header.getValue());
         }
+        headerLock.unlock();
 
         // Set extra headers if given
         if (headers != null){
@@ -100,13 +108,16 @@ public class Requester {
         return post(url, json.toString(), headers);
     }
 
+
     public Object post(String url, JSONArray json, Map<String, String> headers) throws IOException, URISyntaxException {
         return post(url, json.toString(), headers);
     }
 
+
     public Object post(String url, JSONObject json) throws IOException, URISyntaxException {
         return post(url, json, null);
     }
+
 
     public Object post(String url, JSONArray json) throws IOException, URISyntaxException {
         return post(url, json, null);
@@ -126,10 +137,12 @@ public class Requester {
         // Create http GET object
         HttpGet httpGet = new HttpGet(uriBuilder.build());
 
+        headerLock.lock();
         // Add in default headers form requester object
         for (Entry<String, String> header: headers.entrySet()){
             httpGet.setHeader(header.getKey(), header.getValue());
         }
+        headerLock.unlock();
 
         HttpResponse response = httpClient.execute(httpGet);
 
@@ -148,6 +161,7 @@ public class Requester {
         return JSONValue.parse(response_body);
     }
 
+
     public String getRaw(String url, Map<String, String> params) throws IOException, URISyntaxException, InterruptedException {
 
         // Add in the paramters as the uri is made
@@ -161,10 +175,12 @@ public class Requester {
         // Create http GET object
         HttpGet httpGet = new HttpGet(uriBuilder.build());
 
+        headerLock.lock();
         // Add in default headers form requester object
         for (Entry<String, String> header: headers.entrySet()){
             httpGet.setHeader(header.getKey(), header.getValue());
         }
+        headerLock.unlock();
 
         HttpResponse response = httpClient.execute(httpGet);
 
