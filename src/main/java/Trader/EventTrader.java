@@ -10,6 +10,7 @@ import org.apache.commons.codec.binary.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import javax.naming.directory.InvalidAttributesException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -228,7 +229,7 @@ public class EventTrader implements Runnable {
         Collections.sort(tautologyProfitReports, Collections.reverseOrder());
 
         // Ceate list of profit reports with profits over min_prof_margain
-        BigDecimal min_profit_margain = new BigDecimal("0.00");
+        BigDecimal min_profit_margain = new BigDecimal("-1.00");
         ArrayList<ProfitReport> in_profit = new ArrayList<ProfitReport>();
         for (ProfitReport pr: tautologyProfitReports){
             if (pr.profit_ratio.compareTo(min_profit_margain) == 1){
@@ -260,8 +261,14 @@ public class EventTrader implements Runnable {
 
         String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
         ProfitReport best = in_profit.get(0);
-        String profitString = best.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
 
+        try {
+            best = best.newProfitReport(best.largest_min_return);
+        } catch (InstantiationException | InvalidAttributesException e) {
+            e.printStackTrace();
+        }
+
+        String profitString = best.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
         String filename = timeString + " -  " + match.name + " " + profitString + ".json";
         p(best.toJSON(true), profit_dir.toString() + "/" + filename);
     }

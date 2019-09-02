@@ -1,5 +1,6 @@
 package Bet;
 
+import Trader.SportsTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -7,6 +8,7 @@ import javax.naming.directory.InvalidAttributesException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import static tools.printer.*;
 
@@ -15,6 +17,8 @@ public class ProfitReport implements Comparable<ProfitReport> {
     // A collection of Bet Orders, with attributes calculated such as total stake
     // and profit/loss ratio.
      */
+
+    public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public ArrayList<BetOrder> bet_orders;
     public BigDecimal total_investment;
@@ -86,8 +90,12 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
 
     public ProfitReport newProfitReport(BigDecimal target_return) throws InvalidAttributesException, InstantiationException {
-        if (target_return.compareTo(largest_min_return) != -1){
-            throw new InvalidAttributesException("Target return is smaller than largest min return");
+        if (target_return.compareTo(largest_min_return) == -1){
+            String msg = String.format("Creating a new profit report failed. " +
+                                       "Target return set as %s but the largest min return is %s giving the compare ",
+                    target_return.toString(), largest_min_return.toString());
+            log.severe(msg);
+            throw new InvalidAttributesException(msg);
         }
 
         ArrayList<BetOrder> new_bet_orders = new ArrayList<BetOrder>();

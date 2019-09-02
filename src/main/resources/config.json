@@ -1,7 +1,7 @@
 {
     "MAX_MATCHES": 50,
     "IN_PLAY": false,
-    "HOURS_AHEAD": 24,
+    "HOURS_AHEAD": 48,
     "PLACE_BETS": false,
 
     "ACTIVE_SITES": {
