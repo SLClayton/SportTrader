@@ -42,7 +42,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
     @Override
     public boolean setupMatch(FootballMatch setup_match) throws Exception {
 
-        log.info(String.format("Attempting to setup match in Matchbook Event Tracker for %s.", setup_match.toString()));
+        log.info(String.format("Setting up match in Matchbook Event Tracker"));
         ArrayList<FootballMatch> events = matchbook.getEvents(setup_match.start_time.minus(1, ChronoUnit.SECONDS),
                 setup_match.start_time.plus(1, ChronoUnit.SECONDS),
                                                               matchbook.FOOTBALL_ID);
@@ -58,7 +58,8 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
         // Check for no match or >1 match.
         if (matching_events.size() == 0){
-            log.warning(String.format("No match for %s found in matchbook. Searched events %s.", setup_match, Match.listtostring(events)));
+            log.warning(String.format("No match for %s found in matchbook. Searched %d events %s.",
+                    setup_match, events.size(), Match.listtostring(events)));
             return false;
         }
         if (matching_events.size() > 1){

@@ -36,7 +36,7 @@ import static tools.printer.nully;
 
 public class Requester {
 
-    private static final Logger log = Logger.getLogger(Requester.class.getName());
+    private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     HttpClient httpClient;
     HashMap<String, String> headers;
@@ -162,7 +162,8 @@ public class Requester {
     }
 
 
-    public String getRaw(String url, Map<String, String> params) throws IOException, URISyntaxException, InterruptedException {
+    public String getRaw(String url, Map<String, String> params) throws IOException, URISyntaxException,
+            InterruptedException {
 
         // Add in the paramters as the uri is made
         URIBuilder uriBuilder = new URIBuilder(url);
@@ -204,5 +205,11 @@ public class Requester {
         // Convert body to json and return
         String response_body = EntityUtils.toString(response.getEntity());
         return response_body;
+    }
+
+    public String getRaw(String url) throws IOException, URISyntaxException,
+            InterruptedException {
+
+        return getRaw(url, null);
     }
 }

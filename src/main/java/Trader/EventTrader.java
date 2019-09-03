@@ -59,39 +59,34 @@ public class EventTrader implements Runnable {
         betfair = (Betfair) sites.get("betfair");
         if (betfair == null){
             log.severe("No betfair object found. Exiting");
-            return;
+            throw new ExceptionInInitializerError("No betfair object found.");
         }
     }
 
 
-    @Override
-    public void run() {
-        log.info(String.format("Running new Event Trader for %s.", match));
-        if (betfair == null){
-            log.severe("No betfair object found. Exiting");
-            return;
-        }
+    public int setupMatch(){
 
-        // Create and setup new SiteEventTracker for each site, this manages the data for this particular
-        // match for each particular betting site.
-        ArrayList<String> failed_sites = new ArrayList<String>();
+        // Create lists for sites which fail and succeed setting up
         int total_sites = sites.size();
+        ArrayList<String> failed_sites = new ArrayList<String>();
         HashMap<String, BettingSite> accepted_sites = new HashMap<>();
+
+        //
         for (Map.Entry<String, BettingSite> entry: sites.entrySet()){
             String site_name = entry.getKey();
             BettingSite site = entry.getValue();
 
             // Try to setup match, remove site if fail
             SiteEventTracker eventTracker = site.getEventTracker();
-
             // Each event tracker needs to use the betfair instance.
             eventTracker.betfair = (Betfair) sites.get("betfair");
+
 
             boolean setup_success = false;
             try {
                 setup_success = eventTracker.setupMatch(match);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.warning(e.toString());
                 setup_success = false;
             }
             if (!(setup_success)){
@@ -99,11 +94,11 @@ public class EventTrader implements Runnable {
                 failed_sites.add(site_name);
                 continue;
             }
-            accepted_sites.put(site_name, site);
 
-            // Add tracker to map
+            // Add successful sites and trackers into maps
             siteEventTrackers.put(site_name, eventTracker);
-            log.info(String.format("Successfully setup match in %s event tracker.", site_name));
+            accepted_sites.put(site_name, site);
+            log.info(String.format("Successfully setup match in %s Event Tracker.", site_name));
         }
 
         sites = accepted_sites;
@@ -111,16 +106,13 @@ public class EventTrader implements Runnable {
                 siteEventTrackers.size(), total_sites, failed_sites.toString()));
 
 
-        // End thread if all setups fail
-        if (siteEventTrackers.size() == 0){
-            log.info(String.format("All sites failed to setup. Finishing Event Trader"));
-            return;
-        }
+        return siteEventTrackers.size();
+    }
 
-        // Blocker for testing.
-        if (false){
-            return;
-        }
+
+    @Override
+    public void run() {
+        log.info(String.format("Running Event Trader."));
 
         // Start MarketOddsReportWorker threads, 1 for each site
         // This is a thread for each site to go off and collect new odds report asynchronously

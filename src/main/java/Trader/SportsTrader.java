@@ -37,6 +37,7 @@ public class SportsTrader {
     private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public int MAX_MATCHES;
+    public int MIN_SITES_PER_MATCH;
     public boolean IN_PLAY;
     public int HOURS_AHEAD;
     public boolean PLACE_BETS;
@@ -52,6 +53,7 @@ public class SportsTrader {
 
 
     public SportsTrader(){
+        Thread.currentThread().setName("Main");
         log.setUseParentHandlers(false);
         log.setLevel(Level.INFO);
         try {
@@ -83,7 +85,8 @@ public class SportsTrader {
 
     private void setupConfig(String config_filename) throws Exception {
         Map config = getJSONResource(config_filename);
-        String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "PLACE_BETS", "ACTIVE_SITES"};
+        String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "PLACE_BETS", "ACTIVE_SITES",
+                "MIN_SITES_PER_MATCH"};
 
         log.info(String.format("Setting up config %s", config.toString()));
 
@@ -96,6 +99,7 @@ public class SportsTrader {
         }
 
         MAX_MATCHES = ((Double) config.get("MAX_MATCHES")).intValue();
+        MIN_SITES_PER_MATCH = ((Double) config.get("MIN_SITES_PER_MATCH")).intValue();
         IN_PLAY = (boolean) config.get("IN_PLAY");
         HOURS_AHEAD = ((Double) config.get("HOURS_AHEAD")).intValue();
         PLACE_BETS = (boolean) config.get("PLACE_BETS");
@@ -105,7 +109,6 @@ public class SportsTrader {
 
     public void run(){
         log.info("Running SportsTrader.");
-        Thread.currentThread().setName("Main");
 
         // Run bet/taut generator
         footballBetGenerator = new FootballBetGenerator();
@@ -156,24 +159,41 @@ public class SportsTrader {
             log.severe("Error getting initial football matches. Exiting...");
             System.exit(1);
         }
-        int total_matches_found = footballMatches.size();
-        if (MAX_MATCHES > 0 && MAX_MATCHES < total_matches_found){
-            footballMatches = new ArrayList<FootballMatch>(footballMatches.subList(0, MAX_MATCHES));
-        }
-        footballMatches.trimToSize();
-        log.info(String.format("Using %d football matches.", footballMatches.size()));
+        log.info(String.format("Found %d matches within given timeframe.", footballMatches.size()));
 
 
-        // Launch new Event Trader for each match found.
+
+        // Create Event Trader for each match found.
         for (FootballMatch match: footballMatches){
             EventTrader eventTrader = new EventTrader(match, siteObjects, footballBetGenerator);
             Thread evenTraderThread = new Thread(eventTrader);
             eventTrader.thread = evenTraderThread;
-            eventTraders.add(eventTrader);
             evenTraderThread.setName("ET - " + match.name);
-            evenTraderThread.start();
+            int sites_successfuly_setup = eventTrader.setupMatch();
+
+            if (sites_successfuly_setup < MIN_SITES_PER_MATCH){
+                log.warning(String.format("Only %d/%d sites setup for %s. Not above min of %d, skipping.",
+                        sites_successfuly_setup, siteObjects.size(), match, MIN_SITES_PER_MATCH));
+                continue;
+            }
+
+            eventTraders.add(eventTrader);
+            if (eventTraders.size() >= MAX_MATCHES){
+                break;
+            }
         }
-        log.info("All Event Traders spawned.");
+
+        log.info(String.format("%d matches setup successfully with at least %d site connectors.",
+                eventTraders.size(), MIN_SITES_PER_MATCH));
+
+        System.exit(0);
+        // TODO: Make this concurrent (below starting)
+
+        // Run all event traders
+        for (EventTrader eventTrader: eventTraders){
+            eventTrader.thread.start();
+        }
+        log.info("All Event Traders started.");
 
         // Start the session updater to keep all sites connected.
         SessionsUpdater sessionsUpdater = new SessionsUpdater();
@@ -223,42 +243,28 @@ public class SportsTrader {
 
 
     private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException {
-        BettingSite site = siteObjects.get("matchbook");
+        String site_name = "betfair";
+        BettingSite site = siteObjects.get(site_name);
         Instant from;
         Instant until;
         Instant now = Instant.now();
 
-
+        // Find time frame to search in
         if (IN_PLAY){
-            from = now.minus(3, ChronoUnit.HOURS);
-            log.info(String.format("Searching for matches %d hours ahead and in-play.", HOURS_AHEAD));
+            from = now.minus(5, ChronoUnit.HOURS);
+            log.info(String.format("Searching for matches from %s, %d hours ahead and in-play.",
+                    site_name, HOURS_AHEAD));
         } else{
             from = now;
-            log.info(String.format("Searching for matches %d hours ahead.", HOURS_AHEAD));
+            log.info(String.format("Searching for matches from %s, %d hours ahead.",
+                    site_name, HOURS_AHEAD));
         }
         until = now.plus(HOURS_AHEAD, ChronoUnit.HOURS);
 
+        // Get all football matches found in time frame.
         ArrayList<FootballMatch> fms = site.getFootballMatches(from, until);
-        ArrayList<FootballMatch> final_fms = new ArrayList<>();
 
-        log.info(String.format("Initially found %d matches in time frame.", fms.size()));
-
-        // Make sure each fm has a betfair ID associated. Skip if not and can't find one.
-        for (FootballMatch fm: fms){
-            if (fm.betfairEventId == null){
-                log.info(String.format("Attempting to match betfair ID to %s", fm));
-                fm.betfairEventId = Betfair.getEventFromSearch(fm.name, (Betfair) siteObjects.get("betfair"));
-                if (fm.betfairEventId == null){
-                    continue;
-                }
-            }
-            final_fms.add(fm);
-            if (final_fms.size() >= MAX_MATCHES){
-                break;
-            }
-        }
-
-        return final_fms;
+        return fms;
      }
 
 

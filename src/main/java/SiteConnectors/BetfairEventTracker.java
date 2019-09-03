@@ -55,7 +55,7 @@ public class BetfairEventTracker extends SiteEventTracker {
     @Override
     public boolean setupMatch(FootballMatch setup_match) throws Exception {
 
-        log.info(String.format("Attempting to setup match in betfair for %s.", setup_match.toString()));
+        log.info(String.format("Setting up match in Betfair Event Tracker"));
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
         Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
 

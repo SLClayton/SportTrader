@@ -24,11 +24,15 @@ public abstract class Match {
     }
 
     public static String listtostring(ArrayList<FootballMatch> matches){
-        String[] stringarray = new String[matches.size()];
+        String s = "[";
         for (int i=0; i<matches.size(); i++){
-            stringarray[i] = matches.get(i).toString();
+            s += matches.get(i).toString();
+            if (i + 1 != matches.size()){
+                s += ", ";
+            }
         }
-        return stringarray.toString();
+        s += "]";
+        return s;
     }
 }
 

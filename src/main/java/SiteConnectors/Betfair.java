@@ -36,6 +36,7 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.*;
@@ -72,6 +73,9 @@ public class Betfair extends BettingSite {
     public RPCRequestHandler rpcRequestHandler;
     public BlockingQueue<JsonHandler> rpcRequestHandlerQueue;
 
+    public EventSearchHandler eventSearchHandler;
+    public BlockingQueue<Object[]> eventSearchHandlerQueue;
+
     public BigDecimal commission_discount = BigDecimal.ZERO;
     public BigDecimal balance;
     public long betfairPoints = 0;
@@ -99,7 +103,7 @@ public class Betfair extends BettingSite {
             NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException {
 
         super();
-        log.info(String.format("Creating new instance of %s.", this.getClass().getName()));
+        log.info("Creating new Betfair Connector");
         name = "betfair";
 
         requester = new Requester();
@@ -109,12 +113,66 @@ public class Betfair extends BettingSite {
         balance = BigDecimal.ZERO;
         updateAccountDetails();
 
+        eventSearchHandlerQueue = new LinkedBlockingQueue<>();
+        eventSearchHandler = new EventSearchHandler(this, eventSearchHandlerQueue);
+        Thread eventSearchHandlerThread = new Thread(eventSearchHandler);
+        eventSearchHandlerThread.setName("BF EvntSrchHndlr");
+        eventSearchHandlerThread.start();
+
+
         rpcRequestHandlerQueue = new LinkedBlockingQueue<>();
         rpcRequestHandler = new RPCRequestHandler(rpcRequestHandlerQueue);
         Thread rpcRequestHandlerThread = new Thread(rpcRequestHandler);
         rpcRequestHandlerThread.setDaemon(true);
-        rpcRequestHandlerThread.setName("Betfair RH");
+        rpcRequestHandlerThread.setName("BF ReqHandler");
         rpcRequestHandlerThread.start();
+    }
+
+
+    public class EventSearchHandler implements Runnable{
+
+        long time_interval = 500;
+
+        Betfair betfair;
+        BlockingQueue<Object[]> jobQueue;
+
+        public EventSearchHandler(Betfair BETFAIR, BlockingQueue<Object[]> queue){
+            betfair = BETFAIR;
+            jobQueue = queue;
+        }
+
+        @Override
+        public void run() {
+            log.info("Betfair event search handler started");
+            Instant last_request = Instant.now().minus(10, ChronoUnit.DAYS);
+
+            while (true){
+
+                try {
+                    // Get job and split up query and where to put response
+                    Object[] job = jobQueue.take();
+                    String query = (String) job[0];
+                    BlockingQueue responseQueue = (BlockingQueue) job[1];
+
+                    // If last request was in the time interval in the past, wait.
+                    long mill_difference = Instant.now().toEpochMilli() - last_request.toEpochMilli();
+                    if (mill_difference < time_interval){
+                        long wait_time = time_interval - mill_difference;
+                        Thread.sleep(wait_time);
+                    }
+
+                    // Put response into response queue
+                    String response = _getEventFromSearch(query, betfair);
+                    responseQueue.put(response);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        }
     }
 
 
@@ -470,6 +528,22 @@ public class Betfair extends BettingSite {
 
 
     public static String getEventFromSearch(String query, Betfair bf){
+
+        ArrayBlockingQueue<String> responseQueue = new ArrayBlockingQueue<>(1);
+        Object[] params = new Object[] {query, responseQueue};
+
+        try {
+            bf.eventSearchHandlerQueue.put(params);
+            String response = responseQueue.take();
+            return response;
+        } catch (InterruptedException e) {
+            log.severe("Interrupt while getting event from search in betfair");
+            return null;
+        }
+    }
+
+
+    public static String _getEventFromSearch(String query, Betfair bf){
 
         // Create HTTP GET to search betfairs regular search for query
         // returning pure html

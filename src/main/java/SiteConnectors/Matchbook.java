@@ -57,6 +57,7 @@ public class Matchbook extends BettingSite {
             log.setLevel(Level.INFO);
             log.addHandler(new MyLogHandler());
         }
+        log.info("Creating new Matchbook Connector");
 
         name = "matchbook";
 
