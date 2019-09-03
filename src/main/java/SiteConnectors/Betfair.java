@@ -566,9 +566,31 @@ public class Betfair extends BettingSite {
             Betfair b = new Betfair();
 
 
+            JSONObject filter = new JSONObject();
+            JSONArray eventids = new JSONArray();
+            eventids.add(b.getEventFromMarket("1.161782354"));
+            filter.put("eventIds", eventids);
 
-        } catch (URISyntaxException | IOException | CertificateException | UnrecoverableKeyException |
-                NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+            JSONArray proj = new JSONArray();
+            proj.add("RUNNER_DESCRIPTION");
+            proj.add("RUNNER_METADATA");
+            proj.add("MARKET_DESCRIPTION");
+            proj.add("EVENT");
+            proj.add("EVENT_TYPE");
+            proj.add("MARKET_START_TIME");
+            proj.add("COMPETITION");
+
+            JSONObject params = new JSONObject();
+            params.put("filter", filter);
+            params.put("marketProjection", proj);
+
+
+            JSONArray mc = b.getMarketCatalogue(params);
+            p(mc);
+
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

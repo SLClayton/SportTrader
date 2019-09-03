@@ -297,10 +297,18 @@ public class BetfairEventTracker extends SiteEventTracker {
                 log.fine(String.format("No %s bet found in betfair for %s", bet.id(), match));
                 continue;
             }
-            else if (!(runner.containsKey("ex")) || !(runner.containsKey("status"))
-                    || !(runner.get("status").toString().equals("ACTIVE"))){
-
-                log.warning(String.format("Invalid runner found in bet %s for %s in betfair.", bet, match));
+            else if (!(runner.containsKey("ex")) || !(runner.containsKey("status"))){
+                log.warning(String.format("No 'ex' or 'status' fields found in runner for bet %s for %s in betfair.",
+                        bet, match));
+                continue;
+            }
+            String runner_status = runner.get("status").toString();
+            if (runner_status.equals("CLOSED")){
+                continue;
+            }
+            if (!(runner_status.equals("ACTIVE"))){
+                log.warning(String.format("Runner status is %s in bet %s for %s in betfair.",
+                        runner_status, bet, match));
                 continue;
             }
 

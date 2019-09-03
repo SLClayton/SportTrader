@@ -127,6 +127,7 @@ public class EventTrader implements Runnable {
         for (int i=0; i<sites.size(); i++){
             MarketOddsReportWorker morw = new MarketOddsReportWorker(siteMarketOddsToGetQueue, siteEventTrackers);
             Thread thread = new Thread(morw);
+            thread.setName(Thread.currentThread().getName() + " OR-" + i);
             thread.start();
         }
         
@@ -229,7 +230,7 @@ public class EventTrader implements Runnable {
         Collections.sort(tautologyProfitReports, Collections.reverseOrder());
 
         // Ceate list of profit reports with profits over min_prof_margain
-        BigDecimal min_profit_margain = new BigDecimal("-1.00");
+        BigDecimal min_profit_margain = new BigDecimal("0.00");
         ArrayList<ProfitReport> in_profit = new ArrayList<ProfitReport>();
         for (ProfitReport pr: tautologyProfitReports){
             if (pr.profit_ratio.compareTo(min_profit_margain) == 1){
