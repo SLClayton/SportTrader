@@ -142,7 +142,6 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         // Get market catalogue for this event
         JSONArray markets = null;
-        log.info(String.format("Attempting to collect initial market data for %s in Betfair.", match));
         try {
             markets = (JSONArray) betfair.getMarketCatalogue(params);
         } catch (Exception e) {
@@ -234,7 +233,6 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         // Get market catalogue for this event
         JSONArray markets = null;
-        log.info(String.format("Attempting to collect initial market data for %s in Betfair.", match));
         try {
             markets = (JSONArray) betfair.getMarketCatalogue(params);
         } catch (Exception e) {

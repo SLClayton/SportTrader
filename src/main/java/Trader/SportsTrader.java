@@ -162,35 +162,55 @@ public class SportsTrader {
         log.info(String.format("Found %d matches within given timeframe.", footballMatches.size()));
 
 
-
         // Create Event Trader for each match found.
+        ArrayList<EventTrader.SetupMatchRunner> setupRunners = new ArrayList<>();
         for (FootballMatch match: footballMatches){
             EventTrader eventTrader = new EventTrader(match, siteObjects, footballBetGenerator);
-            Thread evenTraderThread = new Thread(eventTrader);
-            eventTrader.thread = evenTraderThread;
-            evenTraderThread.setName("ET - " + match.name);
-            int sites_successfuly_setup = eventTrader.setupMatch();
 
-            if (sites_successfuly_setup < MIN_SITES_PER_MATCH){
-                log.warning(String.format("Only %d/%d sites setup for %s. Not above min of %d, skipping.",
-                        sites_successfuly_setup, siteObjects.size(), match, MIN_SITES_PER_MATCH));
+            // Create threads to run the setups of the event traders
+            EventTrader.SetupMatchRunner eventTraderSetup = new EventTrader.SetupMatchRunner(eventTrader);
+            eventTraderSetup.thread = new Thread(eventTraderSetup);
+            eventTraderSetup.thread.setName("SU: " + match.name);
+            setupRunners.add(eventTraderSetup);
+            eventTraderSetup.thread.start();
+        }
+
+        // Wait for setups to complete and add the event trader to the list if the setup
+        // successfully connected to enough sites.
+        for (EventTrader.SetupMatchRunner setupRunner: setupRunners){
+            try {
+                setupRunner.thread.join();
+            } catch (InterruptedException e) {
+                log.severe(String.format("Interrupt while setting up match for %s.",
+                        setupRunner.eventTrader.match.toString()));
                 continue;
             }
 
-            eventTraders.add(eventTrader);
+            // When a setuprunner thread is done, add it's eventTrader to the list if it
+            // reached the min number of connected sites.
+            if (setupRunner.sites_connected != null && setupRunner.sites_connected >= MIN_SITES_PER_MATCH){
+                eventTraders.add(setupRunner.eventTrader);
+            }
             if (eventTraders.size() >= MAX_MATCHES){
+                for (EventTrader.SetupMatchRunner sur: setupRunners){
+                    sur.cancel();
+                }
                 break;
             }
         }
-
         log.info(String.format("%d matches setup successfully with at least %d site connectors.",
                 eventTraders.size(), MIN_SITES_PER_MATCH));
 
-        System.exit(0);
-        // TODO: Make this concurrent (below starting)
+        // Exit if none have worked.
+        if (eventTraders.size() == 0){
+            log.severe("0 matches have been setup correctly. Exiting.");
+            System.exit(0);
+        }
 
         // Run all event traders
         for (EventTrader eventTrader: eventTraders){
+            eventTrader.thread = new Thread(eventTrader);
+            eventTrader.thread.setName("ET: " + eventTrader.match.name);
             eventTrader.thread.start();
         }
         log.info("All Event Traders started.");
@@ -243,7 +263,7 @@ public class SportsTrader {
 
 
     private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException {
-        String site_name = "betfair";
+        String site_name = "matchbook";
         BettingSite site = siteObjects.get(site_name);
         Instant from;
         Instant until;

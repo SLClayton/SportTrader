@@ -64,15 +64,20 @@ public class EventTrader implements Runnable {
     }
 
 
-    public int setupMatch(){
+    public Integer setupMatch(boolean cancel){
 
         // Create lists for sites which fail and succeed setting up
         int total_sites = sites.size();
         ArrayList<String> failed_sites = new ArrayList<String>();
         HashMap<String, BettingSite> accepted_sites = new HashMap<>();
 
-        //
+        //Connect each site to event tracker
         for (Map.Entry<String, BettingSite> entry: sites.entrySet()){
+            if (cancel){
+                log.info(String.format("CANCELLING setup of %s", match.name));
+                return null;
+            }
+
             String site_name = entry.getKey();
             BettingSite site = entry.getValue();
 
@@ -86,11 +91,11 @@ public class EventTrader implements Runnable {
             try {
                 setup_success = eventTracker.setupMatch(match);
             } catch (Exception e) {
+                e.printStackTrace();
                 log.warning(e.toString());
                 setup_success = false;
             }
             if (!(setup_success)){
-                log.warning(String.format("Unsuccessful setup of match for %s event tracker", site_name));
                 failed_sites.add(site_name);
                 continue;
             }
@@ -107,6 +112,30 @@ public class EventTrader implements Runnable {
 
 
         return siteEventTrackers.size();
+    }
+
+
+    public static class SetupMatchRunner implements Runnable{
+        // Just runs the setup match method of the given eventtrader
+
+        public EventTrader eventTrader;
+        public Integer sites_connected;
+        public Thread thread;
+        public Boolean cancel;
+
+        public SetupMatchRunner(EventTrader eventTrader){
+            this.eventTrader = eventTrader;
+            this.cancel = false;
+        }
+
+        @Override
+        public void run() {
+            sites_connected = eventTrader.setupMatch(cancel);
+        }
+
+        public void cancel(){
+            cancel = true;
+        }
     }
 
 

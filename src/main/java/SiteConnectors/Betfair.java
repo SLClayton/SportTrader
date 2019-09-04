@@ -131,7 +131,7 @@ public class Betfair extends BettingSite {
 
     public class EventSearchHandler implements Runnable{
 
-        long time_interval = 500;
+        long time_interval = 300;
 
         Betfair betfair;
         BlockingQueue<Object[]> jobQueue;

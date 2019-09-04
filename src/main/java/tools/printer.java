@@ -37,8 +37,8 @@ public abstract class printer {
         print(ps(j));
     }
 
-    public static void print(String output){
-        System.out.println(output);
+    public static void print(Object output){
+        System.out.println(output.toString());
     }
 
     public static void print(int output){

@@ -63,7 +63,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
             return false;
         }
         if (matching_events.size() > 1){
-            log.warning(String.format("Multiple matches found for %s in matchbook. Matching events %s.", setup_match, Match.listtostring(matching_events)));
+            log.warning(String.format("Over 1 matche found for %s in matchbook. Matching events %s.", setup_match, Match.listtostring(matching_events)));
             return false;
         }
 
@@ -257,24 +257,10 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
         if (bet.result == FootballBet.TEAM_A){
             runner = (JSONObject) runners.get(0);
-            String runner_name = (String) runner.get("name");
-            if (!FootballMatch.same_team(runner_name, match.team_a)){
-                log.warning(String
-                        .format("While confirming RESUlT bet in matchbook for %s, team '%s' does not match '%s'.",
-                                match, runner_name, match.team_a));
-                return null;
-            }
         }
 
         else if (bet.result == FootballBet.TEAM_B){
             runner = (JSONObject) runners.get(1);
-            String runner_name = (String) runner.get("name");
-            if (!FootballMatch.same_team(runner_name, match.team_b)){
-                log.warning(String
-                        .format("While confirming RESUlT bet in matchbook for %s, team '%s' does not match '%s'.",
-                                match, runner_name, match.team_b));
-                return null;
-            }
         }
 
         else if (bet.result == FootballBet.DRAW){

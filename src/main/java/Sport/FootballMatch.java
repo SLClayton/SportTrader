@@ -71,25 +71,32 @@ public class FootballMatch extends Match{
         }
 
         // Check betfair event IDs (if one doesnt have one then this will be false)
-        if (betfairEventId.equals(match.betfairEventId)){
+        if (betfairEventId == null || betfairEventId.equals(match.betfairEventId)){
             return true;
         }
 
-
+        // Check both teams can be seen as the same
         if (same_team(team_a, match.team_a) && same_team(team_b, match.team_b)){
             return true;
         }
 
-
         // Get Betfair event IDs for both matches if they have not got them
+        String bfid1 = null;
+        String bfid2 = null;
         if (betfairEventId == null){
-            betfairEventId = Betfair.getEventFromSearch(name, betfair);
+            bfid1 = Betfair.getEventFromSearch(name, betfair);
         }
+        else {bfid1 = betfairEventId;}
+
         if (match.betfairEventId == null){
-            match.betfairEventId = Betfair.getEventFromSearch(match.name, betfair);
+            bfid2 = Betfair.getEventFromSearch(match.name, betfair);
         }
+        else {bfid2 = match.betfairEventId;}
+
         // Check betfair event IDs (again)
-        if (betfairEventId.equals(match.betfairEventId)){
+        if (bfid1 != null && bfid1.equals(match.betfairEventId)){
+            betfairEventId = bfid1;
+            match.betfairEventId = bfid2;
             return true;
         }
 
