@@ -2,6 +2,7 @@ package SiteConnectors;
 
 import Sport.FootballEventState;
 import Sport.FootballMatch;
+import Sport.Match;
 import Sport.Team;
 import Trader.SportsTrader;
 import org.json.simple.JSONArray;
@@ -18,9 +19,7 @@ import java.io.IOException;
 import java.lang.annotation.Documented;
 import java.net.URISyntaxException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +46,7 @@ public class FlashScores {
         String response = requester.getRaw(url);
     }
 
+
     public FootballEventState getFootballState(String match_id) throws InterruptedException, IOException, URISyntaxException {
         String url = String.format("https://www.flashscore.co.uk/match/%s/#match-summary", match_id);
         String response = requester.getRaw(url);
@@ -69,14 +69,32 @@ public class FlashScores {
 
     }
 
-    public static String getMatchID(Team team, Instant start_time) throws InterruptedException, IOException,
+
+    public static FootballMatch getMatch(Team team, Instant start_time) throws InterruptedException, IOException,
             URISyntaxException {
 
+        // Returns match if team and time have a match, null if not
+
+        ArrayList<FootballMatch> teamFixtures = getTeamFixtures(team);
+        for (FootballMatch fm: teamFixtures){
+            if (fm.start_time.equals(start_time)){
+                return fm;
+            }
+        }
+        return null;
+    }
+
+
+    public static ArrayList<FootballMatch> getTeamFixtures(Team team) throws InterruptedException, IOException,
+            URISyntaxException {
+
+        // Create url and get raw response
         String url = String.format("https://www.flashscore.co.uk/team/%s/%s/fixtures/",
                 team.FS_URLNAME, team.FS_ID);
         Requester requester = new Requester();
         String raw = requester.getRaw(url);
 
+        // Find needed element by id in html and extract text
         Document doc = Jsoup.parse(raw);
         Element fixtures_element = doc.getElementById("participant-page-data-fixtures");
         if (fixtures_element == null){
@@ -84,23 +102,62 @@ public class FlashScores {
                     url));
             return null;
         }
-
         String raw_fixtures = fixtures_element.text();
-        toFile(raw_fixtures, "output");
 
-        Pattern pattern = Pattern.compile("÷[a-zA-Z]{8}¬");
-        Matcher m = pattern.matcher(raw_fixtures);
-        while (m.find()){
-            String id = m.group().substring(1, 9);
+        // Split into large chunks for each row of table (I think)
+        String[] split = raw_fixtures.split("~");
 
-            // TODO: Got fixture IDs, find which one matches the time given and return that
+        // Create a list to store hashmap for each row of table
+        ArrayList<SortedMap<String, String>> parts = new ArrayList<>();
+        for (String part_string: split){
+            String[] split_row = part_string.split("[÷¬]");
+
+            // Create MAP for each row
+            SortedMap<String, String> row_map = new TreeMap<>();
+            for (int i=0; i<split_row.length-1; i+=2){
+                row_map.put(split_row[i], split_row[i+1]);
+            }
+            parts.add(row_map);
         }
 
-        return null;
+        ArrayList<FootballMatch> footballMatches = new ArrayList<>();
+        for (Map<String, String> row: parts){
+            String match_id = row.get("AA");
+            String start_epoch = row.get("AD");
+            String team_a_name = row.get("AE");
+            String team_b_name = row.get("AF");
+            String team_a_FSID = row.get("PX");
+            String team_b_FSID = row.get("PY");
 
+            // Skip if any value is null
+            if (match_id == null || start_epoch == null || team_a_name == null || team_b_name == null
+            || team_a_FSID == null || team_b_FSID == null) {
+                continue;
+            }
+
+            Instant start_time = Instant.ofEpochSecond(Long.valueOf(start_epoch));
+
+            // Create team A
+            Team team_a = new Team(team_a_name);
+            team_a.FS_ID = team_a_FSID;
+            team_a.FS_Title = team_a_name;
+
+            // Create team b
+            Team team_b = new Team(team_b_name);
+            team_b.FS_ID = team_b_FSID;
+            team_b.FS_Title = team_b_name;
+
+            // Add match to list
+            FootballMatch fm = new FootballMatch(start_time, team_a, team_b);
+            fm.FSID = match_id;
+            footballMatches.add(fm);
+        }
+
+        return footballMatches;
     }
 
-    public static Team searchTeam(String query, Integer sport_id) throws InterruptedException, IOException,
+
+    public static ArrayList<Team> searchTeams(String query, Integer sport_id) throws InterruptedException, IOException,
             URISyntaxException {
 
         // Get raw response from flashscores
@@ -146,23 +203,102 @@ public class FlashScores {
             }
         }
 
-        if (filtered_results.size() == 0){
-            log.warning(String.format("No results found searching for sportid:%d '%s' in flashscores.",
-                    sport_id, query));
-            return null;
+        // Create list of team objects and return
+        ArrayList<Team> teams = new ArrayList<>();
+        for (JSONObject fm_json: filtered_results){
+            Team team = new Team((String) fm_json.get("title"));
+            team.FS_ID = (String) fm_json.get("id");
+            team.FS_Title = (String) fm_json.get("title");
+            team.FS_URLNAME = (String) fm_json.get("url");
+
+            teams.add(team);
         }
-
-        JSONObject first_result = (JSONObject) filtered_results.get(0);
-
-        Team team = new Team();
-        team.FS_ID = (String) first_result.get("id");
-        team.FS_Title = (String) first_result.get("title");
-        team.FS_URLNAME = (String) first_result.get("url");
-
-        return team;
+        return teams;
     }
 
 
+    public static FootballMatch verifyMatch(FootballMatch match) throws InterruptedException, IOException,
+            URISyntaxException {
+
+        // Get team search results for both teams names
+        ArrayList<Team> possible_teams_a = searchTeams(match.team_a.name, FOOTBALL);
+        ArrayList<Team> possible_teams_b = searchTeams(match.team_b.name, FOOTBALL);
+        int max_size = Integer.max(possible_teams_a.size(), possible_teams_b.size());
+        FootballMatch verifiedMatch = null;
+
+        for (int i=0; i<max_size; i++){
+
+            // Update next row of search results for each team to search for their fixtures
+            if (i < possible_teams_a.size()){
+                possible_teams_a.get(i).getFixtures();
+            }
+            if (i < possible_teams_b.size()){
+                possible_teams_b.get(i).getFixtures();
+            }
+
+            // Compile all fixtures for all possible A teams that match time
+            ArrayList<FootballMatch> all_matches_a = new ArrayList<>();
+            for (Team t: possible_teams_a){
+                if (t.fixtures != null){
+                    for (FootballMatch m: t.fixtures){
+                        if (m.start_time.equals(match.start_time)){
+                            all_matches_a.add(m);
+                        }
+                    }
+                }
+            }
+
+            // Compile all fixtures for all possible B teams that match time
+            ArrayList<FootballMatch> all_matches_b = new ArrayList<>();
+            for (Team t: possible_teams_b){
+                if (t.fixtures != null){
+                    for (FootballMatch m: t.fixtures){
+                        if (m.start_time.equals(match.start_time)){
+                            all_matches_b.add(m);
+                        }
+                    }
+                }
+            }
+
+            // Check any matches appear in both lists
+            ArrayList<FootballMatch> in_both_lists = new ArrayList<>();
+            for (FootballMatch m: all_matches_a){
+                if (m.inList(all_matches_b)){
+                    in_both_lists.add(m);
+                }
+            }
+
+            // Break if match found
+            if (in_both_lists.size() == 1){
+                verifiedMatch = in_both_lists.get(0);
+                break;
+            }
+            // Error if more than one found
+            if (in_both_lists.size() >= 2){
+                log.warning(String.format("2 or more matches found in flashscores for %s. %s",
+                        match.toString(), in_both_lists.toString()));
+                throw new IllegalStateException();
+            }
+        }
+
+        // None found
+        if (verifiedMatch == null){
+            log.warning(String.format("0 matches found in flashscores for %s.",
+                    match.toString()));
+            throw new IllegalStateException();
+        }
+
+        // Fill in Flashscores related data to match and return it
+        match.FSID =                verifiedMatch.FSID;
+        match.team_a.FS_ID =        verifiedMatch.team_a.FS_ID;
+        match.team_a.FS_URLNAME =   verifiedMatch.team_a.FS_URLNAME;
+        match.team_a.FS_Title =     verifiedMatch.team_a.FS_Title;
+        match.team_b.FS_ID =        verifiedMatch.team_b.FS_ID;
+        match.team_b.FS_URLNAME =   verifiedMatch.team_b.FS_URLNAME;
+        match.team_b.FS_Title =     verifiedMatch.team_b.FS_Title;
+        return match;
+        //TODO: this should be done. check where to put it
+    }
 
 
 
@@ -170,7 +306,13 @@ public class FlashScores {
         FlashScores fs = new FlashScores();
         try {
 
-            FlashScores.getMatchID(searchTeam("Darlington", FlashScores.FOOTBALL), Instant.now());
+            FootballMatch fm = new FootballMatch(Instant.parse("2019-09-14T11:30:00Z"),
+                    new Team("liverpool"), new Team("newcastle"));
+
+            FootballMatch vfm = verifyMatch(fm);
+
+            print(vfm);
+            print(vfm.FSID);
 
         } catch (Exception e) {
             e.printStackTrace();

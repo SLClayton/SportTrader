@@ -7,6 +7,7 @@ import Bet.FootballBet.FootballResultBet;
 import Bet.FootballBet.FootballScoreBet;
 import Bet.MarketOddsReport;
 import Sport.FootballMatch;
+import Sport.Team;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -96,7 +97,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
             FootballMatch possible_match;
             try {
-                possible_match = new FootballMatch(eventtime, team_a, team_b);
+                possible_match = new FootballMatch(eventtime, new Team(team_a), new Team(team_b));
                 possible_match.id = id;
             } catch (Exception e) {
                 log.warning(String.format("Failed to setup Football match for '%s' at '%s'.", eventname, eventtime));
@@ -425,21 +426,10 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         if (bet.winnerA()){
             runner = (JSONObject) runners.get(0);
-            String team_in_runner = runner.get("runnerName").toString();
-            if (!(FootballMatch.same_team(match.team_a, team_in_runner))){
-                log.severe(String.format("Betfair runner mismatch with team_a '%s' in RESULT_BET.\n%s",
-                        match.team_a, ps(runner)));
-                return null;
-            }
         }
         else if (bet.winnerB()){
             runner = (JSONObject) runners.get(1);
-            String team_in_runner = runner.get("runnerName").toString();
-            if (!(FootballMatch.same_team(match.team_b, team_in_runner))){
-                log.severe(String.format("Betfair runner mismatch with team_b '%s' in RESULT_BET.\n%s",
-                        match.team_b, ps(runner)));
-                return null;
-            }
+
         }
         else if (bet.isDraw()){
             runner = (JSONObject) runners.get(2);
@@ -521,18 +511,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     public static void main(String[] args){
-        try {
-            Betfair bf = new Betfair();
-            BetfairEventTracker bet = (BetfairEventTracker) bf.getEventTracker();
 
-            FootballMatch fm = new FootballMatch(Instant.parse("2019-08-28T18:45:00Z"), "Lincoln v Everton");
-
-            bet.setupMatch(fm);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 

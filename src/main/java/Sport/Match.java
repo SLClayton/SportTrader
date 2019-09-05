@@ -1,11 +1,13 @@
 package Sport;
 
+import Bet.ProfitReport;
 import SiteConnectors.Betfair;
 import Trader.SportsTrader;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -17,7 +19,7 @@ public abstract class Match {
     public String name;
     public String id;
     public Map<String, String> metadata;
-    public String betfairEventId;
+    public String FSID;
 
     public Match(){
         metadata = new HashMap<String, String>();
@@ -34,6 +36,9 @@ public abstract class Match {
         s += "]";
         return s;
     }
+
+
+
 }
 
 

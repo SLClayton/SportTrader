@@ -339,31 +339,5 @@ public class Matchbook extends BettingSite {
 
     public static void main(String[] args){
 
-        try {
-            Matchbook m = new Matchbook();
-
-            MatchbookEventTracker met = (MatchbookEventTracker) m.getEventTracker();
-            met.setupMatch(new FootballMatch(Instant.parse("2019-08-18T13:00:00.000Z"), "Hamarkameratene", "KFUM Oslo"));
-
-            JSONObject r = m.getMarketDataFromHandler(met.event_id);
-
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

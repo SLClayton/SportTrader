@@ -12,38 +12,21 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import static tools.printer.print;
+
 public class FootballMatch extends Match{
 
     public static String[] removable_keywords = {"fc", "town", "city", "women", "w", "of", "and", "&"};
 
-    public String team_a;
-    public String team_b;
+    public Team team_a;
+    public Team team_b;
 
-    public FootballMatch(Instant START, String NAME) throws Exception {
-        super();
-
-        start_time = START;
-        name = NAME;
-
-        String[] parts = name.toLowerCase().split(" v ");
-        if (parts.length != 2){
-            parts = name.toLowerCase().split(" vs ");
-            if (parts.length != 2){
-                throw new Exception(String.format("Cannot find teams from name '%s'", name));
-            }
-        }
-
-        team_a = parts[0];
-        team_b = parts[1];
-    }
-
-
-    public FootballMatch(Instant START, String TEAM_A, String TEAM_B){
+    public FootballMatch(Instant START, Team TEAM_A, Team TEAM_B){
         super();
         start_time = START;
         team_a = TEAM_A;
         team_b = TEAM_B;
-        name = team_a + " v " + team_b;
+        name = team_a.name + " v " + team_b.name;
     }
 
     public static FootballMatch parse(String start, String name) throws ParseException {
@@ -54,7 +37,7 @@ public class FootballMatch extends Match{
             String msg = String.format("Cannot parse Match name '%s'", name);
             throw new ParseException(msg, 1);
         }
-        return new FootballMatch(start_time, teams[0], teams[1]);
+        return new FootballMatch(start_time, new Team(teams[0]), new Team(teams[1]));
     }
 
     public String toString(){
@@ -65,38 +48,14 @@ public class FootballMatch extends Match{
     public boolean same_match(FootballMatch match, Betfair betfair){
         log.fine(String.format("Checking match for %s and %s.", this, match));
 
-        // Check Start time
+        // Check Start time, false if different
         if (!start_time.equals(match.start_time)){
             return false;
         }
 
-        // Check betfair event IDs (if one doesnt have one then this will be false)
-        if (betfairEventId == null || betfairEventId.equals(match.betfairEventId)){
-            return true;
-        }
-
-        // Check both teams can be seen as the same
-        if (same_team(team_a, match.team_a) && same_team(team_b, match.team_b)){
-            return true;
-        }
-
-        // Get Betfair event IDs for both matches if they have not got them
-        String bfid1 = null;
-        String bfid2 = null;
-        if (betfairEventId == null){
-            bfid1 = Betfair.getEventFromSearch(name, betfair);
-        }
-        else {bfid1 = betfairEventId;}
-
-        if (match.betfairEventId == null){
-            bfid2 = Betfair.getEventFromSearch(match.name, betfair);
-        }
-        else {bfid2 = match.betfairEventId;}
-
-        // Check betfair event IDs (again)
-        if (bfid1 != null && bfid1.equals(match.betfairEventId)){
-            betfairEventId = bfid1;
-            match.betfairEventId = bfid2;
+        // Check FS IDs (if one doesnt have one then this will be false)
+        // true if the same
+        if (this.FSID == null || this.FSID.equals(match.FSID)){
             return true;
         }
 
@@ -171,5 +130,17 @@ public class FootballMatch extends Match{
         return false;
     }
 
+    public boolean inList(List<FootballMatch> list){
+        return list_contains(list, this);
+    }
+
+    public static boolean list_contains(List<FootballMatch> list, Match match){
+        for (FootballMatch match2: list){
+            if (match.FSID.equals(match2.FSID)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

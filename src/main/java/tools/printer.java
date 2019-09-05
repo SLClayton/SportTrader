@@ -38,7 +38,12 @@ public abstract class printer {
     }
 
     public static void print(Object output){
-        System.out.println(output.toString());
+        if (output == null){
+            print("null");
+        }
+        else {
+            System.out.println(output.toString());
+        }
     }
 
     public static void print(int output){

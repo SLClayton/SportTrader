@@ -107,7 +107,7 @@ public class Betfair extends BettingSite {
         name = "betfair";
 
         requester = new Requester();
-        requester.setHeader("X-Application", app_id);
+        requester.setHeader("X-Application", app_id_dev);
         login();
 
         balance = BigDecimal.ZERO;
@@ -496,7 +496,6 @@ public class Betfair extends BettingSite {
             try {
                 fm = FootballMatch.parse((String) event.get("openDate"),
                                          (String) event.get("name"));
-                fm.betfairEventId = (String) event.get("id");
             }
             catch (ParseException e){
                 continue;

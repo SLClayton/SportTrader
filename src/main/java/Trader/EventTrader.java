@@ -274,6 +274,11 @@ public class EventTrader implements Runnable {
 
     public void profitFound(ArrayList<ProfitReport> in_profit){
 
+
+        if (true){
+            return;
+        }
+
         // Create profit folder if it does not exist
         File profit_dir = new File(FileSystems.getDefault().getPath(".") + "/profit");
         if (!profit_dir.exists()){
@@ -293,21 +298,6 @@ public class EventTrader implements Runnable {
         String profitString = best.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
         String filename = timeString + " -  " + match.name + " " + profitString + ".json";
         p(best.toJSON(true), profit_dir.toString() + "/" + filename);
-    }
-
-
-    public void updateMatch() throws IOException, URISyntaxException {
-
-        JSONObject filter = new JSONObject();
-        JSONArray event_ids = new JSONArray();
-        event_ids.add(match.betfairEventId);
-        filter.put("eventIds", event_ids);
-
-        JSONArray r = (JSONArray) betfair.getEvents(filter);
-
-        p(r);
-
-        System.exit(0);
     }
 
 
