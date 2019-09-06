@@ -59,15 +59,16 @@ public class MyLogHandler extends Handler {
 
 
         StringBuilder sb = new StringBuilder();
-        String timestring = Instant.now().toString()
+        Instant time = Instant.ofEpochMilli(record.getMillis());
+        String timestring = time.toString()
                 .replace("T", " ");
         if (timestring.length() > 24){
             timestring = timestring.substring(0, 24);
         }
         sb.append(timestring)
-                .append(String.format(" [%s] ", record.getLevel().toString()))
-                .append(String.format("[%s] ", threadname))
-                .append(record.getSourceMethodName())
+                .append(String.format(" [%s] ", threadname))
+                .append(String.format("[%s] ", record.getLevel().toString()))
+                //.append(record.getSourceMethodName())
                 .append(": ")
                 .append(record.getMessage());
 

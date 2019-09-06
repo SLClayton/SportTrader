@@ -4,6 +4,7 @@ import Bet.BetOffer;
 import Sport.FootballMatch;
 import Trader.SportsTrader;
 import tools.MyLogHandler;
+import tools.Requester;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public abstract class BettingSite {
 
     public String name;
     public String ssldir;
+    public Requester requester;
 
     public BigDecimal balance;
 
@@ -52,7 +54,7 @@ public abstract class BettingSite {
 
     public abstract SiteEventTracker getEventTracker();
 
-    public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException;
+    public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException;
 
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
         // Default ROI, commission on profits only

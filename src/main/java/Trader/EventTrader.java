@@ -4,6 +4,7 @@ import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.Betfair;
 import SiteConnectors.BettingSite;
+import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import org.apache.commons.codec.binary.StringUtils;
@@ -64,7 +65,7 @@ public class EventTrader implements Runnable {
     }
 
 
-    public Integer setupMatch(boolean cancel){
+    public Integer setupMatch(){
 
         // Create lists for sites which fail and succeed setting up
         int total_sites = sites.size();
@@ -73,69 +74,41 @@ public class EventTrader implements Runnable {
 
         //Connect each site to event tracker
         for (Map.Entry<String, BettingSite> entry: sites.entrySet()){
-            if (cancel){
-                log.info(String.format("CANCELLING setup of %s", match.name));
-                return null;
-            }
 
             String site_name = entry.getKey();
             BettingSite site = entry.getValue();
 
             // Try to setup match, remove site if fail
             SiteEventTracker eventTracker = site.getEventTracker();
-            // Each event tracker needs to use the betfair instance.
-            eventTracker.betfair = (Betfair) sites.get("betfair");
-
 
             boolean setup_success = false;
             try {
                 setup_success = eventTracker.setupMatch(match);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException | URISyntaxException | InterruptedException e) {
                 log.warning(e.toString());
                 setup_success = false;
             }
             if (!(setup_success)){
                 failed_sites.add(site_name);
+                log.info(String.format("%s failed to setup in %s Event Tracker.",
+                        match, site_name));
                 continue;
             }
 
             // Add successful sites and trackers into maps
             siteEventTrackers.put(site_name, eventTracker);
             accepted_sites.put(site_name, site);
-            log.info(String.format("Successfully setup match in %s Event Tracker.", site_name));
+            log.info(String.format("%s successfully setup in %s Event Tracker.",
+                    match, site_name));
         }
 
         sites = accepted_sites;
-        log.info(String.format("%d/%d sites setup successfully. Failures: %s",
-                siteEventTrackers.size(), total_sites, failed_sites.toString()));
+        log.info(String.format("%d/%d sites setup successfully for %s. Failures: %s",
+                siteEventTrackers.size(), total_sites, match, failed_sites.toString()));
 
 
+        // return number of sites setup.
         return siteEventTrackers.size();
-    }
-
-
-    public static class SetupMatchRunner implements Runnable{
-        // Just runs the setup match method of the given eventtrader
-
-        public EventTrader eventTrader;
-        public Integer sites_connected;
-        public Thread thread;
-        public Boolean cancel;
-
-        public SetupMatchRunner(EventTrader eventTrader){
-            this.eventTrader = eventTrader;
-            this.cancel = false;
-        }
-
-        @Override
-        public void run() {
-            sites_connected = eventTrader.setupMatch(cancel);
-        }
-
-        public void cancel(){
-            cancel = true;
-        }
     }
 
 

@@ -54,9 +54,9 @@ public class BetfairEventTracker extends SiteEventTracker {
     }
 
     @Override
-    public boolean setupMatch(FootballMatch setup_match) throws Exception {
+    public boolean setupMatch(FootballMatch setup_match) throws IOException,
+            URISyntaxException {
 
-        log.info(String.format("Setting up match in Betfair Event Tracker"));
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
         Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
 
@@ -80,14 +80,14 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
 
         // Check each event returned to find matching events
-        ArrayList<FootballMatch> matching_events = new ArrayList<>();
+        match = null;
         ArrayList<FootballMatch> all_events = new ArrayList<>();
         for (int i=0; i<events.size(); i++){
             JSONObject eventjson = (JSONObject) ((JSONObject) events.get(i)).get("event");
 
             Instant eventtime = Instant.parse(eventjson.get("openDate").toString());
             String eventname = eventjson.get("name").toString();
-            String id = eventjson.get("id").toString();
+            String betfair_id = eventjson.get("id").toString();
             String[] teams = eventname.trim().split(" v ");
             if (teams.length != 2){
                 continue;
@@ -98,20 +98,31 @@ public class BetfairEventTracker extends SiteEventTracker {
             FootballMatch possible_match;
             try {
                 possible_match = new FootballMatch(eventtime, new Team(team_a), new Team(team_b));
-                possible_match.id = id;
             } catch (Exception e) {
                 log.warning(String.format("Failed to setup Football match for '%s' at '%s'.", eventname, eventtime));
                 continue;
             }
 
             all_events.add(possible_match);
-            if (setup_match.same_match(possible_match, betfair)){
-                matching_events.add(possible_match);
+
+            // Try verifying match in flashscores
+            try {
+                possible_match.verify();
+            } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e){
+                log.warning(String.format("Could not verify betfair match %s in flashscores.", possible_match));
+                continue;
+            }
+
+            // If FSIDs match then break
+            if (possible_match.FSID.equals(setup_match.FSID)){
+                match = possible_match;
+                event_id = betfair_id;
+                break;
             }
         }
 
-        // Error if not only one found
-        if (matching_events.size() != 1) {
+        // Error if not found
+        if (match == null) {
             String fails = "";
             for (FootballMatch m: all_events){
                 fails = fails + " " + m.toString();
@@ -121,9 +132,8 @@ public class BetfairEventTracker extends SiteEventTracker {
             return false;
         }
 
-        // Match found
-        log.info(String.format("Corresponding match found in Betfair for %s", setup_match));
-        match = matching_events.get(0);
+
+
 
         // Build params for market catalogue request
         JSONObject params = new JSONObject();
@@ -137,7 +147,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         marketTypeCodes.addAll(Arrays.asList(betfair.football_market_types));
         filters.put("marketTypeCodes", marketTypeCodes);
         JSONArray eventIds = new JSONArray();
-        eventIds.add(match.id);
+        eventIds.add(event_id);
         filters.put("eventIds", eventIds);
 
 
@@ -145,7 +155,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         JSONArray markets = null;
         try {
             markets = (JSONArray) betfair.getMarketCatalogue(params);
-        } catch (Exception e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             throw e;
         }
@@ -163,6 +173,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             market_name_id_map.put(market_type, market_id);
         }
 
+        match = setup_match;
         return true;
     }
 

@@ -40,7 +40,6 @@ public class Matchbook extends BettingSite {
             "correct_score"};
     public static String FOOTBALL_ID = "15";
 
-    public Requester requester;
     public marketDataRequestHandler marketDataRequestHandler;
     public BlockingQueue<RequestHandler> marketDataRequestHandlerQueue;
 
@@ -237,13 +236,15 @@ public class Matchbook extends BettingSite {
     }
 
     @Override
-    public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException {
+    public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException,
+            URISyntaxException, InterruptedException {
+
         return getEvents(from, until, new String[] {FOOTBALL_ID});
     }
 
 
     public ArrayList<FootballMatch> getEvents(Instant before, Instant after, String[] event_types) throws IOException,
-            URISyntaxException {
+            URISyntaxException, InterruptedException {
 
         // Setup paramters
         JSONObject params = new JSONObject();
@@ -287,19 +288,23 @@ public class Matchbook extends BettingSite {
                 log.warning(e.toString());
                 continue;
             }
+
+
         }
+
+
 
         return events;
     }
 
     public ArrayList<FootballMatch> getEvents(Instant before, Instant after, String event_type) throws IOException,
-            URISyntaxException {
+            URISyntaxException, InterruptedException {
 
         return getEvents(before, after, new String[] {event_type});
     }
 
 
-    public JSONArray getMarketData(String[] event_ids) throws IOException, URISyntaxException {
+    public JSONArray getMarketData(String[] event_ids) throws IOException, URISyntaxException, InterruptedException {
         StringBuilder sb = new StringBuilder();
         for (int i=0; i<event_ids.length; i++){
             sb.append(event_ids[i]);

@@ -162,7 +162,7 @@ public class FlashScores {
 
         // Get raw response from flashscores
         Requester requester = new Requester();
-        HashMap<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("q", query);
         params.put("l", "5");
         params.put("s", "0");
@@ -192,16 +192,21 @@ public class FlashScores {
             return null;
         }
 
-        // Extract results then filter for correct sport ID
+        // Extract results then filter for correct sport ID and participant type (team)
         JSONArray results = (JSONArray) json.get("results");
         ArrayList<JSONObject> filtered_results = new ArrayList<>();
-        for (Object result_obj: results) {
-            JSONObject result = (JSONObject) result_obj;
+        if (results != null){
+            for (Object result_obj: results) {
+                JSONObject result = (JSONObject) result_obj;
 
-            if (((long) result.get("sport_id")) == sport_id) {
-                filtered_results.add(result);
+                if (((long) result.get("sport_id")) == sport_id
+                        && ((long) result.get("participant_type_id")) == 1) {
+
+                    filtered_results.add(result);
+                }
             }
         }
+
 
         // Create list of team objects and return
         ArrayList<Team> teams = new ArrayList<>();
@@ -217,12 +222,18 @@ public class FlashScores {
     }
 
 
+    public static class verificationException extends Exception {
+
+    }
+
+
     public static FootballMatch verifyMatch(FootballMatch match) throws InterruptedException, IOException,
-            URISyntaxException {
+            URISyntaxException, verificationException {
 
         // Get team search results for both teams names
         ArrayList<Team> possible_teams_a = searchTeams(match.team_a.name, FOOTBALL);
         ArrayList<Team> possible_teams_b = searchTeams(match.team_b.name, FOOTBALL);
+
         int max_size = Integer.max(possible_teams_a.size(), possible_teams_b.size());
         FootballMatch verifiedMatch = null;
 
@@ -275,17 +286,14 @@ public class FlashScores {
             }
             // Error if more than one found
             if (in_both_lists.size() >= 2){
-                log.warning(String.format("2 or more matches found in flashscores for %s. %s",
-                        match.toString(), in_both_lists.toString()));
-                throw new IllegalStateException();
+                log.severe(String.format("2 or more matches found in flashscores for %s", match));
+                throw new verificationException();
             }
         }
 
         // None found
         if (verifiedMatch == null){
-            log.warning(String.format("0 matches found in flashscores for %s.",
-                    match.toString()));
-            throw new IllegalStateException();
+            throw new verificationException();
         }
 
         // Fill in Flashscores related data to match and return it
@@ -297,7 +305,6 @@ public class FlashScores {
         match.team_b.FS_URLNAME =   verifiedMatch.team_b.FS_URLNAME;
         match.team_b.FS_Title =     verifiedMatch.team_b.FS_Title;
         return match;
-        //TODO: this should be done. check where to put it
     }
 
 
@@ -306,13 +313,7 @@ public class FlashScores {
         FlashScores fs = new FlashScores();
         try {
 
-            FootballMatch fm = new FootballMatch(Instant.parse("2019-09-14T11:30:00Z"),
-                    new Team("liverpool"), new Team("newcastle"));
-
-            FootballMatch vfm = verifyMatch(fm);
-
-            print(vfm);
-            print(vfm.FSID);
+            ArrayList<Team> teams = searchTeams("south", FOOTBALL);
 
         } catch (Exception e) {
             e.printStackTrace();

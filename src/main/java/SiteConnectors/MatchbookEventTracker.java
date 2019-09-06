@@ -11,8 +11,10 @@ import Sport.Match;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -40,37 +42,40 @@ public class MatchbookEventTracker extends SiteEventTracker {
     }
 
     @Override
-    public boolean setupMatch(FootballMatch setup_match) throws Exception {
+    public boolean setupMatch(FootballMatch setup_match) throws IOException, URISyntaxException, InterruptedException {
 
-        log.info(String.format("Setting up match in Matchbook Event Tracker"));
-        ArrayList<FootballMatch> events = matchbook.getEvents(setup_match.start_time.minus(1, ChronoUnit.SECONDS),
-                setup_match.start_time.plus(1, ChronoUnit.SECONDS),
-                                                              matchbook.FOOTBALL_ID);
+        ArrayList<FootballMatch> events = matchbook
+                .getEvents(setup_match.start_time.minus(1, ChronoUnit.SECONDS),
+                           setup_match.start_time.plus(1, ChronoUnit.SECONDS),
+                           matchbook.FOOTBALL_ID);
 
-        // Check each searched for match in matchbook to see if it matches with the desired
-        // match we are trying to set up.
-        ArrayList<FootballMatch> matching_events = new ArrayList<FootballMatch>();
+        match = null;
+        // Verify each match in flashscores and see if it matches
         for (FootballMatch fm: events){
-            if (setup_match.same_match(fm, betfair)){
-                matching_events.add(fm);
+
+            try{
+                fm.verify();
+            } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e){
+                log.warning(String.format("Could not verify matchbook match %s in flashscores.", fm));
+                continue;
+            }
+
+            if (fm.FSID.equals(setup_match.FSID)){
+                match = fm;
+                event_id = fm.metadata.get("matchbook_event_id");
+                break;
             }
         }
 
-        // Check for no match or >1 match.
-        if (matching_events.size() == 0){
+        // Check for no match
+        if (match == null){
             log.warning(String.format("No match for %s found in matchbook. Searched %d events %s.",
                     setup_match, events.size(), Match.listtostring(events)));
             return false;
         }
-        if (matching_events.size() > 1){
-            log.warning(String.format("Over 1 matche found for %s in matchbook. Matching events %s.", setup_match, Match.listtostring(matching_events)));
-            return false;
-        }
 
-        // Match found, set as event for this object
-        event_id = matching_events.get(0).metadata.get("matchbook_event_id");
+
         this.match = setup_match;
-
         return true;
     }
 

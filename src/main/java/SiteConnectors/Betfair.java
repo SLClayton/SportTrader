@@ -69,7 +69,6 @@ public class Betfair extends BettingSite {
     public String app_id_dev = "DfgkZAnb0qi6Wmk1";
     public String token;
 
-    public Requester requester;
     public RPCRequestHandler rpcRequestHandler;
     public BlockingQueue<JsonHandler> rpcRequestHandlerQueue;
 
@@ -506,7 +505,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public JSONArray getMarketCatalogue(JSONObject params) throws Exception {
+    public JSONArray getMarketCatalogue(JSONObject params) throws IOException, URISyntaxException {
         params.put("maxResults", 1000);
 
         JSONObject j = new JSONObject();
@@ -519,7 +518,7 @@ public class Betfair extends BettingSite {
 
         if (r.containsKey("error")){
             String msg = String.format("Error getting market catalogue from betfair.\nparams\n%s\nresult\n%s", ps(params), ps(r));
-            throw new Exception(msg);
+            throw new IOException(msg);
         }
 
         return (JSONArray) r.get("result");
@@ -546,7 +545,7 @@ public class Betfair extends BettingSite {
 
         // Create HTTP GET to search betfairs regular search for query
         // returning pure html
-        HashMap<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("query", query);
         String html;
         Requester requester = new Requester();

@@ -5,6 +5,8 @@ import Bet.MarketOddsReport;
 import Sport.FootballMatch;
 import Trader.SportsTrader;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -23,7 +25,6 @@ public abstract class SiteEventTracker {
     public BlockingQueue<Boolean> updateComplete;
     public FootballMatch match;
     public Set<String> bet_blacklist;
-    public Betfair betfair;
 
 
     public SiteEventTracker(){
@@ -33,7 +34,8 @@ public abstract class SiteEventTracker {
 
     public abstract String name();
 
-    public abstract boolean setupMatch(FootballMatch match) throws Exception;
+    public abstract boolean setupMatch(FootballMatch match) throws IOException,
+            URISyntaxException, InterruptedException;
 
     public abstract void updateMarketOddsReport(FootballBet[] bets) throws Exception;
 

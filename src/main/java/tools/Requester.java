@@ -52,7 +52,7 @@ public class Requester {
                 .build();
 
         headers = new HashMap<>();
-        headers.put("content-type", "application/json");
+        headers.put("Content-Type", "application/json");
         headers.put("Accept", "application/json");
     }
 
@@ -124,52 +124,24 @@ public class Requester {
     }
 
 
-    public Object get(String url, Map<String, Object> params) throws IOException, URISyntaxException {
+    public Object get(String url, Map<String, Object> params) throws IOException, URISyntaxException,
+            InterruptedException {
 
-        // Add in the paramters as the uri is made
-        URIBuilder uriBuilder = new URIBuilder(url);
-        if (params != null) {
-            for (Entry<String, Object> entry : params.entrySet()) {
-                uriBuilder.addParameter(entry.getKey(), entry.getValue().toString());
-            }
-        }
-
-        // Create http GET object
-        HttpGet httpGet = new HttpGet(uriBuilder.build());
-
-        headerLock.lock();
-        // Add in default headers form requester object
-        for (Entry<String, String> header: headers.entrySet()){
-            httpGet.setHeader(header.getKey(), header.getValue());
-        }
-        headerLock.unlock();
-
-        HttpResponse response = httpClient.execute(httpGet);
-
-        // Check response code is valid
-        int status_code = response.getStatusLine().getStatusCode();
-        if (status_code < 200 || status_code >= 300){
-            String response_body = EntityUtils.toString(response.getEntity());
-            String msg = String.format("ERROR %d in HTTP GET request - %s\n%s\n%s",
-                    status_code, response.toString(), response_body, response.getStatusLine().toString());
-            log.severe(msg);
-            throw new IOException(msg);
-        }
-
-        // Convert body to json and return
-        String response_body = EntityUtils.toString(response.getEntity());
-        return JSONValue.parse(response_body);
+        String raw_response = getRaw(url, params);
+        return JSONValue.parse(raw_response);
     }
 
 
-    public String getRaw(String url, Map<String, String> params) throws IOException, URISyntaxException,
+    public String getRaw(String url, Map<String, Object> params) throws IOException, URISyntaxException,
             InterruptedException {
 
         // Add in the paramters as the uri is made
         URIBuilder uriBuilder = new URIBuilder(url);
         if (params != null) {
-            for (Entry<String, String> entry : params.entrySet()) {
-                uriBuilder.addParameter(entry.getKey(), entry.getValue().toString());
+            for (Entry<String, Object> entry : params.entrySet()) {
+                String param_name = entry.getKey();
+                String param_value = String.valueOf(entry.getValue());
+                uriBuilder.addParameter(param_name, param_value);
             }
         }
 
@@ -196,8 +168,19 @@ public class Requester {
         }
         if (status_code < 200 || status_code >= 300){
             String response_body = EntityUtils.toString(response.getEntity());
-            String msg = String.format("ERROR %d in HTTP GET request - %s\n%s\n%s",
-                    status_code, response.toString(), response_body, response.getStatusLine().toString());
+            if (response_body == null){
+                response_body = "null";
+            }
+            if (params == null){
+                params = new HashMap<>();
+            }
+            String msg = String.format("ERROR %d in HTTP GET request\n%s\nurl: %s\nparams: %s\n%s\n%s",
+                    status_code,
+                    response.toString(),
+                    url,
+                    params.toString(),
+                    response_body,
+                    response.getStatusLine().toString());
             log.severe(msg);
             throw new IOException(msg);
         }
@@ -212,4 +195,5 @@ public class Requester {
 
         return getRaw(url, null);
     }
+
 }

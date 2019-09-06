@@ -2,8 +2,11 @@ package Sport;
 
 import Bet.Bet;
 import SiteConnectors.Betfair;
+import SiteConnectors.FlashScores;
 import org.apache.commons.codec.binary.StringUtils;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.Normalizer;
 import java.text.ParseException;
 import java.time.Instant;
@@ -45,7 +48,7 @@ public class FootballMatch extends Match{
     }
 
 
-    public boolean same_match(FootballMatch match, Betfair betfair){
+    public boolean same_match(FootballMatch match){
         log.fine(String.format("Checking match for %s and %s.", this, match));
 
         // Check Start time, false if different
@@ -141,6 +144,19 @@ public class FootballMatch extends Match{
             }
         }
         return false;
+    }
+
+    public void verify() throws InterruptedException, IOException, URISyntaxException,
+            FlashScores.verificationException {
+
+        FootballMatch verified = FlashScores.verifyMatch(this);
+        this.FSID =                verified.FSID;
+        this.team_a.FS_ID =        verified.team_a.FS_ID;
+        this.team_a.FS_URLNAME =   verified.team_a.FS_URLNAME;
+        this.team_a.FS_Title =     verified.team_a.FS_Title;
+        this.team_b.FS_ID =        verified.team_b.FS_ID;
+        this.team_b.FS_URLNAME =   verified.team_b.FS_URLNAME;
+        this.team_b.FS_Title =     verified.team_b.FS_Title;
     }
 
 }

@@ -88,8 +88,6 @@ public class SportsTrader {
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "PLACE_BETS", "ACTIVE_SITES",
                 "MIN_SITES_PER_MATCH"};
 
-        log.info(String.format("Setting up config %s", config.toString()));
-
         for (String field: required){
             if (!(config.keySet().contains(field))){
                 String msg = String.format("Config file does not contain field '%s'", field);
@@ -104,6 +102,10 @@ public class SportsTrader {
         HOURS_AHEAD = ((Double) config.get("HOURS_AHEAD")).intValue();
         PLACE_BETS = (boolean) config.get("PLACE_BETS");
         ACTIVE_SITES = (Map<String, Boolean>) config.get("ACTIVE_SITES");
+
+        config.remove("ACTIVE_SITES");
+        log.info(String.format("Config:       %s", config.toString()));
+        log.info(String.format("Site configs: %s", ACTIVE_SITES.toString()));
     }
 
 
@@ -113,12 +115,14 @@ public class SportsTrader {
         // Run bet/taut generator
         footballBetGenerator = new FootballBetGenerator();
 
+
         // Initialize site object for each site class and add to map
         for (Map.Entry<String, Class> entry : siteClasses.entrySet() ) {
             String site_name = entry.getKey();
             Class site_class = entry.getValue();
 
-            // Check config status of this site
+
+            // Check site appears in config and is set to active
             if (!ACTIVE_SITES.containsKey(site_name)){
                 log.severe("Site %s appears in class list but has no config entry. Skipping.");
                 continue;
@@ -144,17 +148,19 @@ public class SportsTrader {
             log.info(String.format("Successfully setup betting site connector for %s.", site_name));
         }
 
+
         // Exit if no sites have worked.
         if (siteObjects.size() <= 0){
-            log.severe("None of the sites could be instantiated, exiting");
+            log.severe("None of the sites could be instantiated, finishing.");
             return;
         }
+
 
         // Collect initial football matches
         ArrayList<FootballMatch> footballMatches = null;
         try {
             footballMatches = getFootballMatches();
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException | URISyntaxException | InterruptedException e) {
             e.printStackTrace();
             log.severe("Error getting initial football matches. Exiting...");
             System.exit(1);
@@ -162,42 +168,41 @@ public class SportsTrader {
         log.info(String.format("Found %d matches within given timeframe.", footballMatches.size()));
 
 
-        // Create Event Trader for each match found.
-        ArrayList<EventTrader.SetupMatchRunner> setupRunners = new ArrayList<>();
-        for (FootballMatch match: footballMatches){
-            EventTrader eventTrader = new EventTrader(match, siteObjects, footballBetGenerator);
 
-            // Create threads to run the setups of the event traders
-            EventTrader.SetupMatchRunner eventTraderSetup = new EventTrader.SetupMatchRunner(eventTrader);
-            eventTraderSetup.thread = new Thread(eventTraderSetup);
-            eventTraderSetup.thread.setName("SU: " + match.name);
-            setupRunners.add(eventTraderSetup);
-            eventTraderSetup.thread.start();
-        }
+        for (FootballMatch footballMatch: footballMatches){
+            log.info(String.format("Attempting to verify and setup %s.", footballMatch));
 
-        // Wait for setups to complete and add the event trader to the list if the setup
-        // successfully connected to enough sites.
-        for (EventTrader.SetupMatchRunner setupRunner: setupRunners){
-            try {
-                setupRunner.thread.join();
-            } catch (InterruptedException e) {
-                log.severe(String.format("Interrupt while setting up match for %s.",
-                        setupRunner.eventTrader.match.toString()));
+            // Attempt to link with Flashscores
+            try{
+                footballMatch = FlashScores.verifyMatch(footballMatch);
+            } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e) {
+                log.warning(String.format("Failed to link match %s to flashscores - %s", footballMatch, e.getMessage()));
                 continue;
             }
 
-            // When a setuprunner thread is done, add it's eventTrader to the list if it
-            // reached the min number of connected sites.
-            if (setupRunner.sites_connected != null && setupRunner.sites_connected >= MIN_SITES_PER_MATCH){
-                eventTraders.add(setupRunner.eventTrader);
+            // Attempt to setup site event trackers for all sites for this match
+            EventTrader eventTrader = new EventTrader(footballMatch, siteObjects, footballBetGenerator);
+            int successfull_site_connections = eventTrader.setupMatch();
+            if (successfull_site_connections < MIN_SITES_PER_MATCH){
+                log.warning(String.format("Only %d/%d sites connected for %s. MIN_SITES_PER_MATCH=%d.",
+                        successfull_site_connections, siteObjects.size(), footballMatch, MIN_SITES_PER_MATCH));
+                continue;
             }
+
+            eventTraders.add(eventTrader);
             if (eventTraders.size() >= MAX_MATCHES){
-                for (EventTrader.SetupMatchRunner sur: setupRunners){
-                    sur.cancel();
-                }
                 break;
             }
         }
+
+        log.info(String.format("%d successfully setup and ready to run.", eventTraders.size()));
+
+        // blocking for testing
+        if (true){
+            return;
+        }
+
+
         log.info(String.format("%d matches setup successfully with at least %d site connectors.",
                 eventTraders.size(), MIN_SITES_PER_MATCH));
 
@@ -262,7 +267,9 @@ public class SportsTrader {
     }
 
 
-    private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException {
+    private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException,
+            InterruptedException {
+
         String site_name = "matchbook";
         BettingSite site = siteObjects.get(site_name);
         Instant from;
