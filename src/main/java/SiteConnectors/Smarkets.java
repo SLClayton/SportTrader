@@ -1,6 +1,9 @@
 package SiteConnectors;
 
 import Sport.FootballMatch;
+import Sport.Team;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 import tools.Requester;
 
@@ -13,7 +16,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +27,15 @@ import static tools.printer.*;
 public class Smarkets extends BettingSite {
 
     public static String baseurl = "https://api.smarkets.com/v3/";
+    public static String FOOTBALL = "football_match";
+
+    public static String[] market_names = new String[] {
+            "OVER_UNDER",
+            "WINNER_3_WAY",
+            "CORRECT_SCORE"
+    };
+
+    public ArrayList<String> market_ids;
 
 
 
@@ -66,44 +80,138 @@ public class Smarkets extends BettingSite {
 
     @Override
     public BigDecimal commission() {
-        return null;
+        return BigDecimal.ONE;
     }
 
     @Override
     public BigDecimal minBet() {
-        return null;
+        return new BigDecimal("0.05");
     }
 
     @Override
     public SiteEventTracker getEventTracker() {
-        return null;
+        return new SmarketsEventTracker(this);
     }
 
     @Override
-    public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException {
-        return null;
+    public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException,
+            URISyntaxException, InterruptedException {
+
+        return getEvents(from, until, FOOTBALL);
     }
 
 
+    public ArrayList<FootballMatch> getEvents(Instant from, Instant until, String sport) throws InterruptedException,
+            IOException, URISyntaxException {
 
-
-
-
-    public ArrayList<FootballMatch> getEvents(Instant from, Instant until){
-
-        Map<String, String> params = new HashMap();
+        Map<String, Object> params = new HashMap();
         params.put("start_datetime_min", from.toString());
         params.put("start_datetime_max", until.toString());
+        params.put("limit", "1000");
+        params.put("type", sport);
+
+        JSONObject response = (JSONObject) requester.get(baseurl + "events/", params);
+        if (!response.containsKey("events")) {
+            String msg = String.format("No 'events' field found in smarkets response.\n%s", ps(response));
+            throw new IOException(msg);
+        }
+        JSONArray events = (JSONArray) response.get("events");
+        ArrayList<FootballMatch> footballMatches = new ArrayList<>();
+        for (Object event_obj: events){
+            JSONObject event = (JSONObject) event_obj;
+
+            Instant time = Instant.parse(((String) event.get("start_datetime")));
+            String name = (String) event.get("name");
+            String[] teams = name.split(" vs. ");
+            if (teams.length != 2){
+                log.warning(String.format("Cannot parse football match name '%s' in smarkets.", name));
+                continue;
+            }
+
+            FootballMatch fm = new FootballMatch(time, new Team(teams[0]), new Team(teams[1]));
+            fm.metadata.put("smarkets_event_id", (String) event.get("id"));
+            footballMatches.add(fm);
+        }
+
+        return footballMatches;
 
     }
 
 
+    public JSONArray getMarkets(String event_id) throws InterruptedException,
+            IOException, URISyntaxException {
+
+        JSONObject r = (JSONObject) requester.get(String.format("%sevents/%s/markets/", baseurl, event_id));
+        if (!r.containsKey("markets")){
+            String msg = String.format("No 'markets' field found in response when looking for " +
+                            "markets in smarkets.\n%s",
+                    ps(r));
+            log.warning(msg);
+            throw new IOException(msg);
+        }
+
+        JSONArray markets = (JSONArray) r.get("markets");
+        return markets;
+    }
 
 
+    public JSONArray getContracts(ArrayList<String> market_ids) throws InterruptedException, IOException,
+            URISyntaxException {
+
+        if (market_ids.size() <= 0){
+            return new JSONArray();
+        }
+
+        String market_ids_list = "";
+        for (int i=0; i<market_ids.size(); i++){
+            market_ids_list += market_ids.get(i) + ",";
+        }
+
+        return getContracts(market_ids_list);
+    }
 
 
+    public JSONArray getContracts(String market_ids) throws InterruptedException, IOException,
+            URISyntaxException {
+
+        JSONObject response = (JSONObject) requester.get(String.format("%smarkets/%s/contracts/",
+                baseurl, market_ids));
+
+        if (!response.containsKey("contracts")){
+            String msg = String.format("contracts field not found in smarkets response.\n%s", ps(response));
+            log.warning(msg);
+            throw new IOException(msg);
+        }
+
+        JSONArray contracts = (JSONArray) response.get("contracts");
+        return contracts;
+    }
 
 
+    public JSONObject getPrices(ArrayList<String> market_ids) throws InterruptedException, IOException,
+            URISyntaxException {
+
+        if (market_ids.size() <= 0){
+            return new JSONObject();
+        }
+
+        String market_ids_list = "";
+        for (int i=0; i<market_ids.size(); i++){
+            market_ids_list += market_ids.get(i) + ",";
+        }
+
+        return getPrices(market_ids_list);
+    }
+
+
+    public JSONObject getPrices(String market_ids) throws InterruptedException, IOException,
+            URISyntaxException {
+
+        JSONObject response = (JSONObject) requester.get(String.format("%smarkets/%s/quotes/",
+                baseurl, market_ids));
+
+        return response;
+    }
 
 
 
@@ -113,12 +221,16 @@ public class Smarkets extends BettingSite {
         try {
             Smarkets s = new Smarkets();
 
+            JSONObject c = s.getPrices("8882562,8882568,8882571,8882572,8882573");
+            p(c);
 
 
 
 
 
-        } catch (CertificateException e) {
+
+
+        } catch (CertificateException | InterruptedException e) {
         } catch (UnrecoverableKeyException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {

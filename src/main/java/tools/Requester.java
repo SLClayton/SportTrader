@@ -132,6 +132,14 @@ public class Requester {
     }
 
 
+    public Object get(String url) throws IOException, URISyntaxException,
+            InterruptedException {
+
+        String raw_response = getRaw(url);
+        return JSONValue.parse(raw_response);
+    }
+
+
     public String getRaw(String url, Map<String, Object> params) throws IOException, URISyntaxException,
             InterruptedException {
 
@@ -174,11 +182,12 @@ public class Requester {
             if (params == null){
                 params = new HashMap<>();
             }
-            String msg = String.format("ERROR %d in HTTP GET request\n%s\nurl: %s\nparams: %s\n%s\n%s",
+            String msg = String.format("ERROR %d in HTTP GET request\n%s\nurl: %s\nparams: %s\nURI:%s\n%s\n%s",
                     status_code,
                     response.toString(),
                     url,
                     params.toString(),
+                    httpGet.getURI().toString(),
                     response_body,
                     response.getStatusLine().toString());
             log.severe(msg);
@@ -189,6 +198,7 @@ public class Requester {
         String response_body = EntityUtils.toString(response.getEntity());
         return response_body;
     }
+
 
     public String getRaw(String url) throws IOException, URISyntaxException,
             InterruptedException {

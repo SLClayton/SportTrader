@@ -40,6 +40,7 @@ public class SportsTrader {
     public int MIN_SITES_PER_MATCH;
     public boolean IN_PLAY;
     public int HOURS_AHEAD;
+    public boolean CHECK_MARKETS;
     public boolean PLACE_BETS;
     public Map<String, Boolean> ACTIVE_SITES;
 
@@ -77,6 +78,7 @@ public class SportsTrader {
         siteClasses = new HashMap<String, Class>();
         siteClasses.put("betfair", Betfair.class);
         siteClasses.put("matchbook", Matchbook.class);
+        siteClasses.put("smarkets", Smarkets.class);
 
         siteObjects = new HashMap<String, BettingSite>();
         eventTraders = new ArrayList<EventTrader>();
@@ -85,8 +87,8 @@ public class SportsTrader {
 
     private void setupConfig(String config_filename) throws Exception {
         Map config = getJSONResource(config_filename);
-        String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "PLACE_BETS", "ACTIVE_SITES",
-                "MIN_SITES_PER_MATCH"};
+        String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
+                "PLACE_BETS", "ACTIVE_SITES", "MIN_SITES_PER_MATCH"};
 
         for (String field: required){
             if (!(config.keySet().contains(field))){
@@ -100,6 +102,7 @@ public class SportsTrader {
         MIN_SITES_PER_MATCH = ((Double) config.get("MIN_SITES_PER_MATCH")).intValue();
         IN_PLAY = (boolean) config.get("IN_PLAY");
         HOURS_AHEAD = ((Double) config.get("HOURS_AHEAD")).intValue();
+        CHECK_MARKETS = (boolean) config.get("CHECK_MARKETS");
         PLACE_BETS = (boolean) config.get("PLACE_BETS");
         ACTIVE_SITES = (Map<String, Boolean>) config.get("ACTIVE_SITES");
 
@@ -195,13 +198,6 @@ public class SportsTrader {
             }
         }
 
-        log.info(String.format("%d successfully setup and ready to run.", eventTraders.size()));
-
-        // blocking for testing
-        if (true){
-            return;
-        }
-
 
         log.info(String.format("%d matches setup successfully with at least %d site connectors.",
                 eventTraders.size(), MIN_SITES_PER_MATCH));
@@ -211,6 +207,15 @@ public class SportsTrader {
             log.severe("0 matches have been setup correctly. Exiting.");
             System.exit(0);
         }
+
+
+        // End if config says so.
+        if (!CHECK_MARKETS){
+            log.info("CHECK_MARKETS set to false. Ending here.");
+            System.exit(0);
+        }
+
+
 
         // Run all event traders
         for (EventTrader eventTrader: eventTraders){
