@@ -1,9 +1,9 @@
 {
-    "MAX_MATCHES": 5,
+    "MAX_MATCHES": 1,
     "MIN_SITES_PER_MATCH": 2,
     "IN_PLAY": false,
     "HOURS_AHEAD": 24,
-    "CHECK_MARKETS": false,
+    "CHECK_MARKETS": true,
     "PLACE_BETS": false,
 
     "ACTIVE_SITES": {

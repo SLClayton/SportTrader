@@ -17,10 +17,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static tools.printer.*;
 
@@ -29,11 +26,8 @@ public class Smarkets extends BettingSite {
     public static String baseurl = "https://api.smarkets.com/v3/";
     public static String FOOTBALL = "football_match";
 
-    public static String[] market_names = new String[] {
-            "OVER_UNDER",
-            "WINNER_3_WAY",
-            "CORRECT_SCORE"
-    };
+    public static BigDecimal commission = new BigDecimal("0.01");
+    public static BigDecimal min_bet = new BigDecimal("0.05");
 
     public ArrayList<String> market_ids;
 
@@ -80,12 +74,12 @@ public class Smarkets extends BettingSite {
 
     @Override
     public BigDecimal commission() {
-        return BigDecimal.ONE;
+        return commission;
     }
 
     @Override
     public BigDecimal minBet() {
-        return new BigDecimal("0.05");
+        return min_bet;
     }
 
     @Override
@@ -164,7 +158,10 @@ public class Smarkets extends BettingSite {
 
         String market_ids_list = "";
         for (int i=0; i<market_ids.size(); i++){
-            market_ids_list += market_ids.get(i) + ",";
+            market_ids_list += market_ids.get(i);
+            if (i < market_ids.size()-1){
+                market_ids_list += ",";
+            }
         }
 
         return getContracts(market_ids_list);
@@ -197,7 +194,28 @@ public class Smarkets extends BettingSite {
 
         String market_ids_list = "";
         for (int i=0; i<market_ids.size(); i++){
-            market_ids_list += market_ids.get(i) + ",";
+            market_ids_list += market_ids.get(i);
+            if (i < market_ids.size()-1){
+                market_ids_list += ",";
+            }
+        }
+
+        return getPrices(market_ids_list);
+    }
+
+    public JSONObject getPrices(Set<String> market_ids) throws InterruptedException, IOException,
+            URISyntaxException {
+
+        if (market_ids.size() <= 0){
+            return new JSONObject();
+        }
+
+        String market_ids_list = "";
+        for (String id: market_ids){
+            market_ids_list += id;
+        }
+        if (market_ids_list.length() > 0 && market_ids_list.substring(market_ids_list.length()-1).equals(",")){
+            market_ids_list = market_ids_list.substring(0, market_ids_list.length()-1);
         }
 
         return getPrices(market_ids_list);

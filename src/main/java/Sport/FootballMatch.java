@@ -32,6 +32,14 @@ public class FootballMatch extends Match{
         name = team_a.name + " v " + team_b.name;
     }
 
+    public FootballMatch(String START, String TEAM_A, String TEAM_B){
+        super();
+        start_time = Instant.parse(START);
+        team_a = new Team(TEAM_A);
+        team_b = new Team(TEAM_B);
+        name = team_a.name + " v " + team_b.name;
+    }
+
     public static FootballMatch parse(String start, String name) throws ParseException {
         Instant start_time = Instant.parse(start);
 
