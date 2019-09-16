@@ -1,5 +1,6 @@
 package SiteConnectors;
 
+import Bet.BetOffer;
 import Sport.FootballMatch;
 import Sport.Team;
 import org.json.simple.JSONArray;
@@ -9,6 +10,7 @@ import tools.Requester;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -92,6 +94,37 @@ public class Smarkets extends BettingSite {
             URISyntaxException, InterruptedException {
 
         return getEvents(from, until, FOOTBALL);
+    }
+
+
+    public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
+        // Smarkets ROI, commission on winnings/losses every time
+
+        BigDecimal stake = investment;
+        BigDecimal ret;
+        BigDecimal profit;
+        BigDecimal commission;
+        BigDecimal roi;
+
+        if (bet_offer.isBack()){
+            ret = stake.multiply(bet_offer.odds);
+            profit = ret.subtract(stake);
+            commission = profit.multiply(commission());
+            roi = ret.subtract(commission);
+        }
+        else{ // Lay Bet
+            BigDecimal lay = bet_offer.getLayFromStake(stake, real);
+            profit = lay;
+            commission = profit.multiply(commission());
+            ret = stake.add(profit);
+            roi = ret.subtract(commission);
+        }
+
+        if (real){
+            roi = roi.setScale(2, RoundingMode.DOWN);
+        }
+
+        return roi;
     }
 
 

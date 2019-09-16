@@ -47,7 +47,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public Map<String, String> fullname_contract_map;
 
     public JSONObject lastPrices;
-    public MarketOddsReport marketOddsReport;
 
 
     public SmarketsEventTracker(Smarkets smarkets){

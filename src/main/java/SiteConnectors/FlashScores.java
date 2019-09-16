@@ -18,6 +18,7 @@ import tools.Requester;
 import java.io.IOException;
 import java.lang.annotation.Documented;
 import java.net.URISyntaxException;
+import java.text.Normalizer;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
@@ -230,9 +231,15 @@ public class FlashScores {
     public static FootballMatch verifyMatch(FootballMatch match) throws InterruptedException, IOException,
             URISyntaxException, verificationException {
 
+        // Normalise team names before searching (remove punctuation/accents etc)
+        String team_a = Normalizer.normalize(match.team_a.name.trim().toLowerCase(), Normalizer.Form.NFD)
+                .replaceAll("\\p{P}", "");
+        String team_b = Normalizer.normalize(match.team_b.name.trim().toLowerCase(), Normalizer.Form.NFD)
+                .replaceAll("\\p{P}", "");
+
         // Get team search results for both teams names
-        ArrayList<Team> possible_teams_a = searchTeams(match.team_a.name, FOOTBALL);
-        ArrayList<Team> possible_teams_b = searchTeams(match.team_b.name, FOOTBALL);
+        ArrayList<Team> possible_teams_a = searchTeams(team_a, FOOTBALL);
+        ArrayList<Team> possible_teams_b = searchTeams(team_b, FOOTBALL);
 
         int max_size = Integer.max(possible_teams_a.size(), possible_teams_b.size());
         FootballMatch verifiedMatch = null;
