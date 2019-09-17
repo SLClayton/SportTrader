@@ -504,6 +504,11 @@ public class Betfair extends BettingSite {
         return footballMatches;
     }
 
+    @Override
+    public BigDecimal getAmountToBet(BigDecimal investment) {
+        return investment;
+    }
+
 
     public JSONArray getMarketCatalogue(JSONObject params) throws IOException, URISyntaxException {
         params.put("maxResults", 1000);

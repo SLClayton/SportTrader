@@ -41,7 +41,6 @@ public class EventTrader implements Runnable {
 
     public FootballMatch match;
     public HashMap<String, BettingSite> sites;
-    public Betfair betfair;
     public HashMap<String, SiteEventTracker> siteEventTrackers;
     public BlockingQueue<String> siteMarketOddsToGetQueue;
 
@@ -55,13 +54,6 @@ public class EventTrader implements Runnable {
         tautologies = (ArrayList<Tautology>) this.footballBetGenerator.getAllTautologies().clone();
         siteEventTrackers = new HashMap<String, SiteEventTracker>();
         siteMarketOddsToGetQueue = new LinkedBlockingQueue<>();
-
-
-        betfair = (Betfair) sites.get("betfair");
-        if (betfair == null){
-            log.severe("No betfair object found. Exiting");
-            throw new ExceptionInInitializerError("No betfair object found.");
-        }
     }
 
 
@@ -219,15 +211,11 @@ public class EventTrader implements Runnable {
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
-        p(fullOddsReport.toJSON());
-
-        System.exit(0);
-
         // Generate profit report for each tautology and order by profit ratio
         ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);
         Collections.sort(tautologyProfitReports, Collections.reverseOrder());
 
-        // Ceate list of profit reports with profits over min_prof_margain
+        // Create list of profit reports with profits over min_prof_margain
         BigDecimal min_profit_margain = new BigDecimal("0.00");
         ArrayList<ProfitReport> in_profit = new ArrayList<ProfitReport>();
         for (ProfitReport pr: tautologyProfitReports){
@@ -252,7 +240,7 @@ public class EventTrader implements Runnable {
     public void profitFound(ArrayList<ProfitReport> in_profit){
 
 
-        if (true){
+        if (false){
             return;
         }
 

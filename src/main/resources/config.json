@@ -7,7 +7,7 @@
     "PLACE_BETS": false,
 
     "ACTIVE_SITES": {
-    	"betfair": true,
+        "betfair": false,
     	"matchbook": true,
         "smarkets": true
     }

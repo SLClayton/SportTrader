@@ -165,6 +165,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         updateMarketData();
 
+        //TODO: Double check all bets currently configed are being taken from sites.
+
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
@@ -175,7 +177,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
             String contract_fullname = null;
             switch (bet.category){
 
-                case "RESULT":
+                case FootballBet.RESULT:
                     FootballResultBet rb = (FootballResultBet) bet;
                     if (rb.winnerA()){
                         contract_fullname = "WINNER_3_WAY_HOME";
@@ -188,12 +190,12 @@ public class SmarketsEventTracker extends SiteEventTracker {
                     }
                     break;
 
-                case "CORRECT_SCORE":
+                case FootballBet.CORRECT_SCORE:
                     FootballScoreBet sb = (FootballScoreBet) bet;
                     contract_fullname = String.format("CORRECT_SCORE_SCORE%d-%d", sb.score_a, sb.score_b);
                     break;
 
-                case "GOAL_COUNT":
+                case FootballBet.OVER_UNDER:
                     FootballOverUnderBet oub = (FootballOverUnderBet) bet;
                     contract_fullname = String.format("OVER_UNDER%s_%s", oub.goals.toString(), oub.side.toUpperCase());
                     break;
@@ -209,6 +211,11 @@ public class SmarketsEventTracker extends SiteEventTracker {
             }
 
             String contract_id = fullname_contract_map.get(contract_fullname);
+            if (contract_id == null){
+                bet_blacklist.add(bet.id());
+                continue;
+            }
+
             JSONObject prices = (JSONObject) lastPrices.get(contract_id);
             if (prices == null){
                 log.severe(String.format("Couldn't find contract_id '%s' for bet %s " +
@@ -255,7 +262,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         // Assign new odds report.
         marketOddsReport = new_marketOddsReport;
-        p(marketOddsReport.toJSON());
     }
 
     public void updateMarketData() throws InterruptedException, IOException, URISyntaxException {

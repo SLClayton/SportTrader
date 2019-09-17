@@ -1,6 +1,8 @@
 package SiteConnectors;
 
+import Bet.Bet;
 import Bet.BetOffer;
+import Bet.FootballBet.FootballResultBet;
 import Sport.FootballMatch;
 import Sport.Team;
 import org.json.simple.JSONArray;
@@ -28,7 +30,7 @@ public class Smarkets extends BettingSite {
     public static String baseurl = "https://api.smarkets.com/v3/";
     public static String FOOTBALL = "football_match";
 
-    public static BigDecimal commission = new BigDecimal("0.01");
+    public static BigDecimal commission_rate = new BigDecimal("0.01");
     public static BigDecimal min_bet = new BigDecimal("0.05");
 
     public ArrayList<String> market_ids;
@@ -76,7 +78,7 @@ public class Smarkets extends BettingSite {
 
     @Override
     public BigDecimal commission() {
-        return commission;
+        return commission_rate;
     }
 
     @Override
@@ -96,28 +98,62 @@ public class Smarkets extends BettingSite {
         return getEvents(from, until, FOOTBALL);
     }
 
+    @Override
+    public BigDecimal getAmountToBet(BigDecimal investment) {
+        // This website has commission on losing bets so total investment is slightly more than the amount
+        // needed to actually place on the bet.
 
+        BigDecimal ratio = new BigDecimal(100).divide(BigDecimal.ONE.add(commission_rate));
+        return investment.multiply(ratio);
+    }
+
+    @Override
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
-        // Smarkets ROI, commission on winnings/losses every time
+        // (From smarkets support email on commission)
+        // For back bets that is the back stake if the bet loses or the profit if the bet wins.
+        // For lay bets it's the liability if the bet loses or the lay stake if the bet wins
 
-        BigDecimal stake = investment;
+        BigDecimal stake;
         BigDecimal ret;
         BigDecimal profit;
-        BigDecimal commission;
+        BigDecimal lose_commission;
+        BigDecimal win_commission;
         BigDecimal roi;
 
         if (bet_offer.isBack()){
+
+            //print("-------------------------------");
+            BigDecimal ratio = (commission_rate.divide(commission_rate.add(BigDecimal.ONE), 20, RoundingMode.HALF_UP));
+            //print("ratio: " + ratio.toString());
+
+            lose_commission = ratio.multiply(investment);
+            //print("lose_commission: " + lose_commission.toString());
+
+            stake = investment.subtract(lose_commission);
+            //print("stake: " + stake.toString());
+
             ret = stake.multiply(bet_offer.odds);
+            //print("ret: " + ret.toString());
+
             profit = ret.subtract(stake);
-            commission = profit.multiply(commission());
-            roi = ret.subtract(commission);
+            //print("profit: " + profit.toString());
+
+            win_commission = profit.multiply(commission_rate);
+            //print("win_commission: " + win_commission.toString());
+
+            roi = ret.add(lose_commission).subtract(win_commission);
+            //print("roi: " + roi.toString());
         }
         else{ // Lay Bet
+
+            lose_commission = (commission_rate.divide(BigDecimal.ONE.add(commission_rate), 20, RoundingMode.HALF_UP))
+                    .multiply(investment);
+            stake = investment.subtract(lose_commission);
             BigDecimal lay = bet_offer.getLayFromStake(stake, real);
             profit = lay;
-            commission = profit.multiply(commission());
+            win_commission = profit.multiply(commission());
             ret = stake.add(profit);
-            roi = ret.subtract(commission);
+            roi = ret.add(lose_commission).subtract(win_commission);
         }
 
         if (real){
@@ -272,16 +308,22 @@ public class Smarkets extends BettingSite {
         try {
             Smarkets s = new Smarkets();
 
-            JSONObject c = s.getPrices("8882562,8882568,8882571,8882572,8882573");
-            p(c);
+            BetOffer bo = new BetOffer(null,
+                    new FootballResultBet(Bet.BACK, "TEAM-A", false),
+                    s,
+                    new BigDecimal("7.4"),
+                    null,
+                    null);
+
+            BigDecimal roi = s.ROI(bo, new BigDecimal("3.03"), true);
+            print(roi.toString());
 
 
 
 
 
 
-
-        } catch (CertificateException | InterruptedException e) {
+        } catch (CertificateException e) {
         } catch (UnrecoverableKeyException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {

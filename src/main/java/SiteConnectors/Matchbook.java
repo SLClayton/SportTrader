@@ -242,6 +242,11 @@ public class Matchbook extends BettingSite {
         return getEvents(from, until, new String[] {FOOTBALL_ID});
     }
 
+    @Override
+    public BigDecimal getAmountToBet(BigDecimal investment) {
+        return investment;
+    }
+
 
     public ArrayList<FootballMatch> getEvents(Instant before, Instant after, String[] event_types) throws IOException,
             URISyntaxException, InterruptedException {

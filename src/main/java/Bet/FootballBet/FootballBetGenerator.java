@@ -165,8 +165,8 @@ public class FootballBetGenerator {
 
         for (BigDecimal goals = new BigDecimal("0.5"); goals.compareTo(largest) != 1; goals = goals.add(BigDecimal.ONE)){
 
-            for (int i=0; i<FootballOverUnderBet.OVER_UNDER.length; i++){
-                String side = FootballOverUnderBet.OVER_UNDER[i];
+            for (int i=0; i<FootballOverUnderBet.OVER_UNDER_ENUM.length; i++){
+                String side = FootballOverUnderBet.OVER_UNDER_ENUM[i];
                 for (int j = 0; j < Bet.BET_TYPES.length; j++) {
                     String type = Bet.BET_TYPES[j];
 

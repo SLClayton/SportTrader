@@ -5,6 +5,7 @@ import Bet.FootballBet.FootballBet;
 import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.*;
 import Sport.FootballMatch;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.logging.Log;
 import org.json.simple.JSONObject;
@@ -86,7 +87,14 @@ public class SportsTrader {
 
 
     private void setupConfig(String config_filename) throws Exception {
-        Map config = getJSONResource(config_filename);
+        Map config = null;
+        try{
+            config = getJSONResource(config_filename);
+        } catch (JsonSyntaxException e){
+            log.severe("Config JSON syntax error.");
+            System.exit(0);
+        }
+
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "ACTIVE_SITES", "MIN_SITES_PER_MATCH"};
 
@@ -275,7 +283,7 @@ public class SportsTrader {
     private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException,
             InterruptedException {
 
-        String site_name = "matchbook";
+        String site_name = "smarkets";
         BettingSite site = siteObjects.get(site_name);
         Instant from;
         Instant until;

@@ -99,13 +99,13 @@ public class MatchbookEventTracker extends SiteEventTracker {
             // Extract runner based on bet category.
             JSONObject runner = null;
             switch (bet.category){
-                case "RESULT":
+                case FootballBet.RESULT:
                     runner = extractRunnerRESULT((FootballResultBet) bet);
                     break;
-                case "CORRECT_SCORE":
+                case FootballBet.CORRECT_SCORE:
                     runner = extractRunnerCORRECTSCORE((FootballScoreBet) bet);
                     break;
-                case "GOAL_COUNT":
+                case FootballBet.OVER_UNDER:
                     runner = extractRunnerGOALCOUNT((FootballOverUnderBet) bet);
                     break;
                 default:
@@ -236,7 +236,13 @@ public class MatchbookEventTracker extends SiteEventTracker {
     public JSONObject extractRunnerRESULT(FootballResultBet bet){
         JSONObject market = null;
         for (Object market_obj: (JSONArray) eventMarketData.get("markets")){
-            if (((JSONObject) market_obj).get("market-type").equals("one_x_two")){
+            JSONObject market_json = (JSONObject) market_obj;
+            String market_type = (String) market_json.get("market-type");
+            String market_name = (String) market_json.get("name");
+
+            if (market_type.toLowerCase().equals("one_x_two")
+                    && market_name.toLowerCase().equals("match odds")){
+
                 market = (JSONObject) market_obj;
             }
         }
@@ -245,6 +251,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         if (market == null){
             return null;
         }
+
 
         // Extract runners
         JSONArray runners = (JSONArray) market.get("runners");
