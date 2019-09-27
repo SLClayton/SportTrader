@@ -81,6 +81,21 @@ public class MarketOddsReport {
         return j;
     }
 
+    public Set<String> sitesPresent(){
+        Set<String> sites = new HashSet<>();
+
+        for (Map.Entry<String, ArrayList<BetOffer>> entry: betOffers.entrySet()){
+            ArrayList<BetOffer> betoffers = entry.getValue();
+
+            for (BetOffer betOffer: betoffers){
+                sites.add(betOffer.site.name);
+            }
+        }
+
+        return sites;
+
+    }
+
     @Override
     public String toString() {
         return betOffers.toString();

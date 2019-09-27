@@ -1,20 +1,16 @@
 package Trader;
 
-import Bet.*;
-import Bet.FootballBet.FootballBet;
 import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.*;
+import SiteConnectors.Betfair.Betfair;
+import SiteConnectors.Matchbook.Matchbook;
+import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.internal.LinkedTreeMap;
-import org.apache.commons.logging.Log;
-import org.json.simple.JSONObject;
 import tools.MyLogHandler;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -23,11 +19,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import static java.lang.Thread.sleep;
@@ -43,6 +36,8 @@ public class SportsTrader {
     public int HOURS_AHEAD;
     public boolean CHECK_MARKETS;
     public boolean PLACE_BETS;
+    public long RATE_LIMIT;
+    public BigDecimal MIN_ODDS_RATIO;
     public Map<String, Boolean> ACTIVE_SITES;
 
 
@@ -96,7 +91,7 @@ public class SportsTrader {
         }
 
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
-                "PLACE_BETS", "ACTIVE_SITES", "MIN_SITES_PER_MATCH"};
+                "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH"};
 
         for (String field: required){
             if (!(config.keySet().contains(field))){
@@ -113,6 +108,8 @@ public class SportsTrader {
         CHECK_MARKETS = (boolean) config.get("CHECK_MARKETS");
         PLACE_BETS = (boolean) config.get("PLACE_BETS");
         ACTIVE_SITES = (Map<String, Boolean>) config.get("ACTIVE_SITES");
+        RATE_LIMIT = (long) ((Double) config.get("RATE_LIMIT")).intValue();
+        MIN_ODDS_RATIO = new BigDecimal((Double) config.get("MIN_ODDS_RATIO"));
 
         config.remove("ACTIVE_SITES");
         log.info(String.format("Config:       %s", config.toString()));
@@ -192,7 +189,7 @@ public class SportsTrader {
             }
 
             // Attempt to setup site event trackers for all sites for this match
-            EventTrader eventTrader = new EventTrader(footballMatch, siteObjects, footballBetGenerator);
+            EventTrader eventTrader = new EventTrader(this, footballMatch, siteObjects, footballBetGenerator);
             int successfull_site_connections = eventTrader.setupMatch();
             if (successfull_site_connections < MIN_SITES_PER_MATCH){
                 log.warning(String.format("Only %d/%d sites connected for %s. MIN_SITES_PER_MATCH=%d.",
@@ -222,7 +219,6 @@ public class SportsTrader {
             log.info("CHECK_MARKETS set to false. Ending here.");
             System.exit(0);
         }
-
 
 
         // Run all event traders

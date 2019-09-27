@@ -169,8 +169,13 @@ public class Requester {
         int status_code = response.getStatusLine().getStatusCode();
         if (status_code == 429){
             long sleeptime = (long)(Math.random() * 1000 + 200);
-            log.warning(String.format("TOO MANY REQUESTS error for getRaw request '%s', sleeping for %sms and trying again.",
-                    url, String.valueOf(sleeptime)));
+            String response_body = EntityUtils.toString(response.getEntity());
+            if (response_body == null){
+                response_body = "null";
+            }
+            log.warning(String.format("TOO MANY REQUESTS error for getRaw request '%s', " +
+                            "sleeping for %sms and trying again.\n%s",
+                    url, String.valueOf(sleeptime), response_body));
             Thread.sleep(sleeptime);
             return getRaw(url, params);
         }

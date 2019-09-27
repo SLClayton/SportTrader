@@ -2,14 +2,9 @@ package Trader;
 
 import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
-import SiteConnectors.Betfair;
 import SiteConnectors.BettingSite;
-import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
-import org.apache.commons.codec.binary.StringUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import javax.naming.directory.InvalidAttributesException;
 import java.io.File;
@@ -18,13 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.time.ZoneId;
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -38,6 +27,7 @@ public class EventTrader implements Runnable {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public Thread thread;
+    public SportsTrader sportsTrader;
 
     public FootballMatch match;
     public HashMap<String, BettingSite> sites;
@@ -47,7 +37,8 @@ public class EventTrader implements Runnable {
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<Tautology> tautologies;
 
-    public EventTrader(FootballMatch match, HashMap<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
+    public EventTrader(SportsTrader sportsTrader, FootballMatch match, HashMap<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
+        this.sportsTrader = sportsTrader;
         this.match = match;
         this.sites = sites;
         this.footballBetGenerator = footballBetGenerator;
@@ -118,16 +109,24 @@ public class EventTrader implements Runnable {
         }
         
         // Check for arbs, and update event constantly
+        Instant wait_until = null;
         ArrayList<Long> arb_times = new ArrayList<>();
         int max_times = 100;
         for (int i=0; true; i++){
             try {
 
+                // RATE LIMITER: Sleeps until minimum wait period between calls is done.
+                Instant now = Instant.now();
+                if (wait_until != null && now.isBefore(wait_until)){
+                    long time_to_wait = wait_until.toEpochMilli() - now.toEpochMilli();
+                    Thread.sleep(time_to_wait);
+                }
+                wait_until = Instant.now().plus(sportsTrader.RATE_LIMIT, ChronoUnit.MILLIS);
+
+
+                // Check arbs and time how long it takes
                 Instant start = Instant.now();
-
-
                 checkArbs();
-
                 arb_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
 
                 if (arb_times.size() >= max_times){
@@ -210,6 +209,11 @@ public class EventTrader implements Runnable {
         // Combine all odds reports into one.
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
+
+
+        p(fullOddsReport.toJSON());
+        System.exit(0);
+
 
         // Generate profit report for each tautology and order by profit ratio
         ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);

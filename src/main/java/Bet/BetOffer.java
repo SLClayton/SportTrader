@@ -18,7 +18,7 @@ public class BetOffer implements Comparable<BetOffer> {
     public BettingSite site;
     public BigDecimal odds;
     public BigDecimal volume;
-    public HashMap metadata;
+    public HashMap<String, String> metadata;
 
     public BigDecimal roi_ratio;
 
@@ -31,6 +31,8 @@ public class BetOffer implements Comparable<BetOffer> {
         metadata = METADATA;
         roi_ratio = ROI(BigDecimal.ONE, false);
     }
+
+    public BetOffer(){}
 
     public String toString(){
         return toJSON().toString();

@@ -17,14 +17,14 @@ public abstract class printer {
 
     public static String ps(JSONArray j){
         JsonElement jsonElement = new JsonParser().parse(j.toString());
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
         String prettjson = gson.toJson(jsonElement);
         return prettjson;
     }
 
     public static String ps(JSONObject j){
         JsonElement jsonElement = new JsonParser().parse(j.toString());
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
         String prettjson = gson.toJson(jsonElement);
         return prettjson;
     }

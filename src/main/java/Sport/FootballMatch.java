@@ -1,9 +1,6 @@
 package Sport;
 
-import Bet.Bet;
-import SiteConnectors.Betfair;
 import SiteConnectors.FlashScores;
-import org.apache.commons.codec.binary.StringUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

@@ -30,6 +30,8 @@ public class BetOrder {
         real_return = bet_offer.ROI(investment, real);
     }
 
+    public BetOrder(){}
+
     public String toString(){
         return toJSON().toString();
     }
