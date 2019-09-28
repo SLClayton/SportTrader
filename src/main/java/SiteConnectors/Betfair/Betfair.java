@@ -652,7 +652,9 @@ public class Betfair extends BettingSite {
 
                 // Set the price to be an acceptable percentage under (lower limit),
                 // and it will fill to the best price it has available
-                BigDecimal price = betOrder.bet_offer.odds.multiply(MIN_ODDS_RATIO).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal price = validPrice(betOrder.bet_offer.odds.multiply(MIN_ODDS_RATIO)
+                        .setScale(2, RoundingMode.HALF_UP));
+
 
                 JSONObject limitOrder = new JSONObject();
                 limitOrder.put("size", betOrder.investment.toString());
@@ -705,27 +707,28 @@ public class Betfair extends BettingSite {
             String rpc_status = (String) rpc_result.get("status");
 
             if (!rpc_status.equals("SUCCESS")){
-                log.severe(String.format("Non success for bet placing RPC request for market '%s'\n%s",
-                        market_id, ps(rpc_response)));
-                continue;
+                String errorCode = (String) rpc_result.get("errorCode");
+                log.severe(String.format("Failed 1 or more bets in betfair '%s' in market '%s'\n%s",
+                        String.valueOf(errorCode), market_id, ps(rpc_response)));
             }
 
             for (Object report_obj: (JSONArray) rpc_result.get("instructionReports")){
                 JSONObject report = (JSONObject) report_obj;
 
-                String orderStatus = (String) report.get("orderStatus");
-                int bet_order_id = Integer.valueOf((String) report.get("customerOrderRef"));
+                String orderStatus = (String) report.get("status");
+                int bet_order_id = Integer.valueOf((String) ((JSONObject) report.get("instruction")).get("customerOrderRef"));
                 BetOffer betOffer = betOrders.get(bet_order_id).bet_offer;
 
-                if (!orderStatus.equals("EXECUTION_COMPLETE")){
-                    log.warning(String.format("Non successful bet placed in betfair.\n%s",
-                            ps(report)));
+                if (!orderStatus.equals("SUCCESS")){
+                    String error = (String) report.get("errorCode");
+                    log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
+                            String.valueOf(error), ps(report)));
 
-                    placedBets.add(new PlacedBet("FAILED", betOffer);
+                    placedBets.add(new PlacedBet("FAILED", betOffer, String.valueOf(error)));
                 }
                 else{
                     String bet_id = (String) report.get("betId");
-                    BigDecimal size = new BigDecimal((String) report.get("sizeMatched"));
+                    BigDecimal size = new BigDecimal((String.valueOf((Double) report.get("sizeMatched"))));
                     Instant time = Instant.parse((String) report.get("placedDate"));
 
                     placedBets.add(new PlacedBet("SUCCESS", bet_id, betOffer, size, time));
@@ -734,10 +737,53 @@ public class Betfair extends BettingSite {
         }
 
         return placedBets;
-
-        //TODO: Test this make sure it works, placed bets should be returned now.
     }
 
+    private static BigDecimal validPrice(BigDecimal price) {
+
+        if (price.compareTo(new BigDecimal(2)) == -1){
+            price = round(price, new BigDecimal("0.01"), RoundingMode.DOWN);
+        }
+        else if (price.compareTo(new BigDecimal(3)) == -1){
+            price = round(price, new BigDecimal("0.02"), RoundingMode.DOWN);
+        }
+        else if (price.compareTo(new BigDecimal(4)) == -1){
+            price = round(price, new BigDecimal("0.05"), RoundingMode.DOWN);
+        }
+        else if (price.compareTo(new BigDecimal(6)) == -1){
+            price = round(price, new BigDecimal("0.1"), RoundingMode.DOWN);
+        }
+        else if (price.compareTo(new BigDecimal(10)) == -1){
+            price = round(price, new BigDecimal("0.2"), RoundingMode.DOWN);
+        }
+        else if (price.compareTo(new BigDecimal(20)) == -1){
+            price = round(price, new BigDecimal("0.5"), RoundingMode.DOWN);
+        }
+        else if (price.compareTo(new BigDecimal(30)) == -1){
+            price = round(price, new BigDecimal("1"), RoundingMode.DOWN);
+        }
+        else if (price.compareTo(new BigDecimal(50)) == -1){
+            price = round(price, new BigDecimal("2"), RoundingMode.DOWN);
+        }
+        else if (price.compareTo(new BigDecimal(100)) == -1){
+            price = round(price, new BigDecimal("5"), RoundingMode.DOWN);
+        }
+        else {
+            price = round(price, new BigDecimal("10"), RoundingMode.DOWN);
+        }
+        return price;
+    }
+
+    public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
+        if (increment.signum() == 0) {
+            // 0 increment does not make much sense, but prevent division by 0
+            return value;
+        } else {
+            BigDecimal divided = value.divide(increment, 0, roundingMode);
+            BigDecimal result = divided.multiply(increment);
+            return result;
+        }
+    }
 
 
     public static void main(String[] args){
@@ -746,17 +792,17 @@ public class Betfair extends BettingSite {
 
 
             BetOffer bo = new BetOffer();
-            bo.odds = new BigDecimal("4.1");
+            bo.odds = new BigDecimal("3.3");
             bo.bet = new FootballResultBet("BACK", "DRAW", false);
             HashMap<String, String> md = new HashMap<String, String>();
             md.put("selectionId", "58805");
-            md.put("marketId", "1.162787531");
+            md.put("marketId", "1.162508901");
             bo.metadata = md;
+            bo.site = b;
 
             BetOrder betOrder = new BetOrder();
             betOrder.bet_offer = bo;
-            betOrder.real_return = new BigDecimal("8.00");
-            betOrder.investment = new BigDecimal("2.50");
+            betOrder.investment = new BigDecimal("2.00");
 
 
 
@@ -779,7 +825,10 @@ public class Betfair extends BettingSite {
             ArrayList<BetOrder> betOrders = new ArrayList<>();
             betOrders.add(betOrder);
             //betOrders.add(betOrder2);
-            b.placeBet(betOrders, new BigDecimal("0.9"));
+            //ArrayList<PlacedBet> placedBets = b.placeBet(betOrders, new BigDecimal("0.9"));
+
+
+            print(validPrice(new BigDecimal("3.01")).toString());
 
 
         } catch (Exception e) {

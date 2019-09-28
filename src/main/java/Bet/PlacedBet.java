@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static tools.printer.print;
@@ -18,6 +19,7 @@ public class PlacedBet {
     public BigDecimal investment;
     public BigDecimal returns;
     public Instant time_placed;
+    public String error;
 
 
     public PlacedBet(String state, String bet_id, BetOffer betOffer, BigDecimal investment,
@@ -31,9 +33,14 @@ public class PlacedBet {
         this.time_placed = time_placed;
     }
 
-    public PlacedBet(String state, BetOffer betOffer){
+    public PlacedBet(String state, BetOffer betOffer, String error){
         this.state = state;
         this.betOffer = betOffer;
+        this.error = error;
+    }
+
+    public boolean successful(){
+        return (state.toUpperCase().equals("SUCCESS"));
     }
 
     public BettingSite site(){
@@ -45,21 +52,27 @@ public class PlacedBet {
     }
 
     public String toString(){
-        HashMap<String, String> m = new HashMap<String, String>();
-        m.put("bet_offer", betOffer.toString());
-        m.put("invested", investment.toString());
-        m.put("returns", returns.toString());
-        m.put("time_placed", time_placed.toString());
-        return m.toString();
+        return toJSON().toString();
     }
 
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
+        m.put("state", String.valueOf(state));
+        m.put("bet_id", String.valueOf(bet_id));
         m.put("bet_offer", betOffer.toJSON());
-        m.put("invested", investment.toString());
-        m.put("returns", returns.toString());
-        m.put("time_placed", time_placed.toString());
+        m.put("invested", String.valueOf(investment));
+        m.put("returns", String.valueOf(returns));
+        m.put("time_placed", String.valueOf(time_placed));
+        m.put("error", String.valueOf(error));
         return m;
+    }
+
+    public static JSONArray list2JSON(ArrayList<PlacedBet> placedBets){
+        JSONArray ja = new JSONArray();
+        for (PlacedBet pb: placedBets){
+            ja.add(pb.toJSON());
+        }
+        return ja;
     }
 
 
