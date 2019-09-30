@@ -64,7 +64,7 @@ public class Requester {
 
 
 
-    public Object post(String url, String json, Map<String, String> headers) throws IOException, URISyntaxException {
+    public Object post(String url, String json, Map<String, String> headers, boolean return400) throws IOException, URISyntaxException {
 
         // Create new http POST object
         HttpPost httpPost = new HttpPost(new URI(url));
@@ -90,7 +90,10 @@ public class Requester {
 
         // Check response code is valid
         int status_code = response.getStatusLine().getStatusCode();
-        if (status_code < 200 || status_code >= 300){
+        if (return400 && status_code == 400){
+            // Do nothing
+        }
+        else if (status_code < 200 || status_code >= 300){
             String response_body = EntityUtils.toString(response.getEntity());
             String msg = String.format("ERROR %d in HTTP POST request - %s\n%s\n%s\n%s",
                     status_code, response.toString(), response_body, response.getStatusLine().toString(), json);
@@ -104,13 +107,23 @@ public class Requester {
     }
 
 
+    public Object post(String url, String json) throws IOException, URISyntaxException {
+        return post(url, json, null, false);
+    }
+
+
+    public Object post(String url, JSONObject json, boolean return400) throws IOException, URISyntaxException {
+        return post(url, json.toString(), null, return400);
+    }
+
+
     public Object post(String url, JSONObject json, Map<String, String> headers) throws IOException, URISyntaxException {
-        return post(url, json.toString(), headers);
+        return post(url, json.toString(), headers, false);
     }
 
 
     public Object post(String url, JSONArray json, Map<String, String> headers) throws IOException, URISyntaxException {
-        return post(url, json.toString(), headers);
+        return post(url, json.toString(), headers, false);
     }
 
 

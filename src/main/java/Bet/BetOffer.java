@@ -34,6 +34,12 @@ public class BetOffer implements Comparable<BetOffer> {
 
     public BetOffer(){}
 
+    public BetOffer newOdds(BigDecimal odds){
+        // Returns a new betOffer with the same attributes except new odds and volume
+        BetOffer newBetOffer = new BetOffer(match, bet, site, odds, volume, metadata);
+        return newBetOffer;
+    }
+
     public String toString(){
         return toJSON().toString();
     }

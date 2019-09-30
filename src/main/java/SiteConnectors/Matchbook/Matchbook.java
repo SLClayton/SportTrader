@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Bet.BetOrder;
+import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
@@ -247,6 +249,13 @@ public class Matchbook extends BettingSite {
     @Override
     public BigDecimal getAmountToBet(BigDecimal investment) {
         return investment;
+    }
+
+    @Override
+    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+            throws IOException, URISyntaxException {
+
+        return null;
     }
 
 

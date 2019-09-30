@@ -13,22 +13,27 @@ import static tools.printer.print;
 
 public class PlacedBet {
 
+    public static String FAILED_STATE = "FAILED";
+    public static String SUCCESS_STATE = "SUCCESS";
+
     public String state;
     public String bet_id;
     public BetOffer betOffer;
     public BigDecimal investment;
+    public BigDecimal avg_odds;
     public BigDecimal returns;
     public Instant time_placed;
     public String error;
 
 
-    public PlacedBet(String state, String bet_id, BetOffer betOffer, BigDecimal investment,
-                     Instant time_placed){
+    public PlacedBet(String state, String bet_id, BetOffer betOffer, BigDecimal investment, BigDecimal avg_odds,
+                     BigDecimal returns, Instant time_placed){
 
         this.state = state;
         this.bet_id = bet_id;
         this.betOffer = betOffer;
         this.investment = investment;
+        this.avg_odds = avg_odds;
         this.returns = returns;
         this.time_placed = time_placed;
     }
@@ -61,6 +66,7 @@ public class PlacedBet {
         m.put("bet_id", String.valueOf(bet_id));
         m.put("bet_offer", betOffer.toJSON());
         m.put("invested", String.valueOf(investment));
+        m.put("avg_odds", String.valueOf(avg_odds));
         m.put("returns", String.valueOf(returns));
         m.put("time_placed", String.valueOf(time_placed));
         m.put("error", String.valueOf(error));

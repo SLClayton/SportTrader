@@ -2,7 +2,9 @@ package SiteConnectors.Smarkets;
 
 import Bet.Bet;
 import Bet.BetOffer;
+import Bet.BetOrder;
 import Bet.FootballBet.FootballResultBet;
+import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
@@ -34,6 +36,8 @@ public class Smarkets extends BettingSite {
 
     public static String baseurl = "https://api.smarkets.com/v3/";
     public static String FOOTBALL = "football_match";
+    public static String CONTRACT_ID = "CONTRACT_ID";
+    public static String MARKET_ID = "MARKET_ID";
 
     public static BigDecimal commission_rate = new BigDecimal("0.01");
     public static BigDecimal min_bet = new BigDecimal("0.05");
@@ -211,8 +215,7 @@ public class Smarkets extends BettingSite {
     }
 
 
-
-    // Backups done the usual non limiting way
+    // Backup done the usual non limiting way
     public class PriceQuotesRequestHandlerFULLON implements Runnable{
 
         public int MAX_BATCH_SIZE = 300;
@@ -288,6 +291,7 @@ public class Smarkets extends BettingSite {
         }
     }
 
+    // Backup done the usual non limiting way
     public class PriceQuoteRequestSenderFULLON implements Runnable{
 
         public BlockingQueue<ArrayList<RequestHandler>> jobQueue;
@@ -405,6 +409,8 @@ public class Smarkets extends BettingSite {
         BigDecimal ratio = new BigDecimal(100).divide(BigDecimal.ONE.add(commission_rate));
         return investment.multiply(ratio);
     }
+
+
 
     @Override
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
@@ -618,24 +624,91 @@ public class Smarkets extends BettingSite {
 
 
 
+    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+            throws IOException, URISyntaxException {
+
+
+        BetOrder betOrder = betOrders.get(0);
+
+        JSONObject payload = new JSONObject();
+        payload.put("contract_id", betOrder.bet_offer.metadata.get(Smarkets.CONTRACT_ID));
+        payload.put("market_id", betOrder.bet_offer.metadata.get(Smarkets.MARKET_ID));
+        payload.put("price", new BigDecimal(10000)
+                .divide(betOrder.bet_offer.odds, 0, RoundingMode.HALF_UP).intValue());
+        payload.put("quantity", betOrder.investment
+                .multiply(new BigDecimal(10000))
+                .multiply(betOrder.bet_offer.odds).setScale(0, RoundingMode.HALF_UP).intValue());
+        if (betOrder.bet_offer.bet.isBack()){
+            payload.put("side", "buy");
+        }
+        else if (betOrder.bet_offer.bet.isLay()){
+            payload.put("side", "sell");
+        }
+        else{
+            log.severe("BET IS NOT BACK OR LAY WTFFFFF");
+        }
+        payload.put("type", "immediate_or_cancel");
+
+        pp(payload);
+
+        JSONObject response = (JSONObject) requester.post(baseurl + "orders/", payload, true);
+
+        pp(response);
+        p(response);
+
+        ArrayList<PlacedBet> placedBets = new ArrayList<>();
+
+        PlacedBet pb = null;
+        if (response.containsKey("error_type")){
+            pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder.bet_offer, (String) response.get("error_type"));
+
+        }
+        else{
+            String bet_id = (String) response.get("order_id");
+            BigDecimal smarkets_price = new BigDecimal((long) response.get("executed_avg_price"));
+            BigDecimal odds = new BigDecimal(10000).divide(smarkets_price, 2, RoundingMode.HALF_UP);
+            BigDecimal investment = new BigDecimal((long) response.get("total_executed_quantity"))
+                    .multiply(smarkets_price)
+                    .divide(new BigDecimal(100000000), 2, RoundingMode.HALF_UP);
+            Instant time = Instant.now();
+
+            BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(odds), investment, true);
+
+            pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder.bet_offer, investment, odds, returns, time);
+        }
+
+        placedBets.add(pb);
+
+        return placedBets;
+    }
+
+
 
     public static void main(String[] args){
 
         try {
+
             Smarkets s = new Smarkets();
 
-            BetOffer bo = new BetOffer(null,
-                    new FootballResultBet(Bet.BACK, "TEAM-A", false),
-                    s,
-                    new BigDecimal("7.4"),
-                    null,
-                    null);
+            BetOffer bo = new BetOffer();
+            bo.odds = new BigDecimal("3.2");
+            bo.bet = new FootballResultBet("BACK", "DRAW", false);
+            HashMap<String, String> md = new HashMap<String, String>();
+            md.put(Smarkets.CONTRACT_ID, "31095360");
+            md.put(Smarkets.MARKET_ID, "8944834");
+            bo.metadata = md;
+            bo.site = s;
 
-            BigDecimal roi = s.ROI(bo, new BigDecimal("3.03"), true);
-            print(roi.toString());
+            BetOrder betOrder = new BetOrder();
+            betOrder.bet_offer = bo;
+            betOrder.investment = new BigDecimal("1.50");
 
+            ArrayList<BetOrder> betOrders = new ArrayList<>();
+            betOrders.add(betOrder);
 
+            ArrayList<PlacedBet> placedBets = s.placeBets(betOrders, new BigDecimal("0.9"));
 
+            p(PlacedBet.list2JSON(placedBets));
 
 
 

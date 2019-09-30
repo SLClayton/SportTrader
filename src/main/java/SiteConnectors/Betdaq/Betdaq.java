@@ -1,5 +1,7 @@
 package SiteConnectors.Betdaq;
 
+import Bet.BetOrder;
+import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
@@ -60,6 +62,12 @@ public class Betdaq extends BettingSite {
         return null;
     }
 
+    @Override
+    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+            throws IOException, URISyntaxException {
+
+        return null;
+    }
 
 
     public static void main(String[] args){

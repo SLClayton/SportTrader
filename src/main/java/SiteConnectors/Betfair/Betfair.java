@@ -625,7 +625,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public ArrayList<PlacedBet> placeBet(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
 
         // Sort bets into groups by their market
@@ -688,15 +688,8 @@ public class Betfair extends BettingSite {
             RPCs.add(rpc);
         }
 
-
-        pp(RPCs);
-        print("\n\n");
-
+        // Send off request to place bets on betfair exchange
         JSONArray response = (JSONArray) requester.post(betting_endpoint, RPCs);
-
-        pp(response);
-        p(response);
-
 
         // Get responses and generate PlaceBet for each
         ArrayList<PlacedBet> placedBets = new ArrayList<>();
@@ -730,14 +723,17 @@ public class Betfair extends BettingSite {
                     String bet_id = (String) report.get("betId");
                     BigDecimal size = new BigDecimal((String.valueOf((Double) report.get("sizeMatched"))));
                     Instant time = Instant.parse((String) report.get("placedDate"));
+                    BigDecimal avg_odds = new BigDecimal((String.valueOf((Double) report.get("averagePriceMatched"))));
+                    BigDecimal returns = this.ROI(betOffer.newOdds(avg_odds), size, true);
 
-                    placedBets.add(new PlacedBet("SUCCESS", bet_id, betOffer, size, time));
+                    placedBets.add(new PlacedBet("SUCCESS", bet_id, betOffer, size, avg_odds, returns, time));
                 }
             }
         }
 
         return placedBets;
     }
+
 
     private static BigDecimal validPrice(BigDecimal price) {
 
@@ -774,6 +770,7 @@ public class Betfair extends BettingSite {
         return price;
     }
 
+
     public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
         if (increment.signum() == 0) {
             // 0 increment does not make much sense, but prevent division by 0
@@ -792,17 +789,17 @@ public class Betfair extends BettingSite {
 
 
             BetOffer bo = new BetOffer();
-            bo.odds = new BigDecimal("3.3");
+            bo.odds = new BigDecimal("3.7");
             bo.bet = new FootballResultBet("BACK", "DRAW", false);
             HashMap<String, String> md = new HashMap<String, String>();
             md.put("selectionId", "58805");
-            md.put("marketId", "1.162508901");
+            md.put("marketId", "1.162507677");
             bo.metadata = md;
             bo.site = b;
 
             BetOrder betOrder = new BetOrder();
             betOrder.bet_offer = bo;
-            betOrder.investment = new BigDecimal("2.00");
+            betOrder.investment = new BigDecimal("3.33");
 
 
 
@@ -819,16 +816,6 @@ public class Betfair extends BettingSite {
             betOrder2.real_return = new BigDecimal("8.00");
             betOrder2.investment = new BigDecimal("2.00");
 
-
-
-
-            ArrayList<BetOrder> betOrders = new ArrayList<>();
-            betOrders.add(betOrder);
-            //betOrders.add(betOrder2);
-            //ArrayList<PlacedBet> placedBets = b.placeBet(betOrders, new BigDecimal("0.9"));
-
-
-            print(validPrice(new BigDecimal("3.01")).toString());
 
 
         } catch (Exception e) {

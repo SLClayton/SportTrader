@@ -211,8 +211,14 @@ public class EventTrader implements Runnable {
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
-        p(fullOddsReport.toJSON());
-        System.exit(0);
+
+
+        if (fullOddsReport.betOffers.size() > 0){
+            p(fullOddsReport.toJSON());
+            System.exit(0);
+        }
+
+
 
 
         // Generate profit report for each tautology and order by profit ratio

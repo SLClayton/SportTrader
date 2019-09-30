@@ -44,6 +44,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public Map<String, JSONObject> id_market_map;
     public ArrayList<String> market_ids;
     public Map<String, String> fullname_contract_map;
+    public Map<String, String> contract_market_map;
 
     public JSONObject lastPrices;
 
@@ -52,6 +53,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
         this.smarkets = smarkets;
         id_market_map = new HashMap<>();
         fullname_contract_map = new HashMap<>();
+        contract_market_map = new HashMap<>();
     }
 
 
@@ -118,7 +120,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         // Build a smarkets 'fullname' for each possible contract and map to its id
         JSONArray contracts = smarkets.getContracts(market_ids);
-        p(contracts);
+
         for (Object market_obj: markets) {
             JSONObject market = (JSONObject) market_obj;
 
@@ -151,6 +153,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 String fullname = String.format("%s%s_%s%s",
                         market_type_name, market_type_param, contract_type_name, contract_type_param);
                 fullname_contract_map.put(fullname, contract_id);
+                contract_market_map.put(contract_id, market_id);
             }
         }
         return true;
@@ -252,7 +255,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
                 // Put contract ID in metadata
                 HashMap<String, String> metadata = new HashMap<>();
-                metadata.put("contract_id", contract_id);
+                metadata.put(Smarkets.CONTRACT_ID, contract_id);
+                metadata.put(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
 
                 BetOffer bo = new BetOffer(match, bet, smarkets, odds, volume, metadata);
                 new_betOffers.add(bo);
