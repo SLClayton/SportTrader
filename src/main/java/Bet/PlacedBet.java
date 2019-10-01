@@ -45,7 +45,7 @@ public class PlacedBet {
     }
 
     public boolean successful(){
-        return (state.toUpperCase().equals("SUCCESS"));
+        return (state.toUpperCase().equals(SUCCESS_STATE));
     }
 
     public BettingSite site(){

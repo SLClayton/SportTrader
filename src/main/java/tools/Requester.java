@@ -8,6 +8,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -222,6 +223,42 @@ public class Requester {
             InterruptedException {
 
         return getRaw(url, null);
+    }
+
+    public Object delete(String url) throws URISyntaxException, IOException {
+
+        HttpDelete httpDelete = new HttpDelete(new URIBuilder(url).build());
+
+        headerLock.lock();
+        // Add in default headers form requester object
+        for (Entry<String, String> header: headers.entrySet()){
+            httpDelete.setHeader(header.getKey(), header.getValue());
+        }
+        headerLock.unlock();
+
+        HttpResponse response = httpClient.execute(httpDelete);
+
+        // Check response code is valid
+        int status_code = response.getStatusLine().getStatusCode();
+        if (status_code < 200 || status_code >= 300){
+            String response_body = EntityUtils.toString(response.getEntity());
+            if (response_body == null){
+                response_body = "null";
+            }
+            String msg = String.format("ERROR %d in HTTP DELETE request\n%s\nurl: %s\nURI:%s\n%s\n%s",
+                    status_code,
+                    response.toString(),
+                    url,
+                    httpDelete.getURI().toString(),
+                    response_body,
+                    response.getStatusLine().toString());
+            log.severe(msg);
+            throw new IOException(msg);
+        }
+
+        // Convert body to json and return
+        String response_body = EntityUtils.toString(response.getEntity());
+        return JSONValue.parse(response_body);
     }
 
 }

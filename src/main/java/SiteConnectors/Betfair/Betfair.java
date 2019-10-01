@@ -491,10 +491,6 @@ public class Betfair extends BettingSite {
         return footballMatches;
     }
 
-    @Override
-    public BigDecimal getAmountToBet(BigDecimal investment) {
-        return investment;
-    }
 
 
     public JSONArray getMarketCatalogue(JSONObject params) throws IOException, URISyntaxException {
@@ -734,6 +730,16 @@ public class Betfair extends BettingSite {
         return placedBets;
     }
 
+    public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
+        if (increment.signum() == 0) {
+            // 0 increment does not make much sense, but prevent division by 0
+            return value;
+        } else {
+            BigDecimal divided = value.divide(increment, 0, roundingMode);
+            BigDecimal result = divided.multiply(increment);
+            return result;
+        }
+    }
 
     private static BigDecimal validPrice(BigDecimal price) {
 
@@ -771,16 +777,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
-        if (increment.signum() == 0) {
-            // 0 increment does not make much sense, but prevent division by 0
-            return value;
-        } else {
-            BigDecimal divided = value.divide(increment, 0, roundingMode);
-            BigDecimal result = divided.multiply(increment);
-            return result;
-        }
-    }
+
 
 
     public static void main(String[] args){

@@ -2,6 +2,7 @@ package SiteConnectors.Matchbook;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -12,6 +13,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -19,12 +21,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Bet.BetOffer;
 import Bet.BetOrder;
+import Bet.FootballBet.FootballResultBet;
 import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
+import Sport.Match;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.MyLogHandler;
@@ -43,6 +48,8 @@ public class Matchbook extends BettingSite {
             "both_to_score",
             "correct_score"};
     public static String FOOTBALL_ID = "15";
+    public static String RUNNER_ID = "RUNNER_ID";
+    public static String MARKET_ID = "MARKET_ID";
 
     public marketDataRequestHandler marketDataRequestHandler;
     public BlockingQueue<RequestHandler> marketDataRequestHandlerQueue;
@@ -246,17 +253,8 @@ public class Matchbook extends BettingSite {
         return getEvents(from, until, new String[] {FOOTBALL_ID});
     }
 
-    @Override
-    public BigDecimal getAmountToBet(BigDecimal investment) {
-        return investment;
-    }
 
-    @Override
-    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
-            throws IOException, URISyntaxException {
 
-        return null;
-    }
 
 
     public ArrayList<FootballMatch> getEvents(Instant before, Instant after, String[] event_types) throws IOException,
@@ -357,8 +355,167 @@ public class Matchbook extends BettingSite {
         return response;
     }
 
+    @Override
+    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+            throws IOException, URISyntaxException {
+
+        Map<String, BetOrder> runner_betOrder_map = new HashMap<>();
+
+        JSONArray offers = new JSONArray();
+        for (BetOrder betOrder: betOrders){
+            BigDecimal odds = betOrder.bet_offer.odds;
+
+            JSONObject offer = new JSONObject();
+            offer.put("runner-id", betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID));
+            offer.put("side", betOrder.bet_offer.bet.type.toLowerCase());
+            offer.put("odds", odds.multiply(MIN_ODDS_RATIO).setScale(3, RoundingMode.HALF_UP).doubleValue());
+            offer.put("stake", betOrder.investment.setScale(2, RoundingMode.HALF_UP).doubleValue());
+            offer.put("keep-in-play", true);
+
+            offers.add(offer);
+            runner_betOrder_map.put(betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID), betOrder);
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("odds-type", "DECIMAL");
+        json.put("exchange-type", "back-lay");
+        json.put("offers", offers);
+
+
+        JSONObject response = (JSONObject) requester.post(baseurl + "/v2/offers/", json);
+
+
+
+        boolean any_failures = false;
+        ArrayList<PlacedBet> placedBets = new ArrayList<>();
+        for (Object offer_obj: (JSONArray) response.get("offers")){
+            JSONObject offer = (JSONObject) offer_obj;
+
+            String status = (String) offer.get("status");
+            String runner_id = String.valueOf((long) offer.get("runner-id"));
+            BetOrder betOrder = runner_betOrder_map.get(runner_id);
+
+            PlacedBet pb = null;
+            if (status.equals("matched")){
+
+
+                BigDecimal total_investment = new BigDecimal((Double) offer.get("stake"));
+
+                // They dont bother to send you the average odds so you have to do it by yourself from
+                // all the parts if there are multiple parts to the matching of your bet
+                BigDecimal avg_odds = BigDecimal.ZERO;
+                for (Object matchedBet_obj: (JSONArray) offer.get("matched-bets")){
+                    JSONObject matchedBet = (JSONObject) matchedBet_obj;
+
+                    BigDecimal odds = new BigDecimal(String.valueOf((Double) matchedBet.get("decimal-odds")));
+                    BigDecimal investment = new BigDecimal(String.valueOf((Double) matchedBet.get("stake")));
+
+                    BigDecimal ratio = investment.divide(total_investment, 20, RoundingMode.HALF_UP);
+                    avg_odds = avg_odds.add(odds.multiply(ratio));
+                }
+
+
+                String bet_id = String.valueOf((long) offer.get("id"));
+                BigDecimal odds = new BigDecimal((Double) offer.get("odds"));
+                BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(odds), total_investment, true);
+                Instant time = Instant.parse((String) offer.get("created-at"));
+
+
+                pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder.bet_offer,
+                        total_investment, avg_odds, returns, time);
+            }
+            else{
+                any_failures = true;
+                pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder.bet_offer, status);
+            }
+
+            placedBets.add(pb);
+        }
+
+
+        // Remove all offers on market if any failures appear which leave the offer open.
+        if (any_failures){
+            JSONObject delete_response = (JSONObject) requester.delete(baseurl + "/v2/offers/");
+
+            for (Object offer_obj: (JSONArray) delete_response.get("offers")){
+                JSONObject offer = (JSONObject) offer_obj;
+
+                String status = (String) offer.get("status");
+                String id = String.valueOf((long) offer.get("id"));
+                if (!status.equals("cancelled")){
+                    log.severe(String.format("Failed to cancel matchbook bet %s\n%s", id, ps(offer)));
+                }
+                else{
+                    log.info(String.format("Successfully cancelled matchbook bet %s for not being matched.", id));
+                }
+            }
+        }
+
+        return placedBets;
+    }
+
+
 
     public static void main(String[] args){
+
+        try {
+            Matchbook m = new Matchbook();
+
+            BetOffer bo = new BetOffer();
+            bo.odds = new BigDecimal("5.6");
+            bo.bet = new FootballResultBet("BACK", "DRAW", false);
+            HashMap<String, String> md = new HashMap<String, String>();
+            md.put(Matchbook.RUNNER_ID, "1229360059390017");
+            md.put(Matchbook.MARKET_ID, "1229360056270017");
+            bo.metadata = md;
+            bo.site = m;
+
+            BetOrder betOrder = new BetOrder();
+            betOrder.bet_offer = bo;
+            betOrder.investment = new BigDecimal("1.50");
+
+
+            BetOffer bo2 = new BetOffer();
+            bo2.odds = new BigDecimal("25");
+            bo2.bet = new FootballResultBet("BACK", "TEAM-B", false);
+            HashMap<String, String> md2 = new HashMap<String, String>();
+            md2.put(Matchbook.RUNNER_ID, "1229360056630017");
+            md2.put(Matchbook.MARKET_ID, "1229360056010017");
+            bo2.metadata = md2;
+            bo2.site = m;
+
+            BetOrder betOrder2 = new BetOrder();
+            betOrder2.bet_offer = bo2;
+            betOrder2.investment = new BigDecimal("0.50");
+
+
+            ArrayList<BetOrder> betOrders = new ArrayList<>();
+            betOrders.add(betOrder);
+            betOrders.add(betOrder2);
+
+            ArrayList<PlacedBet> placedBets = m.placeBets(betOrders, new BigDecimal("0.9"));
+
+            p(PlacedBet.list2JSON(placedBets));
+
+
+
+
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
 
     }
 }

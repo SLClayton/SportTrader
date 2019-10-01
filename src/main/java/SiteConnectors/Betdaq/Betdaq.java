@@ -57,10 +57,6 @@ public class Betdaq extends BettingSite {
         return null;
     }
 
-    @Override
-    public BigDecimal getAmountToBet(BigDecimal investment) {
-        return null;
-    }
 
     @Override
     public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)

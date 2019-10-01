@@ -142,8 +142,8 @@ public class MatchbookEventTracker extends SiteEventTracker {
                 BigDecimal odds = new BigDecimal(String.valueOf(mb_offer.get("decimal-odds")));
                 BigDecimal volume = new BigDecimal(String.valueOf(mb_offer.get("available-amount")));
                 HashMap<String, String> metadata = new HashMap<>();
-                metadata.put("market_id", String.valueOf(runner.get("market-id")));
-                metadata.put("runner_id", String.valueOf(runner.get("id")));
+                metadata.put(Matchbook.MARKET_ID, String.valueOf(runner.get("market-id")));
+                metadata.put(Matchbook.RUNNER_ID, String.valueOf(runner.get("id")));
 
                 new_betOffers.add(new BetOffer(match, bet, matchbook, odds, volume, metadata));
             }

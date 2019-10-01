@@ -58,8 +58,6 @@ public abstract class BettingSite {
 
     public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException;
 
-    public abstract BigDecimal getAmountToBet(BigDecimal investment);
-
     public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException;
 
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
