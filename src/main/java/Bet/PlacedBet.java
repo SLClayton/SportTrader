@@ -18,7 +18,7 @@ public class PlacedBet {
 
     public String state;
     public String bet_id;
-    public BetOffer betOffer;
+    public BetOrder betOrder;
     public BigDecimal investment;
     public BigDecimal avg_odds;
     public BigDecimal returns;
@@ -26,21 +26,21 @@ public class PlacedBet {
     public String error;
 
 
-    public PlacedBet(String state, String bet_id, BetOffer betOffer, BigDecimal investment, BigDecimal avg_odds,
+    public PlacedBet(String state, String bet_id, BetOrder betOrder, BigDecimal investment, BigDecimal avg_odds,
                      BigDecimal returns, Instant time_placed){
 
         this.state = state;
         this.bet_id = bet_id;
-        this.betOffer = betOffer;
+        this.betOrder = betOrder;
         this.investment = investment;
         this.avg_odds = avg_odds;
         this.returns = returns;
         this.time_placed = time_placed;
     }
 
-    public PlacedBet(String state, BetOffer betOffer, String error){
+    public PlacedBet(String state, BetOrder betOrder, String error){
         this.state = state;
-        this.betOffer = betOffer;
+        this.betOrder = betOrder;
         this.error = error;
     }
 
@@ -49,7 +49,7 @@ public class PlacedBet {
     }
 
     public BettingSite site(){
-        return betOffer.site;
+        return betOrder.bet_offer.site;
     }
 
     public BigDecimal profit(){
@@ -64,7 +64,7 @@ public class PlacedBet {
         JSONObject m = new JSONObject();
         m.put("state", String.valueOf(state));
         m.put("bet_id", String.valueOf(bet_id));
-        m.put("bet_offer", betOffer.toJSON());
+        m.put("betOrder", betOrder.toJSON());
         m.put("invested", String.valueOf(investment));
         m.put("avg_odds", String.valueOf(avg_odds));
         m.put("returns", String.valueOf(returns));

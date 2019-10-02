@@ -420,13 +420,18 @@ public class Matchbook extends BettingSite {
                 BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(odds), total_investment, true);
                 Instant time = Instant.parse((String) offer.get("created-at"));
 
+                log.info(String.format("Successfully placed %s on bet %s in matchbook (returns %s).",
+                        total_investment.toString(), betOrder.bet_offer.bet.id(), returns.toString()));
 
-                pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder.bet_offer,
+                pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder,
                         total_investment, avg_odds, returns, time);
             }
             else{
                 any_failures = true;
-                pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder.bet_offer, status);
+
+                log.severe(String.format("Failed to placed %s on bet %s in matchbook. Bet not fully matched.",
+                        betOrder.investment.toString(), betOrder.bet_offer.bet.id()));
+                pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, status);
             }
 
             placedBets.add(pb);

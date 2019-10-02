@@ -62,6 +62,7 @@ public class Betfair extends BettingSite {
     public EventSearchHandler eventSearchHandler;
     public BlockingQueue<Object[]> eventSearchHandlerQueue;
 
+    public final static BigDecimal commission_rate = new BigDecimal("0.02");
     public BigDecimal commission_discount = BigDecimal.ZERO;
     public BigDecimal balance;
     public long betfairPoints = 0;
@@ -93,7 +94,7 @@ public class Betfair extends BettingSite {
         name = "betfair";
 
         requester = new Requester();
-        requester.setHeader("X-Application", app_id_dev);
+        requester.setHeader("X-Application", app_id);
         login();
 
         balance = BigDecimal.ZERO;
@@ -348,7 +349,7 @@ public class Betfair extends BettingSite {
 
     @Override
     public BigDecimal commission() {
-        return new BigDecimal("0.05").subtract(commission_discount);
+        return commission_rate.subtract(commission_discount);
     }
 
 
@@ -697,8 +698,8 @@ public class Betfair extends BettingSite {
 
             if (!rpc_status.equals("SUCCESS")){
                 String errorCode = (String) rpc_result.get("errorCode");
-                log.severe(String.format("Failed 1 or more bets in betfair '%s' in market '%s'\n%s",
-                        String.valueOf(errorCode), market_id, ps(rpc_response)));
+                log.severe(String.format("Failed 1 or more bets in betfair '%s' in market '%s'\n%s\n%s",
+                        String.valueOf(errorCode), market_id, ps(RPCs), ps(rpc_response)));
             }
 
             for (Object report_obj: (JSONArray) rpc_result.get("instructionReports")){
@@ -706,29 +707,32 @@ public class Betfair extends BettingSite {
 
                 String orderStatus = (String) report.get("status");
                 int bet_order_id = Integer.valueOf((String) ((JSONObject) report.get("instruction")).get("customerOrderRef"));
-                BetOffer betOffer = betOrders.get(bet_order_id).bet_offer;
+                BetOrder betOrder = betOrders.get(bet_order_id);
 
                 if (!orderStatus.equals("SUCCESS")){
                     String error = (String) report.get("errorCode");
                     log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
                             String.valueOf(error), ps(report)));
 
-                    placedBets.add(new PlacedBet("FAILED", betOffer, String.valueOf(error)));
+                    placedBets.add(new PlacedBet("FAILED", betOrder, String.valueOf(error)));
                 }
                 else{
                     String bet_id = (String) report.get("betId");
                     BigDecimal size = new BigDecimal((String.valueOf((Double) report.get("sizeMatched"))));
                     Instant time = Instant.parse((String) report.get("placedDate"));
                     BigDecimal avg_odds = new BigDecimal((String.valueOf((Double) report.get("averagePriceMatched"))));
-                    BigDecimal returns = this.ROI(betOffer.newOdds(avg_odds), size, true);
+                    BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(avg_odds), size, true);
 
-                    placedBets.add(new PlacedBet("SUCCESS", bet_id, betOffer, size, avg_odds, returns, time));
+                    log.info(String.format("Successfully placed %s on bet %s in betfair (returns %s).",
+                            size.toString(), betOrder.bet_offer.bet.id(), returns.toString()));
+                    placedBets.add(new PlacedBet("SUCCESS", bet_id, betOrder, size, avg_odds, returns, time));
                 }
             }
         }
 
         return placedBets;
     }
+
 
     public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
         if (increment.signum() == 0) {
@@ -740,6 +744,7 @@ public class Betfair extends BettingSite {
             return result;
         }
     }
+
 
     private static BigDecimal validPrice(BigDecimal price) {
 

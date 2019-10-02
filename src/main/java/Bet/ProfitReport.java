@@ -26,11 +26,11 @@ public class ProfitReport implements Comparable<ProfitReport> {
     public BigDecimal min_return;
     public BigDecimal max_return;
     public BigDecimal largest_min_return;
-
     public BigDecimal guaranteed_profit;
     public BigDecimal max_profit;
+    public BigDecimal profit_ratio;
 
-    public  BigDecimal profit_ratio;
+    public ArrayList<PlacedBet> placedBets;
 
     public ProfitReport(ArrayList<BetOrder> BETORDERS) throws InstantiationException {
         bet_orders = BETORDERS;
@@ -70,22 +70,30 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
 
     public JSONObject toJSON(boolean full){
-        JSONObject m = new JSONObject();
-        m.put("total_investment", total_investment.toString());
-        m.put("min_return", min_return.toString());
-        m.put("max_return", max_return.toString());
-        m.put("guaranteed_profit", guaranteed_profit.toString());
-        m.put("max_profit", max_profit.toString());
-        m.put("profit_ratio", profit_ratio.toString());
+        JSONObject j = new JSONObject();
+        j.put("total_investment", total_investment.toString());
+        j.put("min_return", min_return.toString());
+        j.put("max_return", max_return.toString());
+        j.put("guaranteed_profit", guaranteed_profit.toString());
+        j.put("max_profit", max_profit.toString());
+        j.put("profit_ratio", profit_ratio.toString());
         if (full){
             JSONArray orders = new JSONArray();
             for (BetOrder bo: bet_orders){
                 orders.add(bo.toJSON());
             }
-            m.put("bet_orders", orders);
-        }
+            j.put("bet_orders", orders);
 
-        return m;
+            if (placedBets != null){
+                JSONArray placed = new JSONArray();
+                for (PlacedBet pb: placedBets){
+                    placed.add(pb.toJSON());
+                }
+                j.put("placed_bets", placed);
+            }
+
+        }
+        return j;
     }
 
 

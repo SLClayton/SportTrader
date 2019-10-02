@@ -4,11 +4,14 @@ import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
+import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 
 import javax.naming.directory.InvalidAttributesException;
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
@@ -25,6 +28,10 @@ import static tools.printer.*;
 public class EventTrader implements Runnable {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+
+    public static final BigDecimal MIN_ODDS_RATIO = new BigDecimal("0.9");
+    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("-0.008");
+
 
     public Thread thread;
     public SportsTrader sportsTrader;
@@ -211,25 +218,14 @@ public class EventTrader implements Runnable {
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
-
-
-        if (fullOddsReport.betOffers.size() > 0){
-            p(fullOddsReport.toJSON());
-            System.exit(0);
-        }
-
-
-
-
         // Generate profit report for each tautology and order by profit ratio
         ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);
         Collections.sort(tautologyProfitReports, Collections.reverseOrder());
 
         // Create list of profit reports with profits over min_prof_margain
-        BigDecimal min_profit_margain = new BigDecimal("0.00");
         ArrayList<ProfitReport> in_profit = new ArrayList<ProfitReport>();
         for (ProfitReport pr: tautologyProfitReports){
-            if (pr.profit_ratio.compareTo(min_profit_margain) == 1){
+            if (pr.profit_ratio.compareTo(MIN_PROFIT_RATIO) == 1){
                 in_profit.add(pr);
             }
             else{
@@ -240,8 +236,6 @@ public class EventTrader implements Runnable {
 
         // If any profit reports are found to be IN profit
         if (in_profit.size() > 0){
-            log.info(String.format("PROFIT FOUND IN %s", match));
-
             profitFound(in_profit);
         }
     }
@@ -249,23 +243,19 @@ public class EventTrader implements Runnable {
 
     public void profitFound(ArrayList<ProfitReport> in_profit){
 
-
-        if (false){
-            return;
-        }
-
         // Create profit folder if it does not exist
         File profit_dir = new File(FileSystems.getDefault().getPath(".") + "/profit");
         if (!profit_dir.exists()){
             profit_dir.mkdir();
         }
 
-
-        String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
+        // Get the best (first) profit report
         ProfitReport best = in_profit.get(0);
+        String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
 
+        // Re-create the profit report with real values
         try {
-            best = best.newProfitReport(best.largest_min_return);
+            best = best.newProfitReport(best.largest_min_return.add(new BigDecimal("0.05")));
         } catch (InstantiationException | InvalidAttributesException e) {
             e.printStackTrace();
         }
@@ -273,6 +263,105 @@ public class EventTrader implements Runnable {
         String profitString = best.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
         String filename = timeString + " -  " + match.name + " " + profitString + ".json";
         p(best.toJSON(true), profit_dir.toString() + "/" + filename);
+
+        // Check config allows bets and investment wouldn't be too much.
+        if (!sportsTrader.PLACE_BETS || best.total_investment.compareTo(new BigDecimal("50.01")) == 1){
+            print("PROFIT FOUND WITH MIN INV " + best.total_investment.toString() + " too high.");
+            p(best.toJSON(true));
+
+            in_profit.remove(0);
+            if (in_profit.size() > 0){
+                profitFound(in_profit);
+            }
+            return;
+        }
+
+        best.placedBets = placeBets(best.bet_orders);
+
+        p(best.toJSON(true));
+        print("BETS PLACED AND PROGRAM TERMINATED");
+        System.exit(0);
+
+    }
+
+
+    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders){
+
+        //Sort placed bets into seperate lists depending on their size
+        Map<String, ArrayList<BetOrder>> site_bets = new HashMap<>();
+        for (BetOrder betOrder: betOrders){
+
+            if (!site_bets.containsKey(betOrder.bet_offer.site.name)){
+                site_bets.put(betOrder.bet_offer.site.name, new ArrayList<>());
+            }
+            site_bets.get(betOrder.bet_offer.site.name).add(betOrder);
+        }
+
+        // Place the list of bets for each site
+        ArrayList<PlaceBetsRunnable> placeBetsRunnables = new ArrayList<>();
+        for (Map.Entry<String, ArrayList<BetOrder>> entry: site_bets.entrySet()){
+            String site_name = entry.getKey();
+            ArrayList<BetOrder> site_betOrders = entry.getValue();
+
+            PlaceBetsRunnable placeBetsRunnable = new PlaceBetsRunnable(site_betOrders);
+            placeBetsRunnable.thread = new Thread(placeBetsRunnable);
+            placeBetsRunnable.thread.setName(String.format("%s-BtchBtPlcr", site_name));
+            placeBetsRunnable.thread.start();
+            placeBetsRunnables.add(placeBetsRunnable);
+        }
+
+        // Wait for threads to finish and gather resulting placedBets
+        ArrayList<PlacedBet> placedBets = new ArrayList<>();
+        for (PlaceBetsRunnable placeBetsRunnable: placeBetsRunnables){
+            try {
+                placeBetsRunnable.thread.join();
+                placedBets.addAll(placeBetsRunnable.placedBets);
+            } catch (InterruptedException e) {
+                log.severe(String.format("Error with bets sent to %s.", placeBetsRunnable.site.name));
+                e.printStackTrace();
+
+                ArrayList<PlacedBet> failedbets = new ArrayList<>();
+                while (failedbets.size() < placeBetsRunnable.betOrders.size()){
+                    BetOrder betOrder = placeBetsRunnable.betOrders.get(failedbets.size());
+                    failedbets.add(new PlacedBet(PlacedBet.FAILED_STATE, betOrder,
+                            String.format("Error with all bets sent in this batch to %s.",
+                                    placeBetsRunnable.site.name)));
+                }
+                placedBets.addAll(failedbets);
+            }
+        }
+
+        return placedBets;
+    }
+
+
+    public class PlaceBetsRunnable implements Runnable{
+
+        public ArrayList<BetOrder> betOrders;
+        public ArrayList<PlacedBet> placedBets;
+        public BettingSite site;
+        public Thread thread;
+
+        public PlaceBetsRunnable(ArrayList<BetOrder> betOrders){
+            this.betOrders = betOrders;
+            site = this.betOrders.get(0).bet_offer.site;
+        }
+
+        @Override
+        public void run() {
+            try {
+                placedBets = site.placeBets(betOrders, MIN_ODDS_RATIO);
+            } catch (IOException | URISyntaxException e) {
+                log.severe(String.format("Error while sending bets off to %s", site.name));
+                e.printStackTrace();
+                placedBets = new ArrayList<>();
+                while (placedBets.size() < betOrders.size()){
+                    placedBets.add(new PlacedBet(PlacedBet.FAILED_STATE,
+                            betOrders.get(placedBets.size()),
+                            String.format("placeBets batch fail for %s", site.name)));
+                }
+            }
+        }
     }
 
 
