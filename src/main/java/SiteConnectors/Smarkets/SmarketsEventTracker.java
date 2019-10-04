@@ -244,10 +244,10 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 JSONObject s_offer = (JSONObject) s_offer_obj;
 
                 // Get price and vol as integers and convert them.
-                long odds_raw = (long) s_offer.get("price");
-                long volume_raw = (long) s_offer.get("quantity");
-                BigDecimal odds = new BigDecimal(10000).divide(new BigDecimal(odds_raw), 2, RoundingMode.HALF_UP);
-                BigDecimal volume = new BigDecimal(volume_raw).divide(new BigDecimal(10000),2, RoundingMode.HALF_UP);
+                long price = (long) s_offer.get("price");
+                long quantity = (long) s_offer.get("quantity");
+                BigDecimal odds = Smarkets.price2odds(price);
+                BigDecimal volume = Smarkets.quantity2size(quantity, price);
 
                 // Put contract ID in metadata
                 HashMap<String, String> metadata = new HashMap<>();

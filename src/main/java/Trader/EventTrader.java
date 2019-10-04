@@ -30,7 +30,7 @@ public class EventTrader implements Runnable {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public static final BigDecimal MIN_ODDS_RATIO = new BigDecimal("0.9");
-    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("-0.015");
+    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("0.00");
 
 
     public Thread thread;

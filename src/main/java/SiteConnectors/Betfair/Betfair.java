@@ -702,14 +702,9 @@ public class Betfair extends BettingSite {
             RPCs.add(rpc);
         }
 
-
-        pp(RPCs);
-
         // Send off request to place bets on betfair exchange
         JSONArray response = (JSONArray) requester.post(betting_endpoint, RPCs);
 
-
-        pp(response);
 
         // Get responses and generate PlaceBet for each
         ArrayList<PlacedBet> placedBets = new ArrayList<>();
@@ -756,9 +751,10 @@ public class Betfair extends BettingSite {
 
                     BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(avg_odds), invested, true);
 
-                    log.info(String.format("Successfully invested %s on %s '%s' in betfair (returns %s).",
-                            invested.toString(), betOrder.bet_offer.bet.id(), betOrder.bet_offer.match.name,
-                            returns.toString()));
+                    log.info(String.format("Successfully invested £%s @ %S on %s '%s' in betfair (returns %s).",
+                            invested.toString(), avg_odds.toString(), betOrder.bet_offer.bet.id(),
+                            betOrder.bet_offer.match.name, returns.toString()));
+
                     placedBets.add(new PlacedBet("SUCCESS", bet_id, betOrder, invested, avg_odds, returns, time));
                 }
             }
