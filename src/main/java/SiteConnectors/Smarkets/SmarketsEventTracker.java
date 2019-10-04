@@ -234,12 +234,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
             if (bet.isBack()){
                 offers = (JSONArray) prices.get("offers");
             }
-            else if (bet.isLay()){
+            else {
                 offers = (JSONArray) prices.get("bids");
-            }
-            else{
-                log.severe(String.format("Bet is not back or lay??? - %s - %s", bet.type, bet));
-                continue;
             }
 
             // Convert to our list

@@ -7,6 +7,7 @@ import SiteConnectors.Matchbook.Matchbook;
 import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 import com.google.gson.JsonSyntaxException;
+import org.json.simple.JSONObject;
 import tools.MyLogHandler;
 
 import java.io.IOException;
@@ -20,6 +21,8 @@ import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +43,7 @@ public class SportsTrader {
     public BigDecimal MIN_ODDS_RATIO;
     public Map<String, Boolean> ACTIVE_SITES;
 
+    public Lock betlock = new ReentrantLock();
 
     public HashMap<String, Class> siteClasses;
     public HashMap<String, BettingSite> siteObjects;
@@ -111,9 +115,9 @@ public class SportsTrader {
         RATE_LIMIT = (long) ((Double) config.get("RATE_LIMIT")).intValue();
         MIN_ODDS_RATIO = new BigDecimal((Double) config.get("MIN_ODDS_RATIO"));
 
-        config.remove("ACTIVE_SITES");
-        log.info(String.format("Config:       %s", config.toString()));
-        log.info(String.format("Site configs: %s", ACTIVE_SITES.toString()));
+
+        JSONObject config_json = new JSONObject(config);
+        log.info(String.format("Configuration\n%s", ps(config_json)));
     }
 
 
@@ -279,7 +283,7 @@ public class SportsTrader {
     private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException,
             InterruptedException {
 
-        String site_name = "smarkets";
+        String site_name = "betfair";
         BettingSite site = siteObjects.get(site_name);
         Instant from;
         Instant until;

@@ -47,18 +47,25 @@ public abstract class BettingSite {
     public abstract void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, IOException, URISyntaxException;
 
+
     public abstract String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException;
 
+
     public abstract BigDecimal commission();
+
 
     public abstract BigDecimal minBet();
 
+
     public abstract SiteEventTracker getEventTracker();
+
 
     public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException;
 
+
     public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException;
+
 
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
         // Default ROI, commission on profits only
@@ -75,7 +82,7 @@ public abstract class BettingSite {
             commission = profit.multiply(commission());
             roi = ret.subtract(commission);
         }
-        else{ // Lay Bet
+        else { // Lay Bet
             BigDecimal lay = bet_offer.getLayFromStake(stake, real);
             profit = lay;
             commission = profit.multiply(commission());

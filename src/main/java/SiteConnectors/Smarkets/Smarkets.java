@@ -424,6 +424,9 @@ public class Smarkets extends BettingSite {
         // (From smarkets support email on commission)
         // For back bets that is the back stake if the bet loses or the profit if the bet wins.
         // For lay bets it's the liability if the bet loses or the lay stake if the bet wins
+        //
+        // Pro Tier commission band where 1% commission is charged on winnings or losses per
+        // each individual bet that settles, and order rate is limited to 1 bet/s
 
         BigDecimal stake;
         BigDecimal ret;
@@ -739,18 +742,29 @@ public class Smarkets extends BettingSite {
         ArrayList<PlaceBetRunnable> placeBetRunnables = new ArrayList<>();
         for (BetOrder betOrder: betOrders) {
 
+            BigDecimal odds = betOrder.bet_offer.odds;
+            String side;
+            BigDecimal stake;
+            if (betOrder.isBack()){
+                odds = odds.subtract(BigDecimal.ONE).multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE);
+                side = "buy";
+                stake = getAmountToBet(betOrder.investment);
+            }
+            else{
+                BigDecimal ratio = BigDecimal.ONE.divide(MIN_ODDS_RATIO, 2, RoundingMode.HALF_UP);
+                odds = odds.subtract(BigDecimal.ONE).multiply(ratio).add(BigDecimal.ONE);
+                side = "sell";
+                stake = betOrder.bet_offer.getLayFromStake(getAmountToBet(betOrder.investment), true);
+                betOrder.lay_amount = stake;
+            }
+
+
             JSONObject payload = new JSONObject();
             payload.put("contract_id", betOrder.bet_offer.metadata.get(Smarkets.CONTRACT_ID));
             payload.put("market_id", betOrder.bet_offer.metadata.get(Smarkets.MARKET_ID));
-            payload.put("price", odds2price(validOdds(betOrder.bet_offer.odds.multiply(MIN_ODDS_RATIO))));
-            payload.put("quantity", size2quantity(getAmountToBet(betOrder.investment), betOrder.bet_offer.odds));
-            if (betOrder.bet_offer.bet.isBack()) {
-                payload.put("side", "buy");
-            } else if (betOrder.bet_offer.bet.isLay()) {
-                payload.put("side", "sell");
-            } else {
-                log.severe("BET IS NOT BACK OR LAY WTFFFFF");
-            }
+            payload.put("price", odds2price(validOdds(odds)));
+            payload.put("quantity", size2quantity(stake, betOrder.bet_offer.odds));
+            payload.put("side", side);
             payload.put("type", "immediate_or_cancel");
 
 
@@ -802,8 +816,9 @@ public class Smarkets extends BettingSite {
 
                 BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(odds), investment, true);
 
-                log.info(String.format("Successfully placed %s on bet %s in smarkets (returns %s).",
-                        investment.toString(), betOrder.bet_offer.bet.id(), returns.toString()));
+                log.info(String.format("Successfully placed %s on %s '%s' in smarkets (returns %s).",
+                        investment.toString(), betOrder.bet_offer.bet.id(), betOrder.match().name,
+                        returns.toString()));
 
                 pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, investment, odds, returns, time);
             }

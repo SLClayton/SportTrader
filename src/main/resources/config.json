@@ -1,6 +1,6 @@
 {
-    "MAX_MATCHES": 1,
-    "MIN_SITES_PER_MATCH": 3,
+    "MAX_MATCHES": 5,
+    "MIN_SITES_PER_MATCH": 1,
     "IN_PLAY": false,
     "HOURS_AHEAD": 24,
     "CHECK_MARKETS": true,
@@ -10,8 +10,8 @@
 
     "ACTIVE_SITES": {
         "betfair": true,
-    	"matchbook": true,
-        "smarkets": true
+    	"matchbook": false,
+        "smarkets": false
     }
 
 }

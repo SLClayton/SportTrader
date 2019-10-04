@@ -1,10 +1,13 @@
 package Bet;
 
 import SiteConnectors.BettingSite;
+import Sport.Match;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static tools.printer.ps;
@@ -16,6 +19,7 @@ public class BetOrder {
     public BigDecimal target_return;
     public BigDecimal investment;
     public BigDecimal real_return;
+    public BigDecimal lay_amount;
 
     public BetOrder(BetOffer BET_OFFER, BigDecimal TARGET_RETURN, boolean REAL){
         real = REAL;
@@ -32,9 +36,41 @@ public class BetOrder {
 
     public BetOrder(){}
 
+
+    public Bet bet(){
+        return bet_offer.bet;
+    }
+
+
+    public BettingSite site(){
+        return bet_offer.site;
+    }
+
+
+    public boolean isBack(){
+        return bet_offer.bet.isBack();
+    }
+
+
+    public boolean isLay(){
+        return bet_offer.bet.isLay();
+    }
+
+
+    public String betType(){
+        return bet().type();
+    }
+
+
+    public Match match(){
+        return bet_offer.match;
+    }
+
+
     public String toString(){
         return toJSON().toString();
     }
+
 
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
@@ -43,12 +79,18 @@ public class BetOrder {
         m.put("investment", investment.toString());
         m.put("real_return", real_return.toString());
         m.put("real", Boolean.toString(real));
+        m.put("lay_amount", String.valueOf(lay_amount));
         return m;
     }
 
-    public BettingSite site(){
-        return bet_offer.site;
+    public static JSONArray list2JSON(ArrayList<BetOrder> betOrders){
+        JSONArray j = new JSONArray();
+        for (BetOrder betOrder: betOrders){
+            j.add(betOrder.toJSON());
+        }
+        return j;
     }
+
 
 
 }

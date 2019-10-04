@@ -78,18 +78,20 @@ public class ProfitReport implements Comparable<ProfitReport> {
         j.put("max_profit", max_profit.toString());
         j.put("profit_ratio", profit_ratio.toString());
         if (full){
-            JSONArray orders = new JSONArray();
-            for (BetOrder bo: bet_orders){
-                orders.add(bo.toJSON());
-            }
-            j.put("bet_orders", orders);
-
+            // PlacedBets include the bet orders so no need to have both
             if (placedBets != null){
                 JSONArray placed = new JSONArray();
                 for (PlacedBet pb: placedBets){
                     placed.add(pb.toJSON());
                 }
                 j.put("placed_bets", placed);
+            }
+            else{
+                JSONArray orders = new JSONArray();
+                for (BetOrder bo: bet_orders){
+                    orders.add(bo.toJSON());
+                }
+                j.put("bet_orders", orders);
             }
 
         }

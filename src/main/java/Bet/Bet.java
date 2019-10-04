@@ -12,10 +12,17 @@ public abstract class Bet {
     public static String[] BET_TYPES = {BACK, LAY};
 
     public String category;
-    public String type;
+    protected String type;
 
     public Bet(String bet_type) {
+        if (!bet_type.equals(BACK) && !bet_type.equals(LAY)){
+            throw new ExceptionInInitializerError("Bet type must be either BACK or LAY");
+        }
         type = bet_type;
+    }
+
+    public String type(){
+        return type;
     }
 
     public Boolean isLay(){

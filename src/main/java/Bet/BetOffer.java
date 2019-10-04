@@ -44,6 +44,7 @@ public class BetOffer implements Comparable<BetOffer> {
         return toJSON().toString();
     }
 
+
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
         m.put("match", String.valueOf(match));
@@ -60,9 +61,11 @@ public class BetOffer implements Comparable<BetOffer> {
         return site.commission();
     }
 
+
     public boolean isBack(){
         return bet.isBack();
     }
+
 
     public boolean isLay(){
         return bet.isLay();
@@ -77,6 +80,7 @@ public class BetOffer implements Comparable<BetOffer> {
         return site.minBet().setScale(2, RoundingMode.UP);
     }
 
+
     public BigDecimal maxStake(){
         if (isLay()){
             BigDecimal max_lay = volume;
@@ -85,9 +89,11 @@ public class BetOffer implements Comparable<BetOffer> {
         return volume.setScale(2, RoundingMode.UP);
     }
 
+
     public BigDecimal minStakeReturn(){
         return ROI(minStake(), true);
     }
+
 
     public BigDecimal maxStakeReturn(){
         return ROI(maxStake(), true);
@@ -98,9 +104,11 @@ public class BetOffer implements Comparable<BetOffer> {
         return site.ROI(this, investment, real);
     }
 
+
     public BigDecimal getLayFromStake(BigDecimal stake, boolean real){
         return BetOffer.getLayFromStake(odds, stake, real);
     }
+
 
     public BigDecimal getStakeFromLay(BigDecimal lay, boolean real){
         return BetOffer.getStakeFromLay(odds, lay, real);
@@ -115,12 +123,18 @@ public class BetOffer implements Comparable<BetOffer> {
         return lay;
     }
 
+
     public static BigDecimal getStakeFromLay(BigDecimal odds, BigDecimal lay, boolean real){
         BigDecimal stake = lay.multiply( odds.subtract(BigDecimal.ONE) );
         if (real){
             stake = stake.setScale(2, RoundingMode.HALF_UP);
         }
         return stake;
+    }
+
+    public static BigDecimal getLiability(BigDecimal odds, BigDecimal stake){
+        BigDecimal liab = stake.multiply(odds.subtract(BigDecimal.ONE));
+        return liab;
     }
 
 

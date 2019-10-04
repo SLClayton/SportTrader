@@ -363,13 +363,26 @@ public class Matchbook extends BettingSite {
 
         JSONArray offers = new JSONArray();
         for (BetOrder betOrder: betOrders){
+
             BigDecimal odds = betOrder.bet_offer.odds;
+            BigDecimal stake;
+            if (betOrder.isBack()){
+                odds = odds.subtract(BigDecimal.ONE).multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE);
+                stake = betOrder.investment.setScale(2, RoundingMode.HALF_UP);
+            }
+            else {
+                BigDecimal ratio = BigDecimal.ONE.divide(MIN_ODDS_RATIO, 20, RoundingMode.HALF_UP);
+                odds = odds.subtract(BigDecimal.ONE).multiply(ratio).add(BigDecimal.ONE);
+                stake = betOrder.bet_offer.getLayFromStake(betOrder.investment, true);
+                betOrder.lay_amount = stake;
+            }
+
 
             JSONObject offer = new JSONObject();
             offer.put("runner-id", betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID));
-            offer.put("side", betOrder.bet_offer.bet.type.toLowerCase());
-            offer.put("odds", odds.multiply(MIN_ODDS_RATIO).setScale(3, RoundingMode.HALF_UP).doubleValue());
-            offer.put("stake", betOrder.investment.setScale(2, RoundingMode.HALF_UP).doubleValue());
+            offer.put("side", betOrder.betType().toLowerCase());
+            offer.put("odds", odds.setScale(3, RoundingMode.HALF_UP).doubleValue());
+            offer.put("stake", stake.doubleValue());
             offer.put("keep-in-play", true);
 
             offers.add(offer);
@@ -399,7 +412,7 @@ public class Matchbook extends BettingSite {
             if (status.equals("matched")){
 
 
-                BigDecimal total_investment = new BigDecimal((Double) offer.get("stake"));
+                BigDecimal total_investment = new BigDecimal(String.valueOf((Double) offer.get("stake")));
 
                 // They dont bother to send you the average odds so you have to do it by yourself from
                 // all the parts if there are multiple parts to the matching of your bet
@@ -420,8 +433,9 @@ public class Matchbook extends BettingSite {
                 BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(odds), total_investment, true);
                 Instant time = Instant.parse((String) offer.get("created-at"));
 
-                log.info(String.format("Successfully placed %s on bet %s in matchbook (returns %s).",
-                        total_investment.toString(), betOrder.bet_offer.bet.id(), returns.toString()));
+                log.info(String.format("Successfully placed %s on %s '%s' in matchbook (returns %s).",
+                        total_investment.toString(), betOrder.bet_offer.bet.id(), betOrder.match().name,
+                        returns.toString()));
 
                 pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder,
                         total_investment, avg_odds, returns, time);
@@ -429,8 +443,8 @@ public class Matchbook extends BettingSite {
             else{
                 any_failures = true;
 
-                log.severe(String.format("Failed to placed %s on bet %s in matchbook. Bet not fully matched.",
-                        betOrder.investment.toString(), betOrder.bet_offer.bet.id()));
+                log.severe(String.format("Failed to place %s on bet %s in matchbook. Bet not fully matched.",
+                        betOrder.investment.toString(), betOrder.bet_offer.bet.id(), ps(response)));
                 pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, status);
             }
 
@@ -454,6 +468,7 @@ public class Matchbook extends BettingSite {
                     log.info(String.format("Successfully cancelled matchbook bet %s for not being matched.", id));
                 }
             }
+            log.severe((ps(response)));
         }
 
         return placedBets;

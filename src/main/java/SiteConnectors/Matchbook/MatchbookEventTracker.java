@@ -130,7 +130,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
                 JSONObject offer = (JSONObject) offer_obj;
                 String offer_side = ((String) offer.get("side")).toLowerCase();
 
-                if (offer_side.equals(bet.type.toLowerCase())){
+                if (offer_side.equals(bet.type().toLowerCase())){
                     matchbookOffers.add(offer);
                 }
             }

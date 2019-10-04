@@ -30,7 +30,7 @@ public class EventTrader implements Runnable {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public static final BigDecimal MIN_ODDS_RATIO = new BigDecimal("0.9");
-    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("-0.008");
+    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("-0.015");
 
 
     public Thread thread;
@@ -213,6 +213,7 @@ public class EventTrader implements Runnable {
         }
         log.fine(String.format("Found %d site odds for %s.", marketOddsReports.size(), match));
 
+
         // Combine all odds reports into one.
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
@@ -221,6 +222,7 @@ public class EventTrader implements Runnable {
         // Generate profit report for each tautology and order by profit ratio
         ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);
         Collections.sort(tautologyProfitReports, Collections.reverseOrder());
+
 
         // Create list of profit reports with profits over min_prof_margain
         ArrayList<ProfitReport> in_profit = new ArrayList<ProfitReport>();
@@ -243,6 +245,8 @@ public class EventTrader implements Runnable {
 
     public void profitFound(ArrayList<ProfitReport> in_profit){
 
+        sportsTrader.betlock.lock();
+
         // Create profit folder if it does not exist
         File profit_dir = new File(FileSystems.getDefault().getPath(".") + "/profit");
         if (!profit_dir.exists()){
@@ -255,9 +259,17 @@ public class EventTrader implements Runnable {
 
         // Re-create the profit report with real values
         try {
-            best = best.newProfitReport(best.largest_min_return.add(new BigDecimal("0.05")));
+            BigDecimal new_return = best.largest_min_return.add(new BigDecimal("0.05"));
+            BigDecimal twenty = new BigDecimal(20);
+            if (new_return.compareTo(twenty) == -1){
+                new_return = twenty;
+            }
+            best = best.newProfitReport(new_return);
+
         } catch (InstantiationException | InvalidAttributesException e) {
+            log.severe("Error while creating real profit report. Cancelling this round.");
             e.printStackTrace();
+            return;
         }
 
         String profitString = best.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
@@ -275,6 +287,9 @@ public class EventTrader implements Runnable {
             }
             return;
         }
+
+        print("PLACING BETS");
+        pp(best.toJSON(true));
 
         best.placedBets = placeBets(best.bet_orders);
 

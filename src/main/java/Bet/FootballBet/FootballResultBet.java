@@ -55,7 +55,7 @@ public class FootballResultBet extends FootballBet {
             throw new Exception("Comparing halftime with non halftime bet.");
         }
         else{
-            if (type == otherscorebet.type){
+            if (type == otherscorebet.type()){
                 return result.equals(otherscorebet.result);
             }else{
                 return !(result.equals(otherscorebet.result));
