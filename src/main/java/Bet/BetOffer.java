@@ -132,6 +132,17 @@ public class BetOffer implements Comparable<BetOffer> {
         return stake;
     }
 
+
+    public static BigDecimal backStake2LayStake(BigDecimal back_stake, BigDecimal odds){
+        return odds.subtract(BigDecimal.ONE).multiply(back_stake);
+    }
+
+
+    public static BigDecimal layStake2backStake(BigDecimal lay_stake, BigDecimal odds){
+        return lay_stake.divide((odds.subtract(BigDecimal.ONE)), 20, RoundingMode.HALF_UP);
+    }
+
+
     public static BigDecimal getLiability(BigDecimal odds, BigDecimal stake){
         BigDecimal liab = stake.multiply(odds.subtract(BigDecimal.ONE));
         return liab;

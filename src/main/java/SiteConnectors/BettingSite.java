@@ -97,4 +97,36 @@ public abstract class BettingSite {
         return roi;
     }
 
+    public BigDecimal ROI2(BetOffer bet_offer, BigDecimal investment, boolean real){
+        // Default ROI, commission on profits only
+
+        BigDecimal roi;
+        BigDecimal odds = bet_offer.odds;
+        BigDecimal commission_rate = bet_offer.commission();
+
+        // BACK
+        if (bet_offer.isBack()){
+            BigDecimal backers_stake = investment;
+            BigDecimal backers_profit = BetOffer.backStake2LayStake(backers_stake, odds);
+            BigDecimal commission = backers_profit.multiply(commission_rate);
+            roi = backers_stake.add(backers_profit).subtract(commission);
+        }
+
+        // LAY
+        else {
+            BigDecimal layers_stake = investment;
+            BigDecimal layers_profit = BetOffer.layStake2backStake(layers_stake, odds);
+            BigDecimal commission = layers_profit.multiply(commission_rate);
+            roi = layers_stake.add(layers_profit).subtract(commission);
+        }
+
+        if (real){
+            roi = roi.setScale(2, RoundingMode.HALF_UP);
+        }
+
+        // TODO: Test this probably and figure out if any changes for 'real'
+
+        return roi;
+    }
+
 }

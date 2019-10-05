@@ -3,14 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/Bet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/Bet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/Tautology.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tools/printer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/printer.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,9 +50,19 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOffer.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1029">
-                    <caret line="173" lean-forward="true" selection-start-line="173" selection-end-line="173" />
+                  <state relative-caret-position="968">
+                    <caret line="141" column="91" selection-start-line="141" selection-start-column="91" selection-end-line="141" selection-end-column="91" />
                     <folding>
+                      <element signature="e#1664#1665#0" expanded="true" />
+                      <element signature="e#1704#1705#0" expanded="true" />
+                      <element signature="method#getLayFromStake#0;class#BetOffer#0" />
+                      <element signature="method#getStakeFromLay#0;class#BetOffer#0" />
+                      <element signature="method#getLayFromStake#1;class#BetOffer#0" />
+                      <element signature="method#getStakeFromLay#1;class#BetOffer#0" />
+                      <element signature="method#getLiability#0;class#BetOffer#0" />
+                      <element signature="method#dec2americ#0;class#BetOffer#0" />
+                      <element signature="method#americ2dec#0;class#BetOffer#0" />
+                      <element signature="e#4783#4784#0" expanded="true" />
                       <element signature="e#4850#4851#0" expanded="true" />
                     </folding>
                   </state>
@@ -74,31 +84,55 @@
               </entry>
             </file>
             <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1136">
-                    <caret line="83" column="47" selection-start-line="83" selection-start-column="47" selection-end-line="83" selection-end-column="47" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="320">
-                    <caret line="30" column="22" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="22" />
+                  <state relative-caret-position="288">
+                    <caret line="28" column="61" selection-start-line="28" selection-start-column="52" selection-end-line="28" selection-end-column="61" />
                   </state>
                 </provider>
               </entry>
             </file>
             <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/main/java/tools/printer.java">
+              <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1121">
-                    <caret line="120" lean-forward="true" selection-start-line="120" selection-end-line="120" />
+                  <state relative-caret-position="741">
+                    <caret line="145" column="79" lean-forward="true" selection-start-line="145" selection-start-column="79" selection-end-line="145" selection-end-column="79" />
                     <folding>
-                      <element signature="method#toFile#0;class#printer#0" />
+                      <element signature="method#toJSON#0;class#ProfitReport#0" />
+                      <element signature="method#newProfitReport#0;class#ProfitReport#0" />
                     </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="256">
+                    <caret line="21" column="31" lean-forward="true" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
+                    <folding>
+                      <element signature="e#347#348#0" expanded="true" />
+                      <element signature="e#389#390#0" expanded="true" />
+                      <element signature="e#421#422#0" expanded="true" />
+                      <element signature="e#491#492#0" expanded="true" />
+                      <element signature="e#572#573#0" expanded="true" />
+                      <element signature="e#624#625#0" expanded="true" />
+                      <element signature="e#673#674#0" expanded="true" />
+                      <element signature="e#714#715#0" expanded="true" />
+                      <element signature="e#738#739#0" expanded="true" />
+                      <element signature="e#777#778#0" expanded="true" />
+                      <element signature="e#822#823#0" expanded="true" />
+                      <element signature="e#874#875#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetGroup.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="80">
+                    <caret line="9" column="56" selection-start-line="9" selection-start-column="56" selection-end-line="9" selection-end-column="56" />
                   </state>
                 </provider>
               </entry>
@@ -113,7 +147,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
+            <state>
               <caret line="285" column="37" selection-start-line="285" selection-start-column="37" selection-end-line="285" selection-end-column="37" />
             </state>
           </provider>
@@ -122,99 +156,27 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1085">
-              <caret line="211" column="9" lean-forward="true" selection-start-line="211" selection-start-column="9" selection-end-line="211" selection-end-column="9" />
+            <state relative-caret-position="518">
+              <caret line="220" column="77" lean-forward="true" selection-start-line="220" selection-start-column="77" selection-end-line="220" selection-end-column="77" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#setupMatch#0;class#EventTrader#0" />
                 <element signature="method#run#0;class#EventTrader#0" />
+                <element signature="class#MarketOddsReportWorker#0;class#EventTrader#0" />
                 <element signature="method#run#0;class#MarketOddsReportWorker#0;class#EventTrader#0" />
+                <element signature="method#profitFound#0;class#EventTrader#0" />
+                <element signature="method#placeBets#0;class#EventTrader#0" />
                 <element signature="class#PlaceBetsRunnable#0;class#EventTrader#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="427">
-              <caret line="278" column="12" selection-start-line="278" selection-start-column="12" selection-end-line="294" selection-end-column="45" />
-              <folding>
-                <element signature="method#setupMatch#0;class#SmarketsEventTracker#0" />
-                <element signature="method#updateMarketOddsReport#0;class#SmarketsEventTracker#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="551" column="75" selection-start-line="551" selection-start-column="75" selection-end-line="551" selection-end-column="75" />
-              <folding>
-                <element signature="class#marketDataRequestHandler#0;class#Matchbook#0" />
-                <element signature="class#marketDataRequestSender#0;class#Matchbook#0" />
-                <element signature="method#getFootballMatches#0;class#Matchbook#0" />
-                <element signature="method#getEvents#0;class#Matchbook#0" />
-                <element signature="method#getEvents#1;class#Matchbook#0" />
-                <element signature="method#getMarketData#0;class#Matchbook#0" />
-                <element signature="method#getMarketDataFromHandler#0;class#Matchbook#0" />
-                <element signature="method#placeBets#0;class#Matchbook#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="687">
-              <caret line="318" selection-start-line="318" selection-end-line="318" />
-              <folding>
-                <element signature="method#setupMatch#0;class#MatchbookEventTracker#0" />
-                <element signature="method#extractRunnerGOALCOUNT#0;class#MatchbookEventTracker#0" />
-                <element signature="method#extractRunnerCORRECTSCORE#0;class#MatchbookEventTracker#0" />
-                <element signature="method#extractRunnerRESULT#0;class#MatchbookEventTracker#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="21" column="84" lean-forward="true" selection-start-line="21" selection-start-column="84" selection-end-line="21" selection-end-column="84" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-470">
-              <caret line="730" column="52" lean-forward="true" selection-start-line="730" selection-start-column="52" selection-end-line="730" selection-end-column="52" />
-              <folding>
-                <element signature="method#Betfair#0;class#Betfair#0" />
-                <element signature="class#EventSearchHandler#0;class#Betfair#0" />
-                <element signature="method#run#0;class#EventSearchHandler#0;class#Betfair#0" />
-                <element signature="class#RPCRequestHandler#0;class#Betfair#0" />
-                <element signature="class#RPCRequestSender#0;class#Betfair#0" />
-                <element signature="method#login#0;class#Betfair#0" />
-                <element signature="method#getSessionToken#0;class#Betfair#0" />
-                <element signature="method#getMarketOdds#0;class#Betfair#0" />
-                <element signature="method#getMarketOdds#1;class#Betfair#0" />
-                <element signature="method#getEvents#0;class#Betfair#0" />
-                <element signature="method#getFootballMatches#0;class#Betfair#0" />
-                <element signature="method#getMarketCatalogue#0;class#Betfair#0" />
-                <element signature="method#getEventFromSearch#0;class#Betfair#0" />
-                <element signature="method#_getEventFromSearch#0;class#Betfair#0" />
-                <element signature="method#getEventFromMarket#0;class#Betfair#0" />
-                <element signature="method#round#0;class#Betfair#0" />
-                <element signature="method#validPrice#0;class#Betfair#0" />
-              </folding>
+            <state relative-caret-position="694">
+              <caret line="123" column="56" selection-start-line="123" selection-start-column="56" selection-end-line="123" selection-end-column="56" />
             </state>
           </provider>
         </entry>
@@ -284,19 +246,22 @@
         <option value="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballResultBet.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" />
         <option value="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" />
         <option value="$PROJECT_DIR$/src/main/resources/config.json" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/Bet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" />
         <option value="$PROJECT_DIR$/src/main/java/tools/printer.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/Tautology.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" />
       </list>
     </option>
   </component>
@@ -308,8 +273,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-2" />
-    <option name="width" value="1524" />
+    <option name="x" value="-7" />
+    <option name="width" value="1363" />
     <option name="height" value="1407" />
   </component>
   <component name="ProjectId" id="1OaYuNHPzsaDFnulTZLzJck6p7J" />
@@ -549,22 +514,23 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-2" y="0" width="1524" height="1407" extended-state="0" />
+    <frame x="-7" y="0" width="1363" height="1407" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1987705" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22640061" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.58948195" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.15541601" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39952904" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32967034" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32967034" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32496077" />
+      <window_info anchor="bottom" id="Terminal" order="8" visible="true" weight="0.29356357" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.32967034" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -678,77 +644,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1120">
-          <caret line="90" column="9" selection-start-line="90" selection-start-column="9" selection-end-line="90" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="32">
-          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
-          <folding>
-            <element signature="method#toJSON#0;class#PlacedBet#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/tools/Requester.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1232">
-          <caret line="109" selection-start-line="109" selection-end-line="109" />
-          <folding>
-            <element signature="method#post#3;class#Requester#0" />
-            <element signature="method#getRaw#0;class#Requester#0" />
-            <element signature="method#delete#0;class#Requester#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1136">
-          <caret line="83" column="47" selection-start-line="83" selection-start-column="47" selection-end-line="83" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1085">
-          <caret line="211" column="9" lean-forward="true" selection-start-line="211" selection-start-column="9" selection-end-line="211" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#setupMatch#0;class#EventTrader#0" />
-            <element signature="method#run#0;class#EventTrader#0" />
-            <element signature="method#run#0;class#MarketOddsReportWorker#0;class#EventTrader#0" />
-            <element signature="class#PlaceBetsRunnable#0;class#EventTrader#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="30" column="22" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="21" column="84" lean-forward="true" selection-start-line="21" selection-start-column="84" selection-end-line="21" selection-end-column="84" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="285" column="37" selection-start-line="285" selection-start-column="37" selection-end-line="285" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="810">
@@ -797,17 +692,37 @@
     <entry file="file://$PROJECT_DIR$/output.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/config.json">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="285" column="37" selection-start-line="285" selection-start-column="37" selection-end-line="285" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2080">
+          <caret line="318" selection-start-line="318" selection-end-line="318" />
+          <folding>
+            <element signature="method#setupMatch#0;class#MatchbookEventTracker#0" />
+            <element signature="method#extractRunnerGOALCOUNT#0;class#MatchbookEventTracker#0" />
+            <element signature="method#extractRunnerCORRECTSCORE#0;class#MatchbookEventTracker#0" />
+            <element signature="method#extractRunnerRESULT#0;class#MatchbookEventTracker#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="96">
-          <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
+          <caret line="21" column="84" selection-start-line="21" selection-start-column="84" selection-end-line="21" selection-end-column="84" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-470">
-          <caret line="730" column="52" lean-forward="true" selection-start-line="730" selection-start-column="52" selection-end-line="730" selection-end-column="52" />
+        <state relative-caret-position="3616">
+          <caret line="730" column="52" selection-start-line="730" selection-start-column="52" selection-end-line="730" selection-end-column="52" />
           <folding>
             <element signature="method#Betfair#0;class#Betfair#0" />
             <element signature="class#EventSearchHandler#0;class#Betfair#0" />
@@ -830,54 +745,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="427">
-          <caret line="278" column="12" selection-start-line="278" selection-start-column="12" selection-end-line="294" selection-end-column="45" />
-          <folding>
-            <element signature="method#setupMatch#0;class#SmarketsEventTracker#0" />
-            <element signature="method#updateMarketOddsReport#0;class#SmarketsEventTracker#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="687">
-          <caret line="318" selection-start-line="318" selection-end-line="318" />
-          <folding>
-            <element signature="method#setupMatch#0;class#MatchbookEventTracker#0" />
-            <element signature="method#extractRunnerGOALCOUNT#0;class#MatchbookEventTracker#0" />
-            <element signature="method#extractRunnerCORRECTSCORE#0;class#MatchbookEventTracker#0" />
-            <element signature="method#extractRunnerRESULT#0;class#MatchbookEventTracker#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/tools/printer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1121">
-          <caret line="120" lean-forward="true" selection-start-line="120" selection-end-line="120" />
-          <folding>
-            <element signature="method#toFile#0;class#printer#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOffer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1029">
-          <caret line="173" lean-forward="true" selection-start-line="173" selection-end-line="173" />
-          <folding>
-            <element signature="e#4850#4851#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="551" column="75" selection-start-line="551" selection-start-column="75" selection-end-line="551" selection-end-column="75" />
+        <state relative-caret-position="284">
+          <caret line="252" column="5" selection-start-line="252" selection-start-column="5" selection-end-line="252" selection-end-column="5" />
           <folding>
             <element signature="class#marketDataRequestHandler#0;class#Matchbook#0" />
             <element signature="class#marketDataRequestSender#0;class#Matchbook#0" />
@@ -886,8 +757,150 @@
             <element signature="method#getEvents#1;class#Matchbook#0" />
             <element signature="method#getMarketData#0;class#Matchbook#0" />
             <element signature="method#getMarketDataFromHandler#0;class#Matchbook#0" />
+            <element signature="method#closestMatchbookOdds#0;class#Matchbook#0" />
             <element signature="method#placeBets#0;class#Matchbook#0" />
+            <element signature="method#main#0;class#Matchbook#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
+          <folding>
+            <element signature="method#toJSON#0;class#PlacedBet#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/tools/Requester.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1232">
+          <caret line="109" selection-start-line="109" selection-end-line="109" />
+          <folding>
+            <element signature="method#post#3;class#Requester#0" />
+            <element signature="method#getRaw#0;class#Requester#0" />
+            <element signature="method#delete#0;class#Requester#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/tools/printer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1360">
+          <caret line="120" selection-start-line="120" selection-end-line="120" />
+          <folding>
+            <element signature="method#toFile#0;class#printer#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="21" column="31" lean-forward="true" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
+          <folding>
+            <element signature="e#347#348#0" expanded="true" />
+            <element signature="e#389#390#0" expanded="true" />
+            <element signature="e#421#422#0" expanded="true" />
+            <element signature="e#491#492#0" expanded="true" />
+            <element signature="e#572#573#0" expanded="true" />
+            <element signature="e#624#625#0" expanded="true" />
+            <element signature="e#673#674#0" expanded="true" />
+            <element signature="e#714#715#0" expanded="true" />
+            <element signature="e#738#739#0" expanded="true" />
+            <element signature="e#777#778#0" expanded="true" />
+            <element signature="e#822#823#0" expanded="true" />
+            <element signature="e#874#875#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="768">
+          <caret line="274" lean-forward="true" selection-start-line="274" selection-end-line="274" />
+          <folding>
+            <element signature="method#setupMatch#0;class#SmarketsEventTracker#0" />
+            <element signature="method#updateMarketOddsReport#0;class#SmarketsEventTracker#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetGroup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="9" column="56" selection-start-line="9" selection-start-column="56" selection-end-line="9" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="741">
+          <caret line="145" column="79" lean-forward="true" selection-start-line="145" selection-start-column="79" selection-end-line="145" selection-end-column="79" />
+          <folding>
+            <element signature="method#toJSON#0;class#ProfitReport#0" />
+            <element signature="method#newProfitReport#0;class#ProfitReport#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="28" column="61" selection-start-line="28" selection-start-column="52" selection-end-line="28" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="518">
+          <caret line="220" column="77" lean-forward="true" selection-start-line="220" selection-start-column="77" selection-end-line="220" selection-end-column="77" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#setupMatch#0;class#EventTrader#0" />
+            <element signature="method#run#0;class#EventTrader#0" />
+            <element signature="class#MarketOddsReportWorker#0;class#EventTrader#0" />
+            <element signature="method#run#0;class#MarketOddsReportWorker#0;class#EventTrader#0" />
+            <element signature="method#profitFound#0;class#EventTrader#0" />
+            <element signature="method#placeBets#0;class#EventTrader#0" />
+            <element signature="class#PlaceBetsRunnable#0;class#EventTrader#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOffer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="968">
+          <caret line="141" column="91" selection-start-line="141" selection-start-column="91" selection-end-line="141" selection-end-column="91" />
+          <folding>
+            <element signature="e#1664#1665#0" expanded="true" />
+            <element signature="e#1704#1705#0" expanded="true" />
+            <element signature="method#getLayFromStake#0;class#BetOffer#0" />
+            <element signature="method#getStakeFromLay#0;class#BetOffer#0" />
+            <element signature="method#getLayFromStake#1;class#BetOffer#0" />
+            <element signature="method#getStakeFromLay#1;class#BetOffer#0" />
+            <element signature="method#getLiability#0;class#BetOffer#0" />
+            <element signature="method#dec2americ#0;class#BetOffer#0" />
+            <element signature="method#americ2dec#0;class#BetOffer#0" />
+            <element signature="e#4783#4784#0" expanded="true" />
+            <element signature="e#4850#4851#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="694">
+          <caret line="123" column="56" selection-start-line="123" selection-start-column="56" selection-end-line="123" selection-end-column="56" />
         </state>
       </provider>
     </entry>

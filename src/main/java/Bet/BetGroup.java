@@ -6,11 +6,12 @@ import org.json.simple.JSONArray;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Tautology {
+public class BetGroup {
+    // A grouping of bets. Usually used for tautologies.
 
     public ArrayList<Bet> bets;
 
-    public Tautology(ArrayList<Bet> bets){
+    public BetGroup(ArrayList<Bet> bets){
         this.bets = bets;
         this.bets.trimToSize();
     }

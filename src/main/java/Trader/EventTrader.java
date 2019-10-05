@@ -4,14 +4,11 @@ import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
-import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 
 import javax.naming.directory.InvalidAttributesException;
-import javax.swing.plaf.basic.BasicButtonUI;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
@@ -42,14 +39,14 @@ public class EventTrader implements Runnable {
     public BlockingQueue<String> siteMarketOddsToGetQueue;
 
     public FootballBetGenerator footballBetGenerator;
-    public ArrayList<Tautology> tautologies;
+    public ArrayList<BetGroup> tautologies;
 
     public EventTrader(SportsTrader sportsTrader, FootballMatch match, HashMap<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
         this.sportsTrader = sportsTrader;
         this.match = match;
         this.sites = sites;
         this.footballBetGenerator = footballBetGenerator;
-        tautologies = (ArrayList<Tautology>) this.footballBetGenerator.getAllTautologies().clone();
+        tautologies = (ArrayList<BetGroup>) this.footballBetGenerator.getAllTautologies().clone();
         siteEventTrackers = new HashMap<String, SiteEventTracker>();
         siteMarketOddsToGetQueue = new LinkedBlockingQueue<>();
     }
@@ -205,6 +202,7 @@ public class EventTrader implements Runnable {
             SiteEventTracker siteEventTracker = entry.getValue();
 
             // Wait for report to finish updating by waiting for queue value to appear.
+            // This is a makeshift lock, the value in thr queue is irrelevant
             siteEventTracker.updateComplete.take();
 
             // Add report to report list and remove its lock

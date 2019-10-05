@@ -117,7 +117,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public static ArrayList<ProfitReport> getTautologyProfitReports(ArrayList<Tautology> tautologies, MarketOddsReport marketOddsReport){
+    public static ArrayList<ProfitReport> getTautologyProfitReports(ArrayList<BetGroup> tautologies, MarketOddsReport marketOddsReport){
         /*
         // Using a list of tautologies and the market odds report, generate a profit report
         // for each tautology which
@@ -125,11 +125,11 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
         // Calculate profitReport for each tautology using the best ROI for each bet
         ArrayList<ProfitReport> tautologyProfitReports = new ArrayList<ProfitReport>();
-        for (Tautology tautology: tautologies){
+        for (BetGroup betGroup : tautologies){
 
             // Ensure all bets exist before continuing
             boolean skip = false;
-            for (Bet bet: tautology.bets){
+            for (Bet bet: betGroup.bets){
                 if (!marketOddsReport.contains(bet.id()) || marketOddsReport.get(bet.id()).size() <= 0){
                     skip = true;
                     break;
@@ -141,7 +141,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
             // Generate a list of ratio profitReport using the best offer for each bet
             ArrayList<BetOrder> betOrders = new ArrayList<BetOrder>();
-            for (Bet bet: tautology.bets){
+            for (Bet bet: betGroup.bets){
                 BetOffer best_offer = marketOddsReport.get(bet.id()).get(0);
                 betOrders.add(new BetOrder(best_offer, BigDecimal.ONE, false));
             }

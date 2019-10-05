@@ -21,10 +21,10 @@ public class BetOrder {
     public BigDecimal real_return;
     public BigDecimal lay_amount;
 
-    public BetOrder(BetOffer BET_OFFER, BigDecimal TARGET_RETURN, boolean REAL){
-        real = REAL;
-        bet_offer = BET_OFFER;
-        target_return = TARGET_RETURN;
+    public BetOrder(BetOffer bet_offer, BigDecimal target_return, boolean real){
+        this.real = real;
+        this.bet_offer = bet_offer;
+        this.target_return = target_return;
 
         investment = target_return.divide(bet_offer.roi_ratio, 20, RoundingMode.HALF_UP);
         if (real){

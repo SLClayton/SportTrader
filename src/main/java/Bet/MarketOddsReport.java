@@ -8,6 +8,22 @@ import java.util.*;
 import static net.dongliu.commons.Prints.print;
 
 public class MarketOddsReport {
+    /*
+        A collection of bet Offers, sorted in separate ordered lists by the bet they represent
+
+        eg.
+        SCORE_1-1_BACK
+                Betfair: 2.34
+                Matchbook: 2.32
+                Betfair: 2.3
+                Smarkets: 2.28
+
+        RESULT_TEAM-B_BACK
+                Matchbook: 1.22
+                Betfair: 1.20
+     */
+
+    
 
     public HashMap<String, ArrayList<BetOffer>> betOffers;
 
