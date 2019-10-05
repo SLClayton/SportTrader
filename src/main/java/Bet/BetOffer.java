@@ -138,6 +138,43 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
+    public static BigDecimal dec2americ(BigDecimal decimal_odds){
+
+        BigDecimal american_odds;
+
+        if (decimal_odds.compareTo(new BigDecimal(2)) == -1){
+            american_odds = new BigDecimal(-100)
+                    .divide(decimal_odds.subtract(BigDecimal.ONE), 20, RoundingMode.HALF_UP);
+        }
+        else{
+            american_odds = decimal_odds.subtract(BigDecimal.ONE).multiply(new BigDecimal(100));
+        }
+
+        return american_odds;
+    }
+
+
+    public static BigDecimal americ2dec(BigDecimal american_odds){
+        BigDecimal decimal_odds;
+
+        if (american_odds.compareTo(new BigDecimal(100)) != -1){
+            decimal_odds = american_odds
+                    .divide(new BigDecimal(100), 20, RoundingMode.HALF_UP).add(BigDecimal.ONE);
+        }
+        else if (american_odds.compareTo(new BigDecimal(-100)) != 1){
+            decimal_odds = new BigDecimal(-100)
+                    .divide(american_odds, 20, RoundingMode.HALF_UP).add(BigDecimal.ONE);
+        }
+        else{
+            return null;
+        }
+
+        return decimal_odds;
+    }
+
+
+
+
     @Override
     public int compareTo(BetOffer betOffer) {
         return this.roi_ratio.compareTo(betOffer.roi_ratio);

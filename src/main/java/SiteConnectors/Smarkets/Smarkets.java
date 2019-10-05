@@ -39,6 +39,7 @@ public class Smarkets extends BettingSite {
     public static String FOOTBALL = "football_match";
     public static String CONTRACT_ID = "CONTRACT_ID";
     public static String MARKET_ID = "MARKET_ID";
+    public static String SMARKETS_PRICE = "SMARKETS_PRICE";
 
     public static BigDecimal commission_rate = new BigDecimal("0.01");
     public static BigDecimal min_bet = new BigDecimal("0.05");
@@ -91,7 +92,6 @@ public class Smarkets extends BettingSite {
 
             ArrayList<RequestHandler> requestHandlers = new ArrayList<>();
             int markets_in_queue = 0;
-            RequestHandler new_handler;
             long milliseconds_to_wait;
 
             // Start workers
@@ -103,19 +103,25 @@ public class Smarkets extends BettingSite {
             }
 
 
-            Instant next_request_time = next_request_time = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
+            RequestHandler new_handler = null;
+            Instant next_request_time = null;
             while (true) {
                 try {
-
                     new_handler = null;
 
-                    // Get request handler from queue or wait until next request time
-                    if (Instant.now().isBefore(next_request_time)) {
+                    // Wait for first queue handler if none have arrived yet.
+                    if (next_request_time == null){
+                        new_handler = requestQueue.take();
+                        next_request_time = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
+                    }
+                    // Or wait for a handler until time of next request comes.
+                    else if (Instant.now().isBefore(next_request_time)) {
                         milliseconds_to_wait = next_request_time.toEpochMilli() - Instant.now().toEpochMilli();
                         new_handler = requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
                     }
 
-                    // Sort out what to do with each new Request Handler passed in
+
+                    // If a new handler is passed in, decide what to do with it.
                     if (new_handler != null){
                         int num_new_markets = ((ArrayList<String>) new_handler.request).size();
 
@@ -139,14 +145,14 @@ public class Smarkets extends BettingSite {
                         }
                     }
 
-                    // Once the next send time comes around, add list to queue and reset varaibles.
+                    // Once the next send time comes around, add list to queue and reset variables.
                     if (!Instant.now().isBefore(next_request_time)){
                         if (requestHandlers.size() > 0){
                             workerQueue.put(requestHandlers);
                         }
                         requestHandlers = new ArrayList<>();
                         markets_in_queue = 0;
-                        next_request_time = Instant.now().plus(rate_limit, ChronoUnit.MILLIS);
+                        next_request_time = null;
                     }
 
                 } catch (InterruptedException e) {
@@ -358,6 +364,7 @@ public class Smarkets extends BettingSite {
             KeyStoreException, KeyManagementException, IOException, URISyntaxException {
 
         requester.setHeader("Authorization", getSessionToken());
+        log.info("Successfully logged into Smarkets");
     }
 
     @Override
@@ -637,13 +644,15 @@ public class Smarkets extends BettingSite {
     }
 
 
-    public static long odds2price(BigDecimal odds){
-        return new BigDecimal(10000).divide(odds, 0, RoundingMode.HALF_UP).intValue();
+    public static long dec2price(BigDecimal odds){
+        return BigDecimal.ONE.divide(odds, 4, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal(10000)).setScale(0, RoundingMode.HALF_UP)
+                .longValue();
     }
 
 
-    public static BigDecimal price2odds(long price){
-        return new BigDecimal(10000).divide(new BigDecimal(price), 2, RoundingMode.HALF_UP);
+    public static BigDecimal price2dec(long price){
+        return new BigDecimal(10000).divide(new BigDecimal(price), 20, RoundingMode.HALF_UP);
     }
 
 
@@ -655,8 +664,30 @@ public class Smarkets extends BettingSite {
 
     public static BigDecimal quantity2size(long quantity, long price){
         return new BigDecimal(quantity * price)
-                .divide(new BigDecimal(100000000), 2, RoundingMode.HALF_UP);
+                .divide(new BigDecimal(100000000), 2, RoundingMode.DOWN);
     }
+
+    public static BigDecimal dec2perc(BigDecimal odds){
+        return BigDecimal.ONE.divide(odds, 20, RoundingMode.HALF_UP);
+    }
+
+
+    public static BigDecimal smarketsDecimal(BigDecimal decimal_odds){
+        // (From https://help.smarkets.com/hc/en-gb/articles/212079549-Why-haven-t-I-been-paid-the-correct-return-)
+        // Our underlying system matches bets between customers in percentage prices.
+        // If a user is displaying the odds in decimal form, we round the percentage
+        // prices to two decimal places, as displayed on the Exchange. So although
+        // you’re backing at 1.65, the percentage price would in fact be 60.61%
+
+        // Convert to decimal to 4dp (percentage + 2dp)
+        BigDecimal percentage_odds = dec2perc(decimal_odds).setScale(4, RoundingMode.HALF_UP);
+
+        print(percentage_odds.toString());
+
+        // Convert the rounded percentage back to exact decimal
+        return BigDecimal.ONE.divide(percentage_odds, 20, RoundingMode.HALF_UP);
+    }
+
 
     public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
         if (increment.signum() == 0) {
@@ -766,7 +797,7 @@ public class Smarkets extends BettingSite {
             JSONObject payload = new JSONObject();
             payload.put("contract_id", betOrder.bet_offer.metadata.get(Smarkets.CONTRACT_ID));
             payload.put("market_id", betOrder.bet_offer.metadata.get(Smarkets.MARKET_ID));
-            payload.put("price", validPrice(odds2price(odds)));
+            payload.put("price", validPrice(dec2price(odds)));
             payload.put("quantity", size2quantity(backers_stake, betOrder.bet_offer.odds));
             payload.put("side", side);
             payload.put("type", "immediate_or_cancel");
@@ -814,7 +845,7 @@ public class Smarkets extends BettingSite {
                 String bet_id = (String) response.get("order_id");
                 long price = (long) response.get("executed_avg_price");
                 long quantity = (long) response.get("total_executed_quantity");
-                BigDecimal odds = price2odds(price);
+                BigDecimal odds = price2dec(price);
                 BigDecimal backers_stake = quantity2size(quantity, price);
                 BigDecimal investment;
                 if (betOrder.isBack()){
@@ -839,6 +870,9 @@ public class Smarkets extends BettingSite {
 
 
     public static void main(String[] args){
+
+        print(price2dec(7874).toString());
+        print(dec2price(new BigDecimal("1.27")));
 
     }
 }

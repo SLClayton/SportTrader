@@ -1,13 +1,12 @@
 package SiteConnectors.Matchbook;
 
 import Bet.BetOffer;
-import Bet.FootballBet.FootballBet;
-import Bet.FootballBet.FootballOverUnderBet;
-import Bet.FootballBet.FootballResultBet;
-import Bet.FootballBet.FootballScoreBet;
+import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
 import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
+import SiteConnectors.Smarkets.Smarkets;
+import SiteConnectors.Smarkets.SmarketsEventTracker;
 import Sport.FootballMatch;
 import Sport.Match;
 import org.json.simple.JSONArray;
@@ -17,6 +16,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -292,5 +296,33 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
     public void updateMarketData() throws InterruptedException {
         eventMarketData = matchbook.getMarketDataFromHandler(event_id);
+    }
+
+    public static void main(String[] args){
+
+        try {
+
+            Matchbook s = new Matchbook();
+
+            MatchbookEventTracker set = (MatchbookEventTracker) s.getEventTracker();
+
+            FootballMatch fm = new FootballMatch("2019-10-05T16:30:00.000Z",
+                    "west ham", "crystal palace");
+
+            fm.verify();
+            print("setup: " + String.valueOf(set.setupMatch(fm)));
+
+            set.updateMarketData();
+
+            FootballBetGenerator fbg = new FootballBetGenerator();
+            set.updateMarketOddsReport(fbg.getAllBets());
+
+            p(set.marketOddsReport.toJSON());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

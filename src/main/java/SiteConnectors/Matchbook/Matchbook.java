@@ -12,9 +12,7 @@ import java.security.cert.CertificateException;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -47,9 +45,11 @@ public class Matchbook extends BettingSite {
             "handicap",
             "both_to_score",
             "correct_score"};
-    public static String FOOTBALL_ID = "15";
-    public static String RUNNER_ID = "RUNNER_ID";
-    public static String MARKET_ID = "MARKET_ID";
+    public final static String FOOTBALL_ID = "15";
+    public final static String RUNNER_ID = "RUNNER_ID";
+    public final static String MARKET_ID = "MARKET_ID";
+    public final static int[] valid_american_odds = new int[] {-99900, -94900, -89900, -84900, -79900, -74900, -69900, -64900, -59900, -54900, -49900, -48900, -47900, -46900, -45900, -44900, -43900, -42900, -41900, -40900, -39900, -38900, -37900, -36900, -35900, -34900, -33900, -32900, -31900, -30900, -29900, -28900, -27900, -26900, -25900, -24900, -23900, -22900, -21900, -20900, -19900, -18900, -17900, -16900, -15900, -14900, -13900, -12900, -11900, -10900, -9900, -9400, -8900, -8400, -7900, -7400, -6900, -6400, -5900, -5400, -4900, -4700, -4500, -4300, -4100, -3900, -3700, -3500, -3300, -3100, -2900, -2800, -2700, -2600, -2500, -2400, -2300, -2200, -2100, -2000, -1900, -1850, -1800, -1750, -1700, -1650, -1600, -1550, -1500, -1450, -1400, -1350, -1300, -1250, -1200, -1150, -1100, -1050, -1000, -950, -900, -880, -860, -840, -820, -800, -780, -760, -740, -720, -700, -680, -660, -640, -620, -600, -580, -560, -540, -520, -500, -490, -480, -470, -460, -450, -440, -430, -420, -410, -400, -390, -380, -370, -360, -350, -340, -330, -320, -310, -300, -295, -290, -285, -280, -275, -270, -265, -260, -255, -250, -245, -240, -235, -230, -225, -220, -215, -210, -205, -200, -198, -196, -194, -192, -190, -188, -186, -184, -182, -180, -178, -176, -174, -172, -170, -168, -166, -164, -162, -160, -158, -156, -154, -152, -150, -148, -146, -144, -142, -140, -138, -136, -134, -132, -130, -128, -126, -124, -122, -120, -118, -116, -114, -112, -110, -108, -106, -104, -102, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148, 150, 152, 154, 156, 158, 160, 162, 164, 166, 168, 170, 172, 174, 176, 178, 180, 182, 184, 186, 188, 190, 192, 194, 196, 198, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 520, 540, 560, 580, 600, 620, 640, 660, 680, 700, 720, 740, 760, 780, 800, 820, 840, 860, 880, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 1850, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3100, 3300, 3500, 3700, 3900, 4100, 4300, 4500, 4700, 4900, 5400, 5900, 6400, 6900, 7400, 7900, 8400, 8900, 9400, 9900, 10900, 11900, 12900, 13900, 14900, 15900, 16900, 17900, 18900, 19900, 20900, 21900, 22900, 23900, 24900, 25900, 26900, 27900, 28900, 29900, 30900, 31900, 32900, 33900, 34900, 35900, 36900, 37900, 38900, 39900, 40900, 41900, 42900, 43900, 44900, 45900, 46900, 47900, 48900, 49900, 54900, 59900, 64900, 69900, 74900, 79900, 84900, 89900, 94900, 99900};
+    public BigDecimal[] valid_decimal_odds;
 
     public marketDataRequestHandler marketDataRequestHandler;
     public BlockingQueue<RequestHandler> marketDataRequestHandlerQueue;
@@ -74,6 +74,14 @@ public class Matchbook extends BettingSite {
         // Set up a requester to handle HTTP requests
         requester = new Requester();
         login();
+
+
+        // Generate list of valid decimal odds from valid american odds.
+        valid_decimal_odds = new BigDecimal[valid_american_odds.length];
+        for (int i=0; i<valid_american_odds.length; i++){
+            valid_decimal_odds[i] = BetOffer.americ2dec(new BigDecimal(valid_american_odds[i]))
+                    .setScale(5, RoundingMode.HALF_UP);
+        }
 
 
         // Setup and start marketdata request handler to pool mulitple
@@ -358,6 +366,37 @@ public class Matchbook extends BettingSite {
         return response;
     }
 
+
+    public BigDecimal closestMatchbookOdds(BigDecimal odds){
+        // Matchbook uses US oddson their ticker, so convert decimal odds to the nearest valid value.
+        // They use 5dp on their converted decimal odds
+
+        if (odds.compareTo(valid_decimal_odds[0]) == -1){
+            log.warning("closestMatchbookOdds odds lower than lowest.");
+            return valid_decimal_odds[0];
+        }
+
+        for (int i=0; i<valid_decimal_odds.length-1; i++){
+            BigDecimal above = valid_decimal_odds[i+1];
+
+            if (odds.compareTo(above) != 1){
+                BigDecimal below = valid_decimal_odds[i];
+                BigDecimal distance_to_below = odds.subtract(below);
+                BigDecimal distance_to_above = above.subtract(odds);
+
+                if (distance_to_above.compareTo(distance_to_below) == -1){
+                    return above;
+                }
+                else{
+                    return below;
+                }
+            }
+        }
+
+        log.warning("closestMatchbookOdds odds higher than highest.");
+        return valid_decimal_odds[valid_decimal_odds.length-1];
+    }
+
     @Override
     public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
@@ -379,6 +418,8 @@ public class Matchbook extends BettingSite {
                 stake = betOrder.bet_offer.getLayFromStake(betOrder.investment, true);
                 betOrder.lay_amount = stake;
             }
+
+
 
 
             JSONObject offer = new JSONObject();
@@ -493,66 +534,29 @@ public class Matchbook extends BettingSite {
 
 
 
+
     public static void main(String[] args){
 
         try {
+
             Matchbook m = new Matchbook();
 
-            BetOffer bo = new BetOffer();
-            bo.odds = new BigDecimal("5.6");
-            bo.bet = new FootballResultBet("BACK", "DRAW", false);
-            HashMap<String, String> md = new HashMap<String, String>();
-            md.put(Matchbook.RUNNER_ID, "1229360059390017");
-            md.put(Matchbook.MARKET_ID, "1229360056270017");
-            bo.metadata = md;
-            bo.site = m;
+            Instant start = Instant.now();
+            BigDecimal v = m.closestMatchbookOdds(new BigDecimal("650"));
+            Instant end = Instant.now();
 
-            BetOrder betOrder = new BetOrder();
-            betOrder.bet_offer = bo;
-            betOrder.investment = new BigDecimal("1.50");
+            print(v.toString());
+            long time = end.toEpochMilli() - start.toEpochMilli();
+            print(time + "ms");
 
-
-            BetOffer bo2 = new BetOffer();
-            bo2.odds = new BigDecimal("25");
-            bo2.bet = new FootballResultBet("BACK", "TEAM-B", false);
-            HashMap<String, String> md2 = new HashMap<String, String>();
-            md2.put(Matchbook.RUNNER_ID, "1229360056630017");
-            md2.put(Matchbook.MARKET_ID, "1229360056010017");
-            bo2.metadata = md2;
-            bo2.site = m;
-
-            BetOrder betOrder2 = new BetOrder();
-            betOrder2.bet_offer = bo2;
-            betOrder2.investment = new BigDecimal("0.50");
+            for (int i =0; i< valid_american_odds.length; i++){
+                print(m.valid_decimal_odds[i] + "   " + valid_american_odds[i]);
+            }
 
 
-            ArrayList<BetOrder> betOrders = new ArrayList<>();
-            betOrders.add(betOrder);
-            betOrders.add(betOrder2);
-
-            ArrayList<PlacedBet> placedBets = m.placeBets(betOrders, new BigDecimal("0.9"));
-
-            p(PlacedBet.list2JSON(placedBets));
-
-
-
-
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 }

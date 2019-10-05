@@ -1,10 +1,7 @@
 package SiteConnectors.Smarkets;
 
 import Bet.BetOffer;
-import Bet.FootballBet.FootballBet;
-import Bet.FootballBet.FootballOverUnderBet;
-import Bet.FootballBet.FootballResultBet;
-import Bet.FootballBet.FootballScoreBet;
+import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
 import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
@@ -27,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static tools.printer.*;
 
@@ -50,6 +49,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
 
     public SmarketsEventTracker(Smarkets smarkets){
+        super();
         this.smarkets = smarkets;
         id_market_map = new HashMap<>();
         fullname_contract_map = new HashMap<>();
@@ -99,7 +99,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
         // Assign values to object
         event_id = match.metadata.get("smarkets_event_id");
         this.match = setup_match;
-
 
 
         // Setup market data for this match
@@ -164,8 +163,9 @@ public class SmarketsEventTracker extends SiteEventTracker {
         if (event_id == null){
             throw new Exception("Smarkets event trader tried to update odds without an event.");
         }
+        log.fine(String.format("Updating market odds report in smarkets for %s.", match));
 
-        updateMarketData();
+        updatePrices();
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
 
         if (lastPrices == null){
@@ -238,7 +238,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 offers = (JSONArray) prices.get("bids");
             }
 
-            // Convert to our list
+            // Convert to our list to betOffer objects list
             ArrayList<BetOffer> new_betOffers = new ArrayList<>();
             for (Object s_offer_obj: offers){
                 JSONObject s_offer = (JSONObject) s_offer_obj;
@@ -246,19 +246,18 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 // Get price and vol as integers and convert them.
                 long price = (long) s_offer.get("price");
                 long quantity = (long) s_offer.get("quantity");
-                BigDecimal odds = Smarkets.price2odds(price);
+                BigDecimal decimal_odds = Smarkets.price2dec(price);
                 BigDecimal volume = Smarkets.quantity2size(quantity, price);
 
-                // Put contract ID in metadata
+                // Add smarkets specific data to metadata
                 HashMap<String, String> metadata = new HashMap<>();
                 metadata.put(Smarkets.CONTRACT_ID, contract_id);
                 metadata.put(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
+                metadata.put(Smarkets.SMARKETS_PRICE, String.valueOf(price));
 
-                BetOffer bo = new BetOffer(match, bet, smarkets, odds, volume, metadata);
-                new_betOffers.add(bo);
+                new_betOffers.add(new BetOffer(match, bet, smarkets, decimal_odds, volume, metadata));
             }
 
-            // Add this bet, and its bet offers for smarkets into the odds report.
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
 
@@ -266,7 +265,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
         marketOddsReport = new_marketOddsReport;
     }
 
-    public void updateMarketData() throws InterruptedException, IOException, URISyntaxException {
+
+    public void updatePrices() throws InterruptedException, IOException, URISyntaxException {
         lastPrices = smarkets.getPricesFromHandler(market_ids);
     }
 
@@ -274,35 +274,28 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public static void main(String[] args){
 
         try {
+
+
             Smarkets s = new Smarkets();
             SmarketsEventTracker set = (SmarketsEventTracker) s.getEventTracker();
 
-            FootballMatch fm = new FootballMatch("2019-09-14T11:30:00Z",
-                    "Liverpool", "Newcastle");
+            FootballMatch fm = new FootballMatch("2019-10-05T16:30:00.000Z",
+                    "west ham", "crystal palace");
 
             fm.verify();
-            set.setupMatch(fm);
-            set.updateMarketData();
-            p(set.lastPrices);
+            print("setup: " + String.valueOf(set.setupMatch(fm)));
+
+            set.updatePrices();
+
+            FootballBetGenerator fbg = new FootballBetGenerator();
+            set.updateMarketOddsReport(fbg.getAllBets());
 
 
+            pp(set.lastPrices);
+            p(set.marketOddsReport.toJSON());
 
 
-
-
-        } catch (CertificateException | InterruptedException | FlashScores.verificationException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

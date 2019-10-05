@@ -47,10 +47,6 @@ public abstract class Bet {
     }
 
 
-
-
-
-
     public static JSONArray allJSONArray(ArrayList<Bet> bets){
         JSONArray j = new JSONArray();
         for (int i=0; i<bets.size(); i++){

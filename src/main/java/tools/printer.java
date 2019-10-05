@@ -95,6 +95,11 @@ public abstract class printer {
         return map;
     }
 
+    public static String fromFile(String filename) throws FileNotFoundException {
+        String s = new Scanner(new File(filename)).useDelimiter("\\Z").next();
+        return s;
+    }
+
 
     public static ArrayList<ArrayList<String>> shard(String[] unchunked_list, int shard_size){
 

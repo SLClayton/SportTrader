@@ -196,7 +196,6 @@ public class EventTrader implements Runnable {
         for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()){
             String site_name = entry.getKey();
             SiteEventTracker siteEventTracker = entry.getValue();
-
             siteMarketOddsToGetQueue.put(site_name);
         }
 
@@ -205,7 +204,7 @@ public class EventTrader implements Runnable {
         for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()) {
             SiteEventTracker siteEventTracker = entry.getValue();
 
-            // Wait for report to finish updating by waiting for queue value to appear and taking.
+            // Wait for report to finish updating by waiting for queue value to appear.
             siteEventTracker.updateComplete.take();
 
             // Add report to report list and remove its lock
