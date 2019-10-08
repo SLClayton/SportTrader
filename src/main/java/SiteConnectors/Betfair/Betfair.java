@@ -1,5 +1,6 @@
 package SiteConnectors.Betfair;
 
+import Bet.Bet;
 import Bet.BetOffer;
 import Bet.BetOrder;
 import Bet.FootballBet.FootballResultBet;
@@ -54,7 +55,7 @@ public class Betfair extends BettingSite {
     public String hostname = "https://api.betfair.com/";
     public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
     public String accounts_endpoint = hostname + "/exchange/account/json-rpc/v1";
-    public BigDecimal min_bet = new BigDecimal("2.00");
+    public BigDecimal min_backers_stake = new BigDecimal("2.00");
     public String app_id = "3BD65v2qKzw9ETp9";
     public String app_id_dev = "DfgkZAnb0qi6Wmk1";
     public String token;
@@ -357,8 +358,8 @@ public class Betfair extends BettingSite {
 
 
     @Override
-    public BigDecimal minBet() {
-        return min_bet;
+    public BigDecimal minBackersStake() {
+        return min_backers_stake;
     }
 
 
@@ -366,6 +367,7 @@ public class Betfair extends BettingSite {
     public SiteEventTracker getEventTracker(){
         return new BetfairEventTracker(this);
     }
+
 
 
     public JSONArray getMarketOdds(String[] market_ids) throws InterruptedException {
@@ -639,40 +641,32 @@ public class Betfair extends BettingSite {
             market_betOrders.get(marketId).add(betOrder);
         }
 
-        // Clear list so it can be reordered.
+        // Clear list so it can be reordered as they're put into payload
         betOrders = new ArrayList<>();
 
+        // Create RPC request
         JSONArray RPCs = new JSONArray();
         for (Map.Entry<String, ArrayList<BetOrder>> entry: market_betOrders.entrySet()){
             String marketId = entry.getKey();
             ArrayList<BetOrder> marketBetOrders = entry.getValue();
 
+            // One rpc request part, per market
             JSONArray instructions_list = new JSONArray();
             for (BetOrder betOrder: marketBetOrders){
 
-
-                // Change odds and size depending on type of bet
+                // Multiply odds by a small amount to undercut price and for margin of error.
                 BigDecimal odds = betOrder.bet_offer.odds;
-                BigDecimal size;
                 if (betOrder.isBack()){
-                    odds = odds.subtract(BigDecimal.ONE).multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE);
-                    size = betOrder.investment.setScale(2, RoundingMode.HALF_UP);
+                    odds = validPrice(odds.subtract(BigDecimal.ONE).multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE));
                 }
                 else {
                     BigDecimal ratio = BigDecimal.ONE.divide(MIN_ODDS_RATIO, 20, RoundingMode.HALF_UP);
-                    odds = odds.subtract(BigDecimal.ONE).multiply(ratio).add(BigDecimal.ONE);
-                    size = betOrder.bet_offer.getLayFromStake(betOrder.investment, true);
-                    betOrder.lay_amount = size;
+                    odds = validPrice(odds.subtract(BigDecimal.ONE).multiply(ratio).add(BigDecimal.ONE));
                 }
 
-                // Set the price to be an acceptable percentage under (lower limit),
-                // and it will fill to the best price it has available
-                BigDecimal price = validPrice(odds.setScale(2, RoundingMode.HALF_UP));
-
-
                 JSONObject limitOrder = new JSONObject();
-                limitOrder.put("size", size.toString());
-                limitOrder.put("price", price.toString());
+                limitOrder.put("size", betOrder.getBackersStake().setScale(2, RoundingMode.HALF_UP).toString());
+                limitOrder.put("price", odds.toString());
                 limitOrder.put("persistenceType", "PERSIST");
                 limitOrder.put("timeInForce", "FILL_OR_KILL");
 
@@ -705,7 +699,6 @@ public class Betfair extends BettingSite {
         // Send off request to place bets on betfair exchange
         JSONArray response = (JSONArray) requester.post(betting_endpoint, RPCs);
 
-
         // Get responses and generate PlaceBet for each
         ArrayList<PlacedBet> placedBets = new ArrayList<>();
         for (Object rpc_obj: response){
@@ -722,40 +715,50 @@ public class Betfair extends BettingSite {
             }
 
             for (Object report_obj: (JSONArray) rpc_result.get("instructionReports")){
-                JSONObject report = (JSONObject) report_obj;
+                JSONObject bet_report = (JSONObject) report_obj;
 
-                String orderStatus = (String) report.get("status");
-                int bet_order_id = Integer.valueOf((String) ((JSONObject) report.get("instruction")).get("customerOrderRef"));
+                String orderStatus = (String) bet_report.get("status");
+                int bet_order_id = Integer.valueOf((String) ((JSONObject) bet_report.get("instruction")).get("customerOrderRef"));
                 BetOrder betOrder = betOrders.get(bet_order_id);
 
                 if (!orderStatus.equals("SUCCESS")){
-                    String error = (String) report.get("errorCode");
+                    String error = (String) bet_report.get("errorCode");
                     log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
-                            String.valueOf(error), ps(report)));
+                            String.valueOf(error), ps(bet_report)));
 
-                    placedBets.add(new PlacedBet("FAILED", betOrder, String.valueOf(error)));
+
+                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(error));
+                    pb.site_json_response = bet_report;
+                    placedBets.add(pb);
                 }
                 else{
-                    String bet_id = (String) report.get("betId");
-                    BigDecimal size = new BigDecimal((String.valueOf((Double) report.get("sizeMatched"))));
-                    Instant time = Instant.parse((String) report.get("placedDate"));
-                    BigDecimal avg_odds = new BigDecimal((String.valueOf((Double) report.get("averagePriceMatched"))));
+                    // Collect data from return json
+                    String bet_id = (String) bet_report.get("betId");
+                    BigDecimal size_matched = new BigDecimal((String.valueOf((Double) bet_report.get("sizeMatched"))));
+                    Instant time = Instant.parse((String) bet_report.get("placedDate"));
+                    BigDecimal avg_odds = new BigDecimal((String.valueOf((Double) bet_report.get("averagePriceMatched"))));
 
+                    // Find the invested amount from backers stake depending on if bet is back or lay
                     BigDecimal invested;
                     if (betOrder.isBack()){
-                        invested = size;
+                        invested = size_matched;
                     }
-                    else{
-                        invested = BetOffer.getLiability(avg_odds, size).setScale(2, RoundingMode.HALF_UP);
+                    else {
+                        invested = BetOffer.backStake2LayStake(size_matched, avg_odds);
                     }
 
-                    BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(avg_odds), invested, true);
+                    BigDecimal returns = this.ROI(betOrder.betType(), avg_odds, betOrder.commission(),
+                            invested, true);
 
-                    log.info(String.format("Successfully invested £%s @ %S on %s '%s' in betfair (returns %s).",
+
+                    log.info(String.format("Successful invested £%s @ %S on %s '%s' in betfair (returns %s).",
                             invested.toString(), avg_odds.toString(), betOrder.bet_offer.bet.id(),
                             betOrder.bet_offer.match.name, returns.toString()));
 
-                    placedBets.add(new PlacedBet("SUCCESS", bet_id, betOrder, invested, avg_odds, returns, time));
+
+                    PlacedBet pb = new PlacedBet("SUCCESS", bet_id, betOrder, size_matched, avg_odds, returns, time);
+                    pb.site_json_response = bet_report;
+                    placedBets.add(pb);
                 }
             }
         }
@@ -813,46 +816,29 @@ public class Betfair extends BettingSite {
 
 
 
-
-
     public static void main(String[] args){
         try {
             Betfair b = new Betfair();
 
-
-            BetOffer bo = new BetOffer();
-            bo.odds = new BigDecimal("23");
-            bo.bet = new FootballScoreBet("BACK", 0, 0, false);
             HashMap<String, String> md = new HashMap<String, String>();
-            md.put("selectionId", "1");
-            md.put("marketId", "1.162803374");
-            bo.metadata = md;
-            bo.site = b;
+            md.put("selectionId", "58805");
+            md.put("marketId", "1.163388368");
 
-            BetOrder betOrder = new BetOrder();
-            betOrder.bet_offer = bo;
-            betOrder.investment = new BigDecimal("2.13");
+            BetOffer bo = new BetOffer(new FootballMatch("2019-10-10T12:12:00.000Z", "teama", "Teamb"),
+                    new FootballResultBet(Bet.LAY, FootballResultBet.DRAW, false),
+                    b,
+                    new BigDecimal("5.2"),
+                    new BigDecimal("102.00"),
+                    md);
 
+            BetOrder betOrder = new BetOrder(bo, new BigDecimal("10.00"),true);
 
-
-            BetOffer bo2 = new BetOffer();
-            bo2.odds = new BigDecimal("25");
-            bo2.bet = new FootballScoreBet("LAY", 0, 0, false);
-            HashMap<String, String> md2 = new HashMap<String, String>();
-            md2.put("selectionId", "1");
-            md2.put("marketId", "1.162803374");
-            bo2.metadata = md2;
-
-            BetOrder betOrder2 = new BetOrder();
-            betOrder2.bet_offer = bo2;
-            betOrder2.investment = new BigDecimal("46.05");
 
             ArrayList<BetOrder> betOrders = new ArrayList<>();
             betOrders.add(betOrder);
-            betOrders.add(betOrder2);
 
-            //ArrayList<PlacedBet> placedBets = b.placeBets(betOrders, new BigDecimal(1));
-            //p(PlacedBet.list2JSON(placedBets));
+            ArrayList<PlacedBet> placedBets = b.placeBets(betOrders, new BigDecimal(1));
+            p(PlacedBet.list2JSON(placedBets));
 
 
 

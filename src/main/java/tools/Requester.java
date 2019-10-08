@@ -193,6 +193,16 @@ public class Requester {
             Thread.sleep(sleeptime);
             return getRaw(url, params);
         }
+
+        if (status_code == 502){
+            String response_body = EntityUtils.toString(response.getEntity());
+            if (response_body == null){
+                response_body = "null";
+            }
+            log.warning(String.format("502 error error for getRaw request '%s', trying again.\n%s", url, response_body));
+            return getRaw(url, params);
+        }
+
         if (status_code < 200 || status_code >= 300){
             String response_body = EntityUtils.toString(response.getEntity());
             if (response_body == null){

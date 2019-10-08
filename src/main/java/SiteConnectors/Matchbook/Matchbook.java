@@ -19,10 +19,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Bet.Bet;
 import Bet.BetOffer;
 import Bet.BetOrder;
 import Bet.FootballBet.FootballResultBet;
 import Bet.PlacedBet;
+import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
@@ -55,7 +57,7 @@ public class Matchbook extends BettingSite {
     public BlockingQueue<RequestHandler> marketDataRequestHandlerQueue;
 
     public BigDecimal commission = new BigDecimal("0.02");
-    public BigDecimal min_bet = new BigDecimal("0.10");
+    public BigDecimal min_backers_stake = new BigDecimal("0.10");
 
 
     public Matchbook() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
@@ -248,8 +250,8 @@ public class Matchbook extends BettingSite {
 
 
     @Override
-    public BigDecimal minBet() {
-        return min_bet;
+    public BigDecimal minBackersStake() {
+        return min_backers_stake;
     }
 
 
@@ -401,35 +403,35 @@ public class Matchbook extends BettingSite {
     public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
 
+        // Create a map to keep track of runners to which betOrder they come from
         Map<String, BetOrder> runner_betOrder_map = new HashMap<>();
 
         JSONArray offers = new JSONArray();
         for (BetOrder betOrder: betOrders){
 
+
+            // Multiply odds up or down by a multiplier depending on BACK or LAY
+            // so there's a margin of error. (Site takes best odds anyway).
             BigDecimal odds = betOrder.bet_offer.odds;
-            BigDecimal stake;
+            odds = odds.subtract(BigDecimal.ONE);
             if (betOrder.isBack()){
-                odds = odds.subtract(BigDecimal.ONE).multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE);
-                stake = betOrder.investment.setScale(2, RoundingMode.HALF_UP);
+                odds = odds.multiply(MIN_ODDS_RATIO);
             }
             else {
-                BigDecimal ratio = BigDecimal.ONE.divide(MIN_ODDS_RATIO, 20, RoundingMode.HALF_UP);
-                odds = odds.subtract(BigDecimal.ONE).multiply(ratio).add(BigDecimal.ONE);
-                stake = betOrder.bet_offer.getLayFromStake(betOrder.investment, true);
-                betOrder.lay_amount = stake;
+                odds = odds.divide(MIN_ODDS_RATIO, 20, RoundingMode.HALF_UP);
             }
-
-
+            odds = odds.add(BigDecimal.ONE);
 
 
             JSONObject offer = new JSONObject();
             offer.put("runner-id", betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID));
             offer.put("side", betOrder.betType().toLowerCase());
             offer.put("odds", odds.setScale(3, RoundingMode.HALF_UP).doubleValue());
-            offer.put("stake", stake.doubleValue());
+            offer.put("stake", betOrder.getBackersStake().doubleValue());
             offer.put("keep-in-play", true);
 
             offers.add(offer);
+
             runner_betOrder_map.put(
                     betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID) + betOrder.betType().toLowerCase(),
                     betOrder);
@@ -442,6 +444,7 @@ public class Matchbook extends BettingSite {
 
         JSONObject response = (JSONObject) requester.post(baseurl + "/v2/offers/", json);
 
+
         boolean any_failures = false;
         ArrayList<PlacedBet> placedBets = new ArrayList<>();
         for (Object offer_obj: (JSONArray) response.get("offers")){
@@ -452,60 +455,71 @@ public class Matchbook extends BettingSite {
             String side = (String) offer.get("side");
             BetOrder betOrder = runner_betOrder_map.get(runner_id + side);
 
-            PlacedBet pb = null;
             if (status.equals("matched")){
 
+                // From all the Matched bet parts, sum up the total stake for back, and lay if present
+                BigDecimal total_back_stake = BigDecimal.ZERO;
+                BigDecimal total_lay_stake = BigDecimal.ZERO;
+                for (Object matchedBet_obj: (JSONArray) offer.get("matched-bets")) {
+                    JSONObject matchedBet = (JSONObject) matchedBet_obj;
 
-                BigDecimal total_stake = new BigDecimal(String.valueOf((Double) offer.get("stake")));
+                    // Sum the back stake
+                    BigDecimal back_stake_part = new BigDecimal(String.valueOf((Double) matchedBet.get("stake")));
+                    total_back_stake = total_back_stake.add(back_stake_part);
 
-                // They dont bother to send you the average odds so you have to do it by yourself from
-                // all the parts if there are multiple parts to the matching of your bet
+                    // If a LAY bet, sum up the lay stake
+                    if (betOrder.isLay()){
+                        BigDecimal lay_stake_part = new BigDecimal(String.valueOf((Double) matchedBet.get("potential-liability")));
+                        total_lay_stake = total_lay_stake.add(lay_stake_part);
+                    }
+                }
+
+                // Now we have the totals, we can work out the average odds
                 BigDecimal avg_odds = BigDecimal.ZERO;
-                BigDecimal total_liability = BigDecimal.ZERO;
                 for (Object matchedBet_obj: (JSONArray) offer.get("matched-bets")){
                     JSONObject matchedBet = (JSONObject) matchedBet_obj;
 
-                    // Eztract odds and stake of this part of the matched bet.
-                    BigDecimal odds = new BigDecimal(String.valueOf((Double) matchedBet.get("decimal-odds")));
-                    BigDecimal stake = new BigDecimal(String.valueOf((Double) matchedBet.get("stake")));
+                    // Extract odds and stake of this part of the matched bet.
+                    BigDecimal odds_part = new BigDecimal(String.valueOf((Double) matchedBet.get("decimal-odds")));
+                    BigDecimal back_stake_part = new BigDecimal(String.valueOf((Double) matchedBet.get("stake")));
 
-                    // If a LAY bet, sum up the liability of this part.
-                    if (betOrder.isLay()){
-                        total_liability = total_liability.add(
-                                new BigDecimal(String.valueOf((Double) matchedBet.get("potential-liability"))));
-                    }
-
-                    // Add on the odds of this part, weighted depending on the size of the stake
-                    BigDecimal ratio = stake.divide(total_stake, 20, RoundingMode.HALF_UP);
-                    avg_odds = avg_odds.add(odds.multiply(ratio));
+                    // Calculate the weighted average size of this matched bet and multiply the odds by it.
+                    BigDecimal weighted_ratio = back_stake_part.divide(total_back_stake, 20, RoundingMode.HALF_UP);
+                    avg_odds = avg_odds.add(odds_part.multiply(weighted_ratio));
                 }
 
                 // Set investment depending on side of bet
                 BigDecimal investment;
                 if (betOrder.isBack()){
-                    investment = total_stake;
+                    investment = total_back_stake;
                 }
                 else{
-                    investment = total_liability;
+                    investment = total_lay_stake;
                 }
 
                 String bet_id = String.valueOf((long) offer.get("id"));
-                BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(avg_odds), investment, true);
+                BigDecimal returns = ROI(betOrder.betType(), avg_odds, betOrder.commission(), investment, false)
+                        .setScale(2, RoundingMode.DOWN);
                 Instant time = Instant.parse((String) offer.get("created-at"));
 
                 log.info(String.format("Successfully placed £%s @ %s on %s '%s' in matchbook (returns %s).",
-                        investment.toString(), avg_odds.toString(), betOrder.bet_offer.bet.id(),
+                        investment.toString(), avg_odds.toString(), betOrder.betID(),
                         betOrder.match().name, returns.toString()));
 
-                placedBets.add(new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id,
-                        betOrder, investment, avg_odds, returns, time));
+                PlacedBet pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, total_back_stake,
+                        total_lay_stake, avg_odds, returns, time);
+
+                pb.site_json_response = offer;
+                placedBets.add(pb);
             }
             else{
                 any_failures = true;
                 log.severe(String.format("Failed to place %s on bet %s in matchbook. Bet not fully matched.",
                         betOrder.investment.toString(), betOrder.bet_offer.bet.id(), ps(response)));
 
-                placedBets.add(new PlacedBet(PlacedBet.FAILED_STATE, betOrder, status));
+                PlacedBet pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, status);
+                pb.site_json_response = offer;
+                placedBets.add(pb);
             }
         }
 
@@ -538,20 +552,28 @@ public class Matchbook extends BettingSite {
     public static void main(String[] args){
 
         try {
+            Matchbook b = new Matchbook();
 
-            Matchbook m = new Matchbook();
+            HashMap<String, String> md = new HashMap<String, String>();
+            md.put(Matchbook.RUNNER_ID, "1243385933350018");
+            md.put(Matchbook.MARKET_ID, "1243385932770018");
 
-            Instant start = Instant.now();
-            BigDecimal v = m.closestMatchbookOdds(new BigDecimal("650"));
-            Instant end = Instant.now();
+            BetOffer bo = new BetOffer(new FootballMatch("2019-10-10T12:12:00.000Z", "teama", "Teamb"),
+                    new FootballResultBet(Bet.LAY, FootballResultBet.TEAM_A, false),
+                    b,
+                    new BigDecimal("1.358"),
+                    new BigDecimal("102.00"),
+                    md);
 
-            print(v.toString());
-            long time = end.toEpochMilli() - start.toEpochMilli();
-            print(time + "ms");
+            BetOrder betOrder = new BetOrder(bo, new BigDecimal("7.00"),true);
 
-            for (int i =0; i< valid_american_odds.length; i++){
-                print(m.valid_decimal_odds[i] + "   " + valid_american_odds[i]);
-            }
+
+            ArrayList<BetOrder> betOrders = new ArrayList<>();
+            betOrders.add(betOrder);
+
+            ArrayList<PlacedBet> placedBets = b.placeBets(betOrders, new BigDecimal(1));
+            p(PlacedBet.list2JSON(placedBets));
+
 
 
         } catch (Exception e) {

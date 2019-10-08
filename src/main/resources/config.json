@@ -1,8 +1,8 @@
 {
-    "MAX_MATCHES": 20,
+    "MAX_MATCHES": 25,
     "MIN_SITES_PER_MATCH": 2,
     "IN_PLAY": false,
-    "HOURS_AHEAD": 24,
+    "HOURS_AHEAD": 96,
     "CHECK_MARKETS": true,
     "PLACE_BETS": true,
     "RATE_LIMIT": 0,
@@ -12,6 +12,6 @@
         "betfair": true,
     	"matchbook": true,
         "smarkets": true
-    }
-
+    },
+    "EVENT_SOURCE": "smarkets"
 }

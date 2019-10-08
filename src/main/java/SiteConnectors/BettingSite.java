@@ -1,8 +1,10 @@
 package SiteConnectors;
 
+import Bet.Bet;
 import Bet.BetOffer;
 import Bet.BetOrder;
 import Bet.PlacedBet;
+import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 import Trader.SportsTrader;
 import tools.MyLogHandler;
@@ -21,6 +23,8 @@ import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+
+import static tools.printer.print;
 
 public abstract class BettingSite {
 
@@ -55,10 +59,20 @@ public abstract class BettingSite {
     public abstract BigDecimal commission();
 
 
-    public abstract BigDecimal minBet();
+    public abstract BigDecimal minBackersStake();
 
 
     public abstract SiteEventTracker getEventTracker();
+
+
+    public BigDecimal investment2Stake(BigDecimal investment){
+        return investment;
+    }
+
+
+    public BigDecimal stake2Investment(BigDecimal stake){
+        return stake;
+    }
 
 
     public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException;
@@ -67,7 +81,7 @@ public abstract class BettingSite {
     public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException;
 
 
-    public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
+    public BigDecimal ROI_old(BetOffer bet_offer, BigDecimal investment, boolean real){
         // Default ROI, commission on profits only
 
         BigDecimal stake = investment;
@@ -83,7 +97,7 @@ public abstract class BettingSite {
             roi = ret.subtract(commission);
         }
         else { // Lay Bet
-            BigDecimal lay = bet_offer.getLayFromStake(stake, real);
+            BigDecimal lay = BetOffer.backStake2LayStake(investment, bet_offer.odds);
             profit = lay;
             commission = profit.multiply(commission());
             ret = stake.add(profit);
@@ -97,15 +111,22 @@ public abstract class BettingSite {
         return roi;
     }
 
-    public BigDecimal ROI2(BetOffer bet_offer, BigDecimal investment, boolean real){
+
+    public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
+        // Default ROI, commission on profits only
+
+        return ROI(bet_offer.betType(), bet_offer.odds, bet_offer.commission(), investment, real);
+    }
+
+
+    public static BigDecimal ROI(String BACK_LAY, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
+                           boolean real){
         // Default ROI, commission on profits only
 
         BigDecimal roi;
-        BigDecimal odds = bet_offer.odds;
-        BigDecimal commission_rate = bet_offer.commission();
 
         // BACK
-        if (bet_offer.isBack()){
+        if (BACK_LAY.equals(Bet.BACK)){
             BigDecimal backers_stake = investment;
             BigDecimal backers_profit = BetOffer.backStake2LayStake(backers_stake, odds);
             BigDecimal commission = backers_profit.multiply(commission_rate);
@@ -120,13 +141,21 @@ public abstract class BettingSite {
             roi = layers_stake.add(layers_profit).subtract(commission);
         }
 
+        // Round to nearest penny if 'real' value;
         if (real){
             roi = roi.setScale(2, RoundingMode.HALF_UP);
         }
 
-        // TODO: Test this probably and figure out if any changes for 'real'
-
         return roi;
+    }
+
+
+    public static void main(String[] args){
+
+        BigDecimal r = Smarkets.ROI("LAY", new BigDecimal("5.38"), new BigDecimal("0.01"),
+                new BigDecimal("8.33"), true);
+
+        print(r.toString());
     }
 
 }

@@ -21,6 +21,8 @@ import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -42,6 +44,7 @@ public class SportsTrader {
     public long RATE_LIMIT;
     public BigDecimal MIN_ODDS_RATIO;
     public Map<String, Boolean> ACTIVE_SITES;
+    public String EVENT_SOURCE;
 
     public Lock betlock = new ReentrantLock();
 
@@ -95,7 +98,8 @@ public class SportsTrader {
         }
 
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
-                "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH"};
+                "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
+                "EVENT_SOURCE"};
 
         for (String field: required){
             if (!(config.keySet().contains(field))){
@@ -114,6 +118,7 @@ public class SportsTrader {
         ACTIVE_SITES = (Map<String, Boolean>) config.get("ACTIVE_SITES");
         RATE_LIMIT = (long) ((Double) config.get("RATE_LIMIT")).intValue();
         MIN_ODDS_RATIO = new BigDecimal((Double) config.get("MIN_ODDS_RATIO"));
+        EVENT_SOURCE = (String) config.get("EVENT_SOURCE");
 
 
         JSONObject config_json = new JSONObject(config);
@@ -180,30 +185,39 @@ public class SportsTrader {
         log.info(String.format("Found %d matches within given timeframe.", footballMatches.size()));
 
 
+        // (For testing) Remove all matches and add single manually inputted match
+        if (false) {
+            footballMatches.clear();
+            FootballMatch fm = new FootballMatch("2019-10-19T14:00:00.000Z", "Tottenham hotspur", "watford");
+            footballMatches.add(fm);
+        }
 
-        for (FootballMatch footballMatch: footballMatches){
-            log.info(String.format("Attempting to verify and setup %s.", footballMatch));
 
-            // Attempt to link with Flashscores
-            try{
-                footballMatch = FlashScores.verifyMatch(footballMatch);
-            } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e) {
-                log.warning(String.format("Failed to link match %s to flashscores - %s", footballMatch, e.getMessage()));
-                continue;
-            }
+        // Create football match job queue and fill
+        BlockingQueue<FootballMatch> match_queue = new LinkedBlockingQueue<>();
+        for (FootballMatch fm: footballMatches){
+            match_queue.add(fm);
+        }
 
-            // Attempt to setup site event trackers for all sites for this match
-            EventTrader eventTrader = new EventTrader(this, footballMatch, siteObjects, footballBetGenerator);
-            int successfull_site_connections = eventTrader.setupMatch();
-            if (successfull_site_connections < MIN_SITES_PER_MATCH){
-                log.warning(String.format("Only %d/%d sites connected for %s. MIN_SITES_PER_MATCH=%d.",
-                        successfull_site_connections, siteObjects.size(), footballMatch, MIN_SITES_PER_MATCH));
-                continue;
-            }
+        // Create same number of event trader setups as max matches allowed to concurrently
+        // setup each event trader
+        ArrayList<EventTraderSetup> eventTraderSetups = new ArrayList<>();
+        for (int i=0; i<MAX_MATCHES; i++){
 
-            eventTraders.add(eventTrader);
-            if (eventTraders.size() >= MAX_MATCHES){
-                break;
+            EventTraderSetup eventTraderSetup = new EventTraderSetup(this, match_queue);
+            eventTraderSetup.thread = new Thread(eventTraderSetup);
+            eventTraderSetup.thread.setName("EvntTderStp" + String.valueOf(i+1));
+            eventTraderSetup.thread.start();
+            eventTraderSetups.add(eventTraderSetup);
+        }
+
+        // Wait for each event trader setup to finish then add the result to the list of EventTraders
+        for (EventTraderSetup eventTraderSetup: eventTraderSetups){
+            try {
+                eventTraderSetup.thread.join();
+                eventTraders.add(eventTraderSetup.result);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
@@ -240,6 +254,65 @@ public class SportsTrader {
         sessionUpdaterThread.start();
 
 
+    }
+
+
+    public class EventTraderSetup implements Runnable{
+
+        // Should check match queue and attempt to create an event trader fully setup
+        // One made per max event traders present and try until complete.
+
+        BlockingQueue<FootballMatch> match_queue;
+        EventTrader result;
+        SportsTrader sportsTrader;
+        Thread thread;
+
+        public EventTraderSetup(SportsTrader sportsTrader, BlockingQueue<FootballMatch> match_queue){
+            this.match_queue = match_queue;
+            this.sportsTrader = sportsTrader;
+        }
+
+        @Override
+        public void run() {
+            while (true){
+
+                // Get match from queue, break and finish if anything goes wrong.
+                FootballMatch footballMatch = null;
+                try {
+                    footballMatch = match_queue.take();
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    break;
+                } if (footballMatch == null){
+                    break;
+                }
+
+                log.info(String.format("Attempting to verify and setup %s.", footballMatch));
+
+                // Attempt to link with Flashscores, try the queue again if it fails
+                try{
+                    footballMatch = FlashScores.verifyMatch(footballMatch);
+                } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e) {
+                    log.warning(String.format("Failed to link match %s to flashscores - %s", footballMatch, e.getMessage()));
+                    continue;
+                }
+
+                // Attempt to setup site event trackers for all sites for this match, try queue again if fails
+                EventTrader eventTrader = new EventTrader(sportsTrader, footballMatch, siteObjects, footballBetGenerator);
+                int successful_site_connections = eventTrader.setupMatch();
+                if (successful_site_connections < MIN_SITES_PER_MATCH){
+                    log.warning(String.format("Only %d/%d sites connected for %s. MIN_SITES_PER_MATCH=%d.",
+                            successful_site_connections, siteObjects.size(), footballMatch, MIN_SITES_PER_MATCH));
+                    continue;
+                }
+
+                // Set result and break loop
+                log.info(String.format("EventTraderSetup complete for match %s.", footballMatch));
+                result = eventTrader;
+                break;
+            }
+        }
     }
 
 
@@ -283,8 +356,14 @@ public class SportsTrader {
     private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException,
             InterruptedException {
 
-        String site_name = "matchbook";
+        String site_name = EVENT_SOURCE;
         BettingSite site = siteObjects.get(site_name);
+        if (site == null){
+            log.severe(String.format("EVENT_SOURCE '%s' cannot be found. It may not bet set in ACTIVE_SITES.",
+                    EVENT_SOURCE));
+            System.exit(0);
+        }
+
         Instant from;
         Instant until;
         Instant now = Instant.now();

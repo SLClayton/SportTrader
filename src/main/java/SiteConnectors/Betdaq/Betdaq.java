@@ -43,7 +43,7 @@ public class Betdaq extends BettingSite {
     }
 
     @Override
-    public BigDecimal minBet() {
+    public BigDecimal minBackersStake() {
         return null;
     }
 

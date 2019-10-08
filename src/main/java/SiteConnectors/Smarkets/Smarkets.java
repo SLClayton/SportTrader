@@ -1,10 +1,12 @@
 package SiteConnectors.Smarkets;
 
+import Bet.Bet;
 import Bet.BetOffer;
 import Bet.BetOrder;
 import Bet.FootballBet.FootballResultBet;
 import Bet.FootballBet.FootballScoreBet;
 import Bet.PlacedBet;
+import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
@@ -15,6 +17,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.Requester;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -42,7 +45,7 @@ public class Smarkets extends BettingSite {
     public static String SMARKETS_PRICE = "SMARKETS_PRICE";
 
     public static BigDecimal commission_rate = new BigDecimal("0.01");
-    public static BigDecimal min_bet = new BigDecimal("0.05");
+    public static BigDecimal min_back_stake = new BigDecimal("0.05");
     public static int[] prices_enum = new int[] {1, 10, 20, 33, 34, 36, 37, 38, 40, 42, 43, 45, 48, 50, 53, 56, 59, 62, 67, 71, 77, 83, 91, 100, 105, 111, 118, 125, 133, 143, 154, 167, 182, 200, 208, 217, 227, 238, 250, 263, 278, 294, 312, 333, 345, 357, 370, 385, 400, 417, 435, 455, 476, 500, 513, 526, 541, 556, 571, 588, 606, 625, 645, 667, 690, 714, 741, 769, 800, 833, 870, 909, 952, 1000, 1020, 1042, 1064, 1087, 1111, 1136, 1163, 1190, 1220, 1250, 1282, 1316, 1351, 1389, 1429, 1471, 1515, 1562, 1613, 1667, 1695, 1724, 1754, 1786, 1818, 1852, 1887, 1923, 1961, 2000, 2041, 2083, 2128, 2174, 2222, 2273, 2326, 2381, 2439, 2500, 2532, 2564, 2597, 2632, 2667, 2703, 2740, 2778, 2817, 2857, 2899, 2941, 2985, 3030, 3077, 3125, 3175, 3226, 3279, 3333, 3356, 3378, 3401, 3425, 3448, 3472, 3497, 3521, 3546, 3571, 3597, 3623, 3650, 3676, 3704, 3731, 3759, 3788, 3817, 3846, 3876, 3906, 3937, 3968, 4000, 4032, 4065, 4098, 4132, 4167, 4202, 4237, 4274, 4310, 4348, 4386, 4425, 4464, 4505, 4545, 4587, 4630, 4673, 4717, 4762, 4808, 4854, 4902, 4950, 5000, 5025, 5051, 5076, 5102, 5128, 5155, 5181, 5208, 5236, 5263, 5291, 5319, 5348, 5376, 5405, 5435, 5464, 5495, 5525, 5556, 5587, 5618, 5650, 5682, 5714, 5747, 5780, 5814, 5848, 5882, 5917, 5952, 5988, 6024, 6061, 6098, 6135, 6173, 6211, 6250, 6289, 6329, 6369, 6410, 6452, 6494, 6536, 6579, 6623, 6667, 6711, 6757, 6803, 6849, 6897, 6944, 6993, 7042, 7092, 7143, 7194, 7246, 7299, 7353, 7407, 7463, 7519, 7576, 7634, 7692, 7752, 7812, 7874, 7937, 8000, 8065, 8130, 8197, 8264, 8333, 8403, 8475, 8547, 8621, 8696, 8772, 8850, 8929, 9009, 9091, 9174, 9259, 9346, 9434, 9524, 9615, 9709, 9804, 9901, 9999};
 
     public Instant lastPriceQuoteRequest;
@@ -367,6 +370,7 @@ public class Smarkets extends BettingSite {
         log.info("Successfully logged into Smarkets");
     }
 
+
     @Override
     public String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException {
@@ -389,19 +393,43 @@ public class Smarkets extends BettingSite {
         throw new IOException("Failed to get new token for smarkets");
     }
 
+
     @Override
     public BigDecimal commission() {
         return commission_rate;
     }
 
     @Override
-    public BigDecimal minBet() {
-        return min_bet;
+    public BigDecimal minBackersStake() {
+        return min_back_stake;
     }
+
+
+
 
     @Override
     public SiteEventTracker getEventTracker() {
         return new SmarketsEventTracker(this);
+    }
+
+
+    @Override
+    public BigDecimal investment2Stake(BigDecimal investment) {
+        // Smarkets has commission on losing bets, so this has to be taken out of the
+        // investment to find the stake.
+
+        BigDecimal ratio = BigDecimal.ONE.divide(BigDecimal.ONE.add(commission()), 20, RoundingMode.HALF_UP);
+        return investment.multiply(ratio);
+    }
+
+
+    @Override
+    public BigDecimal stake2Investment(BigDecimal stake) {
+        // Smarkets has commission on losing bets, so this has to be added to the stake to
+        // get the full investment
+
+        BigDecimal loss_commission = stake.multiply(commission());
+        return stake.add(loss_commission);
     }
 
 
@@ -421,17 +449,8 @@ public class Smarkets extends BettingSite {
     }
 
 
-    public BigDecimal getFullInvestment(BigDecimal staked) {
-        // total investment is stake but also the commission as this is taken for losses too
 
-        BigDecimal ratio = BigDecimal.ONE.add(commission_rate).divide(BigDecimal.ONE, 20, RoundingMode.HALF_UP);
-        return staked.multiply(ratio).setScale(2, RoundingMode.HALF_UP);
-    }
-
-
-
-    @Override
-    public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
+    public BigDecimal ROI_old(BetOffer bet_offer, BigDecimal investment, boolean real){
         // (From smarkets support email on commission)
         // For back bets that is the back stake if the bet loses or the profit if the bet wins.
         // For lay bets it's the liability if the bet loses or the lay stake if the bet wins
@@ -475,7 +494,7 @@ public class Smarkets extends BettingSite {
             lose_commission = (commission_rate.divide(BigDecimal.ONE.add(commission_rate), 20, RoundingMode.HALF_UP))
                     .multiply(investment);
             stake = investment.subtract(lose_commission);
-            BigDecimal lay = bet_offer.getLayFromStake(stake, real);
+            BigDecimal lay = BetOffer.backStake2LayStake(stake, bet_offer.odds);
             profit = lay;
             win_commission = profit.multiply(commission());
             ret = stake.add(profit);
@@ -486,6 +505,67 @@ public class Smarkets extends BettingSite {
             roi = roi.setScale(2, RoundingMode.DOWN);
         }
 
+        return roi;
+    }
+
+
+    @Override
+    public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
+        // Default ROI, commission on profits only
+
+        return ROI(bet_offer.betType(), bet_offer.odds, bet_offer.commission(), investment, real);
+    }
+
+
+    public static BigDecimal ROI(String BACK_LAY, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
+                                 boolean real){
+        // (From smarkets support email on commission)
+        // For back bets that is the back stake if the bet loses or the profit if the bet wins.
+        // For lay bets it's the liability if the bet loses or the lay stake if the bet wins
+        //
+        // Pro Tier commission band where 1% commission is charged on winnings or losses per
+        // each individual bet that settles, and order rate is limited to 1 bet/s
+
+        BigDecimal roi = null;
+
+        // BACK
+        if (BACK_LAY.equals(Bet.BACK)){
+            BigDecimal ratio = BigDecimal.ONE.add(commission_rate);
+            //print("ratio: " + ratio.toString());
+            BigDecimal loss_commission_multiplier = commission_rate.divide(ratio, 20, RoundingMode.HALF_UP);
+            //print("loss comm mult: " + loss_commission_multiplier.toString());
+            BigDecimal loss_commission = investment.multiply(loss_commission_multiplier);
+            //print("loss_com: " + loss_commission.toString());
+            BigDecimal backers_stake = investment.subtract(loss_commission);
+            //print("back_stke: " + backers_stake.toString());
+            BigDecimal backers_profit = BetOffer.backStake2LayStake(backers_stake, odds);
+            //print("back_prof: " + backers_profit.toString());
+            BigDecimal win_commission = backers_profit.multiply(commission_rate);
+            //print("win_com: " + win_commission.toString());
+            roi = investment.add(backers_profit).subtract(win_commission);
+        }
+
+        // LAY
+        else{
+            BigDecimal ratio = BigDecimal.ONE.add(commission_rate);
+            //print("ratio: " + ratio.toString());
+            BigDecimal loss_commission_multiplier = commission_rate.divide(ratio, 20, RoundingMode.HALF_UP);
+            //print("loss comm mult: " + loss_commission_multiplier.toString());
+            BigDecimal loss_commission = investment.multiply(loss_commission_multiplier);
+            //print("loss_com: " + loss_commission.toString());
+            BigDecimal layers_stake = investment.subtract(loss_commission);
+            //print("lay_stake: " + layers_stake.toString());
+            BigDecimal layers_profit = BetOffer.layStake2backStake(layers_stake, odds);
+            //print("layers_profit: " + layers_profit.toString());
+            BigDecimal win_commission = layers_profit.multiply(commission_rate);
+            //print("win_com: " + win_commission.toString());
+            roi = investment.add(layers_profit).subtract(win_commission);
+        }
+
+        // Round to nearest penny if 'real' value;
+        if (real){
+            roi = roi.setScale(2, RoundingMode.HALF_UP);
+        }
         return roi;
     }
 
@@ -599,6 +679,7 @@ public class Smarkets extends BettingSite {
         return getPrices(market_ids_list);
     }
 
+
     public JSONObject getPrices(Set<String> market_ids) throws InterruptedException, IOException,
             URISyntaxException {
 
@@ -666,6 +747,7 @@ public class Smarkets extends BettingSite {
         return new BigDecimal(quantity * price)
                 .divide(new BigDecimal(100000000), 2, RoundingMode.DOWN);
     }
+
 
     public static BigDecimal dec2perc(BigDecimal odds){
         return BigDecimal.ONE.divide(odds, 20, RoundingMode.HALF_UP);
@@ -777,28 +859,27 @@ public class Smarkets extends BettingSite {
         ArrayList<PlaceBetRunnable> placeBetRunnables = new ArrayList<>();
         for (BetOrder betOrder: betOrders) {
 
+            // Change 'side' and odds multiplier depending on type of bet (back or lay)
             BigDecimal odds = betOrder.bet_offer.odds;
             String side;
-            BigDecimal backers_stake;
             if (betOrder.isBack()){
-                odds = odds.subtract(BigDecimal.ONE).multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE);
                 side = "buy";
-                backers_stake = getAmountToBet(betOrder.investment);
+                odds = odds.subtract(BigDecimal.ONE).multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE);
             }
             else{
-                BigDecimal ratio = BigDecimal.ONE.divide(MIN_ODDS_RATIO, 20, RoundingMode.HALF_UP);
-                odds = odds.subtract(BigDecimal.ONE).multiply(ratio).add(BigDecimal.ONE);
                 side = "sell";
-                backers_stake = betOrder.bet_offer.getLayFromStake(getAmountToBet(betOrder.investment), true);
-                betOrder.lay_amount = backers_stake;
+                odds = odds.subtract(BigDecimal.ONE).divide(MIN_ODDS_RATIO, 20, RoundingMode.HALF_UP).add(BigDecimal.ONE);
             }
+
+
+            // TODO: Re-check smarkets
 
 
             JSONObject payload = new JSONObject();
             payload.put("contract_id", betOrder.bet_offer.metadata.get(Smarkets.CONTRACT_ID));
             payload.put("market_id", betOrder.bet_offer.metadata.get(Smarkets.MARKET_ID));
             payload.put("price", validPrice(dec2price(odds)));
-            payload.put("quantity", size2quantity(backers_stake, betOrder.bet_offer.odds));
+            payload.put("quantity", size2quantity(betOrder.getBackersStake(), betOrder.bet_offer.odds));
             payload.put("side", side);
             payload.put("type", "immediate_or_cancel");
 
@@ -849,10 +930,10 @@ public class Smarkets extends BettingSite {
                 BigDecimal backers_stake = quantity2size(quantity, price);
                 BigDecimal investment;
                 if (betOrder.isBack()){
-                    investment = getFullInvestment(backers_stake);
+                    investment = stake2Investment(backers_stake);
                 }
                 else {
-                    investment = getFullInvestment(BetOffer.getLiability(odds, backers_stake));
+                    investment = stake2Investment(BetOffer.backStake2LayStake(backers_stake, odds));
                 }
                 BigDecimal returns = this.ROI(betOrder.bet_offer.newOdds(odds), investment, true);
 
@@ -860,19 +941,69 @@ public class Smarkets extends BettingSite {
                         investment.toString(), odds.toString(), betOrder.bet_offer.bet.id(),
                         betOrder.match().name, returns.toString()));
 
-                pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, investment, odds, returns, time);
+                pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, backers_stake, odds, returns, time);
             }
+            pb.site_json_response = jsonConverter(response);
             placedBets.add(pb);
         }
         return placedBets;
+    }
+
+    public static JSONObject jsonConverter(JSONObject json){
+
+        long orig_price = (long) json.get("orig_price");
+        json.put("orig_price_dec", price2dec(orig_price).toString());
+
+        long price = (long) json.get("price");
+        json.put("price_dec", price2dec(price).toString());
+
+        long executed_avg_price = (long) json.get("executed_avg_price");
+        json.put("executed_avg_price_dec", price2dec(executed_avg_price).toString());
+
+        long quantity = (long) json.get("quantity");
+        json.put("quantity_dec", quantity2size(quantity, price).toString());
+
+        long total_executed_quantity = (long) json.get("total_executed_quantity");
+        json.put("total_executed_quantity_dec", quantity2size(total_executed_quantity, executed_avg_price).toString());
+
+        return json;
     }
 
 
 
     public static void main(String[] args){
 
-        print(price2dec(7874).toString());
-        print(dec2price(new BigDecimal("1.27")));
+        try {
+            Smarkets b = new Smarkets();
+
+            HashMap<String, String> md = new HashMap<String, String>();
+            md.put(Smarkets.CONTRACT_ID, "31415993");
+            md.put(Smarkets.MARKET_ID, "9020960");
+
+            BetOffer bo = new BetOffer(new FootballMatch("2019-10-10T12:12:00.000Z", "teama", "Teamb"),
+                    new FootballResultBet(Bet.LAY, FootballResultBet.DRAW, false),
+                    b,
+                    new BigDecimal("1.52"),
+                    new BigDecimal("102.00"),
+                    md);
+
+            BetOrder betOrder = new BetOrder(bo, new BigDecimal("4.85"),true);
+
+
+            ArrayList<BetOrder> betOrders = new ArrayList<>();
+            betOrders.add(betOrder);
+
+            ArrayList<PlacedBet> placedBets = b.placeBets(betOrders, new BigDecimal(1));
+            p(PlacedBet.list2JSON(placedBets));
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
 
     }
 }

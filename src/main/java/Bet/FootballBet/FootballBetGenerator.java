@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Bet.Bet;
-import BetGroup;
+import Bet.*;
 import Trader.SportsTrader;
 
 import static tools.printer.p;

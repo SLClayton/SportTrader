@@ -25,41 +25,45 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
     public BigDecimal min_return;
     public BigDecimal max_return;
-    public BigDecimal largest_min_return;
-    public BigDecimal guaranteed_profit;
+    public BigDecimal min_stake_return;
+    public BigDecimal min_profit;
     public BigDecimal max_profit;
     public BigDecimal profit_ratio;
 
     public ArrayList<PlacedBet> placedBets;
 
-    public ProfitReport(ArrayList<BetOrder> BETORDERS) throws InstantiationException {
-        bet_orders = BETORDERS;
-        bet_orders.trimToSize();
+    public ProfitReport(ArrayList<BetOrder> betOrders) {
 
+        this.bet_orders = betOrders;
+
+        // Sum up all investments
+        // Find minimum return of all bet orders
+        // Find maximum return of all bet orders
         total_investment = BigDecimal.ZERO;
         for (BetOrder bo: bet_orders){
             total_investment = total_investment.add(bo.investment);
 
-            if (min_return == null || bo.real_return.compareTo(min_return) == -1){
-                min_return = bo.real_return;
+            if (min_return == null || bo.actual_return.compareTo(min_return) == -1){
+                min_return = bo.actual_return;
             }
-            if (max_return == null || bo.real_return.compareTo(max_return) == 1){
-                max_return = bo.real_return;
+            if (max_return == null || bo.actual_return.compareTo(max_return) == 1){
+                max_return = bo.actual_return;
             }
+
             BigDecimal this_largest_min_return = bo.bet_offer.minStakeReturn();
-            if (largest_min_return == null || this_largest_min_return.compareTo(largest_min_return) == 1){
-                largest_min_return = this_largest_min_return;
+            if (min_stake_return == null || this_largest_min_return.compareTo(min_stake_return) == 1){
+                min_stake_return = this_largest_min_return;
             }
         }
 
-        guaranteed_profit = min_return.subtract(total_investment);
+        min_profit = min_return.subtract(total_investment);
         max_profit = max_return.subtract(total_investment);
 
         if (total_investment.equals(BigDecimal.ZERO)){
-            throw new InstantiationException("0 total investment");
+            profit_ratio = null;
         }
         else{
-            profit_ratio = guaranteed_profit.divide(total_investment, 20, RoundingMode.HALF_UP);
+            profit_ratio = min_profit.divide(total_investment, 20, RoundingMode.HALF_UP);
         }
     }
 
@@ -74,8 +78,8 @@ public class ProfitReport implements Comparable<ProfitReport> {
         j.put("total_investment", total_investment.toString());
         j.put("min_return", min_return.toString());
         j.put("max_return", max_return.toString());
-        j.put("guaranteed_profit", guaranteed_profit.toString());
-        j.put("max_profit", max_profit.toString());
+        j.put("min_profit", min_profit.toString());
+        j.put("max_possible_profit", max_profit.toString());
         j.put("profit_ratio", profit_ratio.toString());
         if (full){
             // PlacedBets include the bet orders so no need to have both
@@ -99,11 +103,18 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public ProfitReport newProfitReport(BigDecimal target_return) throws InvalidAttributesException, InstantiationException {
-        if (target_return.compareTo(largest_min_return) == -1){
+    public boolean isValid(){
+        return profit_ratio != null;
+    }
+
+
+    public ProfitReport newProfitReport(BigDecimal target_return) throws InvalidAttributesException {
+        // Create a new profit report thats the same but with a different target return.
+
+        if (target_return.compareTo(min_stake_return) == -1){
             String msg = String.format("Creating a new profit report failed. " +
-                                       "Target return set as %s but the largest min return is %s giving the compare ",
-                    target_return.toString(), largest_min_return.toString());
+                                       "Target return set as %s but the min stake return is %s.",
+                    target_return.toString(), min_stake_return.toString());
             log.severe(msg);
             throw new InvalidAttributesException(msg);
         }
@@ -146,14 +157,10 @@ public class ProfitReport implements Comparable<ProfitReport> {
                 betOrders.add(new BetOrder(best_offer, BigDecimal.ONE, false));
             }
 
-            ProfitReport pr;
-            try {
-                pr = new ProfitReport(betOrders);
+            ProfitReport pr = new ProfitReport(betOrders);
+            if (pr.isValid()){
+                tautologyProfitReports.add(pr);
             }
-            catch (InstantiationException e) {
-                continue;
-            }
-            tautologyProfitReports.add(pr);
         }
 
         return tautologyProfitReports;

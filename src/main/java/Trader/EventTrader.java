@@ -27,7 +27,7 @@ public class EventTrader implements Runnable {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public static final BigDecimal MIN_ODDS_RATIO = new BigDecimal("0.9");
-    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("0.00");
+    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("0.001");
 
 
     public Thread thread;
@@ -221,14 +221,14 @@ public class EventTrader implements Runnable {
         Collections.sort(tautologyProfitReports, Collections.reverseOrder());
 
 
-        // Create list of profit reports with profits over min_prof_margain
+        // Create list of profit reports with profits over min_prof_margin
         ArrayList<ProfitReport> in_profit = new ArrayList<ProfitReport>();
         for (ProfitReport pr: tautologyProfitReports){
             if (pr.profit_ratio.compareTo(MIN_PROFIT_RATIO) == 1){
                 in_profit.add(pr);
             }
             else{
-                // List is ordered so break on first to not fit criteria.
+                // List is ordered so break on first to not to fit criteria.
                 break;
             }
         }
@@ -250,28 +250,32 @@ public class EventTrader implements Runnable {
             profit_dir.mkdir();
         }
 
-        // Get the best (first) profit report
+        // Get the best (first in list) profit report
         ProfitReport best = in_profit.get(0);
         String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
 
-        // Re-create the profit report with real values
+        // Re-create the profit report with real values and min stake return target possible.
+        // Or 20.00 return target, whoever is bigger.
         try {
-            BigDecimal new_return = best.largest_min_return.add(new BigDecimal("0.05"));
+            BigDecimal new_return = best.min_stake_return.add(new BigDecimal("0.05"));
             BigDecimal twenty = new BigDecimal(20);
             if (new_return.compareTo(twenty) == -1){
                 new_return = twenty;
             }
             best = best.newProfitReport(new_return);
 
-        } catch (InstantiationException | InvalidAttributesException e) {
+        } catch (InvalidAttributesException e) {
             log.severe("Error while creating real profit report. Cancelling this round.");
             e.printStackTrace();
             return;
         }
 
+
+        // Save profit report as json file
         String profitString = best.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
         String filename = timeString + " -  " + match.name + " " + profitString + ".json";
         p(best.toJSON(true), profit_dir.toString() + "/" + filename);
+
 
         // Check config allows bets and investment wouldn't be too much.
         if (!sportsTrader.PLACE_BETS || best.total_investment.compareTo(new BigDecimal("50.01")) == 1){
