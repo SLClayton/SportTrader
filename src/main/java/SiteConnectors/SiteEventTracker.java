@@ -23,6 +23,7 @@ public abstract class SiteEventTracker {
 
     public MarketOddsReport marketOddsReport;
     public BlockingQueue<Boolean> updateComplete;
+    public Long marketOddsReportTime;
     public FootballMatch match;
     public Set<String> bet_blacklist;
 

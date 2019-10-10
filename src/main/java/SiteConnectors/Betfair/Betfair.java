@@ -660,8 +660,8 @@ public class Betfair extends BettingSite {
                     odds = validPrice(odds.subtract(BigDecimal.ONE).multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE));
                 }
                 else {
-                    BigDecimal ratio = BigDecimal.ONE.divide(MIN_ODDS_RATIO, 20, RoundingMode.HALF_UP);
-                    odds = validPrice(odds.subtract(BigDecimal.ONE).multiply(ratio).add(BigDecimal.ONE));
+                    odds = validPrice(odds.subtract(BigDecimal.ONE)
+                            .divide(MIN_ODDS_RATIO, 20, RoundingMode.HALF_UP).add(BigDecimal.ONE));
                 }
 
                 JSONObject limitOrder = new JSONObject();
@@ -677,6 +677,8 @@ public class Betfair extends BettingSite {
                 instructions.put("side", betOrder.betType());
                 instructions.put("limitOrder", limitOrder);
 
+
+                betOrder.site_json_request = instructions;
                 betOrders.add(betOrder);
                 instructions.put("customerOrderRef", String.valueOf(betOrders.size()-1));
                 instructions_list.add(instructions);

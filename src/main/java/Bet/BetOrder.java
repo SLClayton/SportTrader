@@ -52,8 +52,7 @@ public class BetOrder {
             if (real) {
                 backersStake_layersProfit = backersStake_layersProfit
                         .setScale(2, RoundingMode.HALF_UP);
-                investment = bet_offer.site.stake2Investment(backersStake_layersProfit)
-                        .setScale(2, RoundingMode.HALF_UP);
+                investment = bet_offer.site.stake2Investment(backersStake_layersProfit);
             }
 
             // Calculate the profit and return generated with this stake
@@ -74,11 +73,9 @@ public class BetOrder {
             if (real) {
                 backersStake_layersProfit = backersStake_layersProfit
                         .setScale(2, RoundingMode.HALF_UP);
-                backersProfit_layersStake = BetOffer.backStake2LayStake(backersStake_layersProfit, bet_offer.odds)
-                        .setScale(2, RoundingMode.HALF_UP);
 
-                investment = bet_offer.site.stake2Investment(backersProfit_layersStake)
-                        .setScale(2, RoundingMode.HALF_UP);
+                backersProfit_layersStake = BetOffer.backStake2LayStake(backersStake_layersProfit, bet_offer.odds);
+                investment = bet_offer.site.stake2Investment(backersProfit_layersStake);
             }
 
             // Calculate the return generated with this stake
@@ -89,13 +86,6 @@ public class BetOrder {
 
         // Calculate the potential commission given the potential profit
         potential_commission = potential_profit.multiply(site().commission());
-
-        // If real, then round the profit and commission
-        if (real){
-            potential_profit = potential_profit.setScale(2, RoundingMode.HALF_UP);
-            potential_commission = potential_commission.setScale(2, RoundingMode.HALF_UP);
-        }
-
         actual_return = investment.add(potential_profit).subtract(potential_commission);
     }
 

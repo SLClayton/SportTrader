@@ -27,7 +27,7 @@ public class EventTrader implements Runnable {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public static final BigDecimal MIN_ODDS_RATIO = new BigDecimal("0.9");
-    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("0.001");
+    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("0.02");
 
 
     public Thread thread;
@@ -196,9 +196,14 @@ public class EventTrader implements Runnable {
             siteMarketOddsToGetQueue.put(site_name);
         }
 
+
+
         // Wait for results to be generated in each thread and collect them all
+        Instant start = Instant.now();
+        HashMap<String, Long> times = new HashMap<>();
         ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
         for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()) {
+            String site_name = entry.getKey();
             SiteEventTracker siteEventTracker = entry.getValue();
 
             // Wait for report to finish updating by waiting for queue value to appear.
@@ -207,8 +212,14 @@ public class EventTrader implements Runnable {
 
             // Add report to report list and remove its lock
             marketOddsReports.add(siteEventTracker.marketOddsReport);
+
+            times.put(site_name, siteEventTracker.marketOddsReportTime);
         }
-        log.fine(String.format("Found %d site odds for %s.", marketOddsReports.size(), match));
+
+        long total_time = Instant.now().toEpochMilli() - start.toEpochMilli();
+
+        //print(String.format("----------\nsmarkets: %sms\nbetfair: %sms\nmatchbook: %sms\nTotal: %sms",
+        //        times.get("smarkets"), times.get("betfair"), times.get("matchbook"), total_time));
 
 
         // Combine all odds reports into one.

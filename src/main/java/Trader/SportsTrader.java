@@ -23,6 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -215,12 +216,13 @@ public class SportsTrader {
         for (EventTraderSetup eventTraderSetup: eventTraderSetups){
             try {
                 eventTraderSetup.thread.join();
-                eventTraders.add(eventTraderSetup.result);
+                if (eventTraderSetup.result != null){
+                    eventTraders.add(eventTraderSetup.result);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
 
         log.info(String.format("%d matches setup successfully with at least %d site connectors.",
                 eventTraders.size(), MIN_SITES_PER_MATCH));
@@ -279,7 +281,7 @@ public class SportsTrader {
                 // Get match from queue, break and finish if anything goes wrong.
                 FootballMatch footballMatch = null;
                 try {
-                    footballMatch = match_queue.take();
+                    footballMatch = match_queue.poll(0, TimeUnit.MILLISECONDS);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -302,8 +304,8 @@ public class SportsTrader {
                 EventTrader eventTrader = new EventTrader(sportsTrader, footballMatch, siteObjects, footballBetGenerator);
                 int successful_site_connections = eventTrader.setupMatch();
                 if (successful_site_connections < MIN_SITES_PER_MATCH){
-                    log.warning(String.format("Only %d/%d sites connected for %s. MIN_SITES_PER_MATCH=%d.",
-                            successful_site_connections, siteObjects.size(), footballMatch, MIN_SITES_PER_MATCH));
+                    log.warning(String.format("%s Only %d/%d sites connected. MIN_SITES_PER_MATCH=%d.",
+                            footballMatch, successful_site_connections, siteObjects.size(), MIN_SITES_PER_MATCH));
                     continue;
                 }
 

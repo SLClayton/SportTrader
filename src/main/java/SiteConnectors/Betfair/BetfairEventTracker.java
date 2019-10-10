@@ -268,6 +268,9 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     @Override
     public void updateMarketOddsReport(FootballBet[] bets) throws Exception {
+        marketOddsReportTime = null;
+        Instant start = Instant.now();
+
         if (match == null){
             log.severe("Trying to get market odds report on null event.");
             return;
@@ -346,6 +349,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
 
         marketOddsReport = new MarketOddsReport(full_event_market_report);
+        marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
     }
 
 

@@ -19,6 +19,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -160,6 +161,9 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
     @Override
     public void updateMarketOddsReport(FootballBet[] bets) throws Exception {
+        marketOddsReportTime = null;
+        Instant start = Instant.now();
+
         if (event_id == null){
             throw new Exception("Smarkets event trader tried to update odds without an event.");
         }
@@ -263,6 +267,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         // Assign new odds report.
         marketOddsReport = new_marketOddsReport;
+        marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
     }
 
 

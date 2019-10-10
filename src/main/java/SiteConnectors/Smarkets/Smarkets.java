@@ -13,10 +13,12 @@ import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Sport.Team;
 import Trader.EventTrader;
+import org.apache.axis2.databinding.types.xsd.DateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.Requester;
 
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,6 +30,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -78,8 +84,9 @@ public class Smarkets extends BettingSite {
     public class PriceQuotesRequestHandler implements Runnable{
 
         public int MAX_BATCH_SIZE = 300;
-        public int REQUEST_THREADS = 3;
-        public long WAIT_MILLISECONDS = 75;
+        public int REQUEST_THREADS = 5;
+        public long MAX_WAIT_TIME = 10;
+        public long MIN_REQ_INTERVAL = 0;
 
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
@@ -95,7 +102,6 @@ public class Smarkets extends BettingSite {
 
             ArrayList<RequestHandler> requestHandlers = new ArrayList<>();
             int markets_in_queue = 0;
-            long milliseconds_to_wait;
 
             // Start workers
             workerQueue = new LinkedBlockingQueue<>();
@@ -106,57 +112,50 @@ public class Smarkets extends BettingSite {
             }
 
 
-            RequestHandler new_handler = null;
+            RequestHandler new_handler;
             Instant next_request_time = null;
+
             while (true) {
                 try {
-                    new_handler = null;
 
-                    // Wait for first queue handler if none have arrived yet.
-                    if (next_request_time == null){
-                        new_handler = requestQueue.take();
-                        next_request_time = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
-                    }
-                    // Or wait for a handler until time of next request comes.
-                    else if (Instant.now().isBefore(next_request_time)) {
-                        milliseconds_to_wait = next_request_time.toEpochMilli() - Instant.now().toEpochMilli();
-                        new_handler = requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
-                    }
+                    while (next_request_time == null || Instant.now().isBefore(next_request_time)){
 
+                        new_handler = null;
 
-                    // If a new handler is passed in, decide what to do with it.
-                    if (new_handler != null){
-                        int num_new_markets = ((ArrayList<String>) new_handler.request).size();
+                        // Wait as long as required for first handler to arrive, set request time when it does.
+                        if (next_request_time == null){
+                            new_handler = requestQueue.take();
+                            next_request_time = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
+                        }
+                        // Subsequent handlers, wait or break at certain time
+                        else if (Instant.now().isBefore(next_request_time)) {
+                            long milliseconds_to_wait = next_request_time.toEpochMilli() - Instant.now().toEpochMilli();
+                            new_handler = requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
+                        }
 
-                        // If space is left and it is within time window. Add to list.
-                        if (Instant.now().isAfter(next_request_time.minus(WAIT_MILLISECONDS, ChronoUnit.MILLIS))){
+                        // If a new handler is passed in, decide what to do with it.
+                        if (new_handler != null){
+                            int num_new_markets = ((ArrayList<String>) new_handler.request).size();
+
                             if (markets_in_queue + num_new_markets <= MAX_BATCH_SIZE) {
-
                                 requestHandlers.add(new_handler);
                                 markets_in_queue += num_new_markets;
-                                if (requestHandlers.size() == 1) {
-                                    next_request_time = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
-                                }
                             }
                             else{
-                                new_handler.setFail();
+                                // This request is full so break and send now.
+                                break;
                             }
-                        }
-                        // Set response handler to failed.
-                        else{
-                            new_handler.setFail();
                         }
                     }
 
-                    // Once the next send time comes around, add list to queue and reset variables.
-                    if (!Instant.now().isBefore(next_request_time)){
-                        if (requestHandlers.size() > 0){
-                            workerQueue.put(requestHandlers);
-                        }
-                        requestHandlers = new ArrayList<>();
-                        markets_in_queue = 0;
-                        next_request_time = null;
+                    // Send off request
+                    if (requestHandlers.size() > 0){
+                        workerQueue.put(requestHandlers);
                     }
+                    requestHandlers = new ArrayList<>();
+                    markets_in_queue = 0;
+                    next_request_time = null;
+
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -165,9 +164,13 @@ public class Smarkets extends BettingSite {
         }
     }
 
+
     public class PriceQuoteRequestSender implements Runnable{
 
         public BlockingQueue<ArrayList<RequestHandler>> jobQueue;
+
+        public int req_limit_time = 60;
+        public int req_limit_requests = 200;
 
         public PriceQuoteRequestSender(BlockingQueue jobQueue){
             this.jobQueue = jobQueue;
@@ -178,45 +181,60 @@ public class Smarkets extends BettingSite {
             ArrayList<RequestHandler> requestHandlers;
             JSONObject final_request = new JSONObject();
 
+            int reqs_sent = 0;
+            Instant first_request_time = null;
+            Instant expiry_time = null;
+
             while (true){
                 try {
                     requestHandlers = jobQueue.take();
 
-                    // list event ids from handlers to get data from.
-                    ArrayList<String> market_ids = new ArrayList<>();
-                    for (RequestHandler rh: requestHandlers){
-                        market_ids.addAll((ArrayList<String>) rh.request);
-                    }
-
-                    // Send request
-                    JSONObject market_prices = getPrices(market_ids);
-
-
-                    for (RequestHandler rh: requestHandlers){
-
-
-                        // The below method tries to split up the answer into the parts each
-                        // request asked for before sending back to each one.
-                        /*
-                        JSONObject response = new JSONObject();
-                        for (String market_id: (ArrayList<String>) rh.request){
-                            JSONObject market_price = (JSONObject) market_prices.get(market_id);
-                            if (market_price == null){
-                                log.severe(String.format("Could not find market_id %s in smarkets" +
-                                                "response when it was asked for.\n%s",
-                                        market_id, market_prices.toJSONString()));
-                                p(market_prices);
-                                System.exit(0);
-                                continue;
-                            }
-                            response.put(market_id, market_price);
+                    if (expiry_time != null && Instant.now().isBefore(expiry_time)){
+                        // Fail all these handlers
+                        for (RequestHandler rh: requestHandlers){
+                            rh.setFail();
                         }
-                        */
-
-                        // Just send the complete response back to each request handler
-                        rh.setResponse(market_prices);
                     }
+                    else{
 
+                        // list event ids from handlers to get data from.
+                        ArrayList<String> market_ids = new ArrayList<>();
+                        for (RequestHandler rh: requestHandlers){
+                            market_ids.addAll((ArrayList<String>) rh.request);
+                        }
+
+                        // Send request
+                        JSONObject market_prices = getPrices(market_ids);
+
+
+                        // If rate limit has been hit
+                        if (market_prices.containsKey("error_type")
+                                && ((String) market_prices.get("error_type")).equals("RATE_LIMIT_EXCEEDED")){
+
+                            // Find what time rate limit expires
+                            String expiry = (String) ((JSONObject) market_prices.get("data")).get("expiry");
+                            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("E, d MMM yyyy H:m:s VV");
+                            expiry_time = ZonedDateTime.parse(expiry, dtf).toInstant()
+                                    .plus(1, ChronoUnit.SECONDS);
+
+                            // Sanity check expiry time
+                            if (expiry_time.isAfter(Instant.now().plus(2, ChronoUnit.MINUTES))){
+                                log.warning("Rate limit expiry for smarkets is set to %s. Using 61 seconds instead.");
+                                expiry_time = Instant.now().plus(61, ChronoUnit.SECONDS);
+                            }
+
+                            // Fail all these handlers
+                            for (RequestHandler rh: requestHandlers){
+                                rh.setFail();
+                            }
+                        }
+                        else{
+                            // Just send back the whole response to each handler
+                            for (RequestHandler rh: requestHandlers){
+                                rh.setResponse(market_prices);
+                            }
+                        }
+                    }
                 } catch (InterruptedException | IOException | URISyntaxException e) {
                     e.printStackTrace();
                 }
@@ -300,6 +318,7 @@ public class Smarkets extends BettingSite {
             }
         }
     }
+
 
     // Backup done the usual non limiting way
     public class PriceQuoteRequestSenderFULLON implements Runnable{
@@ -399,12 +418,11 @@ public class Smarkets extends BettingSite {
         return commission_rate;
     }
 
+
     @Override
     public BigDecimal minBackersStake() {
         return min_back_stake;
     }
-
-
 
 
     @Override
@@ -974,28 +992,18 @@ public class Smarkets extends BettingSite {
     public static void main(String[] args){
 
         try {
-            Smarkets b = new Smarkets();
 
-            HashMap<String, String> md = new HashMap<String, String>();
-            md.put(Smarkets.CONTRACT_ID, "31415993");
-            md.put(Smarkets.MARKET_ID, "9020960");
+            String expiry = "Thu, 10 Oct 2019 18:17:34 EDT";
 
-            BetOffer bo = new BetOffer(new FootballMatch("2019-10-10T12:12:00.000Z", "teama", "Teamb"),
-                    new FootballResultBet(Bet.LAY, FootballResultBet.DRAW, false),
-                    b,
-                    new BigDecimal("1.52"),
-                    new BigDecimal("102.00"),
-                    md);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("E, d MMM yyyy H:m:s VV");
 
-            BetOrder betOrder = new BetOrder(bo, new BigDecimal("4.85"),true);
+            ZonedDateTime parsedDate = ZonedDateTime.parse(expiry, dtf);
 
+            Instant i = parsedDate.toInstant();
 
-            ArrayList<BetOrder> betOrders = new ArrayList<>();
-            betOrders.add(betOrder);
-
-            ArrayList<PlacedBet> placedBets = b.placeBets(betOrders, new BigDecimal(1));
-            p(PlacedBet.list2JSON(placedBets));
-
+            print(expiry);
+            print(parsedDate.toString());
+            print(i.toString());
 
 
         } catch (Exception e) {

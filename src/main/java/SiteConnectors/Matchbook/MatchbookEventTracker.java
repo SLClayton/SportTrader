@@ -21,6 +21,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,6 +86,9 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
     @Override
     public void updateMarketOddsReport(FootballBet[] bets) throws Exception {
+        marketOddsReportTime = null;
+        Instant start = Instant.now();
+
         if (event_id == null){
             throw new Exception("Matchbook event trader tried to update odds without an event.");
         }
@@ -158,6 +162,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
         // Assign newly created report as the current.
         marketOddsReport = new_marketOddsReport;
+        marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
     }
 
 

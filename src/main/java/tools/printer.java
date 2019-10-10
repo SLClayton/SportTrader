@@ -42,7 +42,7 @@ public abstract class printer {
             print("null");
         }
         else {
-            System.out.println(output.toString());
+            System.out.println(String.valueOf(output));
         }
     }
 
