@@ -33,6 +33,7 @@ public class PlacedBet {
     public Instant time_placed;
     public String error;
     public JSONObject site_json_response;
+    public long time_since_offer;
 
 
     public PlacedBet(String state, String bet_id, BetOrder betOrder, BigDecimal back_stake, BigDecimal lay_stake,
@@ -47,6 +48,7 @@ public class PlacedBet {
         this.returns = returns;
         this.time_placed = time_placed;
 
+
         if (isBack()){
             investment = site().stake2Investment(backersStake_layersProfit).setScale(2, RoundingMode.HALF_UP);
             profit = backersProfit_layersStake;
@@ -57,6 +59,7 @@ public class PlacedBet {
         }
 
         profit_commission = profit.multiply(betOrder.commission());
+        time_since_offer = time_placed.toEpochMilli() - betOrder.bet_offer.time_created.toEpochMilli();
     }
 
     public PlacedBet(String state, String bet_id, BetOrder betOrder, BigDecimal back_stake,
@@ -68,10 +71,15 @@ public class PlacedBet {
     }
 
 
-    public PlacedBet(String state, BetOrder betOrder, String error){
+    public PlacedBet(String state, BetOrder betOrder, String error, Instant time_placed){
         this.state = state;
         this.betOrder = betOrder;
         this.error = error;
+        this.time_placed = time_placed;
+    }
+
+    public PlacedBet(String state, BetOrder betOrder, String error){
+        this(state, betOrder, error, null);
     }
 
 
@@ -106,8 +114,12 @@ public class PlacedBet {
 
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
+
         m.put("state", String.valueOf(state));
         m.put("betOrder", betOrder.toJSON());
+        m.put("time_placed", String.valueOf(time_placed));
+        m.put("delay", String.valueOf(time_since_offer) + "ms");
+
         if (successful()){
             m.put("bet_id", String.valueOf(bet_id));
             m.put("back_stake", String.valueOf(backersStake_layersProfit));
@@ -115,7 +127,6 @@ public class PlacedBet {
             m.put("invested", String.valueOf(investment));
             m.put("avg_odds", String.valueOf(avg_odds));
             m.put("returns", String.valueOf(returns));
-            m.put("time_placed", String.valueOf(time_placed));
             m.put("profit", String.valueOf(profit));
             m.put("prof_com", String.valueOf(profit_commission));
         }

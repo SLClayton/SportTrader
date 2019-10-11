@@ -46,6 +46,9 @@ public class SportsTrader {
     public BigDecimal MIN_ODDS_RATIO;
     public Map<String, Boolean> ACTIVE_SITES;
     public String EVENT_SOURCE;
+    public BigDecimal MAX_INVESTMENT;
+    public BigDecimal MIN_PROFIT_RATIO;
+    public boolean END_ON_BET;
 
     public Lock betlock = new ReentrantLock();
 
@@ -100,7 +103,7 @@ public class SportsTrader {
 
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
-                "EVENT_SOURCE"};
+                "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET"};
 
         for (String field: required){
             if (!(config.keySet().contains(field))){
@@ -118,8 +121,11 @@ public class SportsTrader {
         PLACE_BETS = (boolean) config.get("PLACE_BETS");
         ACTIVE_SITES = (Map<String, Boolean>) config.get("ACTIVE_SITES");
         RATE_LIMIT = (long) ((Double) config.get("RATE_LIMIT")).intValue();
-        MIN_ODDS_RATIO = new BigDecimal((Double) config.get("MIN_ODDS_RATIO"));
+        MIN_ODDS_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_ODDS_RATIO")));
         EVENT_SOURCE = (String) config.get("EVENT_SOURCE");
+        MAX_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("MAX_INVESTMENT")));
+        MIN_PROFIT_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_PROFIT_RATIO")));
+        END_ON_BET = (boolean) config.get("END_ON_BET");
 
 
         JSONObject config_json = new JSONObject(config);
@@ -339,8 +345,9 @@ public class SportsTrader {
                     try {
                         bet_site.login();
                         log.info(String.format("Successfully refreshed session for %s", site_name));
-                    } catch (CertificateException | UnrecoverableKeyException | NoSuchAlgorithmException
-                            | KeyStoreException | KeyManagementException | IOException | URISyntaxException e) {
+                    } catch (CertificateException | UnrecoverableKeyException | NoSuchAlgorithmException |
+                            KeyStoreException | KeyManagementException | IOException | URISyntaxException |
+                            InterruptedException e) {
 
                         e.printStackTrace();
 

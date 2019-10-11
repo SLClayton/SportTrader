@@ -63,7 +63,7 @@ public class Smarkets extends BettingSite {
 
 
     public Smarkets() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, URISyntaxException, IOException {
+            KeyStoreException, KeyManagementException, URISyntaxException, IOException, InterruptedException {
 
         name = "smarkets";
         requester = new Requester();
@@ -383,10 +383,22 @@ public class Smarkets extends BettingSite {
 
     @Override
     public void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, IOException, URISyntaxException {
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException {
 
         requester.setHeader("Authorization", getSessionToken());
-        log.info("Successfully logged into Smarkets");
+        updateAccountInfo();
+        log.info(String.format("Successfully logged into Smarkets. Balance: %s  Exposure: %s",
+                balance.toString(), exposure.toString()));
+    }
+
+
+    @Override
+    public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
+        JSONObject response = (JSONObject) requester.get(baseurl + "accounts/");
+        JSONObject account = (JSONObject) response.get("account");
+
+        setBalance(new BigDecimal((String) account.get("available_balance")));
+        exposure = new BigDecimal((String) account.get("exposure")).multiply(new BigDecimal(-1));
     }
 
 
@@ -964,8 +976,16 @@ public class Smarkets extends BettingSite {
             pb.site_json_response = jsonConverter(response);
             placedBets.add(pb);
         }
+
+        try {
+            updateAccountInfo();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            log.severe(e.toString());
+        }
         return placedBets;
     }
+
 
     public static JSONObject jsonConverter(JSONObject json){
 
@@ -993,17 +1013,8 @@ public class Smarkets extends BettingSite {
 
         try {
 
-            String expiry = "Thu, 10 Oct 2019 18:17:34 EDT";
+            Smarkets s = new Smarkets();
 
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("E, d MMM yyyy H:m:s VV");
-
-            ZonedDateTime parsedDate = ZonedDateTime.parse(expiry, dtf);
-
-            Instant i = parsedDate.toInstant();
-
-            print(expiry);
-            print(parsedDate.toString());
-            print(i.toString());
 
 
         } catch (Exception e) {

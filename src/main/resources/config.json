@@ -1,17 +1,22 @@
 {
     "MAX_MATCHES": 50,
-    "MIN_SITES_PER_MATCH": 2,
     "IN_PLAY": false,
     "HOURS_AHEAD": 24,
+
     "CHECK_MARKETS": true,
-    "PLACE_BETS": true,
     "RATE_LIMIT": 0,
+
+    "PLACE_BETS": true,
+    "END_ON_BET": true,
+    "MIN_PROFIT_RATIO": 0.001,
     "MIN_ODDS_RATIO": 0.9,
+    "MAX_INVESTMENT": 50.00,
 
     "ACTIVE_SITES": {
         "betfair": true,
     	"matchbook": true,
         "smarkets": true
     },
-    "EVENT_SOURCE": "smarkets"
+    "EVENT_SOURCE": "smarkets",
+    "MIN_SITES_PER_MATCH": 2
 }

@@ -22,6 +22,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import static tools.printer.print;
@@ -35,21 +37,30 @@ public abstract class BettingSite {
     public Requester requester;
 
     public BigDecimal balance;
+    public BigDecimal exposure;
+    public Lock balanceLock = new ReentrantLock();
+    public BigDecimal balance_buffer = new BigDecimal("10.00");
 
-    public BettingSite(){
+    public AccountInfoUpdater accountInfoUpdater;
 
-        if (System.getProperty("os.name").toLowerCase().contains("win")){
+    public BettingSite() {
+
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
             ssldir = "C:/ssl/";
-        }
-        else{ // Assume linux
+        } else { // Assume linux
             ssldir = System.getProperty("user.home") + "/ssl/";
         }
 
         balance = new BigDecimal("0.00");
+
+        accountInfoUpdater = new AccountInfoUpdater(this);
+        accountInfoUpdater.thread = new Thread(accountInfoUpdater);
+        accountInfoUpdater.thread.setName(name + "-infoUpdater");
+        accountInfoUpdater.thread.start();
     }
 
     public abstract void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, IOException, URISyntaxException;
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException;
 
 
     public abstract String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException,
@@ -65,12 +76,51 @@ public abstract class BettingSite {
     public abstract SiteEventTracker getEventTracker();
 
 
-    public BigDecimal investment2Stake(BigDecimal investment){
+    public BigDecimal getBalance() {
+        balanceLock.lock();
+        BigDecimal b = balance;
+        balanceLock.unlock();
+        return b;
+    }
+
+
+    public void setBalance(BigDecimal new_balance){
+        balanceLock.lock();
+        balance = new_balance;
+        balanceLock.unlock();
+    }
+
+
+    public abstract void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException;
+
+
+    public boolean useBalance(BigDecimal amount) {
+        // A request for using the balance, removes balance and returns true if successful
+
+        balanceLock.lock();
+        boolean result = false;
+        BigDecimal new_balance = balance.subtract(amount);
+
+        if (new_balance.compareTo(balance_buffer) == 1) {
+            result = true;
+            balance = new_balance;
+        } else {
+            result = false;
+            log.warning(String.format("Request to use %s of %s balance failed as this would take it below the buffer of %s.",
+                    amount.toString(), name, balance_buffer.toString()));
+        }
+
+        balanceLock.unlock();
+        return result;
+    }
+
+
+    public BigDecimal investment2Stake(BigDecimal investment) {
         return investment;
     }
 
 
-    public BigDecimal stake2Investment(BigDecimal stake){
+    public BigDecimal stake2Investment(BigDecimal stake) {
         return stake;
     }
 
@@ -81,7 +131,7 @@ public abstract class BettingSite {
     public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException;
 
 
-    public BigDecimal ROI_old(BetOffer bet_offer, BigDecimal investment, boolean real){
+    public BigDecimal ROI_old(BetOffer bet_offer, BigDecimal investment, boolean real) {
         // Default ROI, commission on profits only
 
         BigDecimal stake = investment;
@@ -90,13 +140,12 @@ public abstract class BettingSite {
         BigDecimal commission;
         BigDecimal roi;
 
-        if (bet_offer.isBack()){
+        if (bet_offer.isBack()) {
             ret = stake.multiply(bet_offer.odds);
             profit = ret.subtract(stake);
             commission = profit.multiply(commission());
             roi = ret.subtract(commission);
-        }
-        else { // Lay Bet
+        } else { // Lay Bet
             BigDecimal lay = BetOffer.backStake2LayStake(investment, bet_offer.odds);
             profit = lay;
             commission = profit.multiply(commission());
@@ -104,7 +153,7 @@ public abstract class BettingSite {
             roi = ret.subtract(commission);
         }
 
-        if (real){
+        if (real) {
             roi = roi.setScale(2, RoundingMode.DOWN);
         }
 
@@ -112,7 +161,7 @@ public abstract class BettingSite {
     }
 
 
-    public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real){
+    public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real) {
         // Default ROI, commission on profits only
 
         return ROI(bet_offer.betType(), bet_offer.odds, bet_offer.commission(), investment, real);
@@ -120,13 +169,13 @@ public abstract class BettingSite {
 
 
     public static BigDecimal ROI(String BACK_LAY, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
-                           boolean real){
+                                 boolean real) {
         // Default ROI, commission on profits only
 
         BigDecimal roi;
 
         // BACK
-        if (BACK_LAY.equals(Bet.BACK)){
+        if (BACK_LAY.equals(Bet.BACK)) {
             BigDecimal backers_stake = investment;
             BigDecimal backers_profit = BetOffer.backStake2LayStake(backers_stake, odds);
             BigDecimal commission = backers_profit.multiply(commission_rate);
@@ -142,7 +191,7 @@ public abstract class BettingSite {
         }
 
         // Round to nearest penny if 'real' value;
-        if (real){
+        if (real) {
             roi = roi.setScale(2, RoundingMode.HALF_UP);
         }
 
@@ -150,12 +199,62 @@ public abstract class BettingSite {
     }
 
 
-    public static void main(String[] args){
 
-        BigDecimal r = Smarkets.ROI("LAY", new BigDecimal("5.38"), new BigDecimal("0.01"),
-                new BigDecimal("8.33"), true);
+    public class AccountInfoUpdater implements Runnable{
 
-        print(r.toString());
+        public long seconds_sleep = 10;
+        public BettingSite site;
+        public Thread thread;
+
+        public AccountInfoUpdater(BettingSite site){
+            this.site = site;
+        }
+
+        @Override
+        public void run() {
+            while (true){
+                try {
+                    Thread.sleep(seconds_sleep * 1000);
+
+                    site.updateAccountInfo();
+
+                } catch (InterruptedException | IOException | URISyntaxException e) {
+                    e.printStackTrace();
+                    log.severe(e.toString());
+                }
+
+            }
+        }
     }
 
+
+
+    public static void main(String[] args) {
+
+        try {
+            Smarkets s = new Smarkets();
+
+            print(s.useBalance(new BigDecimal(70)));
+
+
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

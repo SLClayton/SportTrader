@@ -26,9 +26,10 @@ public class EventTrader implements Runnable {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public static final BigDecimal MIN_ODDS_RATIO = new BigDecimal("0.9");
-    public static final BigDecimal MIN_PROFIT_RATIO = new BigDecimal("0.02");
-
+    public BigDecimal MIN_ODDS_RATIO;
+    public BigDecimal MIN_PROFIT_RATIO;
+    public BigDecimal MAX_INVESTMENT;
+    public boolean END_ON_BET;
 
     public Thread thread;
     public SportsTrader sportsTrader;
@@ -49,6 +50,11 @@ public class EventTrader implements Runnable {
         tautologies = (ArrayList<BetGroup>) this.footballBetGenerator.getAllTautologies().clone();
         siteEventTrackers = new HashMap<String, SiteEventTracker>();
         siteMarketOddsToGetQueue = new LinkedBlockingQueue<>();
+
+        MIN_ODDS_RATIO = sportsTrader.MIN_ODDS_RATIO;
+        MIN_PROFIT_RATIO = sportsTrader.MIN_ODDS_RATIO;
+        MAX_INVESTMENT = sportsTrader.MAX_INVESTMENT;
+        END_ON_BET = sportsTrader.END_ON_BET;
     }
 
 
@@ -197,10 +203,7 @@ public class EventTrader implements Runnable {
         }
 
 
-
         // Wait for results to be generated in each thread and collect them all
-        Instant start = Instant.now();
-        HashMap<String, Long> times = new HashMap<>();
         ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
         for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()) {
             String site_name = entry.getKey();
@@ -212,14 +215,7 @@ public class EventTrader implements Runnable {
 
             // Add report to report list and remove its lock
             marketOddsReports.add(siteEventTracker.marketOddsReport);
-
-            times.put(site_name, siteEventTracker.marketOddsReportTime);
         }
-
-        long total_time = Instant.now().toEpochMilli() - start.toEpochMilli();
-
-        //print(String.format("----------\nsmarkets: %sms\nbetfair: %sms\nmatchbook: %sms\nTotal: %sms",
-        //        times.get("smarkets"), times.get("betfair"), times.get("matchbook"), total_time));
 
 
         // Combine all odds reports into one.
@@ -253,7 +249,10 @@ public class EventTrader implements Runnable {
 
     public void profitFound(ArrayList<ProfitReport> in_profit){
 
-        sportsTrader.betlock.lock();
+        // If ending after bet, lock out all other threads.
+        if (END_ON_BET){
+            sportsTrader.betlock.lock();
+        }
 
         // Create profit folder if it does not exist
         File profit_dir = new File(FileSystems.getDefault().getPath(".") + "/profit");
@@ -264,6 +263,7 @@ public class EventTrader implements Runnable {
         // Get the best (first in list) profit report
         ProfitReport best = in_profit.get(0);
         String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
+
 
         // Re-create the profit report with real values and min stake return target possible.
         // Or 20.00 return target, whoever is bigger.
@@ -280,6 +280,8 @@ public class EventTrader implements Runnable {
             e.printStackTrace();
             return;
         }
+
+        // TODO: SORT OUT HOW MUCH TO BET
 
 
         // Save profit report as json file
@@ -300,15 +302,15 @@ public class EventTrader implements Runnable {
             return;
         }
 
-        print("PLACING BETS");
-        pp(best.toJSON(true));
 
         best.placedBets = placeBets(best.bet_orders);
 
         p(best.toJSON(true));
-        print("BETS PLACED AND PROGRAM TERMINATED");
-        System.exit(0);
 
+        if (END_ON_BET){
+            log.info("Bets Placed, END_ON_BET=true so exiting program.");
+            System.exit(0);
+        }
     }
 
 

@@ -61,7 +61,7 @@ public class Matchbook extends BettingSite {
 
 
     public Matchbook() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            IOException, KeyManagementException, KeyStoreException, URISyntaxException {
+            IOException, KeyManagementException, KeyStoreException, URISyntaxException, InterruptedException {
 
         if (log == null){
             log = Logger.getLogger(Matchbook.class.getName());
@@ -209,9 +209,21 @@ public class Matchbook extends BettingSite {
 
     @Override
     public void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, IOException, URISyntaxException {
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException {
 
         requester.setHeader("session-token", getSessionToken());
+        updateAccountInfo();
+        log.info(String.format("Successfully logged into Matchbook. Balance: %s  Exposure: %s",
+                balance.toString(), exposure.toString()));
+    }
+
+    @Override
+    public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
+
+        JSONObject response = (JSONObject) requester.get(baseurl + "/account");
+
+        setBalance(new BigDecimal(String.valueOf((double) response.get("free-funds"))));
+        exposure = new BigDecimal(String.valueOf((double) response.get("exposure")));
     }
 
 
@@ -259,6 +271,7 @@ public class Matchbook extends BettingSite {
     public SiteEventTracker getEventTracker() {
         return new MatchbookEventTracker(this);
     }
+
 
 
     @Override
@@ -543,6 +556,14 @@ public class Matchbook extends BettingSite {
             log.severe((ps(response)));
         }
 
+
+        try {
+            updateAccountInfo();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            log.severe(e.toString());
+        }
+
         return placedBets;
     }
 
@@ -552,28 +573,7 @@ public class Matchbook extends BettingSite {
     public static void main(String[] args){
 
         try {
-            Matchbook b = new Matchbook();
-
-            HashMap<String, String> md = new HashMap<String, String>();
-            md.put(Matchbook.RUNNER_ID, "1243385933350018");
-            md.put(Matchbook.MARKET_ID, "1243385932770018");
-
-            BetOffer bo = new BetOffer(new FootballMatch("2019-10-10T12:12:00.000Z", "teama", "Teamb"),
-                    new FootballResultBet(Bet.LAY, FootballResultBet.TEAM_A, false),
-                    b,
-                    new BigDecimal("1.358"),
-                    new BigDecimal("102.00"),
-                    md);
-
-            BetOrder betOrder = new BetOrder(bo, new BigDecimal("7.00"),true);
-
-
-            ArrayList<BetOrder> betOrders = new ArrayList<>();
-            betOrders.add(betOrder);
-
-            ArrayList<PlacedBet> placedBets = b.placeBets(betOrders, new BigDecimal(1));
-            p(PlacedBet.list2JSON(placedBets));
-
+            Matchbook m = new Matchbook();
 
 
         } catch (Exception e) {

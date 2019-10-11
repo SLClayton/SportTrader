@@ -66,7 +66,7 @@ public class Betfair extends BettingSite {
     public EventSearchHandler eventSearchHandler;
     public BlockingQueue<Object[]> eventSearchHandlerQueue;
 
-    public final static BigDecimal commission_rate = new BigDecimal("0.02");
+    public BigDecimal commission_rate = new BigDecimal("0.02");
     public BigDecimal commission_discount = BigDecimal.ZERO;
     public BigDecimal balance;
     public long betfairPoints = 0;
@@ -91,18 +91,18 @@ public class Betfair extends BettingSite {
 
 
     public Betfair() throws IOException, CertificateException, UnrecoverableKeyException,
-            NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException {
+            NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException,
+            InterruptedException {
 
         super();
         log.info("Creating new Betfair Connector");
         name = "betfair";
+        balance = BigDecimal.ZERO;
 
         requester = new Requester();
         requester.setHeader("X-Application", app_id);
         login();
 
-        balance = BigDecimal.ZERO;
-        updateAccountDetails();
 
         eventSearchHandlerQueue = new LinkedBlockingQueue<>();
         eventSearchHandler = new EventSearchHandler(this, eventSearchHandlerQueue);
@@ -292,10 +292,13 @@ public class Betfair extends BettingSite {
 
     @Override
     public void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, IOException {
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException {
 
         token = getSessionToken();
         requester.setHeader("X-Authentication", token);
+        updateAccountInfo();
+        log.info(String.format("Successfully logged into Betfair. Balance: %s  Exposure: %s",
+                balance.toString(), exposure.toString()));
     }
 
 
@@ -370,6 +373,8 @@ public class Betfair extends BettingSite {
 
 
 
+
+
     public JSONArray getMarketOdds(String[] market_ids) throws InterruptedException {
         log.fine(String.format("Getting market odds for market ids: %s", market_ids.toString()));
 
@@ -433,7 +438,8 @@ public class Betfair extends BettingSite {
     }
 
 
-    public void updateAccountDetails() throws IOException, URISyntaxException {
+    @Override
+    public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
         JSONObject j = new JSONObject();
         j.put("id", 1);
         j.put("jsonrpc", "2.0");
@@ -443,9 +449,12 @@ public class Betfair extends BettingSite {
 
         JSONObject r = (JSONObject) ((JSONObject) requester.post(accounts_endpoint, j)).get("result");
 
-        balance = new BigDecimal(Double.toString((double)r.get("availableToBetBalance")));
+        setBalance(new BigDecimal(Double.toString((double) r.get("availableToBetBalance"))));
+        exposure = new BigDecimal(Double.toString((double) r.get("exposure"))).multiply(new BigDecimal(-1));
         betfairPoints = (long) r.get("pointsBalance");
-        commission_discount = new BigDecimal(Double.toString((double)r.get("discountRate")));
+        commission_discount = new BigDecimal(Double.toString((double) r.get("discountRate")));
+        commission_rate = new BigDecimal(Double.toString((double) r.get("retainedCommission")))
+                .divide(new BigDecimal(100));
     }
 
 
@@ -719,25 +728,18 @@ public class Betfair extends BettingSite {
             for (Object report_obj: (JSONArray) rpc_result.get("instructionReports")){
                 JSONObject bet_report = (JSONObject) report_obj;
 
-                String orderStatus = (String) bet_report.get("status");
+
+                Instant time = Instant.parse((String) bet_report.get("placedDate"));
+                String orderStatus = (String) bet_report.get("orderStatus");
+                String status = (String) bet_report.get("status");
                 int bet_order_id = Integer.valueOf((String) ((JSONObject) bet_report.get("instruction")).get("customerOrderRef"));
                 BetOrder betOrder = betOrders.get(bet_order_id);
 
-                if (!orderStatus.equals("SUCCESS")){
-                    String error = (String) bet_report.get("errorCode");
-                    log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
-                            String.valueOf(error), ps(bet_report)));
-
-
-                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(error));
-                    pb.site_json_response = bet_report;
-                    placedBets.add(pb);
-                }
-                else{
+                // Complete matched Bet
+                if (status.equals("SUCCESS") && orderStatus.equals("EXECUTION_COMPLETE")){
                     // Collect data from return json
                     String bet_id = (String) bet_report.get("betId");
                     BigDecimal size_matched = new BigDecimal((String.valueOf((Double) bet_report.get("sizeMatched"))));
-                    Instant time = Instant.parse((String) bet_report.get("placedDate"));
                     BigDecimal avg_odds = new BigDecimal((String.valueOf((Double) bet_report.get("averagePriceMatched"))));
 
                     // Find the invested amount from backers stake depending on if bet is back or lay
@@ -762,7 +764,36 @@ public class Betfair extends BettingSite {
                     pb.site_json_response = bet_report;
                     placedBets.add(pb);
                 }
+
+                // Expired Bet
+                else if (status.equals("SUCCESS") && orderStatus.equals("EXPIRED")){
+                    log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
+                            String.valueOf(orderStatus), ps(bet_report)));
+
+                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(orderStatus), time);
+                    pb.site_json_response = bet_report;
+                    placedBets.add(pb);
+                }
+
+                // Any other error
+                else {
+                    String error = (String) bet_report.get("errorCode");
+                    log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
+                            String.valueOf(error), ps(bet_report)));
+
+                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(error), time);
+                    pb.site_json_response = bet_report;
+                    placedBets.add(pb);
+                }
             }
+        }
+
+        // Update account info
+        try {
+            updateAccountInfo();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            log.severe(e.toString());
         }
 
         return placedBets;
@@ -822,25 +853,7 @@ public class Betfair extends BettingSite {
         try {
             Betfair b = new Betfair();
 
-            HashMap<String, String> md = new HashMap<String, String>();
-            md.put("selectionId", "58805");
-            md.put("marketId", "1.163388368");
-
-            BetOffer bo = new BetOffer(new FootballMatch("2019-10-10T12:12:00.000Z", "teama", "Teamb"),
-                    new FootballResultBet(Bet.LAY, FootballResultBet.DRAW, false),
-                    b,
-                    new BigDecimal("5.2"),
-                    new BigDecimal("102.00"),
-                    md);
-
-            BetOrder betOrder = new BetOrder(bo, new BigDecimal("10.00"),true);
-
-
-            ArrayList<BetOrder> betOrders = new ArrayList<>();
-            betOrders.add(betOrder);
-
-            ArrayList<PlacedBet> placedBets = b.placeBets(betOrders, new BigDecimal(1));
-            p(PlacedBet.list2JSON(placedBets));
+            b.updateAccountInfo();
 
 
 

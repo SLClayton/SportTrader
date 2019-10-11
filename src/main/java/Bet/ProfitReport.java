@@ -79,7 +79,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
         j.put("min_return", min_return.toString());
         j.put("max_return", max_return.toString());
         j.put("min_profit", min_profit.toString());
-        j.put("max_possible_profit", max_profit.toString());
+        j.put("max_profit", max_profit.toString());
         j.put("profit_ratio", profit_ratio.toString());
         if (full){
             // PlacedBets include the bet orders so no need to have both

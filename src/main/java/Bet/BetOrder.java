@@ -157,24 +157,19 @@ public class BetOrder {
         m.put("site", String.valueOf(bet_offer.site.name));
         m.put("odds", String.valueOf(bet_offer.odds));
         m.put("offer_roi", String.valueOf(bet_offer.roi_ratio));
+        m.put("offer_volume", String.valueOf(bet_offer.volume));
         m.put("metadata", String.valueOf(bet_offer.metadata));
 
         m.put("target_return", String.valueOf(target_return));
         m.put("investment", String.valueOf(investment));
         m.put("real", String.valueOf(real));
         if (bet_offer.isLay()){
-            m.put("lay", String.valueOf(backersStake_layersProfit));
             m.put("layers_stake", String.valueOf(backersProfit_layersStake));
-
         }
         m.put("backers_stake", String.valueOf(backersStake_layersProfit));
         m.put("profit", String.valueOf(potential_profit));
         m.put("commission", String.valueOf(potential_commission));
         m.put("actual_return", String.valueOf(actual_return));
-
-        if (site_json_request != null){
-            m.put("site_request", site_json_request);
-        }
 
         return m;
     }
