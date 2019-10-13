@@ -53,6 +53,11 @@ public class Betdaq extends BettingSite {
     }
 
     @Override
+    public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
+
+    }
+
+    @Override
     public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException {
         return null;
     }

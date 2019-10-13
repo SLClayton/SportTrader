@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
@@ -27,12 +23,12 @@
     <window id="1">
       <content type="file-editors">
         <state>
-          <leaf>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
             <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/output.json">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="970">
-                    <caret line="106" column="39" lean-forward="true" selection-start-line="106" selection-start-column="39" selection-end-line="106" selection-end-column="39" />
+                  <state relative-caret-position="1253">
+                    <caret line="106" column="39" selection-start-line="106" selection-start-column="39" selection-end-line="106" selection-end-column="39" />
                     <folding>
                       <element signature="e#2723#3265#0" />
                     </folding>
@@ -43,8 +39,8 @@
             <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/main/resources/config.json">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="176">
-                    <caret line="11" column="26" lean-forward="true" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
+                  <state relative-caret-position="16">
+                    <caret line="1" column="20" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
                   </state>
                 </provider>
               </entry>
@@ -52,10 +48,14 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="465">
-                    <caret line="82" column="55" lean-forward="true" selection-start-line="82" selection-start-column="55" selection-end-line="82" selection-end-column="55" />
+                  <state relative-caret-position="496">
+                    <caret line="81" column="4" selection-start-line="81" selection-start-column="4" selection-end-line="98" selection-end-column="5" />
                     <folding>
                       <element signature="method#newProfitReport#0;class#ProfitReport#0" />
+                      <element signature="e#4075#4085#0" expanded="true" />
+                      <element signature="method#newProfitReportInvestment#0;class#ProfitReport#0" />
+                      <element signature="method#getTautologyProfitReports#0;class#ProfitReport#0" />
+                      <element signature="e#6797#6798#0" expanded="true" />
                     </folding>
                   </state>
                 </provider>
@@ -71,29 +71,43 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="744">
-              <caret line="127" column="53" selection-start-line="127" selection-start-column="53" selection-end-line="127" selection-end-column="53" />
+            <state relative-caret-position="-1998">
+              <caret line="87" lean-forward="true" selection-start-line="87" selection-end-line="87" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#SportsTrader#0;class#SportsTrader#0" />
+                <element signature="method#setupConfig#0;class#SportsTrader#0" />
+                <element signature="class#EventTraderSetup#0;class#SportsTrader#0" />
+                <element signature="class#SessionsUpdater#0;class#SportsTrader#0" />
                 <element signature="method#getFootballMatches#0;class#SportsTrader#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="270" column="33" selection-start-line="270" selection-start-column="23" selection-end-line="270" selection-end-column="33" />
+            <state relative-caret-position="471">
+              <caret line="328" column="8" selection-start-line="328" selection-start-column="8" selection-end-line="328" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#setupMatch#0;class#EventTrader#0" />
                 <element signature="method#run#0;class#EventTrader#0" />
                 <element signature="class#MarketOddsReportWorker#0;class#EventTrader#0" />
                 <element signature="method#run#0;class#MarketOddsReportWorker#0;class#EventTrader#0" />
-                <element signature="method#checkArbs#0;class#EventTrader#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="560">
+              <caret line="56" selection-start-line="56" selection-end-line="56" />
+              <folding>
+                <element signature="e#1313#1314#0" expanded="true" />
+                <element signature="e#1340#1341#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -102,144 +116,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
+            <state relative-caret-position="14768">
               <caret line="979" column="8" selection-start-line="979" selection-start-column="8" selection-end-line="984" selection-end-column="9" />
-              <folding>
-                <element signature="e#4450#7728#0" />
-                <element signature="e#4872#4929#0" />
-                <element signature="e#4939#7722#0" />
-                <element signature="e#5300#5494#1" />
-                <element signature="e#5609#7712#1" />
-                <element signature="e#5631#7606#0" />
-                <element signature="e#5732#7267#1" />
-                <element signature="e#5946#6138#1" />
-                <element signature="e#6293#6547#1" />
-                <element signature="e#6682#7245#1" />
-                <element signature="e#6871#7037#1" />
-                <element signature="e#7070#7219#1" />
-                <element signature="e#7360#7441#1" />
-                <element signature="e#7638#7698#0" />
-                <element signature="e#7735#10981#0" />
-                <element signature="e#8009#8058#0" />
-                <element signature="e#8068#10975#0" />
-                <element signature="e#8362#10965#1" />
-                <element signature="e#8384#10824#0" />
-                <element signature="e#8525#8733#1" />
-                <element signature="e#8642#8711#1" />
-                <element signature="e#8758#10806#1" />
-                <element signature="e#8973#9079#1" />
-                <element signature="e#9427#10484#1" />
-                <element signature="e#10016#10256#1" />
-                <element signature="e#10381#10458#1" />
-                <element signature="e#10513#10784#1" />
-                <element signature="e#10664#10758#1" />
-                <element signature="e#10891#10951#0" />
-                <element signature="e#10988#13855#0" />
-                <element signature="e#11430#11487#0" />
-                <element signature="e#11497#13849#0" />
-                <element signature="e#11976#12170#1" />
-                <element signature="e#12198#13839#1" />
-                <element signature="e#12221#13733#0" />
-                <element signature="e#12266#12443#1" />
-                <element signature="e#12469#12699#1" />
-                <element signature="e#12846#13423#1" />
-                <element signature="e#13028#13279#1" />
-                <element signature="e#13483#13714#1" />
-                <element signature="e#13765#13825#0" />
-                <element signature="e#13862#16290#0" />
-                <element signature="e#14108#14157#0" />
-                <element signature="e#14167#16284#0" />
-                <element signature="e#14342#16274#1" />
-                <element signature="e#14364#16133#0" />
-                <element signature="e#14622#14720#1" />
-                <element signature="e#14890#16114#1" />
-                <element signature="e#14918#14986#0" />
-                <element signature="e#15089#15948#0" />
-                <element signature="e#16200#16260#0" />
-                <element signature="e#16635#17471#0" />
-                <element signature="e#17304#17393#1" />
-                <element signature="e#17781#18141#0" />
-                <element signature="e#17863#17940#0" />
-                <element signature="e#18148#18459#0" />
-                <element signature="e#18225#18307#0" />
-                <element signature="e#18466#18676#0" />
-                <element signature="e#18683#19092#0" />
-                <element signature="e#18749#18847#0" />
-                <element signature="e#19100#21381#0" />
-                <element signature="e#19192#19238#0" />
-                <element signature="e#19819#20742#1" />
-                <element signature="e#20755#21270#1" />
-                <element signature="e#21289#21354#1" />
-                <element signature="e#21388#21638#0" />
-                <element signature="e#21645#24488#0" />
-                <element signature="e#21815#21861#0" />
-                <element signature="e#22324#23311#1" />
-                <element signature="e#23340#24324#1" />
-                <element signature="e#24394#24462#1" />
-                <element signature="e#24496#26046#0" />
-                <element signature="e#25033#25191#1" />
-                <element signature="e#25363#26006#1" />
-                <element signature="e#25641#25786#1" />
-                <element signature="e#26053#26673#0" />
-                <element signature="e#26321#26584#1" />
-                <element signature="e#26680#27194#0" />
-                <element signature="e#26851#26898#1" />
-                <element signature="e#26984#27141#1" />
-                <element signature="e#27076#27131#1" />
-                <element signature="e#27201#27803#0" />
-                <element signature="e#27511#27701#1" />
-                <element signature="e#27810#28320#0" />
-                <element signature="e#27979#28027#1" />
-                <element signature="e#28113#28270#1" />
-                <element signature="e#28205#28260#1" />
-                <element signature="e#28327#28918#0" />
-                <element signature="e#28490#28538#1" />
-                <element signature="e#28612#28658#1" />
-                <element signature="e#28769#28868#1" />
-                <element signature="e#28925#29213#0" />
-                <element signature="e#29220#29625#0" />
-                <element signature="e#29528#29568#1" />
-                <element signature="e#29581#29617#1" />
-                <element signature="e#29632#29865#0" />
-                <element signature="e#29872#30019#0" />
-                <element signature="e#30026#30229#0" />
-                <element signature="e#30236#30430#0" />
-                <element signature="e#30487#30564#0" />
-                <element signature="e#30571#31435#0" />
-                <element signature="e#30646#30753#0" />
-                <element signature="e#31442#31881#0" />
-                <element signature="e#31579#31695#1" />
-                <element signature="e#31701#31875#1" />
-                <element signature="e#31888#32768#0" />
-                <element signature="e#31969#32120#1" />
-                <element signature="e#32171#32613#1" />
-                <element signature="e#32289#32603#1" />
-                <element signature="e#32462#32515#1" />
-                <element signature="e#32536#32589#1" />
-                <element signature="e#32775#33540#0" />
-                <element signature="e#33007#33154#0" />
-                <element signature="e#33164#33534#0" />
-                <element signature="e#33218#33319#0" />
-                <element signature="e#33363#33524#0" />
-                <element signature="e#33547#33763#0" />
-                <element signature="e#33696#33739#1" />
-                <element signature="e#33770#33987#0" />
-                <element signature="e#33919#33963#1" />
-                <element signature="e#34262#35757#1" />
-                <element signature="e#34467#34611#1" />
-                <element signature="e#34628#34797#1" />
-                <element signature="e#35854#36146#1" />
-                <element signature="e#35912#35975#0" />
-                <element signature="e#36007#36136#0" />
-                <element signature="e#36314#38486#1" />
-                <element signature="e#36504#36805#1" />
-                <element signature="e#36863#37211#1" />
-                <element signature="e#37229#38383#1" />
-                <element signature="e#37654#37739#1" />
-                <element signature="e#37761#37881#1" />
-                <element signature="e#38525#39340#0" />
-                <element signature="e#39815#39859#0" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -247,19 +125,18 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="45" column="26" lean-forward="true" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
+            <state relative-caret-position="304">
+              <caret line="45" column="26" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
               <folding>
-                <element signature="method#getBalance#1;class#BettingSite#0" />
                 <element signature="method#setBalance#0;class#BettingSite#0" />
                 <element signature="method#useBalance#0;class#BettingSite#0" />
+                <element signature="e#3590#3591#0" expanded="true" />
                 <element signature="e#3623#3624#0" expanded="true" />
+                <element signature="e#3684#3685#0" expanded="true" />
                 <element signature="e#3712#3713#0" expanded="true" />
                 <element signature="method#ROI_old#0;class#BettingSite#0" />
                 <element signature="method#ROI#0;class#BettingSite#0" />
                 <element signature="method#ROI#1;class#BettingSite#0" />
-                <element signature="e#6561#6562#0" expanded="true" />
-                <element signature="e#6601#6602#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -268,7 +145,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
+            <state relative-caret-position="1104">
               <caret line="80" column="68" selection-start-line="80" selection-start-column="68" selection-end-line="80" selection-end-column="68" />
               <folding>
                 <element signature="e#2887#2888#0" expanded="true" />
@@ -280,7 +157,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="434">
+            <state relative-caret-position="5040">
               <caret line="790" column="30" selection-start-line="790" selection-start-column="30" selection-end-line="790" selection-end-column="30" />
               <folding>
                 <element signature="class#EventSearchHandler#0;class#Betfair#0" />
@@ -306,7 +183,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="562">
+            <state relative-caret-position="4816">
               <caret line="564" column="9" selection-start-line="564" selection-start-column="9" selection-end-line="564" selection-end-column="9" />
               <folding>
                 <element signature="class#marketDataRequestHandler#0;class#Matchbook#0" />
@@ -325,8 +202,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="362">
+            <state relative-caret-position="1984">
               <caret line="159" column="64" selection-start-line="159" selection-start-column="64" selection-end-line="159" selection-end-column="64" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="863">
+              <caret line="69" column="30" selection-start-line="69" selection-start-column="30" selection-end-line="69" selection-end-column="30" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -396,7 +285,6 @@
         <option value="$PROJECT_DIR$/src/main/java/Bet/Tautology.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" />
@@ -404,16 +292,18 @@
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" />
         <option value="$PROJECT_DIR$/src/main/java/tools/printer.java" />
         <option value="$PROJECT_DIR$/src/main/java/tools/Requester.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" />
         <option value="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" />
         <option value="$PROJECT_DIR$/src/main/resources/config.json" />
         <option value="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" />
       </list>
     </option>
   </component>
@@ -426,7 +316,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-7" />
-    <option name="width" value="1424" />
+    <option name="width" value="1442" />
     <option name="height" value="1407" />
   </component>
   <component name="ProjectId" id="1OaYuNHPzsaDFnulTZLzJck6p7J" />
@@ -438,7 +328,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -552,6 +441,7 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -599,7 +489,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.BettingSite">
+  <component name="RunManager" selected="Application.SportsTrader">
     <configuration name="Betfair" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="SiteConnectors.Betfair.Betfair" />
       <module name="SportTrader" />
@@ -637,8 +527,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.BettingSite" />
         <item itemvalue="Application.SportsTrader" />
+        <item itemvalue="Application.BettingSite" />
         <item itemvalue="Application.Smarkets" />
         <item itemvalue="Application.Matchbook" />
         <item itemvalue="Application.Betfair" />
@@ -674,22 +564,23 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1424" height="1407" extended-state="0" />
+    <frame x="-7" y="0" width="1442" height="1407" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19428152" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19464543" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.2032967" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.14678179" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39952904" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32967034" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32936078" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.23185265" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.4301413" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.32967034" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -816,17 +707,6 @@
           <caret line="5" selection-start-line="5" selection-end-line="5" />
           <folding>
             <element signature="e#8034#8044#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
-          <folding>
-            <element signature="e#1313#1314#0" expanded="true" />
-            <element signature="e#1340#1341#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -992,26 +872,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="159" column="64" selection-start-line="159" selection-start-column="64" selection-end-line="159" selection-end-column="64" />
+        <state relative-caret-position="14768">
+          <caret line="979" column="8" selection-start-line="979" selection-start-column="8" selection-end-line="984" selection-end-column="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output.json">
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="970">
-          <caret line="106" column="39" lean-forward="true" selection-start-line="106" selection-start-column="39" selection-end-line="106" selection-end-column="39" />
+        <state relative-caret-position="304">
+          <caret line="45" column="26" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
           <folding>
-            <element signature="e#2723#3265#0" />
+            <element signature="method#setBalance#0;class#BettingSite#0" />
+            <element signature="method#useBalance#0;class#BettingSite#0" />
+            <element signature="e#3590#3591#0" expanded="true" />
+            <element signature="e#3623#3624#0" expanded="true" />
+            <element signature="e#3684#3685#0" expanded="true" />
+            <element signature="e#3712#3713#0" expanded="true" />
+            <element signature="method#ROI_old#0;class#BettingSite#0" />
+            <element signature="method#ROI#0;class#BettingSite#0" />
+            <element signature="method#ROI#1;class#BettingSite#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
+        <state relative-caret-position="1104">
           <caret line="80" column="68" selection-start-line="80" selection-start-column="68" selection-end-line="80" selection-end-column="68" />
           <folding>
             <element signature="e#2887#2888#0" expanded="true" />
@@ -1019,152 +907,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="979" column="8" selection-start-line="979" selection-start-column="8" selection-end-line="984" selection-end-column="9" />
-          <folding>
-            <element signature="e#4450#7728#0" />
-            <element signature="e#4872#4929#0" />
-            <element signature="e#4939#7722#0" />
-            <element signature="e#5300#5494#1" />
-            <element signature="e#5609#7712#1" />
-            <element signature="e#5631#7606#0" />
-            <element signature="e#5732#7267#1" />
-            <element signature="e#5946#6138#1" />
-            <element signature="e#6293#6547#1" />
-            <element signature="e#6682#7245#1" />
-            <element signature="e#6871#7037#1" />
-            <element signature="e#7070#7219#1" />
-            <element signature="e#7360#7441#1" />
-            <element signature="e#7638#7698#0" />
-            <element signature="e#7735#10981#0" />
-            <element signature="e#8009#8058#0" />
-            <element signature="e#8068#10975#0" />
-            <element signature="e#8362#10965#1" />
-            <element signature="e#8384#10824#0" />
-            <element signature="e#8525#8733#1" />
-            <element signature="e#8642#8711#1" />
-            <element signature="e#8758#10806#1" />
-            <element signature="e#8973#9079#1" />
-            <element signature="e#9427#10484#1" />
-            <element signature="e#10016#10256#1" />
-            <element signature="e#10381#10458#1" />
-            <element signature="e#10513#10784#1" />
-            <element signature="e#10664#10758#1" />
-            <element signature="e#10891#10951#0" />
-            <element signature="e#10988#13855#0" />
-            <element signature="e#11430#11487#0" />
-            <element signature="e#11497#13849#0" />
-            <element signature="e#11976#12170#1" />
-            <element signature="e#12198#13839#1" />
-            <element signature="e#12221#13733#0" />
-            <element signature="e#12266#12443#1" />
-            <element signature="e#12469#12699#1" />
-            <element signature="e#12846#13423#1" />
-            <element signature="e#13028#13279#1" />
-            <element signature="e#13483#13714#1" />
-            <element signature="e#13765#13825#0" />
-            <element signature="e#13862#16290#0" />
-            <element signature="e#14108#14157#0" />
-            <element signature="e#14167#16284#0" />
-            <element signature="e#14342#16274#1" />
-            <element signature="e#14364#16133#0" />
-            <element signature="e#14622#14720#1" />
-            <element signature="e#14890#16114#1" />
-            <element signature="e#14918#14986#0" />
-            <element signature="e#15089#15948#0" />
-            <element signature="e#16200#16260#0" />
-            <element signature="e#16635#17471#0" />
-            <element signature="e#17304#17393#1" />
-            <element signature="e#17781#18141#0" />
-            <element signature="e#17863#17940#0" />
-            <element signature="e#18148#18459#0" />
-            <element signature="e#18225#18307#0" />
-            <element signature="e#18466#18676#0" />
-            <element signature="e#18683#19092#0" />
-            <element signature="e#18749#18847#0" />
-            <element signature="e#19100#21381#0" />
-            <element signature="e#19192#19238#0" />
-            <element signature="e#19819#20742#1" />
-            <element signature="e#20755#21270#1" />
-            <element signature="e#21289#21354#1" />
-            <element signature="e#21388#21638#0" />
-            <element signature="e#21645#24488#0" />
-            <element signature="e#21815#21861#0" />
-            <element signature="e#22324#23311#1" />
-            <element signature="e#23340#24324#1" />
-            <element signature="e#24394#24462#1" />
-            <element signature="e#24496#26046#0" />
-            <element signature="e#25033#25191#1" />
-            <element signature="e#25363#26006#1" />
-            <element signature="e#25641#25786#1" />
-            <element signature="e#26053#26673#0" />
-            <element signature="e#26321#26584#1" />
-            <element signature="e#26680#27194#0" />
-            <element signature="e#26851#26898#1" />
-            <element signature="e#26984#27141#1" />
-            <element signature="e#27076#27131#1" />
-            <element signature="e#27201#27803#0" />
-            <element signature="e#27511#27701#1" />
-            <element signature="e#27810#28320#0" />
-            <element signature="e#27979#28027#1" />
-            <element signature="e#28113#28270#1" />
-            <element signature="e#28205#28260#1" />
-            <element signature="e#28327#28918#0" />
-            <element signature="e#28490#28538#1" />
-            <element signature="e#28612#28658#1" />
-            <element signature="e#28769#28868#1" />
-            <element signature="e#28925#29213#0" />
-            <element signature="e#29220#29625#0" />
-            <element signature="e#29528#29568#1" />
-            <element signature="e#29581#29617#1" />
-            <element signature="e#29632#29865#0" />
-            <element signature="e#29872#30019#0" />
-            <element signature="e#30026#30229#0" />
-            <element signature="e#30236#30430#0" />
-            <element signature="e#30487#30564#0" />
-            <element signature="e#30571#31435#0" />
-            <element signature="e#30646#30753#0" />
-            <element signature="e#31442#31881#0" />
-            <element signature="e#31579#31695#1" />
-            <element signature="e#31701#31875#1" />
-            <element signature="e#31888#32768#0" />
-            <element signature="e#31969#32120#1" />
-            <element signature="e#32171#32613#1" />
-            <element signature="e#32289#32603#1" />
-            <element signature="e#32462#32515#1" />
-            <element signature="e#32536#32589#1" />
-            <element signature="e#32775#33540#0" />
-            <element signature="e#33007#33154#0" />
-            <element signature="e#33164#33534#0" />
-            <element signature="e#33218#33319#0" />
-            <element signature="e#33363#33524#0" />
-            <element signature="e#33547#33763#0" />
-            <element signature="e#33696#33739#1" />
-            <element signature="e#33770#33987#0" />
-            <element signature="e#33919#33963#1" />
-            <element signature="e#34262#35757#1" />
-            <element signature="e#34467#34611#1" />
-            <element signature="e#34628#34797#1" />
-            <element signature="e#35854#36146#1" />
-            <element signature="e#35912#35975#0" />
-            <element signature="e#36007#36136#0" />
-            <element signature="e#36314#38486#1" />
-            <element signature="e#36504#36805#1" />
-            <element signature="e#36863#37211#1" />
-            <element signature="e#37229#38383#1" />
-            <element signature="e#37654#37739#1" />
-            <element signature="e#37761#37881#1" />
-            <element signature="e#38525#39340#0" />
-            <element signature="e#39815#39859#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="434">
+        <state relative-caret-position="5040">
           <caret line="790" column="30" selection-start-line="790" selection-start-column="30" selection-end-line="790" selection-end-column="30" />
           <folding>
             <element signature="class#EventSearchHandler#0;class#Betfair#0" />
@@ -1188,7 +933,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="562">
+        <state relative-caret-position="4816">
           <caret line="564" column="9" selection-start-line="564" selection-start-column="9" selection-end-line="564" selection-end-column="9" />
           <folding>
             <element signature="class#marketDataRequestHandler#0;class#Matchbook#0" />
@@ -1203,65 +948,89 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="45" column="26" lean-forward="true" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
+        <state relative-caret-position="560">
+          <caret line="56" selection-start-line="56" selection-end-line="56" />
           <folding>
-            <element signature="method#getBalance#1;class#BettingSite#0" />
-            <element signature="method#setBalance#0;class#BettingSite#0" />
-            <element signature="method#useBalance#0;class#BettingSite#0" />
-            <element signature="e#3623#3624#0" expanded="true" />
-            <element signature="e#3712#3713#0" expanded="true" />
-            <element signature="method#ROI_old#0;class#BettingSite#0" />
-            <element signature="method#ROI#0;class#BettingSite#0" />
-            <element signature="method#ROI#1;class#BettingSite#0" />
-            <element signature="e#6561#6562#0" expanded="true" />
-            <element signature="e#6601#6602#0" expanded="true" />
+            <element signature="e#1313#1314#0" expanded="true" />
+            <element signature="e#1340#1341#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="744">
-          <caret line="127" column="53" selection-start-line="127" selection-start-column="53" selection-end-line="127" selection-end-column="53" />
+        <state relative-caret-position="-1998">
+          <caret line="87" lean-forward="true" selection-start-line="87" selection-end-line="87" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#SportsTrader#0;class#SportsTrader#0" />
+            <element signature="method#setupConfig#0;class#SportsTrader#0" />
+            <element signature="class#EventTraderSetup#0;class#SportsTrader#0" />
+            <element signature="class#SessionsUpdater#0;class#SportsTrader#0" />
             <element signature="method#getFootballMatches#0;class#SportsTrader#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1253">
+          <caret line="106" column="39" selection-start-line="106" selection-start-column="39" selection-end-line="106" selection-end-column="39" />
+          <folding>
+            <element signature="e#2723#3265#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="11" column="26" lean-forward="true" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
+        <state relative-caret-position="16">
+          <caret line="1" column="20" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="270" column="33" selection-start-line="270" selection-start-column="23" selection-end-line="270" selection-end-column="33" />
+        <state relative-caret-position="471">
+          <caret line="328" column="8" selection-start-line="328" selection-start-column="8" selection-end-line="328" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#setupMatch#0;class#EventTrader#0" />
             <element signature="method#run#0;class#EventTrader#0" />
             <element signature="class#MarketOddsReportWorker#0;class#EventTrader#0" />
             <element signature="method#run#0;class#MarketOddsReportWorker#0;class#EventTrader#0" />
-            <element signature="method#checkArbs#0;class#EventTrader#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1984">
+          <caret line="159" column="64" selection-start-line="159" selection-start-column="64" selection-end-line="159" selection-end-column="64" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="82" column="55" lean-forward="true" selection-start-line="82" selection-start-column="55" selection-end-line="82" selection-end-column="55" />
+        <state relative-caret-position="496">
+          <caret line="81" column="4" selection-start-line="81" selection-start-column="4" selection-end-line="98" selection-end-column="5" />
           <folding>
             <element signature="method#newProfitReport#0;class#ProfitReport#0" />
+            <element signature="e#4075#4085#0" expanded="true" />
+            <element signature="method#newProfitReportInvestment#0;class#ProfitReport#0" />
+            <element signature="method#getTautologyProfitReports#0;class#ProfitReport#0" />
+            <element signature="e#6797#6798#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="863">
+          <caret line="69" column="30" selection-start-line="69" selection-start-column="30" selection-end-line="69" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

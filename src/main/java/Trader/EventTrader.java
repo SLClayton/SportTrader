@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.PortUnreachableException;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.time.Instant;
@@ -30,6 +31,7 @@ public class EventTrader implements Runnable {
     public BigDecimal MIN_PROFIT_RATIO;
     public BigDecimal MAX_INVESTMENT;
     public boolean END_ON_BET;
+    public BigDecimal TARGET_INVESTMENT;
 
     public Thread thread;
     public SportsTrader sportsTrader;
@@ -52,9 +54,10 @@ public class EventTrader implements Runnable {
         siteMarketOddsToGetQueue = new LinkedBlockingQueue<>();
 
         MIN_ODDS_RATIO = sportsTrader.MIN_ODDS_RATIO;
-        MIN_PROFIT_RATIO = sportsTrader.MIN_ODDS_RATIO;
+        MIN_PROFIT_RATIO = sportsTrader.MIN_PROFIT_RATIO;
         MAX_INVESTMENT = sportsTrader.MAX_INVESTMENT;
         END_ON_BET = sportsTrader.END_ON_BET;
+        TARGET_INVESTMENT = sportsTrader.TARGET_INVESTMENT;
     }
 
 
@@ -122,9 +125,8 @@ public class EventTrader implements Runnable {
         Instant wait_until = null;
         ArrayList<Long> arb_times = new ArrayList<>();
         int max_times = 100;
-        for (int i=0; true; i++){
+        for (int i=0; !sportsTrader.exit_all; i++){
             try {
-
                 // RATE LIMITER: Sleeps until minimum wait period between calls is done.
                 Instant now = Instant.now();
                 if (wait_until != null && now.isBefore(wait_until)){
@@ -139,6 +141,7 @@ public class EventTrader implements Runnable {
                 checkArbs();
                 arb_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
 
+                // Calculate the timing metrics over past timings
                 if (arb_times.size() >= max_times){
                     long avg_ms = 0;
                     for (long arb_time: arb_times){ avg_ms += arb_time; }
@@ -148,7 +151,6 @@ public class EventTrader implements Runnable {
                     arb_times.clear();
                 }
 
-                //log.info(String.format("Arbs checked for %s in %dms", match, ms));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -240,6 +242,10 @@ public class EventTrader implements Runnable {
             }
         }
 
+
+        print("best profit = " + tautologyProfitReports.get(0).profit_ratio.toString());
+        print("in profit = " + in_profit.size());
+
         // If any profit reports are found to be IN profit
         if (in_profit.size() > 0){
             profitFound(in_profit);
@@ -261,40 +267,38 @@ public class EventTrader implements Runnable {
         }
 
         // Get the best (first in list) profit report
-        ProfitReport best = in_profit.get(0);
+        ProfitReport ratioProfitReport = in_profit.get(0);
         String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
 
 
-        // Re-create the profit report with real values and min stake return target possible.
-        // Or 20.00 return target, whoever is bigger.
-        try {
-            BigDecimal new_return = best.min_stake_return.add(new BigDecimal("0.05"));
-            BigDecimal twenty = new BigDecimal(20);
-            if (new_return.compareTo(twenty) == -1){
-                new_return = twenty;
-            }
-            best = best.newProfitReport(new_return);
+        // Find profit reports for the
+        BigDecimal minimum_return_possible = ratioProfitReport.ret_from_min_stake;
+        ProfitReport min_profit_report = ratioProfitReport.newProfitReportReturn(minimum_return_possible);
+        ProfitReport target_profit_report = ratioProfitReport.newProfitReportInvestment(TARGET_INVESTMENT);
 
-        } catch (InvalidAttributesException e) {
-            log.severe("Error while creating real profit report. Cancelling this round.");
-            e.printStackTrace();
-            return;
+
+        // Use minimum if target is below minimum.
+        ProfitReport profitReport;
+        if (target_profit_report == null ||
+                target_profit_report.total_investment.compareTo(min_profit_report.total_investment) == -1){
+
+            log.info(String.format("Target profit report has total investment below minimum %s needed. Using minimum.",
+                    min_profit_report.total_investment.toString()));
+            profitReport = min_profit_report;
+        }
+        else{
+            log.info(String.format("Target profit report used. Target investment of %s.",
+                    target_profit_report.total_investment.toString()));
+            profitReport = target_profit_report;
         }
 
-        // TODO: SORT OUT HOW MUCH TO BET
 
+        // Ensure report investment is not over max investment
+        if (profitReport.total_investment.compareTo(MAX_INVESTMENT) == 1){
+            log.warning(String.format("Profit report found to require over the maximum investment of %s. Quitting these bets.",
+                    MAX_INVESTMENT.toString()));
 
-        // Save profit report as json file
-        String profitString = best.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
-        String filename = timeString + " -  " + match.name + " " + profitString + ".json";
-        p(best.toJSON(true), profit_dir.toString() + "/" + filename);
-
-
-        // Check config allows bets and investment wouldn't be too much.
-        if (!sportsTrader.PLACE_BETS || best.total_investment.compareTo(new BigDecimal("50.01")) == 1){
-            print("PROFIT FOUND WITH MIN INV " + best.total_investment.toString() + " too high.");
-            p(best.toJSON(true));
-
+            // Try next best profit report if available
             in_profit.remove(0);
             if (in_profit.size() > 0){
                 profitFound(in_profit);
@@ -303,14 +307,34 @@ public class EventTrader implements Runnable {
         }
 
 
-        best.placedBets = placeBets(best.bet_orders);
 
-        p(best.toJSON(true));
+        // Save profit report as json file
+        String profitString = profitReport.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
+        String filename = timeString + " -  " + match.name + " " + profitString + ".json";
+        p(profitReport.toJSON(true), profit_dir.toString() + "/" + filename);
+
+
+
+        // Check config allows bets
+        if (!sportsTrader.PLACE_BETS){
+            in_profit.remove(0);
+            if (in_profit.size() > 0){
+                profitFound(in_profit);
+            }
+            return;
+        }
+
+
+
+        PlacedProfitReport placedProfitReport = new PlacedProfitReport(placeBets(profitReport.bet_orders));
+        p(placedProfitReport.toJSON(true));
 
         if (END_ON_BET){
             log.info("Bets Placed, END_ON_BET=true so exiting program.");
             System.exit(0);
         }
+
+        // TODO: DO SOME TESTING
     }
 
 

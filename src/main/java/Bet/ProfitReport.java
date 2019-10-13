@@ -5,36 +5,42 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.naming.directory.InvalidAttributesException;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.logging.Logger;
 
 import static tools.printer.*;
 
 public class ProfitReport implements Comparable<ProfitReport> {
     /*
-    // A collection of Bet Orders, with attributes calculated such as total stake
+    // A collection of Bet Orders or placed bets, with attributes calculated such as total stake
     // and profit/loss ratio.
      */
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public ArrayList<BetOrder> bet_orders;
+    public String type;
+    public static String BET_ORDER_TYPE = "BET_ORDERS_TYPE";
+    public static String PLACED_BET_TYPE = "PLACED_BET_TYPE";
+
     public BigDecimal total_investment;
 
     public BigDecimal min_return;
     public BigDecimal max_return;
-    public BigDecimal min_stake_return;
     public BigDecimal min_profit;
     public BigDecimal max_profit;
     public BigDecimal profit_ratio;
 
-    public ArrayList<PlacedBet> placedBets;
+    public BigDecimal ret_from_min_stake;
 
-    public ProfitReport(ArrayList<BetOrder> betOrders) {
 
-        this.bet_orders = betOrders;
+    public ProfitReport(ArrayList<Object> betOrders_or_placedBets) {
+
+        this.type = BET_ORDER_TYPE;
 
         // Sum up all investments
         // Find minimum return of all bet orders
@@ -51,8 +57,8 @@ public class ProfitReport implements Comparable<ProfitReport> {
             }
 
             BigDecimal this_largest_min_return = bo.bet_offer.minStakeReturn();
-            if (min_stake_return == null || this_largest_min_return.compareTo(min_stake_return) == 1){
-                min_stake_return = this_largest_min_return;
+            if (ret_from_min_stake == null || this_largest_min_return.compareTo(ret_from_min_stake) == 1){
+                ret_from_min_stake = this_largest_min_return;
             }
         }
 
@@ -82,21 +88,11 @@ public class ProfitReport implements Comparable<ProfitReport> {
         j.put("max_profit", max_profit.toString());
         j.put("profit_ratio", profit_ratio.toString());
         if (full){
-            // PlacedBets include the bet orders so no need to have both
-            if (placedBets != null){
-                JSONArray placed = new JSONArray();
-                for (PlacedBet pb: placedBets){
-                    placed.add(pb.toJSON());
-                }
-                j.put("placed_bets", placed);
+            JSONArray orders = new JSONArray();
+            for (BetOrder bo: bet_orders){
+                orders.add(bo.toJSON());
             }
-            else{
-                JSONArray orders = new JSONArray();
-                for (BetOrder bo: bet_orders){
-                    orders.add(bo.toJSON());
-                }
-                j.put("bet_orders", orders);
-            }
+            j.put("bet_orders", orders);
 
         }
         return j;
@@ -108,15 +104,15 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public ProfitReport newProfitReport(BigDecimal target_return) throws InvalidAttributesException {
+    public ProfitReport newProfitReportReturn(BigDecimal target_return) {
         // Create a new profit report thats the same but with a different target return.
 
-        if (target_return.compareTo(min_stake_return) == -1){
+        if (target_return.compareTo(ret_from_min_stake) == -1){
             String msg = String.format("Creating a new profit report failed. " +
-                                       "Target return set as %s but the min stake return is %s.",
-                    target_return.toString(), min_stake_return.toString());
-            log.severe(msg);
-            throw new InvalidAttributesException(msg);
+                            "Target return set as %s but the return from the min stake is %s.",
+                    target_return.toString(), ret_from_min_stake.toString());
+            log.warning(msg);
+            return null;
         }
 
         ArrayList<BetOrder> new_bet_orders = new ArrayList<BetOrder>();
@@ -125,6 +121,25 @@ public class ProfitReport implements Comparable<ProfitReport> {
         }
 
         return new ProfitReport(new_bet_orders);
+    }
+
+
+    public ProfitReport newProfitReportInvestment(BigDecimal new_target_investment) {
+
+        // Find the average target returns of the betOrders
+        BigDecimal sum_target_return = BigDecimal.ZERO;
+        for (BetOrder betOrder: bet_orders){
+            sum_target_return = sum_target_return.add(betOrder.target_return);
+        }
+        BigDecimal avg_target_return = sum_target_return.divide(
+                new BigDecimal(bet_orders.size()), 20, RoundingMode.HALF_UP);
+
+        // Use ratio of this investment and target investment to multiply old target return
+        // to new target return
+        BigDecimal ratio = new_target_investment.divide(total_investment, 20, RoundingMode.HALF_UP);
+        BigDecimal new_target_return = avg_target_return.multiply(ratio);
+
+        return newProfitReportReturn(new_target_return);
     }
 
 

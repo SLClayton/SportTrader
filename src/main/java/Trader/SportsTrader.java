@@ -49,6 +49,7 @@ public class SportsTrader {
     public BigDecimal MAX_INVESTMENT;
     public BigDecimal MIN_PROFIT_RATIO;
     public boolean END_ON_BET;
+    public BigDecimal TARGET_INVESTMENT;
 
     public Lock betlock = new ReentrantLock();
 
@@ -58,6 +59,9 @@ public class SportsTrader {
 
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<EventTrader> eventTraders;
+    SessionsUpdater sessionsUpdater;
+
+    public boolean exit_all;
 
 
     public SportsTrader(){
@@ -82,6 +86,8 @@ public class SportsTrader {
             System.exit(1);
         }
 
+        exit_all = false;
+
         siteClasses = new HashMap<String, Class>();
         siteClasses.put("betfair", Betfair.class);
         siteClasses.put("matchbook", Matchbook.class);
@@ -103,7 +109,7 @@ public class SportsTrader {
 
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
-                "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET"};
+                "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT"};
 
         for (String field: required){
             if (!(config.keySet().contains(field))){
@@ -126,6 +132,7 @@ public class SportsTrader {
         MAX_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("MAX_INVESTMENT")));
         MIN_PROFIT_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_PROFIT_RATIO")));
         END_ON_BET = (boolean) config.get("END_ON_BET");
+        TARGET_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("TARGET_INVESTMENT")));
 
 
         JSONObject config_json = new JSONObject(config);
@@ -256,12 +263,18 @@ public class SportsTrader {
         log.info("All Event Traders started.");
 
         // Start the session updater to keep all sites connected.
-        SessionsUpdater sessionsUpdater = new SessionsUpdater();
+        sessionsUpdater = new SessionsUpdater();
         Thread sessionUpdaterThread = new Thread(sessionsUpdater);
         sessionUpdaterThread.setName("Session Updater");
         sessionUpdaterThread.start();
 
 
+    }
+
+
+    public void safe_exit(){
+        exit_all = true;
+        sessionsUpdater.exit_flag = true;
     }
 
 
@@ -326,14 +339,28 @@ public class SportsTrader {
 
     public class SessionsUpdater implements Runnable {
 
+        public boolean exit_flag;
+
+        public SessionsUpdater(){
+            exit_flag = false;
+        }
+
         @Override
         public void run() {
             log.info("Session updater started.");
 
-            while (true){
+            while (!exit_flag){
                 try {
-                    // Sleep for required amount of hours between updates
-                    sleep(1000*60*60*session_Update_interval);
+                    // Sleep in 1 second intervals until next update time has arrived.
+                    Instant sleep_until = Instant.now().plus(session_Update_interval, ChronoUnit.HOURS);
+                    while (Instant.now().isBefore(sleep_until)){
+                        Thread.sleep(1000);
+                        if (exit_flag){
+                            return;
+                        }
+                    }
+
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -394,6 +421,7 @@ public class SportsTrader {
 
         return fms;
      }
+
 
 
     public static void main(String[] args){

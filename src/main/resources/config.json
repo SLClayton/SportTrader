@@ -1,5 +1,5 @@
 {
-    "MAX_MATCHES": 50,
+    "MAX_MATCHES": 2,
     "IN_PLAY": false,
     "HOURS_AHEAD": 24,
 
@@ -8,8 +8,9 @@
 
     "PLACE_BETS": true,
     "END_ON_BET": true,
-    "MIN_PROFIT_RATIO": 0.001,
+    "MIN_PROFIT_RATIO": -0.05,
     "MIN_ODDS_RATIO": 0.9,
+    "TARGET_INVESTMENT": 20.00,
     "MAX_INVESTMENT": 50.00,
 
     "ACTIVE_SITES": {
