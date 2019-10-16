@@ -203,8 +203,12 @@ public class Smarkets extends BettingSite {
                             market_ids.addAll((ArrayList<String>) rh.request);
                         }
 
+                        Instant start = Instant.now();
                         // Send request
                         JSONObject market_prices = getPrices(market_ids);
+
+                        long time = Instant.now().toEpochMilli() - start.toEpochMilli();
+                        //print("TIME: " + time + "ms");
 
 
                         // If rate limit has been hit
@@ -216,6 +220,9 @@ public class Smarkets extends BettingSite {
                             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("E, d MMM yyyy H:m:s VV");
                             expiry_time = ZonedDateTime.parse(expiry, dtf).toInstant()
                                     .plus(1, ChronoUnit.SECONDS);
+
+                            log.info(String.format("Smarkets request limit reached, waiting until %s",
+                                    expiry_time.toString()));
 
                             // Sanity check expiry time
                             if (expiry_time.isAfter(Instant.now().plus(2, ChronoUnit.MINUTES))){
@@ -235,144 +242,6 @@ public class Smarkets extends BettingSite {
                             }
                         }
                     }
-                } catch (InterruptedException | IOException | URISyntaxException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-
-    // Backup done the usual non limiting way
-    public class PriceQuotesRequestHandlerFULLON implements Runnable{
-
-        public int MAX_BATCH_SIZE = 300;
-        public int REQUEST_THREADS = 3;
-        public long WAIT_MILLISECONDS = 50;
-
-        public BlockingQueue<RequestHandler> requestQueue;
-        public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
-
-        public PriceQuotesRequestHandlerFULLON(BlockingQueue requestQueue){
-            this.requestQueue = requestQueue;
-        }
-
-        @Override
-        public void run() {
-
-            log.info(String.format("Running smarkets request handler."));
-
-            Instant wait_until = null;
-            ArrayList<RequestHandler> requestHandlers = new ArrayList<>();
-            int markets_in_queue = 0;
-            RequestHandler new_handler;
-            long milliseconds_to_wait;
-
-            // Start workers
-            workerQueue = new LinkedBlockingQueue<>();
-            for (int i=0; i<REQUEST_THREADS; i++){
-                PriceQuoteRequestSender requestSender = new PriceQuoteRequestSender(workerQueue);
-                Thread t = new Thread(requestSender);
-                t.start();
-            }
-
-
-            while (true) {
-
-                try {
-                    if (wait_until == null){
-                        new_handler = requestQueue.take();
-                        wait_until = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
-                    }
-                    else {
-                        milliseconds_to_wait = wait_until.toEpochMilli() - Instant.now().toEpochMilli();
-                        new_handler = requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
-                    }
-
-                    // Add new handler to list and add the number of markets it contains to counter
-                    if (new_handler != null) {
-                        int new_handler_size = ((ArrayList<String>) new_handler.request).size();
-
-                        if (markets_in_queue + new_handler_size >= MAX_BATCH_SIZE){
-                            workerQueue.put(requestHandlers);
-                            wait_until = null;
-                            requestHandlers = new ArrayList<>();
-                            markets_in_queue = 0;
-                        }
-
-                        requestHandlers.add(new_handler);
-                        markets_in_queue += new_handler_size;
-
-                    }
-
-                    if (Instant.now().isAfter(wait_until)){
-                        workerQueue.put(requestHandlers);
-                        wait_until = null;
-                        requestHandlers = new ArrayList<>();
-                        markets_in_queue = 0;
-                    }
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-
-    // Backup done the usual non limiting way
-    public class PriceQuoteRequestSenderFULLON implements Runnable{
-
-        public BlockingQueue<ArrayList<RequestHandler>> jobQueue;
-
-        public PriceQuoteRequestSenderFULLON(BlockingQueue jobQueue){
-            this.jobQueue = jobQueue;
-        }
-
-        @Override
-        public void run() {
-            ArrayList<RequestHandler> requestHandlers;
-            JSONObject final_request = new JSONObject();
-
-            while (true){
-                try {
-                    requestHandlers = jobQueue.take();
-
-                    // list event ids from handlers to get data from.
-                    ArrayList<String> market_ids = new ArrayList<>();
-                    for (RequestHandler rh: requestHandlers){
-                        market_ids.addAll((ArrayList<String>) rh.request);
-                    }
-
-                    // Send request
-                    JSONObject market_prices = getPrices(market_ids);
-
-
-                    for (RequestHandler rh: requestHandlers){
-
-
-                        // The below method tries to split up the answer into the parts each
-                        // request asked for before sending back to each one.
-                        /*
-                        JSONObject response = new JSONObject();
-                        for (String market_id: (ArrayList<String>) rh.request){
-                            JSONObject market_price = (JSONObject) market_prices.get(market_id);
-                            if (market_price == null){
-                                log.severe(String.format("Could not find market_id %s in smarkets" +
-                                                "response when it was asked for.\n%s",
-                                        market_id, market_prices.toJSONString()));
-                                p(market_prices);
-                                System.exit(0);
-                                continue;
-                            }
-                            response.put(market_id, market_price);
-                        }
-                        */
-
-                        // Just send the complete response back to each request handler
-                        rh.setResponse(market_prices);
-                    }
-
                 } catch (InterruptedException | IOException | URISyntaxException e) {
                     e.printStackTrace();
                 }
@@ -743,8 +612,8 @@ public class Smarkets extends BettingSite {
         RequestHandler rh = new RequestHandler();
         rh.request = market_ids;
         priceQuotesRequestHandlerQueue.put(rh);
-        JSONObject response = rh.getResponse();
-        if (rh.valid_response){
+        JSONObject response = (JSONObject) rh.getResponse();
+        if (rh.valid_response()){
             return response;
         }
         else{
@@ -855,7 +724,7 @@ public class Smarkets extends BettingSite {
         @Override
         public void run() {
             try {
-                response = (JSONObject) requester.post(baseurl + "orders/", payload);
+                response = (JSONObject) requester.post(baseurl + "orders/", payload, true);
             } catch (IOException | URISyntaxException e) {
                 log.severe("IO or URI exception when placing smarket part bet.");
                 response = null;
@@ -902,9 +771,6 @@ public class Smarkets extends BettingSite {
             }
 
 
-            // TODO: Re-check smarkets
-
-
             JSONObject payload = new JSONObject();
             payload.put("contract_id", betOrder.bet_offer.metadata.get(Smarkets.CONTRACT_ID));
             payload.put("market_id", betOrder.bet_offer.metadata.get(Smarkets.MARKET_ID));
@@ -920,6 +786,8 @@ public class Smarkets extends BettingSite {
             placeBetRunnable.thread.setName("Smarkets Bet Placer");
             placeBetRunnable.thread.start();
             placeBetRunnables.add(placeBetRunnable);
+
+            betOrder.site_json_request = payload;
         }
 
         // Gather responses;
@@ -948,8 +816,9 @@ public class Smarkets extends BettingSite {
             else if (response.containsKey("error_type")) {
                 String error = (String) response.get("error_type");
 
-                log.severe(String.format("Failed to placed %s on bet %s in smarkets. '%s'.",
-                        betOrder.investment.toString(), betOrder.bet_offer.bet.id(), error));
+                log.severe(String.format("Failed to place %s @ %s on bet %s in smarkets. '%s'.",
+                        betOrder.investment.toString(), betOrder.odds().toString(),
+                        betOrder.bet_offer.bet.id(), error));
                 pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, error);
             }
             else {
@@ -989,20 +858,30 @@ public class Smarkets extends BettingSite {
 
     public static JSONObject jsonConverter(JSONObject json){
 
-        long orig_price = (long) json.get("orig_price");
-        json.put("orig_price_dec", price2dec(orig_price).toString());
+        if (json.containsKey("orig_price")) {
+            long orig_price = (long) json.get("orig_price");
+            json.put("orig_price_dec", price2dec(orig_price).toString());
+        }
 
-        long price = (long) json.get("price");
-        json.put("price_dec", price2dec(price).toString());
+        if (json.containsKey("price")) {
+            long price = (long) json.get("price");
+            json.put("price_dec", price2dec(price).toString());
 
-        long executed_avg_price = (long) json.get("executed_avg_price");
-        json.put("executed_avg_price_dec", price2dec(executed_avg_price).toString());
+            if (json.containsKey("quantity")) {
+                long quantity = (long) json.get("quantity");
+                json.put("quantity_dec", quantity2size(quantity, price).toString());
+            }
+        }
 
-        long quantity = (long) json.get("quantity");
-        json.put("quantity_dec", quantity2size(quantity, price).toString());
+        if (json.containsKey("executed_avg_price")) {
+            long executed_avg_price = (long) json.get("executed_avg_price");
+            json.put("executed_avg_price_dec", price2dec(executed_avg_price).toString());
 
-        long total_executed_quantity = (long) json.get("total_executed_quantity");
-        json.put("total_executed_quantity_dec", quantity2size(total_executed_quantity, executed_avg_price).toString());
+            if (json.containsKey("total_executed_quantity")) {
+                long total_executed_quantity = (long) json.get("total_executed_quantity");
+                json.put("total_executed_quantity_dec", quantity2size(total_executed_quantity, executed_avg_price).toString());
+            }
+        }
 
         return json;
     }

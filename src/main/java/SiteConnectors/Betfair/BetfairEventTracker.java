@@ -267,18 +267,16 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     @Override
-    public void updateMarketOddsReport(FootballBet[] bets) throws Exception {
-        marketOddsReportTime = null;
-        Instant start = Instant.now();
+    public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
 
         if (match == null){
             log.severe("Trying to get market odds report on null event.");
-            return;
+            return null;
         }
         // Update the raw data before extracting for report.
         updateMarketData();
-
-        HashMap<String, ArrayList<BetOffer>> full_event_market_report = new HashMap<String, ArrayList<BetOffer>>();
+        MarketOddsReport new_marketOddsReport = new MarketOddsReport();
+        HashMap<String, JSONObject> eventMarketData = (HashMap<String, JSONObject>) this.eventMarketData.clone();
 
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
@@ -345,11 +343,10 @@ public class BetfairEventTracker extends SiteEventTracker {
                 betOffers.add(new BetOffer(match, bet, betfair, odds, volume, metadata));
             }
 
-            full_event_market_report.put(bet.id(), betOffers);
+            new_marketOddsReport.addBetOffers(bet.id(), betOffers);
         }
 
-        marketOddsReport = new MarketOddsReport(full_event_market_report);
-        marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
+        return new_marketOddsReport;
     }
 
 

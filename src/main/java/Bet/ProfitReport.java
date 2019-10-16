@@ -22,10 +22,8 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public ArrayList<BetOrder> bet_orders;
+    public ArrayList<BetOrder> betOrders;
     public String type;
-    public static String BET_ORDER_TYPE = "BET_ORDERS_TYPE";
-    public static String PLACED_BET_TYPE = "PLACED_BET_TYPE";
 
     public BigDecimal total_investment;
 
@@ -36,17 +34,18 @@ public class ProfitReport implements Comparable<ProfitReport> {
     public BigDecimal profit_ratio;
 
     public BigDecimal ret_from_min_stake;
+    public BigDecimal ret_from_max_stake;
 
 
-    public ProfitReport(ArrayList<Object> betOrders_or_placedBets) {
+    public ProfitReport(ArrayList<BetOrder> betOrders) {
 
-        this.type = BET_ORDER_TYPE;
+        this.betOrders = betOrders;
 
         // Sum up all investments
         // Find minimum return of all bet orders
         // Find maximum return of all bet orders
         total_investment = BigDecimal.ZERO;
-        for (BetOrder bo: bet_orders){
+        for (BetOrder bo: betOrders){
             total_investment = total_investment.add(bo.investment);
 
             if (min_return == null || bo.actual_return.compareTo(min_return) == -1){
@@ -56,9 +55,18 @@ public class ProfitReport implements Comparable<ProfitReport> {
                 max_return = bo.actual_return;
             }
 
-            BigDecimal this_largest_min_return = bo.bet_offer.minStakeReturn();
-            if (ret_from_min_stake == null || this_largest_min_return.compareTo(ret_from_min_stake) == 1){
-                ret_from_min_stake = this_largest_min_return;
+            if (ret_from_min_stake == null) {
+                ret_from_min_stake = bo.bet_offer.returnFromMinStake();
+            }
+            else{
+                ret_from_min_stake = ret_from_min_stake.max(bo.bet_offer.returnFromMinStake());
+            }
+
+            if (ret_from_max_stake == null){
+                ret_from_max_stake = bo.bet_offer.returnFromMaxStake();
+            }
+            else{
+                ret_from_max_stake = ret_from_max_stake.min(bo.bet_offer.returnFromMaxStake());
             }
         }
 
@@ -89,7 +97,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
         j.put("profit_ratio", profit_ratio.toString());
         if (full){
             JSONArray orders = new JSONArray();
-            for (BetOrder bo: bet_orders){
+            for (BetOrder bo: betOrders){
                 orders.add(bo.toJSON());
             }
             j.put("bet_orders", orders);
@@ -107,20 +115,22 @@ public class ProfitReport implements Comparable<ProfitReport> {
     public ProfitReport newProfitReportReturn(BigDecimal target_return) {
         // Create a new profit report thats the same but with a different target return.
 
-        if (target_return.compareTo(ret_from_min_stake) == -1){
-            String msg = String.format("Creating a new profit report failed. " +
-                            "Target return set as %s but the return from the min stake is %s.",
-                    target_return.toString(), ret_from_min_stake.toString());
-            log.warning(msg);
-            return null;
-        }
 
         ArrayList<BetOrder> new_bet_orders = new ArrayList<BetOrder>();
-        for (int i=0; i< bet_orders.size(); i++){
-            new_bet_orders.add(new BetOrder(bet_orders.get(i).bet_offer, target_return, true));
+        for (int i=0; i< betOrders.size(); i++){
+            new_bet_orders.add(new BetOrder(betOrders.get(i).bet_offer, target_return, true));
         }
 
         return new ProfitReport(new_bet_orders);
+    }
+
+
+    public boolean smallerInvestment(ProfitReport pr){
+        return total_investment.compareTo(pr.total_investment) == -1;
+    }
+
+    public boolean biggerInvestment(ProfitReport pr){
+        return total_investment.compareTo(pr.total_investment) == 1;
     }
 
 
@@ -128,11 +138,11 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
         // Find the average target returns of the betOrders
         BigDecimal sum_target_return = BigDecimal.ZERO;
-        for (BetOrder betOrder: bet_orders){
+        for (BetOrder betOrder: betOrders){
             sum_target_return = sum_target_return.add(betOrder.target_return);
         }
         BigDecimal avg_target_return = sum_target_return.divide(
-                new BigDecimal(bet_orders.size()), 20, RoundingMode.HALF_UP);
+                new BigDecimal(betOrders.size()), 20, RoundingMode.HALF_UP);
 
         // Use ratio of this investment and target investment to multiply old target return
         // to new target return
@@ -151,25 +161,35 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
         // Calculate profitReport for each tautology using the best ROI for each bet
         ArrayList<ProfitReport> tautologyProfitReports = new ArrayList<ProfitReport>();
+        tautologyLoop:
         for (BetGroup betGroup : tautologies){
 
             // Ensure all bets exist before continuing
-            boolean skip = false;
             for (Bet bet: betGroup.bets){
                 if (!marketOddsReport.contains(bet.id()) || marketOddsReport.get(bet.id()).size() <= 0){
-                    skip = true;
-                    break;
+                    continue tautologyLoop;
                 }
-            }
-            if (skip){
-                continue;
             }
 
             // Generate a list of ratio profitReport using the best offer for each bet
             ArrayList<BetOrder> betOrders = new ArrayList<BetOrder>();
             for (Bet bet: betGroup.bets){
-                BetOffer best_offer = marketOddsReport.get(bet.id()).get(0);
-                betOrders.add(new BetOrder(best_offer, BigDecimal.ONE, false));
+
+                ArrayList<BetOffer> betOffers = marketOddsReport.get(bet.id());
+
+                // Find best valid offer or if none valid skip this tautology
+                BetOffer best_valid_offer = null;
+                while (best_valid_offer == null || best_valid_offer.minVolumeNeeded()){
+                    if (betOffers.size() > 0){
+                        best_valid_offer = betOffers.remove(0);
+                    }
+                    else{
+                        continue tautologyLoop;
+                    }
+                }
+
+
+                betOrders.add(new BetOrder(best_valid_offer, BigDecimal.ONE, false));
             }
 
             ProfitReport pr = new ProfitReport(betOrders);

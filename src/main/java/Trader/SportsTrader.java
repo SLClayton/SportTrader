@@ -50,6 +50,7 @@ public class SportsTrader {
     public BigDecimal MIN_PROFIT_RATIO;
     public boolean END_ON_BET;
     public BigDecimal TARGET_INVESTMENT;
+    public long REQUEST_TIMEOUT;
 
     public Lock betlock = new ReentrantLock();
 
@@ -109,7 +110,8 @@ public class SportsTrader {
 
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
-                "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT"};
+                "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
+                "REQUEST_TIMEOUT"};
 
         for (String field: required){
             if (!(config.keySet().contains(field))){
@@ -133,6 +135,14 @@ public class SportsTrader {
         MIN_PROFIT_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_PROFIT_RATIO")));
         END_ON_BET = (boolean) config.get("END_ON_BET");
         TARGET_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("TARGET_INVESTMENT")));
+        REQUEST_TIMEOUT = (long) ((Double) config.get("REQUEST_TIMEOUT")).intValue();
+
+
+        if (TARGET_INVESTMENT.compareTo(MAX_INVESTMENT) == 1){
+            log.severe(String.format("TARGET_INVESTMENT (%s) is higher than MAX_INVESTMENT (%s). Exiting",
+                    TARGET_INVESTMENT.toString(), MAX_INVESTMENT.toString()));
+            System.exit(0);
+        }
 
 
         JSONObject config_json = new JSONObject(config);

@@ -22,7 +22,6 @@ public abstract class SiteEventTracker {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public MarketOddsReport marketOddsReport;
-    public BlockingQueue<Boolean> updateComplete;
     public Long marketOddsReportTime;
     public FootballMatch match;
     public Set<String> bet_blacklist;
@@ -30,7 +29,6 @@ public abstract class SiteEventTracker {
 
     public SiteEventTracker(){
         bet_blacklist = new HashSet<>();
-        updateComplete = new ArrayBlockingQueue(1);
     }
 
     public abstract String name();
@@ -38,6 +36,6 @@ public abstract class SiteEventTracker {
     public abstract boolean setupMatch(FootballMatch match) throws IOException,
             URISyntaxException, InterruptedException;
 
-    public abstract void updateMarketOddsReport(FootballBet[] bets) throws Exception;
+    public abstract MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception;
 
 }

@@ -160,9 +160,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
     }
 
     @Override
-    public void updateMarketOddsReport(FootballBet[] bets) throws Exception {
-        marketOddsReportTime = null;
-        Instant start = Instant.now();
+    public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
 
         if (event_id == null){
             throw new Exception("Smarkets event trader tried to update odds without an event.");
@@ -171,10 +169,11 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         updatePrices();
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
+        JSONObject lastPrices = (JSONObject) this.lastPrices.clone();
 
         if (lastPrices == null){
             marketOddsReport = new_marketOddsReport;
-            return;
+            return null;
         }
 
         for (FootballBet bet: bets){
@@ -265,9 +264,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
 
-        // Assign new odds report.
-        marketOddsReport = new_marketOddsReport;
-        marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
+        return new_marketOddsReport;
     }
 
 
@@ -280,24 +277,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         try {
 
-
-            Smarkets s = new Smarkets();
-            SmarketsEventTracker set = (SmarketsEventTracker) s.getEventTracker();
-
-            FootballMatch fm = new FootballMatch("2019-10-05T16:30:00.000Z",
-                    "west ham", "crystal palace");
-
-            fm.verify();
-            print("setup: " + String.valueOf(set.setupMatch(fm)));
-
-            set.updatePrices();
-
-            FootballBetGenerator fbg = new FootballBetGenerator();
-            set.updateMarketOddsReport(fbg.getAllBets());
-
-
-            pp(set.lastPrices);
-            p(set.marketOddsReport.toJSON());
 
 
         } catch (Exception e) {

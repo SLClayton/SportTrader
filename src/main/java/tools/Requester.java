@@ -186,8 +186,6 @@ public class Requester {
             if (response_body == null){
                 response_body = "null";
             }
-            log.warning(String.format("429 (Too Many Requests) error for getRaw request '%s'.\n%s",
-                    url, response_body));
             return response_body;
         }
 
@@ -196,7 +194,7 @@ public class Requester {
             if (response_body == null){
                 response_body = "null";
             }
-            log.warning(String.format("502 error error for getRaw request '%s', trying again.\n%s", url, response_body));
+            log.warning(String.format("502 error error for GET request '%s', trying again.\n%s", url, response_body));
             return getRaw(url, params);
         }
 

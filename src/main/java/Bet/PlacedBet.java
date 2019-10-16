@@ -76,6 +76,11 @@ public class PlacedBet {
         this.betOrder = betOrder;
         this.error = error;
         this.time_placed = time_placed;
+
+        backersProfit_layersStake = BigDecimal.ZERO;
+        backersStake_layersProfit = BigDecimal.ZERO;
+        returns = BigDecimal.ZERO;
+        investment = BigDecimal.ZERO;
     }
 
     public PlacedBet(String state, BetOrder betOrder, String error){

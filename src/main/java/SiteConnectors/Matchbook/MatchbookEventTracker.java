@@ -85,18 +85,16 @@ public class MatchbookEventTracker extends SiteEventTracker {
     }
 
     @Override
-    public void updateMarketOddsReport(FootballBet[] bets) throws Exception {
-        marketOddsReportTime = null;
-        Instant start = Instant.now();
+    public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
 
         if (event_id == null){
-            throw new Exception("Matchbook event trader tried to update odds without an event.");
+            return null;
         }
 
         // Update the raw odds for this event
         updateMarketData();
-
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
+        JSONObject eventMarketData = (JSONObject) this.eventMarketData.clone();
 
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
@@ -161,8 +159,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         }
 
         // Assign newly created report as the current.
-        marketOddsReport = new_marketOddsReport;
-        marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
+        return new_marketOddsReport;
     }
 
 
@@ -307,22 +304,6 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
         try {
 
-            Matchbook s = new Matchbook();
-
-            MatchbookEventTracker set = (MatchbookEventTracker) s.getEventTracker();
-
-            FootballMatch fm = new FootballMatch("2019-10-05T16:30:00.000Z",
-                    "west ham", "crystal palace");
-
-            fm.verify();
-            print("setup: " + String.valueOf(set.setupMatch(fm)));
-
-            set.updateMarketData();
-
-            FootballBetGenerator fbg = new FootballBetGenerator();
-            set.updateMarketOddsReport(fbg.getAllBets());
-
-            p(set.marketOddsReport.toJSON());
 
 
         } catch (Exception e) {

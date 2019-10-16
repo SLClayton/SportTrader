@@ -22,16 +22,27 @@ public class PlacedProfitReport {
     public BigDecimal max_profit;
     public BigDecimal profit_ratio;
 
+    public String state;
+    public ProfitReport blueprint;
 
-    public PlacedProfitReport(ArrayList<PlacedBet> placedBets) {
+
+    public PlacedProfitReport(ArrayList<PlacedBet> placedBets, ProfitReport blueprint) {
 
         this.placedBets = placedBets;
+        this.blueprint = blueprint;
+        this.state = "SUCCESS";
 
         // Sum up all investments
         // Find minimum return of all placed bets
         // Find maximum return of all placed bets
         total_investment = BigDecimal.ZERO;
         for (PlacedBet pb: placedBets){
+
+            if (!pb.state.equals(PlacedBet.SUCCESS_STATE)){
+                this.state = "FAIL";
+                continue;
+            }
+
             total_investment = total_investment.add(pb.investment);
 
             if (min_return == null || pb.returns.compareTo(min_return) == -1){
@@ -62,13 +73,13 @@ public class PlacedProfitReport {
         j.put("min_profit", min_profit.toString());
         j.put("max_profit", max_profit.toString());
         j.put("profit_ratio", profit_ratio.toString());
+        j.put("based_on", blueprint.toJSON(false));
         if (full){
             JSONArray orders = new JSONArray();
             for (PlacedBet pb: placedBets){
                 orders.add(pb.toJSON());
             }
             j.put("placed_bets", orders);
-
         }
         return j;
     }

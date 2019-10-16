@@ -47,6 +47,11 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
+    public boolean minVolumeNeeded(){
+        return volume.compareTo(minStake()) != -1;
+    }
+
+
     public String toString(){
         return toJSON().toString();
     }
@@ -89,7 +94,7 @@ public class BetOffer implements Comparable<BetOffer> {
     public BigDecimal minStake(){
         BigDecimal min_backers_stake = site.minBackersStake();
         if (isLay()){
-            return backStake2LayStake(min_backers_stake, odds).setScale(2, RoundingMode.UP);
+            return backStake2LayStake(min_backers_stake, odds);
         }
         return min_backers_stake.setScale(2, RoundingMode.UP);
     }
@@ -98,18 +103,18 @@ public class BetOffer implements Comparable<BetOffer> {
     public BigDecimal maxStake(){
         BigDecimal max_backers_stake = volume;
         if (isLay()){
-            return backStake2LayStake(max_backers_stake, odds).setScale(2, RoundingMode.DOWN);
+            return backStake2LayStake(max_backers_stake, odds);
         }
-        return max_backers_stake.setScale(2, RoundingMode.UP);
+        return max_backers_stake.setScale(2, RoundingMode.DOWN);
     }
 
 
-    public BigDecimal minStakeReturn(){
+    public BigDecimal returnFromMinStake(){
         return ROI(minStake(), true);
     }
 
 
-    public BigDecimal maxStakeReturn(){
+    public BigDecimal returnFromMaxStake(){
         return ROI(maxStake(), true);
     }
 

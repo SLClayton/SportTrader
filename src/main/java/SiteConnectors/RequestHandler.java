@@ -5,32 +5,47 @@ import org.json.simple.JSONObject;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class RequestHandler {
 
     public Object request;
-    public JSONObject response;
-    public BlockingQueue<JSONObject> responseQueue;
-    public boolean valid_response;
+    public Object response;
+    public BlockingQueue<Object> responseQueue;
 
 
     public RequestHandler(){
         responseQueue = new ArrayBlockingQueue<>(1);
     }
 
-    public void setResponse(JSONObject resp) throws InterruptedException {
+    public RequestHandler(Object request){
+        this();
+        this.request = request;
+    }
+
+    public boolean valid_response(){
+        return response != null;
+    }
+
+    public void setResponse(Object resp) throws InterruptedException {
         response = resp;
-        valid_response = true;
         responseQueue.put(response);
     }
 
     public void setFail() throws InterruptedException {
         response = null;
-        valid_response = false;
         responseQueue.put(new JSONObject());
     }
 
-    public JSONObject getResponse() throws InterruptedException {
+    public Object getResponse() throws InterruptedException {
         return responseQueue.take();
+    }
+
+    public Object pollReponse(long timeout, TimeUnit timeUnit) throws InterruptedException {
+        return responseQueue.poll(timeout, timeUnit);
+    }
+
+    public Object pollReponse() {
+        return responseQueue.poll();
     }
 }

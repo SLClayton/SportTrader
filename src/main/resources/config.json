@@ -1,16 +1,17 @@
 {
-    "MAX_MATCHES": 2,
+    "MAX_MATCHES": 20,
     "IN_PLAY": false,
     "HOURS_AHEAD": 24,
 
     "CHECK_MARKETS": true,
     "RATE_LIMIT": 0,
+    "REQUEST_TIMEOUT": 150,
 
     "PLACE_BETS": true,
     "END_ON_BET": true,
-    "MIN_PROFIT_RATIO": -0.05,
+    "MIN_PROFIT_RATIO": 0.005,
     "MIN_ODDS_RATIO": 0.9,
-    "TARGET_INVESTMENT": 20.00,
+    "TARGET_INVESTMENT": 10.00,
     "MAX_INVESTMENT": 50.00,
 
     "ACTIVE_SITES": {
@@ -18,6 +19,6 @@
     	"matchbook": true,
         "smarkets": true
     },
-    "EVENT_SOURCE": "smarkets",
-    "MIN_SITES_PER_MATCH": 2
+    "EVENT_SOURCE": "matchbook",
+    "MIN_SITES_PER_MATCH": 3
 }

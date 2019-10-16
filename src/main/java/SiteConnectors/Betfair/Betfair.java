@@ -7,7 +7,7 @@ import Bet.FootballBet.FootballResultBet;
 import Bet.FootballBet.FootballScoreBet;
 import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
-import SiteConnectors.JsonHandler;
+import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import org.apache.http.client.methods.HttpPost;
@@ -61,7 +61,7 @@ public class Betfair extends BettingSite {
     public String token;
 
     public RPCRequestHandler rpcRequestHandler;
-    public BlockingQueue<JsonHandler> rpcRequestHandlerQueue;
+    public BlockingQueue<RequestHandler> rpcRequestHandlerQueue;
 
     public EventSearchHandler eventSearchHandler;
     public BlockingQueue<Object[]> eventSearchHandlerQueue;
@@ -173,8 +173,8 @@ public class Betfair extends BettingSite {
         public int REQUEST_THREADS = 10;
         public long WAIT_MILLISECONDS = 5;
 
-        public BlockingQueue<JsonHandler> requestQueue;
-        public BlockingQueue<ArrayList<JsonHandler>> workerQueue;
+        public BlockingQueue<RequestHandler> requestQueue;
+        public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
 
         public RPCRequestHandler(BlockingQueue requestQueue){
             this.requestQueue = requestQueue;
@@ -185,8 +185,8 @@ public class Betfair extends BettingSite {
             log.info("Running RPC Request Handler for betfair.");
 
             Instant wait_until = null;
-            ArrayList<JsonHandler> jsonHandlers = new ArrayList<>();
-            JsonHandler new_handler;
+            ArrayList<RequestHandler> jsonHandlers = new ArrayList<>();
+            RequestHandler new_handler;
             long milliseconds_to_wait;
 
             // Start workers
@@ -230,7 +230,7 @@ public class Betfair extends BettingSite {
 
     public class RPCRequestSender implements Runnable{
 
-        public BlockingQueue<ArrayList<JsonHandler>> jobQueue;
+        public BlockingQueue<ArrayList<RequestHandler>> jobQueue;
 
         public RPCRequestSender(BlockingQueue jobQueue){
             this.jobQueue = jobQueue;
@@ -238,7 +238,7 @@ public class Betfair extends BettingSite {
 
         @Override
         public void run() {
-            ArrayList<JsonHandler> jsonHandlers;
+            ArrayList<RequestHandler> jsonHandlers;
 
             while (true){
                 JSONArray final_request = new JSONArray();
@@ -248,7 +248,7 @@ public class Betfair extends BettingSite {
                     // Build final rpc request, give each rpc request the index of the jsonhandler as its id
                     // This can mean multiple rpc requests have the same id
                     for (int i=0; i<jsonHandlers.size(); i++){
-                        for (Object single_rpc_obj: jsonHandlers.get(i).request){
+                        for (Object single_rpc_obj: (JSONArray) jsonHandlers.get(i).request){
                             JSONObject single_rpc = (JSONObject) single_rpc_obj;
 
                             single_rpc.put("id", i);
@@ -277,8 +277,8 @@ public class Betfair extends BettingSite {
 
                     // Send each JSONArray back off to handler
                     for (int i=0; i<responses.length; i++){
-                        JsonHandler jh = jsonHandlers.get(i);
-                        jh.setResponse(responses[i]);
+                        RequestHandler rh = jsonHandlers.get(i);
+                        rh.setResponse(responses[i]);
                     }
 
 
@@ -407,12 +407,11 @@ public class Betfair extends BettingSite {
         }
 
         // Create JSON handler and put it in the queue to be sent off
-        JsonHandler jh = new JsonHandler();
-        jh.request = rpc_requests;
-        rpcRequestHandlerQueue.put(jh);
+        RequestHandler rh = new RequestHandler(rpc_requests);
+        rpcRequestHandlerQueue.put(rh);
 
         // Put all responses together in one jsonarray
-        JSONArray response = jh.getResponse();
+        JSONArray response = (JSONArray) rh.getResponse();
         JSONArray results = new JSONArray();
         for (Object rpc_return_obj: response){
             JSONObject rpc_return = (JSONObject) rpc_return_obj;
@@ -851,9 +850,14 @@ public class Betfair extends BettingSite {
 
     public static void main(String[] args){
         try {
-            Betfair b = new Betfair();
 
-            b.updateAccountInfo();
+
+            BigDecimal a = null;
+            BigDecimal b = new BigDecimal(23);
+
+            BigDecimal c = b.max(a);
+
+            print(c.toString());
 
 
 

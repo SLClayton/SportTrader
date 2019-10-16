@@ -377,7 +377,7 @@ public class Matchbook extends BettingSite {
         marketDataRequestHandlerQueue.put(rh);
 
         // Wait for its response. (getResponse waits)
-        JSONObject response = rh.getResponse();
+        JSONObject response = (JSONObject) rh.getResponse();
         return response;
     }
 
@@ -444,6 +444,7 @@ public class Matchbook extends BettingSite {
             offer.put("keep-in-play", true);
 
             offers.add(offer);
+            betOrder.site_json_request = offer;
 
             runner_betOrder_map.put(
                     betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID) + betOrder.betType().toLowerCase(),

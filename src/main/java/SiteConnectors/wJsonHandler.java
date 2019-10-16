@@ -5,14 +5,14 @@ import org.json.simple.JSONArray;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class JsonHandler {
+public class wJsonHandler {
 
     public JSONArray request;
     public JSONArray response;
     public BlockingQueue<JSONArray> responseQueue;
 
 
-    public JsonHandler(){
+    public wJsonHandler(){
         responseQueue = new ArrayBlockingQueue<>(1);
     }
 
