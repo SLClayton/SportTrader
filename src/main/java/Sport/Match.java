@@ -1,5 +1,6 @@
 package Sport;
 
+import SiteConnectors.SportData;
 import Trader.SportsTrader;
 
 import java.time.Instant;
@@ -12,13 +13,15 @@ public abstract class Match {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
+    public SportData sportData;
+
     public Instant start_time;
     public String name;
     public String id;
     public Map<String, String> metadata;
-    public String FSID;
 
-    public Match(){
+    public Match(SportData sportData){
+        this.sportData = sportData;
         metadata = new HashMap<String, String>();
     }
 
@@ -33,6 +36,9 @@ public abstract class Match {
         s += "]";
         return s;
     }
+
+
+    public abstract Boolean same_match(Match match);
 
 
 

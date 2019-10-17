@@ -31,10 +31,13 @@ public abstract class SiteEventTracker {
         bet_blacklist = new HashSet<>();
     }
 
+
     public abstract String name();
+
 
     public abstract boolean setupMatch(FootballMatch match) throws IOException,
             URISyntaxException, InterruptedException;
+
 
     public abstract MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception;
 

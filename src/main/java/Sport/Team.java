@@ -4,14 +4,13 @@ import SiteConnectors.FlashScores;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.Normalizer;
 import java.time.Instant;
 import java.util.ArrayList;
 
 public class Team {
 
-    public String FS_ID;
-    public String FS_URLNAME;
-    public String FS_Title;
+    public String id;
     public String name;
 
     public ArrayList<FootballMatch> fixtures;
@@ -24,16 +23,26 @@ public class Team {
 
     @Override
     public String toString(){
-        return FS_Title;
+        return name;
     }
 
-    public FootballMatch getMatch(Instant start_time) throws InterruptedException, IOException,
-            URISyntaxException {
-        return FlashScores.getMatch(this, start_time);
+    public static String normalize(String string){
+        return Normalizer.normalize(string.trim().toLowerCase(), Normalizer.Form.NFD)
+                .replaceAll("\\p{P}", "");
     }
 
-    public ArrayList<FootballMatch> getFixtures() throws InterruptedException, IOException, URISyntaxException {
-        fixtures = FlashScores.getTeamFixtures(this);
-        return fixtures;
+
+    public String normal_name(){
+        return normalize(name);
     }
+
+
+    public boolean same_team(Team team){
+        return (id != null && id.equals(team.id)) || normal_name().equals(team.normal_name());
+    }
+
+
+
+
+
 }

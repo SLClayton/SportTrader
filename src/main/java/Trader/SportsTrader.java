@@ -62,6 +62,9 @@ public class SportsTrader {
     public ArrayList<EventTrader> eventTraders;
     SessionsUpdater sessionsUpdater;
 
+    public SportData sportData;
+    public SportDataFileSaver sportDataFileSaver;
+
     public boolean exit_all;
 
 
@@ -96,13 +99,18 @@ public class SportsTrader {
 
         siteObjects = new HashMap<String, BettingSite>();
         eventTraders = new ArrayList<EventTrader>();
+
+        sportData = new FlashScores();
+        sportDataFileSaver = new SportDataFileSaver(sportData);
+        sportDataFileSaver.start();
+
     }
 
 
     private void setupConfig(String config_filename) throws Exception {
         Map config = null;
         try{
-            config = getJSONResource(config_filename);
+            config = getJSONResourceMap(config_filename);
         } catch (JsonSyntaxException e){
             log.severe("Config JSON syntax error.");
             System.exit(0);
@@ -321,14 +329,6 @@ public class SportsTrader {
 
                 log.info(String.format("Attempting to verify and setup %s.", footballMatch));
 
-                // Attempt to link with Flashscores, try the queue again if it fails
-                try{
-                    footballMatch = FlashScores.verifyMatch(footballMatch);
-                } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e) {
-                    log.warning(String.format("Failed to link match %s to flashscores - %s", footballMatch, e.getMessage()));
-                    continue;
-                }
-
                 // Attempt to setup site event trackers for all sites for this match, try queue again if fails
                 EventTrader eventTrader = new EventTrader(sportsTrader, footballMatch, siteObjects, footballBetGenerator);
                 int successful_site_connections = eventTrader.setupMatch();
@@ -395,6 +395,53 @@ public class SportsTrader {
                 }
             }
 
+        }
+    }
+
+
+    public class SportDataFileSaver implements Runnable{
+
+        public long min_save_interval_mins = 2;
+
+        public SportData sportData;
+        public Thread thread;
+
+        public SportDataFileSaver(SportData sportData){
+            this.sportData = sportData;
+
+            thread.setName("FS-Filesaver");
+            thread = new Thread(this);
+        }
+
+        public void start(){
+            thread.start();
+        }
+
+        @Override
+        public void run() {
+
+            Instant min_next_save = null;
+
+            while (true){
+                try{
+                    // Wait for a save request
+                    sportData.save_requests_queue.take();
+
+                    // Wait until at least the minumym time until next save is reached
+                    if (min_next_save != null && Instant.now().isBefore(min_next_save)){
+                        long sleeptime = min_next_save.toEpochMilli() - Instant.now().toEpochMilli();
+                        Thread.sleep(sleeptime);
+                    }
+
+                    // Save and clear save requests and set next min time to save
+                    sportData.saveFootballAliases();
+                    sportData.save_requests_queue.clear();
+                    min_next_save = Instant.now().plus(min_save_interval_mins, ChronoUnit.MINUTES);
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package Sport;
 
 import SiteConnectors.FlashScores;
+import SiteConnectors.SportData;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,21 +22,23 @@ public class FootballMatch extends Match{
     public Team team_a;
     public Team team_b;
 
-    public FootballMatch(Instant START, Team TEAM_A, Team TEAM_B){
-        super();
+    public FootballMatch(SportData sportData, Instant START, Team TEAM_A, Team TEAM_B){
+        super(sportData);
         start_time = START;
         team_a = TEAM_A;
         team_b = TEAM_B;
         name = team_a.name + " v " + team_b.name;
     }
 
-    public FootballMatch(String START, String TEAM_A, String TEAM_B){
-        super();
+
+    public FootballMatch(SportData sportData, String START, String TEAM_A, String TEAM_B){
+        super(sportData);
         start_time = Instant.parse(START);
         team_a = new Team(TEAM_A);
         team_b = new Team(TEAM_B);
         name = team_a.name + " v " + team_b.name;
     }
+
 
     public static FootballMatch parse(String start, String name) throws ParseException {
         Instant start_time = Instant.parse(start);
@@ -48,33 +51,65 @@ public class FootballMatch extends Match{
         return new FootballMatch(start_time, new Team(teams[0]), new Team(teams[1]));
     }
 
+
     public String toString(){
         return "[" + name + " @ " + start_time.toString() + "]";
     }
 
 
-    public boolean same_match(FootballMatch match){
-        log.fine(String.format("Checking match for %s and %s.", this, match));
+    @Override
+    public Boolean same_match(Match match){
 
         // Check Start time, false if different
         if (!start_time.equals(match.start_time)){
             return false;
         }
 
-        // Check FS IDs (if one doesnt have one then this will be false)
-        // true if the same
-        if (this.FSID == null || this.FSID.equals(match.FSID)){
+
+        // If both have IDs which match then they're the same
+        if (id != null && match.id != null){
+            if (id.equals(match.id)){
+                return true;
+            }
+            return false;
+        }
+
+
+        // If argument isn't football match then they're not the same
+        FootballMatch fm;
+        try{
+            fm = (FootballMatch) match;
+        } catch (ClassCastException e){
+            return false;
+        }
+
+        // If both teams names are the same then same match
+        if (team_a.same_team(fm.team_a) && team_b.same_team(fm.team_b)){
             return true;
         }
 
-        // No match
-        log.fine(String.format("No match for %s and %s.", this, match));
-        return false;
+        // If both team names have IDs available, compare the IDs
+        if (sportData.alias_id_map.containsKey(team_a.normal_name())
+            && sportData.alias_id_map.containsKey(team_b.normal_name())){
+
+            team_a.id = sportData.alias_id_map.get(team_a.normal_name());
+            String team_b_id = sportData.alias_id_map.get(team_b.normal_name());
+
+            return team_a.id.equals(team_b_id);
+        }
+
+        //TODO: continue verifying shit here
+
+
+        // Unable to say for sure
+        return null;
     }
+
 
     public static boolean same_team(String T1, String T2){
         return same_team(T1, T2, true);
     }
+
 
     public static boolean same_team(String T1, String T2, boolean deep_check){
         //log.fine(String.format("Checking teams match for %s and %s.", T1, T2));
@@ -144,24 +179,14 @@ public class FootballMatch extends Match{
 
     public static boolean list_contains(List<FootballMatch> list, Match match){
         for (FootballMatch match2: list){
-            if (match.FSID.equals(match2.FSID)){
+            if (match.same_match(match2) == true){
                 return true;
             }
         }
         return false;
     }
 
-    public void verify() throws InterruptedException, IOException, URISyntaxException,
-            FlashScores.verificationException {
 
-        FootballMatch verified = FlashScores.verifyMatch(this);
-        this.FSID =                verified.FSID;
-        this.team_a.FS_ID =        verified.team_a.FS_ID;
-        this.team_a.FS_URLNAME =   verified.team_a.FS_URLNAME;
-        this.team_a.FS_Title =     verified.team_a.FS_Title;
-        this.team_b.FS_ID =        verified.team_b.FS_ID;
-        this.team_b.FS_URLNAME =   verified.team_b.FS_URLNAME;
-        this.team_b.FS_Title =     verified.team_b.FS_Title;
-    }
+    public void verify() {}
 
 }

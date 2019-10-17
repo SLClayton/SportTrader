@@ -58,14 +58,8 @@ public class MatchbookEventTracker extends SiteEventTracker {
         // Verify each match in flashscores and see if it matches
         for (FootballMatch fm: events){
 
-            try{
-                fm.verify();
-            } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e){
-                log.warning(String.format("Could not verify matchbook match %s in flashscores.", fm));
-                continue;
-            }
 
-            if (fm.FSID.equals(setup_match.FSID)){
+            if (fm.id.equals(setup_match.id)){
                 match = fm;
                 event_id = fm.metadata.get("matchbook_event_id");
                 break;

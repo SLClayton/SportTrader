@@ -37,6 +37,8 @@ public abstract class BettingSite {
     public Requester requester;
 
     public BigDecimal balance;
+    public BigDecimal commission_rate;
+    public BigDecimal min_back_stake;
     public BigDecimal exposure;
     public Lock balanceLock = new ReentrantLock();
     public BigDecimal balance_buffer = new BigDecimal("10.00");

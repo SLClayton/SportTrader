@@ -11,7 +11,7 @@ public class RequestHandler {
 
     public Object request;
     public Object response;
-    public BlockingQueue<Object> responseQueue;
+    public BlockingQueue<Boolean> responseQueue;
 
 
     public RequestHandler(){
@@ -27,25 +27,33 @@ public class RequestHandler {
         return response != null;
     }
 
-    public void setResponse(Object resp) throws InterruptedException {
+    public void setResponse(Object resp) {
         response = resp;
-        responseQueue.put(response);
+        responseQueue.add(true);
     }
 
-    public void setFail() throws InterruptedException {
-        response = null;
-        responseQueue.put(new JSONObject());
+    public void setFail() {
+        setResponse(null);
     }
 
     public Object getResponse() throws InterruptedException {
-        return responseQueue.take();
+        responseQueue.take();
+        return response;
     }
 
     public Object pollReponse(long timeout, TimeUnit timeUnit) throws InterruptedException {
-        return responseQueue.poll(timeout, timeUnit);
+        responseQueue.poll(timeout, timeUnit);
+        return response;
     }
 
     public Object pollReponse() {
-        return responseQueue.poll();
+        responseQueue.poll();
+        return response;
+    }
+
+    public void clear(){
+        request = null;
+        response = null;
+        responseQueue.clear();
     }
 }

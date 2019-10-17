@@ -55,7 +55,6 @@ public class Betfair extends BettingSite {
     public String hostname = "https://api.betfair.com/";
     public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
     public String accounts_endpoint = hostname + "/exchange/account/json-rpc/v1";
-    public BigDecimal min_backers_stake = new BigDecimal("2.00");
     public String app_id = "3BD65v2qKzw9ETp9";
     public String app_id_dev = "DfgkZAnb0qi6Wmk1";
     public String token;
@@ -66,9 +65,7 @@ public class Betfair extends BettingSite {
     public EventSearchHandler eventSearchHandler;
     public BlockingQueue<Object[]> eventSearchHandlerQueue;
 
-    public BigDecimal commission_rate = new BigDecimal("0.02");
     public BigDecimal commission_discount = BigDecimal.ZERO;
-    public BigDecimal balance;
     public long betfairPoints = 0;
 
     int weight_per_market = 17;  // Get marketbook request weight per market requested
@@ -98,6 +95,8 @@ public class Betfair extends BettingSite {
         log.info("Creating new Betfair Connector");
         name = "betfair";
         balance = BigDecimal.ZERO;
+        commission_rate = new BigDecimal("0.02");
+        min_back_stake = new BigDecimal("2.00");
 
         requester = new Requester();
         requester.setHeader("X-Application", app_id);
@@ -362,7 +361,7 @@ public class Betfair extends BettingSite {
 
     @Override
     public BigDecimal minBackersStake() {
-        return min_backers_stake;
+        return min_back_stake;
     }
 
 
@@ -444,7 +443,6 @@ public class Betfair extends BettingSite {
         j.put("jsonrpc", "2.0");
         j.put("method", "AccountAPING/v1.0/getAccountFunds");
         j.put("params", new JSONObject());
-
 
         JSONObject r = (JSONObject) ((JSONObject) requester.post(accounts_endpoint, j)).get("result");
 

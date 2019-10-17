@@ -49,7 +49,9 @@ public class Requester {
         //httpClient = HttpClients.createDefault();
         httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(RequestConfig.custom()
-                        .setCookieSpec(CookieSpecs.STANDARD).build())
+                        .setCookieSpec(CookieSpecs.STANDARD)
+                        .setConnectTimeout(5000)
+                        .build())
                 .build();
 
         headers = new HashMap<>();

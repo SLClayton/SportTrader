@@ -2,7 +2,10 @@ package Trader;
 
 import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
+import SiteConnectors.Betfair.Betfair;
+import SiteConnectors.Betfair.BetfairEventTracker;
 import SiteConnectors.BettingSite;
+import SiteConnectors.FlashScores;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
@@ -16,6 +19,11 @@ import java.math.RoundingMode;
 import java.net.PortUnreachableException;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -185,30 +193,33 @@ public class EventTrader implements Runnable {
 
             while (true){
 
+                RequestHandler requestHandler = null;
                 try {
-                    // Get site name from queue to represent job to update its odds report
-                    RequestHandler requestHandler = job_queue.take();
-                    String site_name = (String) requestHandler.request;
-
-                    // Find the object from its name and update this objects odds report
-                    SiteEventTracker set = siteEventTrackers.get(site_name);
-
-                    try {
-                        Instant start = Instant.now();
-                        MarketOddsReport mor = set.getMarketOddsReport(footballBetGenerator.getAllBets());
-                        siteEventTrackers.get(site_name).marketOddsReportTime =
-                                Instant.now().toEpochMilli() - start.toEpochMilli();
-                        requestHandler.setResponse(mor);
-                    } catch (Exception e){
-                        e.printStackTrace();
-                        log.severe(e.toString());
-                        requestHandler.setFail();
-                    }
-
+                    // Wait for request handler to arrive telling us which market odds to update
+                    requestHandler = job_queue.take();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                } catch (Exception e) {
+                    continue;
+                }
+                if (requestHandler == null) {
+                    continue;
+                }
+
+                // Find the object from its name
+                String site_name = (String) requestHandler.request;
+                SiteEventTracker set = siteEventTrackers.get(site_name);
+
+                try {
+                    set.marketOddsReportTime = null;
+                    Instant start = Instant.now();
+                    MarketOddsReport mor = set.getMarketOddsReport(footballBetGenerator.getAllBets());
+                    set.marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
+                    requestHandler.setResponse(mor);
+                }
+                catch (Exception e) {
                     e.printStackTrace();
+                    log.severe(e.getStackTrace().toString());
+                    requestHandler.setFail();
                 }
             }
 
@@ -249,11 +260,11 @@ public class EventTrader implements Runnable {
         }
 
 
-
+        String s = "";
         for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()) {
-            print("Time taken for " + entry.getKey() + " = " + entry.getValue().marketOddsReportTime + "ms");
+            s += "Time taken for " + entry.getKey() + " = " + entry.getValue().marketOddsReportTime + "ms\n";
         }
-        print("-----------------");
+        //print(s + "-----------------");
 
 
 
@@ -476,4 +487,8 @@ public class EventTrader implements Runnable {
     }
 
 
+    public static void main(String[] args){
+
+
+    }
 }

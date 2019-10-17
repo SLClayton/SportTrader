@@ -76,14 +76,9 @@ public class SmarketsEventTracker extends SiteEventTracker {
         // Verify each match in flashscores and see if it matches
         for (FootballMatch fm: events){
 
-            try{
-                fm.verify();
-            } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e){
-                log.warning(String.format("Could not verify smarkets match %s in flashscores.", fm));
-                continue;
-            }
 
-            if (fm.FSID.equals(setup_match.FSID)){
+
+            if (fm.id.equals(setup_match.id)){
                 match = fm;
                 event_id = fm.metadata.get("smarkets_event_id");
                 break;
@@ -163,18 +158,19 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
 
         if (event_id == null){
-            throw new Exception("Smarkets event trader tried to update odds without an event.");
+            return null;
         }
         log.fine(String.format("Updating market odds report in smarkets for %s.", match));
 
         updatePrices();
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
-        JSONObject lastPrices = (JSONObject) this.lastPrices.clone();
-
         if (lastPrices == null){
             marketOddsReport = new_marketOddsReport;
             return null;
         }
+        JSONObject lastPrices = (JSONObject) this.lastPrices.clone();
+
+
 
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){

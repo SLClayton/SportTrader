@@ -8,6 +8,7 @@ import Bet.FootballBet.FootballScoreBet;
 import Bet.MarketOddsReport;
 import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
+import SiteConnectors.SportData;
 import Sport.FootballMatch;
 import Sport.Team;
 import org.json.simple.JSONArray;
@@ -32,6 +33,7 @@ public class BetfairEventTracker extends SiteEventTracker {
     public HashMap<String, JSONObject> eventMarketData;
     public Instant lastMarketDataUpdate;
     public HashMap<String, String> market_name_id_map;
+
 
     public BetfairEventTracker(Betfair BETFAIR){
         super();
@@ -89,6 +91,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             if (teams.length != 2){
                 continue;
             }
+
             String team_a = teams[0];
             String team_b = teams[1];
 
@@ -102,16 +105,8 @@ public class BetfairEventTracker extends SiteEventTracker {
 
             all_events.add(possible_match);
 
-            // Try verifying match in flashscores
-            try {
-                possible_match.verify();
-            } catch (InterruptedException | IOException | URISyntaxException | FlashScores.verificationException e){
-                log.warning(String.format("Could not verify betfair match %s in flashscores.", possible_match));
-                continue;
-            }
-
             // If FSIDs match then break
-            if (possible_match.FSID.equals(setup_match.FSID)){
+            if (possible_match.id.equals(setup_match.id)){
                 match = possible_match;
                 event_id = betfair_id;
                 break;
@@ -156,7 +151,6 @@ public class BetfairEventTracker extends SiteEventTracker {
             e.printStackTrace();
             throw e;
         }
-
 
         // Initially fill in new market data
         eventMarketData = new HashMap<>();
@@ -249,6 +243,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             throw e;
         }
 
+        p(markets);
 
         // Initially fill in new market data
         eventMarketData = new HashMap<>();
@@ -277,6 +272,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         updateMarketData();
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
         HashMap<String, JSONObject> eventMarketData = (HashMap<String, JSONObject>) this.eventMarketData.clone();
+
 
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
@@ -358,7 +354,8 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Find market id for this market in this event from map
         String market_id = market_name_id_map.get(bf_market_name);
         if (market_id == null){
-            log.fine(String.format("%s not found for %s in market id map.", bf_market_name, match));
+            log.fine(String.format("%s not found for %s in market id map.\n%s",
+                    bf_market_name, match, market_name_id_map.toString()));
             return null;
         }
 
@@ -387,7 +384,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Find market id for this market in this event from map
         String market_id = market_name_id_map.get("CORRECT_SCORE");
         if (market_id == null){
-            log.severe(String.format("CORRECT_SCORE not found for %s in market id map when it should be.", match));
+            log.fine(String.format("CORRECT_SCORE not found for %s in market id map", match));
             return null;
         }
 
@@ -420,7 +417,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Find market id for this market in this event from map
         String market_id = market_name_id_map.get("MATCH_ODDS");
         if (market_id == null){
-            log.severe(String.format("MATCH_ODDS not found for %s in market id map when it should be.", match));
+            log.fine(String.format("MATCH_ODDS not found for %s in market id map", match));
             return null;
         }
 

@@ -56,9 +56,6 @@ public class Matchbook extends BettingSite {
     public marketDataRequestHandler marketDataRequestHandler;
     public BlockingQueue<RequestHandler> marketDataRequestHandlerQueue;
 
-    public BigDecimal commission = new BigDecimal("0.02");
-    public BigDecimal min_backers_stake = new BigDecimal("0.10");
-
 
     public Matchbook() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
             IOException, KeyManagementException, KeyStoreException, URISyntaxException, InterruptedException {
@@ -72,6 +69,8 @@ public class Matchbook extends BettingSite {
         log.info("Creating new Matchbook Connector");
 
         name = "matchbook";
+        min_back_stake = new BigDecimal("0.10");
+        commission_rate = new BigDecimal("0.02");
 
         // Set up a requester to handle HTTP requests
         requester = new Requester();
@@ -257,13 +256,13 @@ public class Matchbook extends BettingSite {
 
     @Override
     public BigDecimal commission() {
-        return commission;
+        return commission_rate;
     }
 
 
     @Override
     public BigDecimal minBackersStake() {
-        return min_backers_stake;
+        return min_back_stake;
     }
 
 

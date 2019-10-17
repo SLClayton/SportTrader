@@ -4,15 +4,20 @@ package tools;
 import com.google.gson.*;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
+import java.sql.Statement;
 import java.util.*;
 
 public abstract class printer {
+
+    public static String resource_path = "src/main/resources/";
 
 
     public static String ps(JSONArray j){
@@ -80,12 +85,41 @@ public abstract class printer {
         }
     }
 
-    public static Map getJSONResource(String filename) throws FileNotFoundException {
-        filename = "src/main/resources/" + filename;
+    public static Map getJSONResourceMap(String filename) throws FileNotFoundException {
+        filename = resource_path + filename;
         String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
         Gson gson = new Gson();
         Map map = gson.fromJson(jsonString, HashMap.class);
         return map;
+    }
+
+
+    public static void renameResourceFile(String original, String new_name){
+        File fileold = new File(original);
+
+        for (int i=0; true; i++){
+
+            File filenew = new File(resource_path + new_name + "-" + i);
+
+            boolean success = fileold.renameTo(filenew);
+            if (success){
+                break;
+            }
+        }
+    }
+
+
+    public static JSONObject getJSONResource(String filename) throws FileNotFoundException, ParseException {
+        filename = "src/main/resources/" + filename;
+        String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
+        JSONParser parser = new JSONParser();
+        JSONObject json = (JSONObject) parser.parse(jsonString);
+        return json;
+    }
+
+    public static void saveJSONResource(JSONObject json, String filename){
+        filename = "src/main/resources/" + filename;
+        p(json, filename);
     }
 
     public static Map getJSON(String filename) throws FileNotFoundException {
@@ -119,17 +153,10 @@ public abstract class printer {
     }
 
 
-    public static void main(String[] args){
-        Map json = null;
-        try {
-            json = getJSONResource("config.json");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) {
 
-        print(json.get("HOURS_AHEAD").toString());
-        print(FileSystems.getDefault().getPath(".").toAbsolutePath().toString());
     }
+
 
     public static boolean nully(Object obj, boolean printNotNull){
         if (obj == null){
