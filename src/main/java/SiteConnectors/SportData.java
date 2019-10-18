@@ -1,6 +1,8 @@
 package SiteConnectors;
 
 import Sport.FootballMatch;
+import Sport.FootballTeam;
+import Sport.Match;
 import Sport.Team;
 
 import java.time.Instant;
@@ -14,19 +16,36 @@ public interface SportData {
 
     String football_aliases_filename = "football_aliases.json";
     BlockingQueue<Boolean> save_requests_queue = new LinkedBlockingQueue<>();
-    Map<String, String> alias_id_map = new HashMap<>();
+    Map<String, String> football_alias_id_map = new HashMap<>();
+    Map<String, String> match_id_map = new HashMap<>();
 
 
-    ArrayList<Team> queryTeam(String query, String sport_id);
+    ArrayList<FootballTeam> queryFootballTeam(String query);
+
 
     FootballMatch getFootballMatch(Team team, Instant start_time);
 
+
     ArrayList<FootballMatch> getFootballFixtures(Team team);
 
+
     void saveFootballAliases();
+
 
     void loadFootballAliases();
 
 
+    String getTeamID(Team team);
 
+
+    String getMatchID(Match match);
+
+
+    void update_match_id_map(Match match);
+
+
+    void update_team_id_map(Team team);
+
+
+    void save_all();
 }

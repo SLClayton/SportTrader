@@ -35,6 +35,7 @@ import static tools.printer.*;
 public class SportsTrader {
 
     private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+    private static final SportData sportData = new FlashScores();
 
     public int MAX_MATCHES;
     public int MIN_SITES_PER_MATCH;
@@ -56,13 +57,12 @@ public class SportsTrader {
 
     public HashMap<String, Class> siteClasses;
     public HashMap<String, BettingSite> siteObjects;
-    public int session_Update_interval = 4; // in hours
+    public int session_Update_interval_hours = 4; // in hours
 
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<EventTrader> eventTraders;
     SessionsUpdater sessionsUpdater;
 
-    public SportData sportData;
     public SportDataFileSaver sportDataFileSaver;
 
     public boolean exit_all;
@@ -100,10 +100,14 @@ public class SportsTrader {
         siteObjects = new HashMap<String, BettingSite>();
         eventTraders = new ArrayList<EventTrader>();
 
-        sportData = new FlashScores();
         sportDataFileSaver = new SportDataFileSaver(sportData);
         sportDataFileSaver.start();
 
+    }
+
+
+    public static SportData getSportData(){
+        return sportData;
     }
 
 
@@ -362,7 +366,7 @@ public class SportsTrader {
             while (!exit_flag){
                 try {
                     // Sleep in 1 second intervals until next update time has arrived.
-                    Instant sleep_until = Instant.now().plus(session_Update_interval, ChronoUnit.HOURS);
+                    Instant sleep_until = Instant.now().plus(session_Update_interval_hours, ChronoUnit.HOURS);
                     while (Instant.now().isBefore(sleep_until)){
                         Thread.sleep(1000);
                         if (exit_flag){
@@ -434,7 +438,7 @@ public class SportsTrader {
                     }
 
                     // Save and clear save requests and set next min time to save
-                    sportData.saveFootballAliases();
+                    sportData.save_all();
                     sportData.save_requests_queue.clear();
                     min_next_save = Instant.now().plus(min_save_interval_mins, ChronoUnit.MINUTES);
                 }

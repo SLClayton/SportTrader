@@ -19,11 +19,11 @@ public class FootballMatch extends Match{
 
     public static String[] removable_keywords = {"fc", "town", "city", "women", "w", "of", "and", "&"};
 
-    public Team team_a;
-    public Team team_b;
+    public FootballTeam team_a;
+    public FootballTeam team_b;
 
-    public FootballMatch(SportData sportData, Instant START, Team TEAM_A, Team TEAM_B){
-        super(sportData);
+    public FootballMatch(Instant START, FootballTeam TEAM_A, FootballTeam TEAM_B){
+        super();
         start_time = START;
         team_a = TEAM_A;
         team_b = TEAM_B;
@@ -31,12 +31,8 @@ public class FootballMatch extends Match{
     }
 
 
-    public FootballMatch(SportData sportData, String START, String TEAM_A, String TEAM_B){
-        super(sportData);
-        start_time = Instant.parse(START);
-        team_a = new Team(TEAM_A);
-        team_b = new Team(TEAM_B);
-        name = team_a.name + " v " + team_b.name;
+    public FootballMatch(String START, String TEAM_A, String TEAM_B){
+        this(Instant.parse(START), new FootballTeam(TEAM_A), new FootballTeam(TEAM_B));
     }
 
 
@@ -48,12 +44,22 @@ public class FootballMatch extends Match{
             String msg = String.format("Cannot parse Match name '%s'", name);
             throw new ParseException(msg, 1);
         }
-        return new FootballMatch(start_time, new Team(teams[0]), new Team(teams[1]));
+        return new FootballMatch(start_time, new FootballTeam(teams[0]), new FootballTeam(teams[1]));
     }
 
 
+    @Override
+    public String key(){
+        if (team_a.id() == null || team_b.id() == null || start_time == null) {
+            return null;
+        }
+        return String.format("%s/%s/%s", team_a.id(), team_b.id(), start_time.toString());
+    }
+
+
+    @Override
     public String toString(){
-        return "[" + name + " @ " + start_time.toString() + "]";
+        return String.format("[%s @ %s]", name, start_time.toString());
     }
 
 
@@ -65,15 +71,10 @@ public class FootballMatch extends Match{
             return false;
         }
 
-
         // If both have IDs which match then they're the same
-        if (id != null && match.id != null){
-            if (id.equals(match.id)){
-                return true;
-            }
-            return false;
+        if (id() != null && match.id() != null){
+            return id.equals(match.id);
         }
-
 
         // If argument isn't football match then they're not the same
         FootballMatch fm;
@@ -83,22 +84,19 @@ public class FootballMatch extends Match{
             return false;
         }
 
-        // If both teams names are the same then same match
-        if (team_a.same_team(fm.team_a) && team_b.same_team(fm.team_b)){
+        // If both teams names are the same then same match as time is already accounted for
+        if (team_a.same_team(fm.team_a) == true
+                && team_b.same_team(fm.team_b) == true) {
             return true;
         }
 
-        // If both team names have IDs available, compare the IDs
-        if (sportData.alias_id_map.containsKey(team_a.normal_name())
-            && sportData.alias_id_map.containsKey(team_b.normal_name())){
 
-            team_a.id = sportData.alias_id_map.get(team_a.normal_name());
-            String team_b_id = sportData.alias_id_map.get(team_b.normal_name());
+        //Verify match completely
 
-            return team_a.id.equals(team_b_id);
-        }
 
-        //TODO: continue verifying shit here
+
+
+
 
 
         // Unable to say for sure
@@ -173,9 +171,11 @@ public class FootballMatch extends Match{
         return false;
     }
 
+
     public boolean inList(List<FootballMatch> list){
         return list_contains(list, this);
     }
+
 
     public static boolean list_contains(List<FootballMatch> list, Match match){
         for (FootballMatch match2: list){

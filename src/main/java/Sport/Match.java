@@ -20,9 +20,10 @@ public abstract class Match {
     public String id;
     public Map<String, String> metadata;
 
-    public Match(SportData sportData){
-        this.sportData = sportData;
+    public Match(){
+        this.sportData = SportsTrader.getSportData();
         metadata = new HashMap<String, String>();
+        id = this.id();
     }
 
     public static String listtostring(ArrayList<FootballMatch> matches){
@@ -36,6 +37,22 @@ public abstract class Match {
         s += "]";
         return s;
     }
+
+
+    public String id(){
+        if (id == null){
+            id = sportData.getMatchID(this);
+        }
+        return id;
+    }
+
+
+    public void set_id(String id){
+        this.id = id;
+        sportData.update_match_id_map(this);
+    }
+
+    public abstract String key();
 
 
     public abstract Boolean same_match(Match match);

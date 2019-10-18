@@ -78,6 +78,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
 
 
+            //TODO: Sort out all event trackers matching their matches up
+
             if (fm.id.equals(setup_match.id)){
                 match = fm;
                 event_id = fm.metadata.get("smarkets_event_id");

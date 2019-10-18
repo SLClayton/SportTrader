@@ -1,9 +1,7 @@
 package SiteConnectors;
 
-import Sport.FootballEventState;
-import Sport.FootballMatch;
-import Sport.Match;
-import Sport.Team;
+import Bet.MarketOddsReport;
+import Sport.*;
 import Trader.SportsTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -44,7 +42,7 @@ public class FlashScores implements SportData {
 
 
     @Override
-    public ArrayList<Team> queryTeam(String query, String sport_id) {
+    public ArrayList<FootballTeam> queryFootballTeam(String query) {
 
         // Get raw response from flashscores
         Requester requester = new Requester();
@@ -93,7 +91,7 @@ public class FlashScores implements SportData {
             for (Object result_obj: results) {
                 JSONObject result = (JSONObject) result_obj;
 
-                if (String.valueOf((long) result.get("sport_id")).equals(sport_id)
+                if (String.valueOf((long) result.get("sport_id")).equals(FOOTBALL)
                         && ((long) result.get("participant_type_id")) == 1) {
 
                     filtered_results.add(result);
@@ -103,14 +101,14 @@ public class FlashScores implements SportData {
 
 
         // Create list of team objects and return
-        ArrayList<Team> teams = new ArrayList<>();
+        ArrayList<FootballTeam> teams = new ArrayList<>();
         for (JSONObject fm_json: filtered_results){
 
             String FS_ID = (String) fm_json.get("id");
             String FS_Title = (String) fm_json.get("title");
             String FS_URLNAME = (String) fm_json.get("url");
 
-            Team team = new Team(FS_Title);
+            FootballTeam team = new FootballTeam(FS_Title);
             team.id = id_creator(FS_URLNAME, FS_ID);
 
             teams.add(team);
@@ -216,11 +214,11 @@ public class FlashScores implements SportData {
             Instant start_time = Instant.ofEpochSecond(Long.valueOf(start_epoch));
 
             // Create team A
-            Team team_a = new Team(team_a_name);
+            FootballTeam team_a = new FootballTeam(team_a_name);
             team_a.id = id_creator(team_a_URLNAME, team_a_FSID);
 
             // Create team b
-            Team team_b = new Team(team_b_name);
+            FootballTeam team_b = new FootballTeam(team_b_name);
             team_b.id = id_creator(team_b_URLNAME, team_b_FSID);
 
             // Add match to list
@@ -237,7 +235,7 @@ public class FlashScores implements SportData {
     public void saveFootballAliases() {
 
         Map<String, JSONArray> id_aliases_map = new HashMap<>();
-        for (Map.Entry<String, String> entry: alias_id_map.entrySet()){
+        for (Map.Entry<String, String> entry: football_alias_id_map.entrySet()){
             String alias = entry.getKey();
             String id = entry.getValue();
 
@@ -294,7 +292,7 @@ public class FlashScores implements SportData {
         }
 
 
-        alias_id_map.clear();
+        football_alias_id_map.clear();
         for (Object item: team_aliases_json){
             JSONArray aliases = (JSONArray) item;
 
@@ -305,7 +303,7 @@ public class FlashScores implements SportData {
                     String id = (String) flashscores_id_json.get(alias);
                     for (Object alias_obj2: aliases) {
                         String alias2 = (String) alias_obj2;
-                        alias_id_map.put(alias2, id);
+                        football_alias_id_map.put(alias2, id);
                     }
                 }
             }
@@ -354,6 +352,67 @@ public class FlashScores implements SportData {
     public static class verificationException extends Exception {}
 
 
+    @Override
+    public String getTeamID(Team team){
+
+        if (team instanceof FootballTeam) {
+            return football_alias_id_map.get(team.name);
+        }
+
+        return null;
+    }
+
+
+    @Override
+    public String getMatchID(Match match){
+        return match_id_map.get((match.key()));
+    }
+
+
+
+    @Override
+    public void update_match_id_map(Match match){
+        String current_id = match_id_map.get(match.key());
+        if (current_id != null){
+            if (!match.id.equals(current_id)) {
+                log.severe(String.format("Trying to add %s to match_id_map but key %s already exists in mapping.",
+                        match.toString(), match.key()));
+            }
+            return;
+        }
+        match_id_map.put(match.key(), match.id);
+    }
+
+
+    @Override
+    public void update_team_id_map(Team team){
+
+        // FOOTBALL
+        if (team instanceof FootballTeam){
+            String key = team.name;
+            String current_id = football_alias_id_map.get(key);
+            if (current_id != null){
+                if (!team.id.equals(current_id)) {
+                    log.severe(String.format("Trying to add %s to football_alias_id_map but key %s " +
+                                    "already exists in mapping.",
+                            team.toString(), key));
+                }
+                return;
+            }
+            football_alias_id_map.put(key, team.id);
+            save();
+        }
+
+
+        log.severe(String.format("No function to update team alias for %s has been created.",
+                team.getClass().toString()));
+    }
+
+
+    @Override
+    public void save_all() {
+        saveFootballAliases();
+    }
 
 
     public FootballMatch verifyFootballMatch(FootballMatch match) throws verificationException {
@@ -365,23 +424,21 @@ public class FlashScores implements SportData {
 
         // For both team A and B, if the alias appears in memory then add the ID onto the object
         // and add to its own list. otherwise search FS for all possible teams.
-        ArrayList<Team> possible_teams_a;
-        ArrayList<Team> possible_teams_b;
-        if (alias_id_map.containsKey(team_a)){
-            match.team_a.id = alias_id_map.get(team_a);
+        ArrayList<FootballTeam> possible_teams_a;
+        ArrayList<FootballTeam> possible_teams_b;
+        if (match.team_a.id() != null){
             possible_teams_a = new ArrayList<>();
             possible_teams_a.add(match.team_a);
         }
         else{
-            possible_teams_a = queryTeam(team_a, FOOTBALL);
+            possible_teams_a = queryFootballTeam(team_a);
         }
-        if (alias_id_map.containsKey(team_b)){
-            match.team_b.id = alias_id_map.get(team_b);
+        if (match.team_b.id() != null){
             possible_teams_b = new ArrayList<>();
             possible_teams_b.add(match.team_b);
         }
         else{
-            possible_teams_b = queryTeam(team_b, FOOTBALL);
+            possible_teams_b = queryFootballTeam(team_b);
         }
 
 
@@ -390,20 +447,10 @@ public class FlashScores implements SportData {
 
         for (int i=0; i<max_size; i++){
 
-            // Update next row of search results for each team to search for their fixtures
-            if (i < possible_teams_a.size()){
-                Team t = possible_teams_a.get(i);
-                t.fixtures = getFootballFixtures(t);
-            }
-            if (i < possible_teams_b.size()){
-                Team t = possible_teams_b.get(i);
-                t.fixtures = getFootballFixtures(t);
-            }
-
             // Compile all fixtures for all possible A teams that match time
             ArrayList<FootballMatch> all_matches_a = new ArrayList<>();
-            for (Team t: possible_teams_a){
-                if (t.fixtures != null){
+            for (FootballTeam t: possible_teams_a){
+                if (t.getFixtures() != null){
                     for (FootballMatch m: t.fixtures){
                         if (m.start_time.equals(match.start_time)){
                             all_matches_a.add(m);
@@ -414,8 +461,8 @@ public class FlashScores implements SportData {
 
             // Compile all fixtures for all possible B teams that match time
             ArrayList<FootballMatch> all_matches_b = new ArrayList<>();
-            for (Team t: possible_teams_b){
-                if (t.fixtures != null){
+            for (FootballTeam t: possible_teams_b){
+                if (t.getFixtures() != null){
                     for (FootballMatch m: t.fixtures){
                         if (m.start_time.equals(match.start_time)){
                             all_matches_b.add(m);
@@ -440,7 +487,7 @@ public class FlashScores implements SportData {
             // Error if more than one found
             if (in_both_lists.size() >= 2){
                 String in_both_string = "";
-                for (Match m: in_both_lists){
+                for (FootballMatch m: in_both_lists){
                     in_both_string += m.toString() + ", ";
                 }
                 log.severe(String.format("2 or more matches found in flashscores for %s\n%s",
@@ -455,34 +502,15 @@ public class FlashScores implements SportData {
         }
 
         // Fill in Flashscores related data to match and return it
-        match.id =               verifiedMatch.id;
-        match.team_a.id =        verifiedMatch.team_a.id;
-        match.team_b.id =        verifiedMatch.team_b.id;
-
-
-        // Add the alias/ids into the mapping
-        add_alias_id(match.team_a.name, verifiedMatch.team_a.id);
-        add_alias_id(verifiedMatch.team_a.name, match.team_a.id);
-        add_alias_id(match.team_b.name, verifiedMatch.team_b.id);
-        add_alias_id(verifiedMatch.team_b.name, match.team_b.id);
-        save();
+        match.set_id(verifiedMatch.id());
+        match.team_a.set_id(verifiedMatch.team_a.id());
+        match.team_b.set_id(verifiedMatch.team_b.id());
 
         return match;
     }
 
 
-    public void add_alias_id(String alias, String id){
-        if (alias_id_map.containsKey(alias)){
-            String current_id = alias_id_map.get(alias);
-            if (!current_id.equals(id)){
-                log.severe(String.format("Trying to add id '%s' for alias '%s' but id '%s' already found for this alias.",
-                        id, alias, current_id));
-            }
-        }
-        else{
-            alias_id_map.put(alias, id);
-        }
-    }
+
 
 
     public void save(){
@@ -492,12 +520,6 @@ public class FlashScores implements SportData {
 
 
     public static void main(String[] args){
-        FlashScores fs = new FlashScores();
-
-        Team t = fs.queryTeam("newcastle", FOOTBALL).get(0);
-        fs.getFootballFixtures(t);
-
-        print("Done");
 
     }
 }

@@ -1,6 +1,8 @@
 package Sport;
 
 import SiteConnectors.FlashScores;
+import SiteConnectors.SportData;
+import Trader.SportsTrader;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -10,14 +12,16 @@ import java.util.ArrayList;
 
 public class Team {
 
+    public SportData sportData;
+
     public String id;
     public String name;
 
-    public ArrayList<FootballMatch> fixtures;
 
 
     public Team(String name){
         this.name = name;
+        sportData = SportsTrader.getSportData();
     }
 
 
@@ -37,12 +41,16 @@ public class Team {
     }
 
 
-    public boolean same_team(Team team){
-        return (id != null && id.equals(team.id)) || normal_name().equals(team.normal_name());
+    public String id(){
+        if (id == null){
+            id = sportData.getTeamID(this);
+        }
+        return id;
     }
 
 
-
-
-
+    public void set_id(String id){
+        this.id = id;
+        sportData.update_team_id_map(this);
+    }
 }
