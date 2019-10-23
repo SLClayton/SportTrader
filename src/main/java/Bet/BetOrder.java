@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static tools.printer.print;
-import static tools.printer.ps;
 
 public class BetOrder {
 

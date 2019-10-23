@@ -6,6 +6,7 @@ import Bet.BetOrder;
 import Bet.PlacedBet;
 import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
+import Trader.EventTrader;
 import Trader.SportsTrader;
 import tools.MyLogHandler;
 import tools.Requester;
@@ -36,6 +37,8 @@ public abstract class BettingSite {
     public String ssldir;
     public Requester requester;
 
+    public boolean exit_flag;
+
     public BigDecimal balance;
     public BigDecimal commission_rate;
     public BigDecimal min_back_stake;
@@ -43,9 +46,9 @@ public abstract class BettingSite {
     public Lock balanceLock = new ReentrantLock();
     public BigDecimal balance_buffer = new BigDecimal("10.00");
 
-    public AccountInfoUpdater accountInfoUpdater;
-
     public BettingSite() {
+
+        exit_flag = false;
 
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             ssldir = "C:/ssl/";
@@ -54,11 +57,6 @@ public abstract class BettingSite {
         }
 
         balance = new BigDecimal("0.00");
-
-        accountInfoUpdater = new AccountInfoUpdater(this);
-        accountInfoUpdater.thread = new Thread(accountInfoUpdater);
-        accountInfoUpdater.thread.setName(name + "-infoUpdater");
-        accountInfoUpdater.thread.start();
     }
 
     public abstract void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
@@ -73,9 +71,6 @@ public abstract class BettingSite {
 
 
     public abstract BigDecimal minBackersStake();
-
-
-    public abstract SiteEventTracker getEventTracker();
 
 
     public BigDecimal getBalance() {
@@ -125,6 +120,9 @@ public abstract class BettingSite {
     public BigDecimal stake2Investment(BigDecimal stake) {
         return stake;
     }
+
+
+    public abstract SiteEventTracker getEventTracker(EventTrader eventTrader);
 
 
     public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException;
@@ -201,33 +199,6 @@ public abstract class BettingSite {
     }
 
 
-
-    public class AccountInfoUpdater implements Runnable{
-
-        public long seconds_sleep = 10;
-        public BettingSite site;
-        public Thread thread;
-
-        public AccountInfoUpdater(BettingSite site){
-            this.site = site;
-        }
-
-        @Override
-        public void run() {
-            while (true){
-                try {
-                    Thread.sleep(seconds_sleep * 1000);
-
-                    site.updateAccountInfo();
-
-                } catch (InterruptedException | IOException | URISyntaxException e) {
-                    e.printStackTrace();
-                    log.severe(e.toString());
-                }
-
-            }
-        }
-    }
 
 
 

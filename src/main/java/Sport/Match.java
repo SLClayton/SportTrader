@@ -23,7 +23,6 @@ public abstract class Match {
     public Match(){
         this.sportData = SportsTrader.getSportData();
         metadata = new HashMap<String, String>();
-        id = this.id();
     }
 
     public static String listtostring(ArrayList<FootballMatch> matches){

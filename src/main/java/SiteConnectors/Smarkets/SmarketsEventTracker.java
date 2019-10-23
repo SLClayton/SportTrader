@@ -7,6 +7,7 @@ import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Sport.Match;
+import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -49,8 +50,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public JSONObject lastPrices;
 
 
-    public SmarketsEventTracker(Smarkets smarkets){
-        super();
+    public SmarketsEventTracker(Smarkets smarkets, EventTrader eventTrader){
+        super(eventTrader);
         this.smarkets = smarkets;
         id_market_map = new HashMap<>();
         fullname_contract_map = new HashMap<>();
@@ -73,14 +74,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 smarkets.FOOTBALL);
 
         match = null;
-        // Verify each match in flashscores and see if it matches
         for (FootballMatch fm: events){
-
-
-
-            //TODO: Sort out all event trackers matching their matches up
-
-            if (fm.id.equals(setup_match.id)){
+            if (Boolean.TRUE.equals(setup_match.same_match(fm))){
                 match = fm;
                 event_id = fm.metadata.get("smarkets_event_id");
                 break;
@@ -226,7 +221,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
             if (prices == null){
                 log.severe(String.format("Couldn't find contract_id '%s' for bet %s " +
                                 "within last prices (Should be able to).\n%s",
-                        contract_id, bet, ps(lastPrices)));
+                        contract_id, bet, jstring(lastPrices)));
                 continue;
             }
 

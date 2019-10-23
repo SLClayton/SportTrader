@@ -11,6 +11,7 @@ import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
+import Sport.FootballTeam;
 import Sport.Team;
 import Trader.EventTrader;
 import org.apache.axis2.databinding.types.xsd.DateTime;
@@ -108,6 +109,7 @@ public class Smarkets extends BettingSite {
             for (int i=0; i<REQUEST_THREADS; i++){
                 PriceQuoteRequestSender requestSender = new PriceQuoteRequestSender(workerQueue);
                 Thread t = new Thread(requestSender);
+                t.setName("smkts RS-" + String.valueOf(i+1));
                 t.start();
             }
 
@@ -115,16 +117,19 @@ public class Smarkets extends BettingSite {
             RequestHandler new_handler;
             Instant next_request_time = null;
 
-            while (true) {
+            while (!exit_flag) {
                 try {
 
-                    while (next_request_time == null || Instant.now().isBefore(next_request_time)){
+                    while (!exit_flag &&
+                            (next_request_time == null || Instant.now().isBefore(next_request_time))){
 
                         new_handler = null;
 
                         // Wait as long as required for first handler to arrive, set request time when it does.
                         if (next_request_time == null){
-                            new_handler = requestQueue.take();
+                            while (!exit_flag && new_handler == null){
+                                new_handler = requestQueue.poll(1, TimeUnit.SECONDS);
+                            }
                             next_request_time = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
                         }
                         // Subsequent handlers, wait or break at certain time
@@ -161,6 +166,7 @@ public class Smarkets extends BettingSite {
                     e.printStackTrace();
                 }
             }
+            log.info("Ending smarkets request handler.");
         }
     }
 
@@ -178,16 +184,23 @@ public class Smarkets extends BettingSite {
 
         @Override
         public void run() {
-            ArrayList<RequestHandler> requestHandlers;
+            ArrayList<RequestHandler> requestHandlers = null;
             JSONObject final_request = new JSONObject();
 
             int reqs_sent = 0;
             Instant first_request_time = null;
             Instant expiry_time = null;
 
-            while (true){
+            mainloop:
+            while (!exit_flag){
                 try {
-                    requestHandlers = jobQueue.take();
+                    requestHandlers = null;
+                    while (!exit_flag && requestHandlers == null){
+                        requestHandlers = jobQueue.poll(1, TimeUnit.SECONDS);
+                    }
+                    if (exit_flag){
+                        break mainloop;
+                    }
 
                     if (expiry_time != null && Instant.now().isBefore(expiry_time)){
                         // Fail all these handlers
@@ -246,6 +259,7 @@ public class Smarkets extends BettingSite {
                     e.printStackTrace();
                 }
             }
+            log.info("Ending smarkets request sender.");
         }
     }
 
@@ -307,8 +321,8 @@ public class Smarkets extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker() {
-        return new SmarketsEventTracker(this);
+    public SiteEventTracker getEventTracker(EventTrader eventTrader) {
+        return new SmarketsEventTracker(this, eventTrader);
     }
 
 
@@ -481,7 +495,7 @@ public class Smarkets extends BettingSite {
 
         JSONObject response = (JSONObject) requester.get(baseurl + "events/", params);
         if (!response.containsKey("events")) {
-            String msg = String.format("No 'events' field found in smarkets response.\n%s", ps(response));
+            String msg = String.format("No 'events' field found in smarkets response.\n%s", jstring(response));
             throw new IOException(msg);
         }
         JSONArray events = (JSONArray) response.get("events");
@@ -497,7 +511,7 @@ public class Smarkets extends BettingSite {
                 continue;
             }
 
-            FootballMatch fm = new FootballMatch(time, new Team(teams[0]), new Team(teams[1]));
+            FootballMatch fm = new FootballMatch(time, new FootballTeam(teams[0]), new FootballTeam(teams[1]));
             fm.metadata.put("smarkets_event_id", (String) event.get("id"));
             footballMatches.add(fm);
         }
@@ -514,7 +528,7 @@ public class Smarkets extends BettingSite {
         if (!r.containsKey("markets")){
             String msg = String.format("No 'markets' field found in response when looking for " +
                             "markets in smarkets.\n%s",
-                    ps(r));
+                    jstring(r));
             log.warning(msg);
             throw new IOException(msg);
         }
@@ -550,7 +564,7 @@ public class Smarkets extends BettingSite {
                 baseurl, market_ids));
 
         if (!response.containsKey("contracts")){
-            String msg = String.format("contracts field not found in smarkets response.\n%s", ps(response));
+            String msg = String.format("contracts field not found in smarkets response.\n%s", jstring(response));
             log.warning(msg);
             throw new IOException(msg);
         }

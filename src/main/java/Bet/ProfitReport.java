@@ -83,11 +83,11 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
 
     public String toString(boolean full){
-        return ps(toJSON(full));
+        return jstring(toJSON(full));
     }
 
 
-    public JSONObject toJSON(boolean full){
+    public JSONObject toJSON(boolean use_betorders, boolean use_bet_ids){
         JSONObject j = new JSONObject();
         j.put("total_investment", total_investment.toString());
         j.put("min_return", min_return.toString());
@@ -95,7 +95,10 @@ public class ProfitReport implements Comparable<ProfitReport> {
         j.put("min_profit", min_profit.toString());
         j.put("max_profit", max_profit.toString());
         j.put("profit_ratio", profit_ratio.toString());
-        if (full){
+
+
+
+        if (use_betorders){
             JSONArray orders = new JSONArray();
             for (BetOrder bo: betOrders){
                 orders.add(bo.toJSON());
@@ -103,7 +106,27 @@ public class ProfitReport implements Comparable<ProfitReport> {
             j.put("bet_orders", orders);
 
         }
+        else{
+            if (betOrders.size() > 0){
+                j.put("match", betOrders.get(0).match().toString());
+            }
+            else{
+                j.put("match", null);
+            }
+        }
+        if (use_bet_ids){
+            JSONArray taut = new JSONArray();
+            for (BetOrder bo: betOrders){
+                taut.add(bo.bet().id());
+            }
+            j.put("tautology", taut);
+        }
         return j;
+    }
+
+
+    public JSONObject toJSON(boolean use_betorders){
+        return toJSON(use_betorders, false);
     }
 
 
@@ -153,53 +176,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public static ArrayList<ProfitReport> getTautologyProfitReports(ArrayList<BetGroup> tautologies, MarketOddsReport marketOddsReport){
-        /*
-        // Using a list of tautologies and the market odds report, generate a profit report
-        // for each tautology which
-         */
 
-        // Calculate profitReport for each tautology using the best ROI for each bet
-        ArrayList<ProfitReport> tautologyProfitReports = new ArrayList<ProfitReport>();
-        tautologyLoop:
-        for (BetGroup betGroup : tautologies){
-
-            // Ensure all bets exist before continuing
-            for (Bet bet: betGroup.bets){
-                if (!marketOddsReport.contains(bet.id()) || marketOddsReport.get(bet.id()).size() <= 0){
-                    continue tautologyLoop;
-                }
-            }
-
-            // Generate a list of ratio profitReport using the best offer for each bet
-            ArrayList<BetOrder> betOrders = new ArrayList<BetOrder>();
-            for (Bet bet: betGroup.bets){
-
-                ArrayList<BetOffer> betOffers = marketOddsReport.get(bet.id());
-
-                // Find best valid offer or if none valid skip this tautology
-                BetOffer best_valid_offer = null;
-                while (best_valid_offer == null || best_valid_offer.minVolumeNeeded()){
-                    if (betOffers.size() > 0){
-                        best_valid_offer = betOffers.remove(0);
-                    }
-                    else{
-                        continue tautologyLoop;
-                    }
-                }
-
-
-                betOrders.add(new BetOrder(best_valid_offer, BigDecimal.ONE, false));
-            }
-
-            ProfitReport pr = new ProfitReport(betOrders);
-            if (pr.isValid()){
-                tautologyProfitReports.add(pr);
-            }
-        }
-
-        return tautologyProfitReports;
-    }
 
     public static JSONArray listToJSON(ArrayList<ProfitReport> profitReports, boolean full){
         JSONArray prs = new JSONArray();
@@ -208,6 +185,8 @@ public class ProfitReport implements Comparable<ProfitReport> {
         }
         return prs;
     }
+
+
 
     @Override
     public int compareTo(ProfitReport profitReport) {

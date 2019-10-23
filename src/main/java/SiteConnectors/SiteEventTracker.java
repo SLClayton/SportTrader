@@ -3,6 +3,7 @@ package SiteConnectors;
 import Bet.FootballBet.FootballBet;
 import Bet.MarketOddsReport;
 import Sport.FootballMatch;
+import Trader.EventTrader;
 import Trader.SportsTrader;
 
 import java.io.IOException;
@@ -21,13 +22,16 @@ public abstract class SiteEventTracker {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
+    public EventTrader eventTrader;
+
     public MarketOddsReport marketOddsReport;
     public Long marketOddsReportTime;
     public FootballMatch match;
     public Set<String> bet_blacklist;
 
 
-    public SiteEventTracker(){
+    public SiteEventTracker(EventTrader eventTrader){
+        this.eventTrader = eventTrader;
         bet_blacklist = new HashSet<>();
     }
 

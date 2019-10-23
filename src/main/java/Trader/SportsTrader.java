@@ -1,5 +1,6 @@
 package Trader;
 
+import Bet.Bet;
 import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.*;
 import SiteConnectors.Betfair.Betfair;
@@ -10,6 +11,8 @@ import com.google.gson.JsonSyntaxException;
 import org.json.simple.JSONObject;
 import tools.MyLogHandler;
 
+import java.awt.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
@@ -21,6 +24,7 @@ import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -60,49 +64,41 @@ public class SportsTrader {
     public int session_Update_interval_hours = 4; // in hours
 
     public FootballBetGenerator footballBetGenerator;
+
     public ArrayList<EventTrader> eventTraders;
-    SessionsUpdater sessionsUpdater;
-
     public SportDataFileSaver sportDataFileSaver;
+    public SessionsUpdater sessionsUpdater;
+    public SiteAccountInfoUpdater siteAccountInfoUpdater;
+    public ArrayList<EventTraderSetup> eventTraderSetups;
 
-    public boolean exit_all;
+    public boolean exit_flag;
 
 
-    public SportsTrader(){
+    public SportsTrader() throws IOException, ConfigException {
         Thread.currentThread().setName("Main");
+        exit_flag = false;
         log.setUseParentHandlers(false);
         log.setLevel(Level.INFO);
         try {
             log.addHandler(new MyLogHandler());
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             String msg = "Error Setting up logging. Exiting";
             print(msg);
             log.severe(msg);
-            System.exit(1);
+            throw e;
         }
 
-        try {
-            setupConfig("config.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.severe("Invalid config file. Exiting...");
-            System.exit(1);
-        }
-
-        exit_all = false;
+        setupConfig("config.json");
 
         siteClasses = new HashMap<String, Class>();
         siteClasses.put("betfair", Betfair.class);
         siteClasses.put("matchbook", Matchbook.class);
         siteClasses.put("smarkets", Smarkets.class);
 
-        siteObjects = new HashMap<String, BettingSite>();
-        eventTraders = new ArrayList<EventTrader>();
-
-        sportDataFileSaver = new SportDataFileSaver(sportData);
-        sportDataFileSaver.start();
-
+        siteObjects = new HashMap<>();
+        eventTraders = new ArrayList<>();
+        eventTraderSetups = new ArrayList<>();
     }
 
 
@@ -111,26 +107,40 @@ public class SportsTrader {
     }
 
 
-    private void setupConfig(String config_filename) throws Exception {
-        Map config = null;
-        try{
-            config = getJSONResourceMap(config_filename);
-        } catch (JsonSyntaxException e){
-            log.severe("Config JSON syntax error.");
-            System.exit(0);
+    public class ConfigException extends Exception {
+        public ConfigException(List<String> fields){
+            super(String.join(", ", fields));
         }
+
+        public ConfigException(String msg){
+            super(msg);
+        }
+
+        public ConfigException(){
+            super();
+        }
+    }
+
+
+    private void setupConfig(String config_filename) throws JsonSyntaxException, FileNotFoundException,
+            ConfigException {
+
+        Map config = null;
+        config = getJSONResourceMap(config_filename);
 
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
                 "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
                 "REQUEST_TIMEOUT"};
 
+        List<String> missingFields = new ArrayList<>();
         for (String field: required){
             if (!(config.keySet().contains(field))){
-                String msg = String.format("Config file does not contain field '%s'", field);
-                log.severe(msg);
-                throw new Exception(msg);
+                missingFields.add(field);
             }
+        }
+        if (missingFields.size() > 0){
+            throw new ConfigException(missingFields);
         }
 
         MAX_MATCHES = ((Double) config.get("MAX_MATCHES")).intValue();
@@ -150,15 +160,31 @@ public class SportsTrader {
         REQUEST_TIMEOUT = (long) ((Double) config.get("REQUEST_TIMEOUT")).intValue();
 
 
+        // Check target inv per bet is lower than max investment per bet
         if (TARGET_INVESTMENT.compareTo(MAX_INVESTMENT) == 1){
-            log.severe(String.format("TARGET_INVESTMENT (%s) is higher than MAX_INVESTMENT (%s). Exiting",
-                    TARGET_INVESTMENT.toString(), MAX_INVESTMENT.toString()));
-            System.exit(0);
+            String msg = String.format("TARGET_INVESTMENT (%s) is higher than MAX_INVESTMENT (%s). Exiting",
+                    TARGET_INVESTMENT.toString(), MAX_INVESTMENT.toString());
+            log.severe(msg);
+            throw new ConfigException(msg);
+        }
+
+        // Check number active sites is not lower than min number of sites per match
+        int number_active_sites = 0;
+        for (Map.Entry<String, Boolean> entry: ACTIVE_SITES.entrySet()){
+            if (entry.getValue()){
+                number_active_sites += 1;
+            }
+        }
+        if (number_active_sites < MIN_SITES_PER_MATCH){
+            String msg = String.format("MIN_SITES_PER_MATCH (%d) is lower than number of active sites (%d). Exiting",
+                    MIN_SITES_PER_MATCH, number_active_sites);
+            log.severe(msg);
+            throw new ConfigException(msg);
         }
 
 
         JSONObject config_json = new JSONObject(config);
-        log.info(String.format("Configuration\n%s", ps(config_json)));
+        log.info(String.format("Configuration\n%s", jstring(config_json)));
     }
 
 
@@ -173,7 +199,6 @@ public class SportsTrader {
         for (Map.Entry<String, Class> entry : siteClasses.entrySet() ) {
             String site_name = entry.getKey();
             Class site_class = entry.getValue();
-
 
             // Check site appears in config and is set to active
             if (!ACTIVE_SITES.containsKey(site_name)){
@@ -208,6 +233,13 @@ public class SportsTrader {
             return;
         }
 
+        // Begin thread to update site details periodically.
+        siteAccountInfoUpdater = new SiteAccountInfoUpdater(siteObjects);
+        siteAccountInfoUpdater.start();
+        // Begin thread to update site sessions periodically
+        sessionsUpdater = new SessionsUpdater(siteObjects);
+        sessionsUpdater.start();
+
 
         // Collect initial football matches
         ArrayList<FootballMatch> footballMatches = null;
@@ -216,15 +248,20 @@ public class SportsTrader {
         } catch (IOException | URISyntaxException | InterruptedException e) {
             e.printStackTrace();
             log.severe("Error getting initial football matches. Exiting...");
-            System.exit(1);
+            return;
         }
+        if (footballMatches == null){
+            log.severe("Error getting initial football matches. Exiting...");
+            return;
+        }
+
         log.info(String.format("Found %d matches within given timeframe.", footballMatches.size()));
 
 
         // (For testing) Remove all matches and add single manually inputted match
         if (false) {
             footballMatches.clear();
-            FootballMatch fm = new FootballMatch("2019-10-19T14:00:00.000Z", "Tottenham hotspur", "watford");
+            FootballMatch fm = new FootballMatch("2019-10-23T18:45:00.000Z", "Peterborough", "Accrington");
             footballMatches.add(fm);
         }
 
@@ -237,7 +274,6 @@ public class SportsTrader {
 
         // Create same number of event trader setups as max matches allowed to concurrently
         // setup each event trader
-        ArrayList<EventTraderSetup> eventTraderSetups = new ArrayList<>();
         for (int i=0; i<MAX_MATCHES; i++){
 
             EventTraderSetup eventTraderSetup = new EventTraderSetup(this, match_queue);
@@ -246,6 +282,12 @@ public class SportsTrader {
             eventTraderSetup.thread.start();
             eventTraderSetups.add(eventTraderSetup);
         }
+
+
+        // Begin thread to periodically save sports data on requests
+        sportDataFileSaver = new SportDataFileSaver(sportData);
+        sportDataFileSaver.start();
+
 
         // Wait for each event trader setup to finish then add the result to the list of EventTraders
         for (EventTraderSetup eventTraderSetup: eventTraderSetups){
@@ -265,14 +307,14 @@ public class SportsTrader {
         // Exit if none have worked.
         if (eventTraders.size() == 0){
             log.severe("0 matches have been setup correctly. Exiting.");
-            System.exit(0);
+            return;
         }
 
 
         // End if config says so.
         if (!CHECK_MARKETS){
             log.info("CHECK_MARKETS set to false. Ending here.");
-            System.exit(0);
+            return;
         }
 
 
@@ -284,19 +326,82 @@ public class SportsTrader {
         }
         log.info("All Event Traders started.");
 
-        // Start the session updater to keep all sites connected.
-        sessionsUpdater = new SessionsUpdater();
-        Thread sessionUpdaterThread = new Thread(sessionsUpdater);
-        sessionUpdaterThread.setName("Session Updater");
-        sessionUpdaterThread.start();
 
-
+        // Wait until exit flag raised
+        while (!exit_flag){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
     }
 
 
     public void safe_exit(){
-        exit_all = true;
+        log.info("Safe exit triggered. Closing down program.");
+
+        exit_flag = true;
         sessionsUpdater.exit_flag = true;
+        sportDataFileSaver.exit_flag = true;
+        siteAccountInfoUpdater.exit_flag = true;
+
+        for (EventTraderSetup ets: eventTraderSetups){
+            ets.exit_flag = true;
+        }
+        for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
+            entry.getValue().exit_flag = true;
+        }
+
+    }
+
+
+    public class SiteAccountInfoUpdater implements Runnable{
+
+        public long seconds_sleep = 10;
+        public Thread thread;
+        public boolean exit_flag;
+        public Map<String, BettingSite> siteObjects;
+
+        public SiteAccountInfoUpdater(Map<String, BettingSite> siteObjects){
+            this.siteObjects = siteObjects;
+            exit_flag = false;
+
+            thread = new Thread(this);
+            thread.setName("SteInfoUpdtr");
+        }
+
+        public void start(){
+            thread.start();
+        }
+
+        @Override
+        public void run() {
+            mainloop:
+            while (!exit_flag){
+                try {
+
+                    Instant next_update = Instant.now().plus(seconds_sleep, ChronoUnit.SECONDS);
+                    while (Instant.now().isBefore(next_update)){
+                        if (exit_flag){
+                            break mainloop;
+                        }
+                        Thread.sleep(1000);
+                    }
+
+                    // Update each sites account info
+                    for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
+                        entry.getValue().updateAccountInfo();
+                    }
+
+                } catch (InterruptedException | IOException | URISyntaxException e) {
+                    e.printStackTrace();
+                    log.severe(e.toString());
+                }
+
+            }
+            log.info("Exiting site account info updater.");
+        }
     }
 
 
@@ -309,10 +414,12 @@ public class SportsTrader {
         EventTrader result;
         SportsTrader sportsTrader;
         Thread thread;
+        boolean exit_flag;
 
         public EventTraderSetup(SportsTrader sportsTrader, BlockingQueue<FootballMatch> match_queue){
             this.match_queue = match_queue;
             this.sportsTrader = sportsTrader;
+            exit_flag = false;
         }
 
         @Override
@@ -323,11 +430,11 @@ public class SportsTrader {
                 FootballMatch footballMatch = null;
                 try {
                     footballMatch = match_queue.poll(0, TimeUnit.MILLISECONDS);
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     break;
-                } if (footballMatch == null){
+                }
+                if (footballMatch == null || exit_flag){
                     break;
                 }
 
@@ -335,6 +442,7 @@ public class SportsTrader {
 
                 // Attempt to setup site event trackers for all sites for this match, try queue again if fails
                 EventTrader eventTrader = new EventTrader(sportsTrader, footballMatch, siteObjects, footballBetGenerator);
+
                 int successful_site_connections = eventTrader.setupMatch();
                 if (successful_site_connections < MIN_SITES_PER_MATCH){
                     log.warning(String.format("%s Only %d/%d sites connected. MIN_SITES_PER_MATCH=%d.",
@@ -347,6 +455,10 @@ public class SportsTrader {
                 result = eventTrader;
                 break;
             }
+
+            if (exit_flag) {
+                log.info("Exiting EventTrader setup.");
+            }
         }
     }
 
@@ -354,29 +466,40 @@ public class SportsTrader {
     public class SessionsUpdater implements Runnable {
 
         public boolean exit_flag;
+        public Thread thread;
+        public Map<String, BettingSite> siteObjects;
 
-        public SessionsUpdater(){
+        public SessionsUpdater(Map<String, BettingSite> siteObjects){
+            this.siteObjects = siteObjects;
             exit_flag = false;
+
+            thread = new Thread(this);
+            thread.setName("SsionUpdtr");
+        }
+
+        public void start(){
+            thread.start();
         }
 
         @Override
         public void run() {
             log.info("Session updater started.");
 
+            mainloop:
             while (!exit_flag){
                 try {
                     // Sleep in 1 second intervals until next update time has arrived.
                     Instant sleep_until = Instant.now().plus(session_Update_interval_hours, ChronoUnit.HOURS);
-                    while (Instant.now().isBefore(sleep_until)){
+                    while (Instant.now().isBefore(sleep_until) && !exit_flag){
                         Thread.sleep(1000);
-                        if (exit_flag){
-                            return;
-                        }
                     }
-
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                }
+
+                if (exit_flag){
+                    break mainloop;
                 }
 
                 for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
@@ -398,23 +521,25 @@ public class SportsTrader {
 
                 }
             }
-
+            log.info("Exiting session updater.");
         }
     }
 
 
     public class SportDataFileSaver implements Runnable{
 
-        public long min_save_interval_mins = 2;
+        public long min_save_interval_secs = 20;
 
         public SportData sportData;
         public Thread thread;
+        public boolean exit_flag;
 
         public SportDataFileSaver(SportData sportData){
             this.sportData = sportData;
+            exit_flag = false;
 
-            thread.setName("FS-Filesaver");
             thread = new Thread(this);
+            thread.setName("FS-Filesaver");
         }
 
         public void start(){
@@ -426,26 +551,31 @@ public class SportsTrader {
 
             Instant min_next_save = null;
 
-            while (true){
+            mainloop:
+            while (!exit_flag){
                 try{
                     // Wait for a save request
-                    sportData.save_requests_queue.take();
+                    while (sportData.save_requests_queue.poll(1, TimeUnit.SECONDS) == null
+                            && !exit_flag){}
 
-                    // Wait until at least the minumym time until next save is reached
-                    if (min_next_save != null && Instant.now().isBefore(min_next_save)){
-                        long sleeptime = min_next_save.toEpochMilli() - Instant.now().toEpochMilli();
-                        Thread.sleep(sleeptime);
+
+                    // Wait until at least the minimum time until next save is reached
+                    while (min_next_save != null && Instant.now().isBefore(min_next_save)
+                            && !exit_flag){
+                        Thread.sleep(1000);
                     }
+
 
                     // Save and clear save requests and set next min time to save
                     sportData.save_all();
                     sportData.save_requests_queue.clear();
-                    min_next_save = Instant.now().plus(min_save_interval_mins, ChronoUnit.MINUTES);
+                    min_next_save = Instant.now().plus(min_save_interval_secs, ChronoUnit.SECONDS);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+            log.info("Exiting File saver.");
         }
     }
 
@@ -458,7 +588,7 @@ public class SportsTrader {
         if (site == null){
             log.severe(String.format("EVENT_SOURCE '%s' cannot be found. It may not bet set in ACTIVE_SITES.",
                     EVENT_SOURCE));
-            System.exit(0);
+            return null;
         }
 
         Instant from;
@@ -486,8 +616,16 @@ public class SportsTrader {
 
 
     public static void main(String[] args){
-        SportsTrader st = new SportsTrader();
+        SportsTrader st = null;
+        try {
+            st = new SportsTrader();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         st.run();
+        st.safe_exit();
     }
 
 }

@@ -28,6 +28,7 @@ public class FootballMatch extends Match{
         team_a = TEAM_A;
         team_b = TEAM_B;
         name = team_a.name + " v " + team_b.name;
+        id = id();
     }
 
 
@@ -84,20 +85,34 @@ public class FootballMatch extends Match{
             return false;
         }
 
-        // If both teams names are the same then same match as time is already accounted for
-        if (team_a.same_team(fm.team_a) == true
-                && team_b.same_team(fm.team_b) == true) {
+        // If both teams are the same then same match, if either definitely isn't then not same match
+        Boolean sameAteam = team_a.same_team(fm.team_a);
+        Boolean sameBteam = team_b.same_team(fm.team_b);
+        if (Boolean.TRUE.equals(sameAteam) && Boolean.TRUE.equals(sameBteam)) {
             return true;
+        }
+        if (Boolean.FALSE.equals(sameAteam) || Boolean.FALSE.equals(sameBteam)) {
+            return false;
         }
 
 
-        //Verify match completely
+        //Verify matches completely
+        try {
+            if (id() == null) {
+                sportData.verifyFootballMatch(this);
+            }
+            if (match.id() == null) {
+                sportData.verifyFootballMatch(fm);
+            }
+        } catch (SportData.verificationException e){
+            return null;
+        }
 
 
-
-
-
-
+        // If both have IDs (Again) which match then they're the same
+        if (id() != null && match.id() != null){
+            return id.equals(match.id);
+        }
 
         // Unable to say for sure
         return null;

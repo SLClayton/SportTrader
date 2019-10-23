@@ -216,7 +216,6 @@ public class Requester {
                     httpGet.getURI().toString(),
                     response_body,
                     response.getStatusLine().toString());
-            log.severe(msg);
             throw new IOException(msg);
         }
 

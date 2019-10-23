@@ -156,7 +156,8 @@ public class FlashScores implements SportData {
             raw = requester.getRaw(url);
         }
         catch (IOException | URISyntaxException | InterruptedException e){
-            log.severe("Failed to get fixtures for " + team.name + " in flashscores.");
+            log.severe(String.format("Failed to get fixtures for " + team.name + " in flashscores due to: %s",
+                    e.toString()));
             return null;
         }
 
@@ -190,9 +191,6 @@ public class FlashScores implements SportData {
 
         ArrayList<FootballMatch> footballMatches = new ArrayList<>();
         for (Map<String, String> row: parts){
-
-            print(row.toString());
-
 
             String match_id = row.get("AA");
             String start_epoch = row.get("AD");
@@ -349,14 +347,11 @@ public class FlashScores implements SportData {
 
 
 
-    public static class verificationException extends Exception {}
-
-
     @Override
     public String getTeamID(Team team){
 
         if (team instanceof FootballTeam) {
-            return football_alias_id_map.get(team.name);
+            return football_alias_id_map.get(team.normal_name());
         }
 
         return null;
@@ -372,11 +367,18 @@ public class FlashScores implements SportData {
 
     @Override
     public void update_match_id_map(Match match){
+        String key = match.key();
+        if (key == null){
+            throw new NullPointerException();
+        }
+
         String current_id = match_id_map.get(match.key());
         if (current_id != null){
             if (!match.id.equals(current_id)) {
-                log.severe(String.format("Trying to add %s to match_id_map but key %s already exists in mapping.",
-                        match.toString(), match.key()));
+                log.severe(String.format("Trying to add %s to match_id_map but key %s already exists " +
+                                "in mapping for id %s",
+                        match.toString(), match.key(), current_id));
+                print(match_id_map.toString());
             }
             return;
         }
@@ -388,24 +390,27 @@ public class FlashScores implements SportData {
     public void update_team_id_map(Team team){
 
         // FOOTBALL
-        if (team instanceof FootballTeam){
-            String key = team.name;
+        try{
+            FootballTeam ft = (FootballTeam) team;
+            String key = ft.normal_name();
             String current_id = football_alias_id_map.get(key);
             if (current_id != null){
-                if (!team.id.equals(current_id)) {
+                if (!ft.id.equals(current_id)) {
                     log.severe(String.format("Trying to add %s to football_alias_id_map but key %s " +
                                     "already exists in mapping.",
-                            team.toString(), key));
+                            ft.toString(), key));
                 }
                 return;
             }
-            football_alias_id_map.put(key, team.id);
+            football_alias_id_map.put(key, ft.id);
             save();
-        }
+            return;
+        } catch (ClassCastException e){}
 
 
-        log.severe(String.format("No function to update team alias for %s has been created.",
-                team.getClass().toString()));
+
+        log.severe(String.format("No function to update team alias for %s has been created. %s",
+                team.getClass(), team.toString()));
     }
 
 
@@ -415,6 +420,7 @@ public class FlashScores implements SportData {
     }
 
 
+    @Override
     public FootballMatch verifyFootballMatch(FootballMatch match) throws verificationException {
 
         // Get normal names
@@ -502,15 +508,12 @@ public class FlashScores implements SportData {
         }
 
         // Fill in Flashscores related data to match and return it
-        match.set_id(verifiedMatch.id());
         match.team_a.set_id(verifiedMatch.team_a.id());
         match.team_b.set_id(verifiedMatch.team_b.id());
+        match.set_id(verifiedMatch.id());
 
         return match;
     }
-
-
-
 
 
     public void save(){

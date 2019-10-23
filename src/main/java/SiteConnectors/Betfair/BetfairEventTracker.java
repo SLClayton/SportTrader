@@ -10,7 +10,9 @@ import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
 import SiteConnectors.SportData;
 import Sport.FootballMatch;
+import Sport.FootballTeam;
 import Sport.Team;
+import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -35,9 +37,9 @@ public class BetfairEventTracker extends SiteEventTracker {
     public HashMap<String, String> market_name_id_map;
 
 
-    public BetfairEventTracker(Betfair BETFAIR){
-        super();
-        betfair = BETFAIR;
+    public BetfairEventTracker(Betfair betfair, EventTrader eventTrader){
+        super(eventTrader);
+        this.betfair = betfair;
 
         match = null;
         eventMarketData = null;
@@ -52,6 +54,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         return betfair.name;
     }
 
+
     @Override
     public boolean setupMatch(FootballMatch setup_match) throws IOException,
             URISyntaxException {
@@ -59,56 +62,16 @@ public class BetfairEventTracker extends SiteEventTracker {
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
         Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
 
-        // Build filter for request to get events
-        JSONObject time = new JSONObject();
-        time.put("from", start.toString());
-        time.put("to", end.toString());
-        JSONArray event_types = new JSONArray();
-        event_types.add(1);
-        JSONObject filter = new JSONObject();
-        filter.put("marketStartTime", time);
-        filter.put("eventTypeIds", event_types);
-
-        JSONArray events = null;
-        try {
-            events = betfair.getEvents(filter);
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-            log.warning(String.format("Error getting events from betfair while searching for %s.", setup_match));
-            throw e;
-        }
+        ArrayList<FootballMatch> potential_matches = betfair.getFootballMatches(start, end);
 
         // Check each event returned to find matching events
         match = null;
-        ArrayList<FootballMatch> all_events = new ArrayList<>();
-        for (int i=0; i<events.size(); i++){
-            JSONObject eventjson = (JSONObject) ((JSONObject) events.get(i)).get("event");
-
-            Instant eventtime = Instant.parse(eventjson.get("openDate").toString());
-            String eventname = eventjson.get("name").toString();
-            String betfair_id = eventjson.get("id").toString();
-            String[] teams = eventname.trim().split(" v ");
-            if (teams.length != 2){
-                continue;
-            }
-
-            String team_a = teams[0];
-            String team_b = teams[1];
-
-            FootballMatch possible_match;
-            try {
-                possible_match = new FootballMatch(eventtime, new Team(team_a), new Team(team_b));
-            } catch (Exception e) {
-                log.warning(String.format("Failed to setup Football match for '%s' at '%s'.", eventname, eventtime));
-                continue;
-            }
-
-            all_events.add(possible_match);
+        for (FootballMatch potential_match: potential_matches){
 
             // If FSIDs match then break
-            if (possible_match.id.equals(setup_match.id)){
-                match = possible_match;
-                event_id = betfair_id;
+            if (Boolean.TRUE.equals(potential_match.same_match(setup_match))) {
+                match = potential_match;
+                event_id = potential_match.metadata.get("betfair_id");
                 break;
             }
         }
@@ -116,15 +79,13 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Error if not found
         if (match == null) {
             String fails = "";
-            for (FootballMatch m: all_events){
+            for (FootballMatch m: potential_matches){
                 fails = fails + " " + m.toString();
             }
             log.warning(String.format("No matches found for %s in betfair. Checked %d: %s",
-                    setup_match.toString(), all_events.size(), fails));
+                    setup_match.toString(), potential_matches.size(), fails));
             return false;
         }
-
-
 
 
         // Build params for market catalogue request
@@ -208,7 +169,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             }
             else{
                 log.warning(String.format("More than 1 event returned in betfair when searching for %s.\n%s",
-                        setup_match, ps(events)));
+                        setup_match, jstring(events)));
             }
 
             return false;
@@ -242,8 +203,6 @@ public class BetfairEventTracker extends SiteEventTracker {
             e.printStackTrace();
             throw e;
         }
-
-        p(markets);
 
         // Initially fill in new market data
         eventMarketData = new HashMap<>();
@@ -307,12 +266,14 @@ public class BetfairEventTracker extends SiteEventTracker {
                 continue;
             }
             String runner_status = runner.get("status").toString();
-            if (runner_status.equals("CLOSED")){
-                continue;
-            }
             if (!(runner_status.equals("ACTIVE"))){
-                log.warning(String.format("Runner status is %s in bet %s for %s in betfair.",
-                        runner_status, bet, match));
+                if (!((runner_status.equals("WINNER")
+                        || runner_status.equals("LOSER")
+                        || runner_status.equals("CLOSED")))){
+
+                    log.warning(String.format("Runner status is %s in bet %s for %s in betfair.",
+                            runner_status, bet, match));
+                }
                 continue;
             }
 
@@ -458,12 +419,8 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     public void updateMarketData() throws Exception {
-
         // Get new market data for markets in this event
         JSONArray market_odds = betfair.getMarketOdds(eventMarketData.keySet());
-
-        //p(market_odds);
-        //System.exit(0);
 
         // Update the runners in the existing market data
         for (Object new_md_obj: market_odds){
@@ -498,7 +455,8 @@ public class BetfairEventTracker extends SiteEventTracker {
                     }
                 }
                 if (old_runner == null){
-                    throw new Exception(String.format("New runner mismatch old runners.\nold\n%s\nnew\n%s", ps(old_runners), ps(new_runners)));
+                    throw new Exception(String.format("New runner mismatch old runners.\nold\n%s\nnew\n%s",
+                            jstring(old_runners), jstring(new_runners)));
                 }
 
                 // Overwrite new values in the original runner

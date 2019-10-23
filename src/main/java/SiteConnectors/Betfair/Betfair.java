@@ -10,6 +10,7 @@ import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
+import Trader.EventTrader;
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -51,7 +52,6 @@ public class Betfair extends BettingSite {
 
     public static final int FOOTBALL_ID = 1;
 
-
     public String hostname = "https://api.betfair.com/";
     public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
     public String accounts_endpoint = hostname + "/exchange/account/json-rpc/v1";
@@ -62,7 +62,6 @@ public class Betfair extends BettingSite {
     public RPCRequestHandler rpcRequestHandler;
     public BlockingQueue<RequestHandler> rpcRequestHandlerQueue;
 
-    public EventSearchHandler eventSearchHandler;
     public BlockingQueue<Object[]> eventSearchHandlerQueue;
 
     public BigDecimal commission_discount = BigDecimal.ZERO;
@@ -101,13 +100,6 @@ public class Betfair extends BettingSite {
         requester = new Requester();
         requester.setHeader("X-Application", app_id);
         login();
-
-
-        eventSearchHandlerQueue = new LinkedBlockingQueue<>();
-        eventSearchHandler = new EventSearchHandler(this, eventSearchHandlerQueue);
-        Thread eventSearchHandlerThread = new Thread(eventSearchHandler);
-        eventSearchHandlerThread.setName("BF EvntSrchHndlr");
-        eventSearchHandlerThread.start();
 
 
         rpcRequestHandlerQueue = new LinkedBlockingQueue<>();
@@ -169,7 +161,7 @@ public class Betfair extends BettingSite {
     public class RPCRequestHandler implements Runnable{
 
         public int MAX_BATCH_SIZE = 10;
-        public int REQUEST_THREADS = 10;
+        public int REQUEST_THREADS = 8;
         public long WAIT_MILLISECONDS = 5;
 
         public BlockingQueue<RequestHandler> requestQueue;
@@ -185,7 +177,7 @@ public class Betfair extends BettingSite {
 
             Instant wait_until = null;
             ArrayList<RequestHandler> jsonHandlers = new ArrayList<>();
-            RequestHandler new_handler;
+            RequestHandler new_handler = null;
             long milliseconds_to_wait;
 
             // Start workers
@@ -193,15 +185,18 @@ public class Betfair extends BettingSite {
             RPCRequestSender rs = new RPCRequestSender(workerQueue);
             for (int i=0; i<REQUEST_THREADS; i++){
                 Thread t = new Thread(rs);
-                t.setName("Betfair RH Sender " + String.valueOf(i));
+                t.setName("Bf RS-" + String.valueOf(i+1));
                 t.start();
             }
 
-            while (true) {
+            while (!exit_flag) {
 
                 try {
                     if (wait_until == null){
-                        new_handler = requestQueue.take();
+                        new_handler = null;
+                        while (!exit_flag && new_handler == null) {
+                            new_handler = requestQueue.poll(1, TimeUnit.SECONDS);
+                        }
                         wait_until = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
                     }
                     else {
@@ -213,7 +208,9 @@ public class Betfair extends BettingSite {
                         jsonHandlers.add(new_handler);
                     }
 
-                    if (new_handler == null || jsonHandlers.size() > MAX_BATCH_SIZE || Instant.now().isAfter(wait_until)){
+                    if ((new_handler == null || jsonHandlers.size() > MAX_BATCH_SIZE || Instant.now().isAfter(wait_until))
+                        && !exit_flag){
+
                         workerQueue.put(jsonHandlers);
                         wait_until = null;
                         jsonHandlers = new ArrayList<>();
@@ -223,6 +220,7 @@ public class Betfair extends BettingSite {
                     e.printStackTrace();
                 }
             }
+            log.info("Ending betfair request handler.");
         }
     }
 
@@ -237,12 +235,19 @@ public class Betfair extends BettingSite {
 
         @Override
         public void run() {
-            ArrayList<RequestHandler> jsonHandlers;
+            ArrayList<RequestHandler> jsonHandlers = null;
 
-            while (true){
+            mainloop:
+            while (!exit_flag){
                 JSONArray final_request = new JSONArray();
                 try {
-                    jsonHandlers = jobQueue.take();
+                    jsonHandlers = null;
+                    while (!exit_flag && jsonHandlers == null){
+                        jsonHandlers = jobQueue.poll(1, TimeUnit.SECONDS);
+                    }
+                    if (jsonHandlers == null){
+                        continue;
+                    }
 
                     // Build final rpc request, give each rpc request the index of the jsonhandler as its id
                     // This can mean multiple rpc requests have the same id
@@ -285,6 +290,7 @@ public class Betfair extends BettingSite {
                     e.printStackTrace();
                 }
             }
+            log.info("Ending betfair request sender.");
         }
     }
 
@@ -366,8 +372,8 @@ public class Betfair extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker(){
-        return new BetfairEventTracker(this);
+    public SiteEventTracker getEventTracker(EventTrader eventTrader){
+        return new BetfairEventTracker(this, eventTrader);
     }
 
 
@@ -494,6 +500,7 @@ public class Betfair extends BettingSite {
             try {
                 fm = FootballMatch.parse((String) event.get("openDate"),
                                          (String) event.get("name"));
+                fm.metadata.put("betfair_id", (String) event.get("id"));
             }
             catch (ParseException e){
                 continue;
@@ -517,7 +524,8 @@ public class Betfair extends BettingSite {
         JSONObject r = (JSONObject) requester.post(betting_endpoint, j);
 
         if (r.containsKey("error")){
-            String msg = String.format("Error getting market catalogue from betfair.\nparams\n%s\nresult\n%s", ps(params), ps(r));
+            String msg = String.format("Error getting market catalogue from betfair.\nparams\n%s\nresult\n%s",
+                    jstring(params), jstring(r));
             throw new IOException(msg);
         }
 
@@ -623,7 +631,7 @@ public class Betfair extends BettingSite {
         }
         if (eventsResponse.size() > 1){
             log.severe(String.format("Multiple events found in betfair for market id %s\n%s",
-                    market_id, ps(eventsResponse)));
+                    market_id, jstring(eventsResponse)));
             return null;
         }
 
@@ -718,8 +726,8 @@ public class Betfair extends BettingSite {
             if (!rpc_status.equals("SUCCESS")){
                 String errorCode = (String) rpc_result.get("errorCode");
                 log.severe(String.format("Failed 1 or more bets in betfair. '%s' in market '%s'\n%s\n%s\n%s",
-                        ps(BetOrder.list2JSON(betOrders)), String.valueOf(errorCode),
-                        market_id, ps(RPCs), ps(rpc_response)));
+                        jstring(BetOrder.list2JSON(betOrders)), String.valueOf(errorCode),
+                        market_id, jstring(RPCs), jstring(rpc_response)));
             }
 
             for (Object report_obj: (JSONArray) rpc_result.get("instructionReports")){
@@ -765,7 +773,7 @@ public class Betfair extends BettingSite {
                 // Expired Bet
                 else if (status.equals("SUCCESS") && orderStatus.equals("EXPIRED")){
                     log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
-                            String.valueOf(orderStatus), ps(bet_report)));
+                            String.valueOf(orderStatus), jstring(bet_report)));
 
                     PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(orderStatus), time);
                     pb.site_json_response = bet_report;
@@ -776,7 +784,7 @@ public class Betfair extends BettingSite {
                 else {
                     String error = (String) bet_report.get("errorCode");
                     log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
-                            String.valueOf(error), ps(bet_report)));
+                            String.valueOf(error), jstring(bet_report)));
 
                     PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(error), time);
                     pb.site_json_response = bet_report;

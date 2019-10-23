@@ -7,7 +7,7 @@ import java.util.Arrays;
 import Bet.*;
 import Trader.SportsTrader;
 
-import static tools.printer.p;
+import static tools.printer.toFile;
 import static tools.printer.print;
 
 import java.util.HashSet;

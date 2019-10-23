@@ -90,7 +90,7 @@ public class EventTrader implements Runnable {
             BettingSite site = entry.getValue();
 
             // Try to setup match, remove site if fail
-            SiteEventTracker eventTracker = site.getEventTracker();
+            SiteEventTracker eventTracker = site.getEventTracker(this);
 
             boolean setup_success = false;
             try {
@@ -132,9 +132,8 @@ public class EventTrader implements Runnable {
         marketOddsReportWorkers = new ArrayList<>();
         for (int i=0; i<sites.size()*3; i++){
             MarketOddsReportWorker morw = new MarketOddsReportWorker(siteMarketOddsToGetQueue, siteEventTrackers);
-            morw.thread = new Thread(morw);
             morw.thread.setName(Thread.currentThread().getName() + " OR-" + i);
-            morw.thread.start();
+            morw.start();
             marketOddsReportWorkers.add(morw);
         }
         
@@ -142,7 +141,7 @@ public class EventTrader implements Runnable {
         Instant wait_until = null;
         ArrayList<Long> arb_times = new ArrayList<>();
         int max_times = 100;
-        for (int i=0; !sportsTrader.exit_all; i++){
+        for (int i=0; !sportsTrader.exit_flag; i++){
             try {
                 // RATE LIMITER: Sleeps until minimum wait period between calls is done.
                 Instant now = Instant.now();
@@ -186,17 +185,26 @@ public class EventTrader implements Runnable {
 
             this.job_queue = job_queue;
             this.siteEventTrackers = siteEventTrackers;
+            thread = new Thread(this);
         }
+
+
+        public void start(){
+            thread.start();
+        }
+
 
         @Override
         public void run() {
 
-            while (true){
+            while (!sportsTrader.exit_flag){
 
                 RequestHandler requestHandler = null;
                 try {
                     // Wait for request handler to arrive telling us which market odds to update
-                    requestHandler = job_queue.take();
+                    while (!sportsTrader.exit_flag && requestHandler == null){
+                        requestHandler = job_queue.poll(1, TimeUnit.SECONDS);
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     continue;
@@ -216,13 +224,16 @@ public class EventTrader implements Runnable {
                     set.marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
                     requestHandler.setResponse(mor);
                 }
+                catch (InterruptedException e){
+                    continue;
+                }
                 catch (Exception e) {
                     e.printStackTrace();
                     log.severe(e.getStackTrace().toString());
                     requestHandler.setFail();
                 }
             }
-
+            log.info("Exiting Event Trader Odds Report updater.");
         }
     }
 
@@ -260,37 +271,19 @@ public class EventTrader implements Runnable {
         }
 
 
-        String s = "";
-        for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()) {
-            s += "Time taken for " + entry.getKey() + " = " + entry.getValue().marketOddsReportTime + "ms\n";
-        }
-        //print(s + "-----------------");
-
-
-
-
-
         // Combine all odds reports into one.
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
         // Generate profit report for each tautology and order by profit ratio
-        ArrayList<ProfitReport> tautologyProfitReports = ProfitReport.getTautologyProfitReports(tautologies, fullOddsReport);
-        Collections.sort(tautologyProfitReports, Collections.reverseOrder());
+        ProfitReportSet tautologyProfitReports = ProfitReportSet.getTautologyProfitReports(tautologies, fullOddsReport);
+        tautologyProfitReports.sort_by_profit();
 
 
         // Create list of profit reports with profits over min_prof_margin
-        ArrayList<ProfitReport> in_profit = new ArrayList<ProfitReport>();
-        for (ProfitReport pr: tautologyProfitReports){
-            if (pr.profit_ratio.compareTo(MIN_PROFIT_RATIO) == 1){
-                in_profit.add(pr);
-            }
-            else{
-                // List is ordered so break on first to not to fit criteria.
-                break;
-            }
-        }
+        ProfitReportSet in_profit = tautologyProfitReports.filter_reports(MIN_PROFIT_RATIO);
+
 
         // If any profit reports are found to be IN profit
         if (in_profit.size() > 0){
@@ -299,7 +292,7 @@ public class EventTrader implements Runnable {
     }
 
 
-    public void profitFound(ArrayList<ProfitReport> in_profit){
+    public void profitFound(ProfitReportSet in_profit){
 
         log.info(String.format("%s profit reports found to be over %s profit ratio.",
                 in_profit.size(), MIN_PROFIT_RATIO.toString()));
@@ -382,7 +375,7 @@ public class EventTrader implements Runnable {
         // Save profit report as json file
         String profitString = profitReport.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
         String filename = timeString + " -  " + match.name + " " + profitString + ".json";
-        p(profitReport.toJSON(true), profit_dir.toString() + "/" + filename);
+        toFile(profitReport.toJSON(true), profit_dir.toString() + "/" + filename);
 
 
 
@@ -398,11 +391,11 @@ public class EventTrader implements Runnable {
 
         ArrayList<PlacedBet> placeBets = placeBets(profitReport.betOrders);
         PlacedProfitReport placedProfitReport = new PlacedProfitReport(placeBets, profitReport);
-        p(placedProfitReport.toJSON(true));
+        toFile(placedProfitReport.toJSON(true));
 
         if (END_ON_BET){
             log.info("Bets Placed, END_ON_BET=true so exiting program.");
-            System.exit(0);
+            sportsTrader.safe_exit();
         }
     }
 

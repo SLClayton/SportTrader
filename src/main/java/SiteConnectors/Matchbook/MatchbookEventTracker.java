@@ -9,6 +9,7 @@ import SiteConnectors.Smarkets.Smarkets;
 import SiteConnectors.Smarkets.SmarketsEventTracker;
 import Sport.FootballMatch;
 import Sport.Match;
+import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -37,7 +38,8 @@ public class MatchbookEventTracker extends SiteEventTracker {
     public HashMap<String, String> market_name_id_map;
 
 
-    public MatchbookEventTracker(Matchbook matchbook) {
+    public MatchbookEventTracker(Matchbook matchbook, EventTrader eventTrader) {
+        super(eventTrader);
         this.matchbook = matchbook;
     }
 
@@ -50,16 +52,13 @@ public class MatchbookEventTracker extends SiteEventTracker {
     public boolean setupMatch(FootballMatch setup_match) throws IOException, URISyntaxException, InterruptedException {
 
         ArrayList<FootballMatch> events = matchbook
-                .getEvents(setup_match.start_time.minus(1, ChronoUnit.SECONDS),
-                           setup_match.start_time.plus(1, ChronoUnit.SECONDS),
-                           matchbook.FOOTBALL_ID);
+                .getFootballMatches(setup_match.start_time.minus(1, ChronoUnit.SECONDS),
+                                    setup_match.start_time.plus(1, ChronoUnit.SECONDS));
 
         match = null;
         // Verify each match in flashscores and see if it matches
         for (FootballMatch fm: events){
-
-
-            if (fm.id.equals(setup_match.id)){
+            if (Boolean.TRUE.equals(fm.same_match(setup_match))){
                 match = fm;
                 event_id = fm.metadata.get("matchbook_event_id");
                 break;
@@ -261,7 +260,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
         // Ensure 3 runners
         if (runners.size() != 3){
-            log.severe(String.format("Runner size != 3 for RESULT bet.\n%s", ps(runners)));
+            log.severe(String.format("Runner size != 3 for RESULT bet.\n%s", jstring(runners)));
             return null;
         }
 

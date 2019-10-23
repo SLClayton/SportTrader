@@ -30,6 +30,7 @@ import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Sport.Match;
+import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.MyLogHandler;
@@ -100,7 +101,7 @@ public class Matchbook extends BettingSite {
     public class marketDataRequestHandler implements Runnable{
 
         public int MAX_BATCH_SIZE = 10;
-        public int REQUEST_THREADS = 10;
+        public int REQUEST_THREADS = 8;
         public long WAIT_MILLISECONDS = 5;
 
         public BlockingQueue<RequestHandler> requestQueue;
@@ -114,7 +115,7 @@ public class Matchbook extends BettingSite {
         public void run() {
             Instant wait_until = null;
             ArrayList<RequestHandler> requestHandlers = new ArrayList<>();
-            RequestHandler new_handler;
+            RequestHandler new_handler = null;
             long milliseconds_to_wait;
 
             // Start workers
@@ -122,14 +123,18 @@ public class Matchbook extends BettingSite {
             marketDataRequestSender requestSender = new marketDataRequestSender(workerQueue);
             for (int i=0; i<REQUEST_THREADS; i++){
                 Thread t = new Thread(requestSender);
+                t.setName("mb RS-" + String.valueOf(i+1));
                 t.start();
             }
 
-            while (true) {
+            while (!exit_flag) {
 
                 try {
                     if (wait_until == null){
-                        new_handler = requestQueue.take();
+                        new_handler = null;
+                        while (!exit_flag && new_handler == null){
+                            new_handler = requestQueue.poll(1, TimeUnit.SECONDS);
+                        }
                         wait_until = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
                     }
                     else {
@@ -151,6 +156,7 @@ public class Matchbook extends BettingSite {
                     e.printStackTrace();
                 }
             }
+            log.info("Ending matchbook request handler.");
         }
     }
 
@@ -164,12 +170,19 @@ public class Matchbook extends BettingSite {
 
         @Override
         public void run() {
-            ArrayList<RequestHandler> requestHandlers;
+            ArrayList<RequestHandler> requestHandlers = null;
             JSONObject final_request = new JSONObject();
 
-            while (true){
+            mainloop:
+            while (!exit_flag){
                 try {
-                    requestHandlers = jobQueue.take();
+                    requestHandlers = null;
+                    while (!exit_flag && requestHandlers == null){
+                        requestHandlers = jobQueue.poll(1, TimeUnit.SECONDS);
+                    }
+                    if (exit_flag){
+                        break mainloop;
+                    }
 
                     // list event ids from handlers to get data from.
                     String[] event_ids = new String[requestHandlers.size()];
@@ -202,6 +215,7 @@ public class Matchbook extends BettingSite {
                     e.printStackTrace();
                 }
             }
+            log.info("Ending matchbook request sender.");
         }
     }
 
@@ -245,7 +259,7 @@ public class Matchbook extends BettingSite {
 
         if (!r.containsKey("session-token")){
             String msg = String.format("No session token found in matchbook login response.\n%s",
-                    ps(r));
+                    jstring(r));
             log.severe(msg);
             throw new IOException(msg);
         }
@@ -267,8 +281,8 @@ public class Matchbook extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker() {
-        return new MatchbookEventTracker(this);
+    public SiteEventTracker getEventTracker(EventTrader eventTrader) {
+        return new MatchbookEventTracker(this, eventTrader);
     }
 
 
@@ -277,11 +291,30 @@ public class Matchbook extends BettingSite {
     public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException,
             URISyntaxException, InterruptedException {
 
-        return getEvents(from, until, new String[] {FOOTBALL_ID});
+        JSONArray events_json = getEvents(from, until, new String[] {FOOTBALL_ID});
+
+        // Build footballmatch objects from return json events
+        ArrayList<FootballMatch> events = new ArrayList<FootballMatch>();
+        for (Object json_event_obj: events_json){
+            JSONObject json_event = (JSONObject) json_event_obj;
+            String name = (String) json_event.get("name");
+            String start = (String) json_event.get("start");
+
+            try {
+                FootballMatch new_fm = FootballMatch.parse(start, name);
+                new_fm.metadata.put("matchbook_event_id", String.valueOf(json_event.get("id")));
+                events.add(new_fm);
+            } catch (ParseException e) {
+                String msg = String.format("Could not parse match '%s' starting at '%s'.", name, start);
+                log.warning(e.toString());
+                continue;
+            }
+        }
+        return events;
     }
 
 
-    public ArrayList<FootballMatch> getEvents(Instant before, Instant after, String[] event_types) throws IOException,
+    public JSONArray getEvents(Instant before, Instant after, String[] event_types) throws IOException,
             URISyntaxException, InterruptedException {
 
         // Setup paramters
@@ -310,29 +343,7 @@ public class Matchbook extends BettingSite {
 
         JSONObject r = (JSONObject) requester.get(baseurl + "/events", params);
 
-        // Build footballmatch objects from return json events
-        ArrayList<FootballMatch> events = new ArrayList<FootballMatch>();
-        for (Object json_event_obj: (JSONArray) r.get("events")){
-            JSONObject json_event = (JSONObject) json_event_obj;
-            String name = (String) json_event.get("name");
-            String start = (String) json_event.get("start");
-
-            try {
-                FootballMatch new_fm = FootballMatch.parse(start, name);
-                new_fm.metadata.put("matchbook_event_id", String.valueOf(json_event.get("id")));
-                events.add(new_fm);
-            } catch (ParseException e) {
-                String msg = String.format("Could not parse match '%s' starting at '%s'.", name, start);
-                log.warning(e.toString());
-                continue;
-            }
-
-
-        }
-
-
-
-        return events;
+        return (JSONArray) r.get("events");
     }
 
 
@@ -528,7 +539,7 @@ public class Matchbook extends BettingSite {
             else{
                 any_failures = true;
                 log.severe(String.format("Failed to place %s on bet %s in matchbook. Bet not fully matched.",
-                        betOrder.investment.toString(), betOrder.bet_offer.bet.id(), ps(response)));
+                        betOrder.investment.toString(), betOrder.bet_offer.bet.id(), jstring(response)));
 
                 PlacedBet pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, status);
                 pb.site_json_response = offer;
@@ -547,13 +558,13 @@ public class Matchbook extends BettingSite {
                 String status = (String) offer.get("status");
                 String id = String.valueOf((long) offer.get("id"));
                 if (!status.equals("cancelled")){
-                    log.severe(String.format("Failed to cancel matchbook bet %s\n%s", id, ps(offer)));
+                    log.severe(String.format("Failed to cancel matchbook bet %s\n%s", id, jstring(offer)));
                 }
                 else{
                     log.info(String.format("Successfully cancelled matchbook bet %s for not being matched.", id));
                 }
             }
-            log.severe((ps(response)));
+            log.severe((jstring(response)));
         }
 
 

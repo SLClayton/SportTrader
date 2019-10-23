@@ -5,6 +5,7 @@ import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
+import Trader.EventTrader;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -47,14 +48,15 @@ public class Betdaq extends BettingSite {
         return null;
     }
 
-    @Override
-    public SiteEventTracker getEventTracker() {
-        return null;
-    }
 
     @Override
     public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
 
+    }
+
+    @Override
+    public SiteEventTracker getEventTracker(EventTrader eventTrader) {
+        return null;
     }
 
     @Override

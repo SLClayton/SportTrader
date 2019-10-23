@@ -48,4 +48,9 @@ public interface SportData {
 
 
     void save_all();
+
+    FootballMatch verifyFootballMatch(FootballMatch match) throws FlashScores.verificationException;
+
+
+    static class verificationException extends Exception {}
 }

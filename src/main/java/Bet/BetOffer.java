@@ -2,6 +2,7 @@ package Bet;
 
 import SiteConnectors.BettingSite;
 import Sport.Match;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static tools.printer.print;
 
@@ -47,8 +49,9 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
-    public boolean minVolumeNeeded(){
-        return volume.compareTo(minStake()) != -1;
+    public boolean hasMinVolumeNeeded(){
+        boolean r =  volume.compareTo(minStake()) != -1;
+        return r;
     }
 
 
@@ -68,6 +71,14 @@ public class BetOffer implements Comparable<BetOffer> {
         m.put("roi_ratio", String.valueOf(roi_ratio));
         m.put("metadata", String.valueOf(metadata));
         return m;
+    }
+
+    public static JSONArray list2JSON(List<BetOffer> betOfferList){
+        JSONArray ja = new JSONArray();
+        for (BetOffer betOffer: betOfferList){
+            ja.add(betOffer.toJSON());
+        }
+        return ja;
     }
 
 

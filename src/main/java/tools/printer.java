@@ -20,27 +20,29 @@ public abstract class printer {
     public static String resource_path = "src/main/resources/";
 
 
-    public static String ps(JSONArray j){
+    public static String jstring(JSONArray j){
         JsonElement jsonElement = new JsonParser().parse(j.toString());
         Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-        String prettjson = gson.toJson(jsonElement);
-        return prettjson;
+        String prettyjson = gson.toJson(jsonElement);
+        return prettyjson;
     }
 
-    public static String ps(JSONObject j){
+    public static String jstring(JSONObject j){
         JsonElement jsonElement = new JsonParser().parse(j.toString());
         Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-        String prettjson = gson.toJson(jsonElement);
-        return prettjson;
+        String prettyjson = gson.toJson(jsonElement);
+        return prettyjson;
     }
+
 
     public static void pp(JSONArray j){
-        print(ps(j));
+        print(jstring(j));
     }
 
     public static void pp(JSONObject j){
-        print(ps(j));
+        print(jstring(j));
     }
+
 
     public static void print(Object output){
         if (output == null){
@@ -51,25 +53,31 @@ public abstract class printer {
         }
     }
 
+
     public static void print(int output){
         System.out.println(output);
     }
 
-    public static void p(JSONObject j, String filename){
-        toFile(ps(j), filename);
+
+    public static void toFile(JSONObject j, String filename){
+        toFile(jstring(j), filename);
     }
 
-    public static void p(JSONArray j, String filename){
-        toFile(ps(j), filename);
+
+    public static void toFile(JSONArray j, String filename){
+        toFile(jstring(j), filename);
     }
 
-    public static void p(JSONObject j){
-        p(j, "output.json");
+
+    public static void toFile(JSONObject j){
+        toFile(j, "output.json");
     }
 
-    public static void p(JSONArray j){
-        p(j, "output.json");
+
+    public static void toFile(JSONArray j){
+        toFile(j, "output.json");
     }
+
 
     public static void toFile(String s, String filename) {
         PrintWriter writer = null;
@@ -84,6 +92,7 @@ public abstract class printer {
             e.printStackTrace();
         }
     }
+
 
     public static Map getJSONResourceMap(String filename) throws FileNotFoundException {
         filename = resource_path + filename;
@@ -119,7 +128,12 @@ public abstract class printer {
 
     public static void saveJSONResource(JSONObject json, String filename){
         filename = "src/main/resources/" + filename;
-        p(json, filename);
+        toFile(json, filename);
+    }
+
+    public static void saveJSONResource(JSONArray json, String filename){
+        filename = "src/main/resources/" + filename;
+        toFile(json, filename);
     }
 
     public static Map getJSON(String filename) throws FileNotFoundException {
@@ -170,7 +184,7 @@ public abstract class printer {
     }
 
     public static boolean nully(Object obj){
-        return nully(obj, false);
+        return nully(obj, true);
     }
 
 
