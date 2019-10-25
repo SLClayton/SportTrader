@@ -45,9 +45,11 @@ public class EventTrader implements Runnable {
     public boolean END_ON_BET;
     public BigDecimal TARGET_INVESTMENT;
     public long REQUEST_TIMEOUT;
+    public boolean RUN_STATS;
 
     public Thread thread;
     public SportsTrader sportsTrader;
+    public SportsTraderStats stats;
 
     public FootballMatch match;
     public HashMap<String, BettingSite> sites;
@@ -57,6 +59,9 @@ public class EventTrader implements Runnable {
 
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<BetGroup> tautologies;
+
+    public Set<String> sites_used_last;
+    public BigDecimal best_profit_last;
 
     public EventTrader(SportsTrader sportsTrader, FootballMatch match, HashMap<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
         this.sportsTrader = sportsTrader;
@@ -73,6 +78,9 @@ public class EventTrader implements Runnable {
         END_ON_BET = sportsTrader.END_ON_BET;
         TARGET_INVESTMENT = sportsTrader.TARGET_INVESTMENT;
         REQUEST_TIMEOUT = sportsTrader.REQUEST_TIMEOUT;
+        RUN_STATS = sportsTrader.RUN_STATS;
+
+        stats = sportsTrader.stats;
     }
 
 
@@ -138,10 +146,15 @@ public class EventTrader implements Runnable {
         }
         
         // Check for arbs, and update event constantly
+        Map<String, Integer> count_sites_used = new HashMap<>();
+        for (String site_name: siteEventTrackers.keySet()){
+            count_sites_used.put(site_name, 0);
+        }
         Instant wait_until = null;
-        ArrayList<Long> arb_times = new ArrayList<>();
-        int max_times = 100;
-        for (int i=0; !sportsTrader.exit_flag; i++){
+        ArrayList<Long> loop_times = new ArrayList<>();
+        BigDecimal best_profit = null;
+        int loops_per_check = 100;
+        for (long i=0; !sportsTrader.exit_flag; i++){
             try {
                 // RATE LIMITER: Sleeps until minimum wait period between calls is done.
                 Instant now = Instant.now();
@@ -155,22 +168,48 @@ public class EventTrader implements Runnable {
                 // Check arbs and time how long it takes
                 Instant start = Instant.now();
                 checkArbs();
-                arb_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
+                loop_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
+
+
+                // Add to tally, the amount of sites made use of in this arb check
+                for (String site_used: sites_used_last){
+                    count_sites_used.put(site_used, count_sites_used.get(site_used) + 1);
+                }
+
+                if (best_profit_last != null) {
+                    if (best_profit == null) {
+                        best_profit = best_profit_last;
+                    } else {
+                        best_profit.max(best_profit_last);
+                    }
+                }
+
 
                 // Calculate the timing metrics over past timings
-                if (arb_times.size() >= max_times){
+                if (loop_times.size() >= loops_per_check){
                     long avg_ms = 0;
-                    for (long arb_time: arb_times){ avg_ms += arb_time; }
-                    avg_ms = avg_ms / arb_times.size();
-                    String padding = String.join("", Collections.nCopies(4 - String.valueOf(avg_ms).length(), " "));
-                    log.info(String.format("Arb Checks. %d avg: %d ms%s", max_times, avg_ms, padding));
-                    arb_times.clear();
+                    for (long arb_time: loop_times){ avg_ms += arb_time; }
+                    avg_ms = avg_ms / loop_times.size();
+                    log.info(String.format("%s Arb Checks: avg=%dms %s best: %s",
+                            loops_per_check, avg_ms, count_sites_used.toString(),
+                            best_profit.setScale(5, RoundingMode.HALF_UP).toString()));
+
+                    loop_times.clear();
+                    best_profit = null;
+                    for (String site_name: siteEventTrackers.keySet()){
+                        count_sites_used.put(site_name, 0);
+                    }
                 }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    public String id(){
+        return match.name;
     }
 
 
@@ -265,7 +304,7 @@ public class EventTrader implements Runnable {
                 mor = (MarketOddsReport) rh.pollReponse();
             }
 
-            if (mor != null){
+            if (mor != null) {
                 marketOddsReports.add(mor);
             }
         }
@@ -273,12 +312,20 @@ public class EventTrader implements Runnable {
 
         // Combine all odds reports into one.
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
+        sites_used_last = fullOddsReport.sites_used;
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
         // Generate profit report for each tautology and order by profit ratio
         ProfitReportSet tautologyProfitReports = ProfitReportSet.getTautologyProfitReports(tautologies, fullOddsReport);
         tautologyProfitReports.sort_by_profit();
+        best_profit_last = tautologyProfitReports.best_profit();
+
+
+        // Update the stats
+        if (RUN_STATS) {
+            stats.update(this, tautologyProfitReports, marketOddsReports);
+        }
 
 
         // Create list of profit reports with profits over min_prof_margin
@@ -289,6 +336,7 @@ public class EventTrader implements Runnable {
         if (in_profit.size() > 0){
             profitFound(in_profit);
         }
+
     }
 
 

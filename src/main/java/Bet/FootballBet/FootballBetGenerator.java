@@ -7,16 +7,17 @@ import java.util.Arrays;
 import Bet.*;
 import Trader.SportsTrader;
 
-import static tools.printer.toFile;
-import static tools.printer.print;
-
 import java.util.HashSet;
 import java.util.logging.Logger;
+
+import static tools.printer.*;
 
 
 public class FootballBetGenerator {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+
+    public static final String tauts_filename = "football_tautologies.json";
 
     static int GOALSCOUNT_MAX = 9;
     static int OTHERGOALS_MIN = 3;
@@ -49,6 +50,8 @@ public class FootballBetGenerator {
         result_bets_ht = getResultBets(true);
         handicap_bets = getHandicapBets(HANDICAP_MAX);
         over_under_bets = getOverUnderBets(GOALSCOUNT_MAX);
+
+        //save();
     }
 
     public ArrayList<FootballBet> getAllBetsList(){
@@ -73,7 +76,10 @@ public class FootballBetGenerator {
         return bets;
     }
 
-
+    public void save(){
+        log.info("Saving football tautologies to file in resources.");
+        saveJSONResource(BetGroup.list2JSON(getAllTautologies(), false), tauts_filename);
+    }
 
 
     public ArrayList<FootballScoreBet> getScoreBets(int highest, Boolean halftime){

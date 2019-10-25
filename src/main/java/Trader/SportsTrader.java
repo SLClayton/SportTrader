@@ -56,6 +56,7 @@ public class SportsTrader {
     public boolean END_ON_BET;
     public BigDecimal TARGET_INVESTMENT;
     public long REQUEST_TIMEOUT;
+    public boolean RUN_STATS;
 
     public Lock betlock = new ReentrantLock();
 
@@ -70,6 +71,7 @@ public class SportsTrader {
     public SessionsUpdater sessionsUpdater;
     public SiteAccountInfoUpdater siteAccountInfoUpdater;
     public ArrayList<EventTraderSetup> eventTraderSetups;
+    public SportsTraderStats stats;
 
     public boolean exit_flag;
 
@@ -99,6 +101,11 @@ public class SportsTrader {
         siteObjects = new HashMap<>();
         eventTraders = new ArrayList<>();
         eventTraderSetups = new ArrayList<>();
+
+
+        if (RUN_STATS){
+            stats = new SportsTraderStats("stats.json");
+        }
     }
 
 
@@ -131,7 +138,7 @@ public class SportsTrader {
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
                 "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
-                "REQUEST_TIMEOUT"};
+                "REQUEST_TIMEOUT", "RUN_STATS"};
 
         List<String> missingFields = new ArrayList<>();
         for (String field: required){
@@ -158,6 +165,7 @@ public class SportsTrader {
         END_ON_BET = (boolean) config.get("END_ON_BET");
         TARGET_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("TARGET_INVESTMENT")));
         REQUEST_TIMEOUT = (long) ((Double) config.get("REQUEST_TIMEOUT")).intValue();
+        RUN_STATS = (boolean) config.get("RUN_STATS");
 
 
         // Check target inv per bet is lower than max investment per bet
@@ -315,6 +323,12 @@ public class SportsTrader {
         if (!CHECK_MARKETS){
             log.info("CHECK_MARKETS set to false. Ending here.");
             return;
+        }
+
+
+        // Start stats keeper
+        if (RUN_STATS) {
+            stats.start();
         }
 
 

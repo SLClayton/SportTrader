@@ -176,6 +176,13 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
+    public BetGroup getTautology(){
+        ArrayList<Bet> bets = new ArrayList<>();
+        for (BetOrder betOrder: betOrders){
+            bets.add(betOrder.bet());
+        }
+        return new BetGroup(bets);
+    }
 
 
     public static JSONArray listToJSON(ArrayList<ProfitReport> profitReports, boolean full){

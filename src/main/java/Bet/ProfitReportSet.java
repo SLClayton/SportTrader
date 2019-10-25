@@ -1,5 +1,6 @@
 package Bet;
 
+import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -15,6 +16,7 @@ import static tools.printer.print;
 public class ProfitReportSet {
     // A set of profit reports. Usually to show every tautology.
 
+    public MarketOddsReport marketOddsReport;
     public ArrayList<ProfitReport> profitReports;
 
 
@@ -26,6 +28,21 @@ public class ProfitReportSet {
     public boolean add(ProfitReport profitReport){
         boolean added = profitReports.add(profitReport);
         return added;
+    }
+
+
+
+    public BigDecimal best_profit(){
+        BigDecimal best_profit = null;
+        for (ProfitReport pr: profitReports){
+            if (best_profit == null){
+                best_profit = pr.profit_ratio;
+            }
+            else{
+                best_profit = best_profit.max(pr.profit_ratio);
+            }
+        }
+        return best_profit;
     }
 
 

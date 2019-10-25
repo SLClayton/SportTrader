@@ -6,9 +6,7 @@ import Sport.Match;
 import Sport.Team;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -18,6 +16,7 @@ public interface SportData {
     BlockingQueue<Boolean> save_requests_queue = new LinkedBlockingQueue<>();
     Map<String, String> football_alias_id_map = new HashMap<>();
     Map<String, String> match_id_map = new HashMap<>();
+    Set<String> unverifiable_matches = new HashSet<>();
 
 
     ArrayList<FootballTeam> queryFootballTeam(String query);

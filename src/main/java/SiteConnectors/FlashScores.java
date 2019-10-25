@@ -423,6 +423,10 @@ public class FlashScores implements SportData {
     @Override
     public FootballMatch verifyFootballMatch(FootballMatch match) throws verificationException {
 
+        if (unverifiable_matches.contains(match.name)){
+            throw new verificationException();
+        }
+
         // Get normal names
         String team_a = match.team_a.normal_name();
         String team_b = match.team_b.normal_name();
@@ -498,12 +502,15 @@ public class FlashScores implements SportData {
                 }
                 log.severe(String.format("2 or more matches found in flashscores for %s\n%s",
                         match, in_both_lists));
+                unverifiable_matches.add(match.name);
                 throw new verificationException();
             }
         }
 
         // None found
         if (verifiedMatch == null){
+            log.warning(String.format("Could not verify match %s in flashscores.", match.toString()));
+            unverifiable_matches.add(match.name);
             throw new verificationException();
         }
 

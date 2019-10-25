@@ -2,10 +2,12 @@ package Bet;
 
 import SiteConnectors.BettingSite;
 import Sport.Match;
+import Trader.SportsTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import static net.dongliu.commons.Prints.print;
 
@@ -25,24 +27,37 @@ public class MarketOddsReport {
                 Betfair: 1.20
      */
 
-    
+    public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public HashMap<String, ArrayList<BetOffer>> betOffers;
-    public Set<String> sites;
+    public Set<String> sites_used;
 
 
     public MarketOddsReport(){
         betOffers = new HashMap<String, ArrayList<BetOffer>>();
-        sites = new HashSet<>();
+        sites_used = new HashSet<>();
     }
 
 
     public void addBetOffers(String bet_id, ArrayList<BetOffer> new_betOffers){
         betOffers.put(bet_id, new_betOffers);
         for (BetOffer bo: new_betOffers){
-            sites.add(bo.site.name);
+            sites_used.add(bo.site.name);
         }
 
+    }
+
+
+    public String site_name(){
+        if (sites_used.size() == 1){
+            return sites_used.iterator().next();
+        }
+        else if (sites_used.size() > 1){
+            log.severe(String.format("Odds report for single site but has this many %s",
+                    sites_used.toString()));
+            return null;
+        }
+        return null;
     }
 
 
@@ -89,7 +104,7 @@ public class MarketOddsReport {
         for (MarketOddsReport mor: marketOddsReports){
 
             // Combine sites set
-            combined.sites.addAll(mor.sites);
+            combined.sites_used.addAll(mor.sites_used);
 
             // Add each list of offers into the respective bet input
             for (Map.Entry<String, ArrayList<BetOffer>> entry: mor.betOffers.entrySet()){
