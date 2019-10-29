@@ -21,6 +21,10 @@ public class BetGroup {
         this.bets.trimToSize();
     }
 
+    public BetGroup(){
+        bets = new ArrayList<>();
+    }
+
     public int size(){
         return bets.size();
     }
@@ -29,13 +33,18 @@ public class BetGroup {
         JSONArray ja = new JSONArray();
         for (Bet bet: bets){
             if (full){
-                ja.add(bet.json());
+                ja.add(bet.toJSON());
             }
             else{
                 ja.add(bet.id());
             }
         }
         return ja;
+    }
+
+
+    public boolean add(Bet bet){
+        return bets.add(bet);
     }
 
 

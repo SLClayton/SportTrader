@@ -33,7 +33,8 @@ public  class FootballScoreBet extends FootballBet{
                              type);
     }
 
-    public JSONObject json(){
+    @Override
+    public JSONObject toJSON(){
         JSONObject j = new JSONObject();
         j.put("type", type);
         j.put("id", id());
@@ -74,11 +75,5 @@ public  class FootballScoreBet extends FootballBet{
         return score_b - score_a;
     }
 
-    public static JSONArray listJSON(ArrayList<FootballScoreBet> bets){
-        JSONArray j = new JSONArray();
-        for (int i=0; i<bets.size(); i++){
-            j.add(bets.get(i).json());
-        }
-        return j;
-    }
+
 }

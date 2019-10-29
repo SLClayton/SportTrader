@@ -199,8 +199,9 @@ public class SportsTrader {
     public void run(){
         log.info("Running SportsTrader.");
 
-        // Run bet/taut generator
+        // Run bet/taut generator and generate the tautologies.
         footballBetGenerator = new FootballBetGenerator();
+        footballBetGenerator.getAllTautologies();
 
 
         // Initialize site object for each site class and add to map
@@ -267,9 +268,9 @@ public class SportsTrader {
 
 
         // (For testing) Remove all matches and add single manually inputted match
-        if (false) {
+        if (true) {
             footballMatches.clear();
-            FootballMatch fm = new FootballMatch("2019-10-23T18:45:00.000Z", "Peterborough", "Accrington");
+            FootballMatch fm = new FootballMatch("2019-11-02T12:30:00.000Z", "Bournemouth", "Manchester United");
             footballMatches.add(fm);
         }
 
@@ -283,11 +284,9 @@ public class SportsTrader {
         // Create same number of event trader setups as max matches allowed to concurrently
         // setup each event trader
         for (int i=0; i<MAX_MATCHES; i++){
-
             EventTraderSetup eventTraderSetup = new EventTraderSetup(this, match_queue);
-            eventTraderSetup.thread = new Thread(eventTraderSetup);
             eventTraderSetup.thread.setName("EvntTderStp" + String.valueOf(i+1));
-            eventTraderSetup.thread.start();
+            eventTraderSetup.start();
             eventTraderSetups.add(eventTraderSetup);
         }
 
@@ -359,6 +358,7 @@ public class SportsTrader {
         sessionsUpdater.exit_flag = true;
         sportDataFileSaver.exit_flag = true;
         siteAccountInfoUpdater.exit_flag = true;
+        stats.exit_flag = true;
 
         for (EventTraderSetup ets: eventTraderSetups){
             ets.exit_flag = true;
@@ -434,6 +434,12 @@ public class SportsTrader {
             this.match_queue = match_queue;
             this.sportsTrader = sportsTrader;
             exit_flag = false;
+
+            thread = new Thread(this);
+        }
+
+        public void start(){
+            thread.start();
         }
 
         @Override

@@ -37,11 +37,14 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public String event_id;
     public FootballMatch match;
 
-    public static String[] market_names = new String[] {
+    public static String[] market_type_names = new String[] {
             "OVER_UNDER",
             "WINNER_3_WAY",
-            "CORRECT_SCORE"
+            "CORRECT_SCORE",
+            "ASIAN_HANDICAP"
     };
+
+
     public Map<String, JSONObject> id_market_map;
     public ArrayList<String> market_ids;
     public Map<String, String> fullname_contract_map;
@@ -84,7 +87,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         // Check for no match
         if (match == null){
-            log.warning(String.format("No match for %s found in smarkets. Searched %d events %s.",
+            log.warning(String.format("%s No match found in smarkets. Searched %d events %s.",
                     setup_match, events.size(), Match.listtostring(events)));
             return false;
         }
@@ -98,17 +101,20 @@ public class SmarketsEventTracker extends SiteEventTracker {
         market_ids = new ArrayList<String>();
         JSONArray markets = smarkets.getMarkets(event_id);
         for (Object market_obj: markets) {
-            // Get market data
+
+            // Get data of this market
             JSONObject market = (JSONObject) market_obj;
             String market_type_name = (String) ((JSONObject) market.get("market_type")).get("name");
             String market_id = (String) market.get("id");
 
             // Add to list if type name appears in our whitelist
-            if (Arrays.asList(market_names).contains(market_type_name)){
+            if (Arrays.asList(market_type_names).contains(market_type_name)){
                 market_ids.add(market_id);
                 id_market_map.put(market_id, market);
             }
         }
+
+
 
         // Build a smarkets 'fullname' for each possible contract and map to its id
         JSONArray contracts = smarkets.getContracts(market_ids);
@@ -127,25 +133,26 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
             for (Object contract_obj : contracts) {
                 JSONObject contract = (JSONObject) contract_obj;
-
-                // Extract contract names and ids etc
-                JSONObject contract_type = (JSONObject) contract.get("contract_type");
-                String contract_id = (String) contract.get("id");
                 String contract_market_id = (String) contract.get("market_id");
-                if (!contract_market_id.equals(market_id)){
-                    continue;
-                }
-                String contract_type_name = (String) contract_type.get("name");
-                String contract_type_param = "";
-                if (contract_type.containsKey("param")) {
-                    contract_type_param = (String) contract_type.get("param");
-                }
 
-                // Construct an original 'fullname' for this contract and add its ID to map
-                String fullname = String.format("%s%s_%s%s",
-                        market_type_name, market_type_param, contract_type_name, contract_type_param);
-                fullname_contract_map.put(fullname, contract_id);
-                contract_market_map.put(contract_id, market_id);
+                // If this contracts market id matches this market, then continue
+                if (contract_market_id.equals(market_id)) {
+
+                    JSONObject contract_type = (JSONObject) contract.get("contract_type");
+                    String contract_id = (String) contract.get("id");
+
+                    String contract_type_name = (String) contract_type.get("name");
+                    String contract_type_param = "";
+                    if (contract_type.containsKey("param")) {
+                        contract_type_param = (String) contract_type.get("param");
+                    }
+
+                    // Construct an original 'fullname' for this contract and add its ID to map
+                    String fullname = String.format("%s%s_%s%s",
+                            market_type_name, market_type_param, contract_type_name, contract_type_param);
+                    fullname_contract_map.put(fullname, contract_id);
+                    contract_market_map.put(contract_id, market_id);
+                }
             }
         }
         return true;
@@ -157,7 +164,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
         if (event_id == null){
             return null;
         }
-        log.fine(String.format("Updating market odds report in smarkets for %s.", match));
+        log.fine(String.format("%s Updating market odds report for smarkets.", match));
 
         updatePrices();
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
@@ -166,7 +173,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
             return null;
         }
         JSONObject lastPrices = (JSONObject) this.lastPrices.clone();
-
 
 
         for (FootballBet bet: bets){
@@ -200,10 +206,24 @@ public class SmarketsEventTracker extends SiteEventTracker {
                     FootballOverUnderBet oub = (FootballOverUnderBet) bet;
                     contract_fullname = String.format("OVER_UNDER%s_%s", oub.goals.toString(), oub.side.toUpperCase());
                     break;
+                case FootballBet.HANDICAP:
+                    FootballHandicapBet hb = (FootballHandicapBet) bet;
+                    String result;
+                    if (hb.winnerB()){
+                        result = "AWAY";
+                    }
+                    else if (hb.winnerA()){
+                        result = "HOME";
+                    }
+                    else{
+                        continue;
+                    }
+                    contract_fullname = String.format("ASIAN_HANDICAP%s_%s", hb.a_handicap.toString(), result);
+                    break;
 
                 default:
+                    log.fine(String.format("Bet '%s' not currently valid for smarkets config. Blacklisting.", bet));
                     bet_blacklist.add(bet.id());
-                    log.fine(String.format("Bet '%s' not valid for smarkets config yet. Blacklisting.", bet));
                     continue;
             }
 
@@ -250,12 +270,23 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 metadata.put(Smarkets.CONTRACT_ID, contract_id);
                 metadata.put(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
                 metadata.put(Smarkets.SMARKETS_PRICE, String.valueOf(price));
+                metadata.put("fullname", contract_fullname);
 
                 new_betOffers.add(new BetOffer(match, bet, smarkets, decimal_odds, volume, metadata));
             }
 
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
+
+
+        MarketOddsReport mor = new MarketOddsReport();
+        for (String bet: new_marketOddsReport.betOffers.keySet()){
+            if (bet.contains("HCP")){
+                mor.addBetOffers(bet, new_marketOddsReport.get(bet));
+            }
+        }
+        toFile(mor.toJSON(true));
+        eventTrader.sportsTrader.safe_exit();
 
         return new_marketOddsReport;
     }

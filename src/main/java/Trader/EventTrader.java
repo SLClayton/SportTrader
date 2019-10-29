@@ -340,19 +340,15 @@ public class EventTrader implements Runnable {
     }
 
 
-    public void profitFound(ProfitReportSet in_profit){
+    public void profitFound(ProfitReportSet in_profit) {
 
-        log.info(String.format("%s profit reports found to be over %s profit ratio.",
+        log.info(String.format("%s profit reports found to be over %s PROFIT RATIO.",
                 in_profit.size(), MIN_PROFIT_RATIO.toString()));
 
-        // If ending after bet, lock out all other threads.
-        if (END_ON_BET){
-            sportsTrader.betlock.lock();
-        }
 
         // Create profit folder if it does not exist
         File profit_dir = new File(FileSystems.getDefault().getPath(".") + "/profit");
-        if (!profit_dir.exists()){
+        if (!profit_dir.exists()) {
             profit_dir.mkdir();
         }
 
@@ -373,11 +369,12 @@ public class EventTrader implements Runnable {
                 target_profit_report.total_investment.toString(),
                 max_profit_report.total_investment.toString()));
 
+
         ProfitReport profitReport;
         // If target profit report between min and max
         if (target_profit_report != null
-            && min_profit_report.smallerInvestment(target_profit_report)
-            && max_profit_report.biggerInvestment(target_profit_report)){
+                && min_profit_report.smallerInvestment(target_profit_report)
+                && max_profit_report.biggerInvestment(target_profit_report)) {
 
             log.info(String.format("Target profit report used. Target investment of %s.",
                     target_profit_report.total_investment.toString()));
@@ -385,39 +382,48 @@ public class EventTrader implements Runnable {
         }
         // If target profit report smaller than min and min smaller than max
         else if ((target_profit_report == null || target_profit_report.smallerInvestment(min_profit_report))
-            && min_profit_report.smallerInvestment(max_profit_report)){
+                && min_profit_report.smallerInvestment(max_profit_report)) {
 
             log.info(String.format("Target profit report has total investment below minimum %s needed. Using minimum.",
                     min_profit_report.total_investment.toString()));
             profitReport = min_profit_report;
-        }
-
-        else if (max_profit_report.biggerInvestment(min_profit_report)){
+        } else if (max_profit_report.biggerInvestment(min_profit_report)) {
 
             log.info(String.format("Target profit report has total investment above max of %s available volume. Using max.",
                     max_profit_report.total_investment.toString()));
             profitReport = min_profit_report;
-        }
-        else{
+        } else {
             log.warning(String.format("Bet not possible with current offers. No bets placed."));
             return;
         }
 
 
-
         // Ensure report investment is not over max investment
-        if (profitReport.total_investment.compareTo(MAX_INVESTMENT) == 1){
+        if (profitReport.total_investment.compareTo(MAX_INVESTMENT) == 1) {
             log.warning(String.format("Profit report needs too high investment. Req: %s  MAX: %s.",
                     profitReport.total_investment, MAX_INVESTMENT.toString()));
 
             // Try next best profit report if available
             in_profit.remove(0);
-            if (in_profit.size() > 0){
+            if (in_profit.size() > 0) {
                 profitFound(in_profit);
             }
             return;
         }
 
+
+        // If ending after bet, lock out all other threads.
+        if (END_ON_BET) {
+            sportsTrader.betlock.lock();
+        }
+
+
+        // Check config allows bets
+        if (sportsTrader.PLACE_BETS) {
+            ArrayList<PlacedBet> placeBets = placeBets(profitReport.betOrders);
+            PlacedProfitReport placedProfitReport = new PlacedProfitReport(placeBets, profitReport);
+            toFile(placedProfitReport.toJSON(true));
+        }
 
 
         // Save profit report as json file
@@ -425,21 +431,6 @@ public class EventTrader implements Runnable {
         String filename = timeString + " -  " + match.name + " " + profitString + ".json";
         toFile(profitReport.toJSON(true), profit_dir.toString() + "/" + filename);
 
-
-
-        // Check config allows bets
-        if (!sportsTrader.PLACE_BETS){
-            in_profit.remove(0);
-            if (in_profit.size() > 0){
-                profitFound(in_profit);
-            }
-            return;
-        }
-
-
-        ArrayList<PlacedBet> placeBets = placeBets(profitReport.betOrders);
-        PlacedProfitReport placedProfitReport = new PlacedProfitReport(placeBets, profitReport);
-        toFile(placedProfitReport.toJSON(true));
 
         if (END_ON_BET){
             log.info("Bets Placed, END_ON_BET=true so exiting program.");

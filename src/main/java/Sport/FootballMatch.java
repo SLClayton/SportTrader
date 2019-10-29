@@ -64,6 +64,27 @@ public class FootballMatch extends Match{
     }
 
 
+    public static void matches_alike(FootballMatch m1, FootballMatch m2){
+        // Matches are the same so make sure records are up to date
+
+        // equalise team A ids
+        if (m1.team_a.id() == null && m2.team_a.id() != null){
+            m1.team_a.set_id(m2.team_a.id());
+        }
+        if (m2.team_a.id() == null && m1.team_a.id() != null){
+            m2.team_a.set_id(m1.team_a.id());
+        }
+
+        // equalise team B ids
+        if (m1.team_a.id() == null && m2.team_a.id() != null){
+            m1.team_a.set_id(m2.team_a.id());
+        }
+        if (m2.team_a.id() == null && m1.team_a.id() != null){
+            m2.team_a.set_id(m1.team_a.id());
+        }
+    }
+
+
     @Override
     public Boolean same_match(Match match){
 
@@ -88,13 +109,13 @@ public class FootballMatch extends Match{
         // If both teams are the same then same match, if either definitely isn't then not same match
         Boolean sameAteam = team_a.same_team(fm.team_a);
         Boolean sameBteam = team_b.same_team(fm.team_b);
-        if (Boolean.TRUE.equals(sameAteam) && Boolean.TRUE.equals(sameBteam)) {
+        if (Boolean.TRUE.equals(sameAteam) || Boolean.TRUE.equals(sameBteam)){
+            matches_alike(this, fm);
             return true;
         }
         if (Boolean.FALSE.equals(sameAteam) || Boolean.FALSE.equals(sameBteam)) {
             return false;
         }
-
 
         //Verify matches completely
         try {

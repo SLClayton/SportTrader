@@ -73,7 +73,7 @@ public class PlacedProfitReport {
         j.put("min_profit", min_profit.toString());
         j.put("max_profit", max_profit.toString());
         j.put("profit_ratio", profit_ratio.toString());
-        j.put("based_on", blueprint.toJSON(false));
+        j.put("pre_profit_report", blueprint.toJSON(false));
         if (full){
             JSONArray orders = new JSONArray();
             for (PlacedBet pb: placedBets){

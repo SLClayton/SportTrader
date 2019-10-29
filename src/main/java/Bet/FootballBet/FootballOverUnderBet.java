@@ -22,7 +22,8 @@ public class FootballOverUnderBet extends FootballBet{
         return String.format("%s_%s_%s", side, goals.toString(), type);
     }
 
-    public JSONObject json(){
+    @Override
+    public JSONObject toJSON(){
         JSONObject j = new JSONObject();
         j.put("type", type);
         j.put("id", id());

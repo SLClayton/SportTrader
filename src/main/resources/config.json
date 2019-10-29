@@ -1,5 +1,5 @@
 {
-    "MAX_MATCHES": 3,
+    "MAX_MATCHES": 50,
     "IN_PLAY": false,
     "HOURS_AHEAD": 24,
 
@@ -19,8 +19,8 @@
     	"matchbook": true,
         "smarkets": true
     },
-    "EVENT_SOURCE": "matchbook",
-    "MIN_SITES_PER_MATCH": 3,
+    "EVENT_SOURCE": "smarkets",
+    "MIN_SITES_PER_MATCH": 2,
 
     "RUN_STATS": true
 }

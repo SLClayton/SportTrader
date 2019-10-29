@@ -25,7 +25,8 @@ public class FootballOtherScoreBet extends FootballBet{
         return String.format("%s_%s-%s_%s_%s", category, over_score, over_score, result, type);
     }
 
-    public JSONObject json(){
+    @Override
+    public JSONObject toJSON(){
         JSONObject j = new JSONObject();
         j.put("type", type);
         j.put("id", id());

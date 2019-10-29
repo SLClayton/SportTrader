@@ -21,6 +21,7 @@ public abstract class Bet {
         type = bet_type;
     }
 
+
     public String type(){
         return type;
     }
@@ -33,7 +34,7 @@ public abstract class Bet {
         return type == BACK;
     }
 
-    public abstract JSONObject json();
+    public abstract JSONObject toJSON();
 
     public abstract String id();
 
@@ -42,18 +43,11 @@ public abstract class Bet {
         return id();
     }
 
+
     public Boolean equals(Bet bet){
         return id().equals(bet.id());
     }
 
-
-    public static JSONArray allJSONArray(ArrayList<Bet> bets){
-        JSONArray j = new JSONArray();
-        for (int i=0; i<bets.size(); i++){
-            j.add(bets.get(i).json());
-        }
-        return j;
-    }
 
     public static JSONArray getTautIds(Bet[][] tauts) {
         JSONArray taut_list = new JSONArray();

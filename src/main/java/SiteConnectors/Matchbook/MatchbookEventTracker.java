@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static tools.printer.*;
 
@@ -35,12 +36,13 @@ public class MatchbookEventTracker extends SiteEventTracker {
     public String event_id;
     public FootballMatch match;
     public JSONObject eventMarketData;
-    public HashMap<String, String> market_name_id_map;
+    public Map<String, String> market_name_id_map;
 
 
     public MatchbookEventTracker(Matchbook matchbook, EventTrader eventTrader) {
         super(eventTrader);
         this.matchbook = matchbook;
+        market_name_id_map = new HashMap<>();
     }
 
     @Override
@@ -67,7 +69,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
         // Check for no match
         if (match == null){
-            log.warning(String.format("No match for %s found in matchbook. Searched %d events %s.",
+            log.warning(String.format("%s No match found in matchbook. Searched %d events %s.",
                     setup_match, events.size(), Match.listtostring(events)));
             return false;
         }
@@ -89,23 +91,26 @@ public class MatchbookEventTracker extends SiteEventTracker {
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
         JSONObject eventMarketData = (JSONObject) this.eventMarketData.clone();
 
+
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
                 continue;
             }
 
-
             // Extract runner based on bet category.
             JSONObject runner = null;
             switch (bet.category){
                 case FootballBet.RESULT:
-                    runner = extractRunnerRESULT((FootballResultBet) bet);
+                    runner = extractRunnerRESULT((FootballResultBet) bet, eventMarketData);
                     break;
                 case FootballBet.CORRECT_SCORE:
-                    runner = extractRunnerCORRECTSCORE((FootballScoreBet) bet);
+                    runner = extractRunnerCORRECTSCORE((FootballScoreBet) bet, eventMarketData);
                     break;
                 case FootballBet.OVER_UNDER:
-                    runner = extractRunnerGOALCOUNT((FootballOverUnderBet) bet);
+                    runner = extractRunnerGOALCOUNT((FootballOverUnderBet) bet, eventMarketData);
+                    break;
+                case FootballBet.HANDICAP:
+                    runner = extractRunnerHandicap((FootballHandicapBet) bet, eventMarketData);
                     break;
                 default:
                     bet_blacklist.add(bet.id());
@@ -151,12 +156,11 @@ public class MatchbookEventTracker extends SiteEventTracker {
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
 
-        // Assign newly created report as the current.
         return new_marketOddsReport;
     }
 
 
-    public JSONObject extractRunnerGOALCOUNT(FootballOverUnderBet bet) {
+    public JSONObject extractRunnerGOALCOUNT(FootballOverUnderBet bet, JSONObject eventMarketData) {
         JSONObject market = null;
         for (Object market_obj: (JSONArray) eventMarketData.get("markets")){
             JSONObject this_market = (JSONObject) market_obj;
@@ -198,7 +202,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
     }
 
 
-    public JSONObject extractRunnerCORRECTSCORE(FootballScoreBet bet) {
+    public JSONObject extractRunnerCORRECTSCORE(FootballScoreBet bet, JSONObject eventMarketData) {
         JSONObject market = null;
         for (Object market_obj: (JSONArray) eventMarketData.get("markets")){
             if (((JSONObject) market_obj).get("market-type").equals("correct_score")){
@@ -232,7 +236,57 @@ public class MatchbookEventTracker extends SiteEventTracker {
     }
 
 
-    public JSONObject extractRunnerRESULT(FootballResultBet bet){
+    public JSONObject extractRunnerHandicap(FootballHandicapBet bet, JSONObject eventMarketData){
+        if (bet.isDraw()){
+            return null;
+        }
+
+        JSONObject market = null;
+        for (Object market_obj: (JSONArray) eventMarketData.get("markets")){
+            JSONObject market_json = (JSONObject) market_obj;
+            String market_type = (String) market_json.get("market-type");
+
+            if (market_type.equals("handicap") && market_json.containsKey("handicap")){
+                BigDecimal handicap = new BigDecimal(String.valueOf(market_json.get("handicap")));
+                if (bet.a_handicap.equals(handicap)){
+                    market = (JSONObject) market_obj;
+                }
+            }
+        }
+
+        // Check correct market was found in raw data
+        if (market == null){
+            return null;
+        }
+
+        // Extract runners
+        JSONArray runners = (JSONArray) market.get("runners");
+        if (runners == null){
+            return null;
+        }
+
+        if (runners.size() != 2){
+            log.severe(String.format("There should be exactly 2 handicap runners in matchbook " +
+                            "market but there are %s\n%s",
+                    String.valueOf(runners.size()), jstring(runners)));
+            return null;
+        }
+
+        JSONObject runner = null;
+        if (bet.winnerA()){
+            runner = (JSONObject) runners.get(0);
+        }
+        else if (bet.winnerB()){
+            runner = (JSONObject) runners.get(1);
+        }
+
+
+        return runner;
+    }
+
+
+    public JSONObject extractRunnerRESULT(FootballResultBet bet, JSONObject eventMarketData){
+
         JSONObject market = null;
         for (Object market_obj: (JSONArray) eventMarketData.get("markets")){
             JSONObject market_json = (JSONObject) market_obj;

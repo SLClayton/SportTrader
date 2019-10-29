@@ -1,13 +1,12 @@
 package Bet.FootballBet;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 import Bet.*;
 import Trader.SportsTrader;
+import org.json.simple.JSONObject;
 
-import java.util.HashSet;
 import java.util.logging.Logger;
 
 import static tools.printer.*;
@@ -18,6 +17,7 @@ public class FootballBetGenerator {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public static final String tauts_filename = "football_tautologies.json";
+    public static final String bets_filename = "football_bets.json";
 
     static int GOALSCOUNT_MAX = 9;
     static int OTHERGOALS_MIN = 3;
@@ -26,7 +26,7 @@ public class FootballBetGenerator {
     static int OTHERGOALS_HT_MAX = 2;
     static int SCORE_MAX = 4;
     static int SCORE_MAX_HT = 2;
-    static int HANDICAP_MAX = 2;
+    static int HANDICAP_MAX = 3;
 
     ArrayList<FootballScoreBet> score_bets;
     ArrayList<FootballScoreBet> score_bets_ht;
@@ -44,14 +44,18 @@ public class FootballBetGenerator {
     public FootballBetGenerator(){
         score_bets = getScoreBets(SCORE_MAX, false);
         score_bets_ht = getScoreBets(SCORE_MAX_HT, true);
+
         other_score_bets = getOtherScoreBets(OTHERGOALS_MIN, OTHERGOALS_MAX);
         other_score_bets_ht = getOtherScoreBetsHT(OTHERGOALS_HT_MIN, OTHERGOALS_HT_MAX);
+
         result_bets = getResultBets(false);
         result_bets_ht = getResultBets(true);
+
         handicap_bets = getHandicapBets(HANDICAP_MAX);
+
         over_under_bets = getOverUnderBets(GOALSCOUNT_MAX);
 
-        //save();
+        save();
     }
 
     public ArrayList<FootballBet> getAllBetsList(){
@@ -67,6 +71,7 @@ public class FootballBetGenerator {
         return all_bets;
     }
 
+
     public FootballBet[] getAllBets(){
         ArrayList<FootballBet> betlist = getAllBetsList();
         FootballBet[] bets = new FootballBet[betlist.size()];
@@ -76,10 +81,25 @@ public class FootballBetGenerator {
         return bets;
     }
 
+
+
     public void save(){
+        log.info("Saving football bets to file in resources.");
+        JSONObject bet_cat = new JSONObject();
+        for (FootballBet fb: getAllBetsList()){
+            BetGroup current = (BetGroup) bet_cat.get(fb.category);
+            if (current == null){
+                current = new BetGroup();
+                bet_cat.put(fb.category, current);
+            }
+            current.add(fb);
+        }
+        saveJSONResource(bet_cat, bets_filename);
+
         log.info("Saving football tautologies to file in resources.");
         saveJSONResource(BetGroup.list2JSON(getAllTautologies(), false), tauts_filename);
     }
+
 
 
     public ArrayList<FootballScoreBet> getScoreBets(int highest, Boolean halftime){
@@ -115,7 +135,7 @@ public class FootballBetGenerator {
 
 
     public ArrayList<FootballOtherScoreBet> getOtherScoreBetsHT(int lowest, int highest){
-        ArrayList<FootballOtherScoreBet> bets = new ArrayList<FootballOtherScoreBet>();
+        ArrayList<FootballOtherScoreBet> bets = new ArrayList<>();
         for (int score=lowest; score<=highest; score++){
             for (int j=0; j<Bet.BET_TYPES.length; j++) {
                 String type = Bet.BET_TYPES[j];
@@ -188,6 +208,7 @@ public class FootballBetGenerator {
 
 
     public ArrayList<BetGroup> getAllTautologies(){
+
         if (allTautologies != null){
             return allTautologies;
         }

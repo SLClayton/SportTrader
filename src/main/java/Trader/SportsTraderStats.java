@@ -12,6 +12,7 @@ import java.math.RoundingMode;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +37,7 @@ public class SportsTraderStats implements Runnable {
     public SportsTraderStats(String filename){
         exit_flag = false;
         eventTraderStatsMap = new HashMap<>();
-        queue = new LinkedBlockingQueue<>();
+        queue = new ArrayBlockingQueue<>(200);
 
         thread = new Thread(this);
         thread.setName("StatKeeper");
@@ -60,7 +61,6 @@ public class SportsTraderStats implements Runnable {
         while (!exit_flag) {
 
             queueObjects = null;
-            print("In Q: " + queue.size());
             try {
                 while (!exit_flag && queueObjects == null) {
                     queueObjects = queue.poll(1, TimeUnit.SECONDS);
@@ -73,24 +73,14 @@ public class SportsTraderStats implements Runnable {
                 continue;
             }
 
-            Instant start = Instant.now();
-
 
             EventTrader eventTrader = (EventTrader) queueObjects[0];
             ProfitReportSet profitReportSet = (ProfitReportSet) queueObjects[1];
             ArrayList<MarketOddsReport> marketOddsReports = (ArrayList<MarketOddsReport>) queueObjects[2];
-
-            print("unpack: " + (Instant.now().toEpochMilli() - start.toEpochMilli()) + "ms");
-
-            start = Instant.now();
             _update(eventTrader, profitReportSet, marketOddsReports);
 
-            //TODO: stats update gets gradually lober and longer, find out why
-
-            print("Update: " + (Instant.now().toEpochMilli() - start.toEpochMilli()) + "ms");
-
             if (next_save == null || Instant.now().isAfter(next_save)){
-                save(false, 8);
+                save();
                 next_save = Instant.now().plus(10, ChronoUnit.SECONDS);
             }
         }
@@ -114,12 +104,13 @@ public class SportsTraderStats implements Runnable {
             eventTraderStats = new EventTraderStats();
             eventTraderStatsMap.put(eventTrader.id(), eventTraderStats);
         }
+
         eventTraderStats.update(profitReportSet, marketOddsReports);
     }
 
 
-    public void save(boolean full_sites, Integer n_tauts){
-        saveJSONResource(toJSON(full_sites, n_tauts), filename);
+    public void save(){
+        saveJSONResource(toJSON(false, 10), filename);
     }
 
 
@@ -147,6 +138,7 @@ public class SportsTraderStats implements Runnable {
         j.put("EventTraderStats", eventTraders_obj);
         j.put("summary_tautologies", summary_tauts_obj);
 
+        j.put("start_time", String.valueOf(start_time));
         long s = Duration.between(start_time, Instant.now()).getSeconds();
         j.put("elapsed_time", String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60)));
 
@@ -223,6 +215,8 @@ public class SportsTraderStats implements Runnable {
 
         @Override
         public String toString(){
+            int gap = 12;
+
             String best = "null";
             if (best_ratio != null){
                 best = best_ratio.setScale(5, RoundingMode.HALF_UP).toString();
@@ -233,7 +227,20 @@ public class SportsTraderStats implements Runnable {
                 avg = avg_ratio.setScale(5, RoundingMode.HALF_UP).toString();
             }
 
-            return String.format("%s: n=%s   best: %s   avg: %s", id, n, best, avg);
+            String s = id + ": n=";
+            int l = s.length();
+            s += String.valueOf(n);
+            while (s.length() < l + gap){
+                s += " ";
+            }
+            s += " best: ";
+            l = s.length();
+            s += String.valueOf(best);
+            while (s.length() < l + gap){
+                s += " ";
+            }
+            s += " avg: " + avg.toString();
+            return s;
         }
 
 
@@ -256,17 +263,19 @@ public class SportsTraderStats implements Runnable {
 
 
         private void update_average(BigDecimal new_profit_ratio){
-            n = n.add(BigDecimal.ONE);
+
+            BigDecimal nplus1 = n.add(BigDecimal.ONE);
 
             if (avg_ratio == null){
                 avg_ratio = new_profit_ratio;
             }
             else{
-                BigDecimal old_ratio = n.subtract(BigDecimal.ONE).divide(n, 20, RoundingMode.HALF_UP);
-
-                avg_ratio = avg_ratio.multiply(old_ratio)
-                        .add(new_profit_ratio.divide(n, 20, RoundingMode.HALF_UP));
+                avg_ratio = avg_ratio.multiply(n)
+                        .add(new_profit_ratio)
+                        .divide(nplus1, 20, RoundingMode.HALF_UP);
             }
+
+            n = nplus1;
         }
 
 
@@ -289,6 +298,7 @@ public class SportsTraderStats implements Runnable {
         }
     }
 
+
     public class EventTraderStats{
 
         public long total_checks;
@@ -307,8 +317,6 @@ public class SportsTraderStats implements Runnable {
                 start_time = Instant.now();
             }
 
-            // TODO: stats take too long (about 50-60 ms) to update. Fix that
-
             // Update each siteTrackerStats with its corresponding odds report
             for (MarketOddsReport oddsReport: oddsReports){
                 String site_name = oddsReport.site_name();
@@ -321,6 +329,8 @@ public class SportsTraderStats implements Runnable {
                 siteTrackerStats.update(oddsReport);
             }
 
+
+            Instant start = Instant.now();
             for (ProfitReport profitReport: profitReportSet.profitReports){
                 String taut_id = profitReport.getTautology().id();
                 BigDecimal profit_ratio = profitReport.profit_ratio;
@@ -329,7 +339,7 @@ public class SportsTraderStats implements Runnable {
                 Taut current_taut = tautologies.get(taut_id);
                 if (current_taut == null){
                     current_taut = new Taut(taut_id);
-                    tautologies.put(taut_id, new Taut(taut_id));
+                    tautologies.put(taut_id,  current_taut);
                 }
                 current_taut.update(profit_ratio);
 
@@ -396,6 +406,7 @@ public class SportsTraderStats implements Runnable {
 
 
         public void update(MarketOddsReport oddsReport){
+
             bets_available = new HashSet<>();
             bets_with_offers = new HashSet<>();
 
@@ -412,6 +423,9 @@ public class SportsTraderStats implements Runnable {
             most_bets_available.addAll(bets_available);
             most_bets_with_offers.addAll(bets_with_offers);
             total_checks += 1;
+
+
+
         }
 
         public String toJSON(boolean full){

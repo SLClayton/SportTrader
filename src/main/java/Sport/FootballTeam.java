@@ -7,16 +7,12 @@ import java.util.ArrayList;
 
 public class FootballTeam extends Team {
 
-    SportData sportData;
-
 
     public ArrayList<FootballMatch> fixtures;
 
 
     public FootballTeam(String name) {
         super(name);
-        sportData = SportsTrader.getSportData();
-        id = this.id();
     }
 
 

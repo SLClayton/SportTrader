@@ -230,6 +230,7 @@ public class Matchbook extends BettingSite {
                 balance.toString(), exposure.toString()));
     }
 
+
     @Override
     public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
 
@@ -422,6 +423,7 @@ public class Matchbook extends BettingSite {
         return valid_decimal_odds[valid_decimal_odds.length-1];
     }
 
+
     @Override
     public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
@@ -530,13 +532,14 @@ public class Matchbook extends BettingSite {
                         investment.toString(), avg_odds.toString(), betOrder.betID(),
                         betOrder.match().name, returns.toString()));
 
+
                 PlacedBet pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, total_back_stake,
                         total_lay_stake, avg_odds, returns, time);
-
                 pb.site_json_response = offer;
                 placedBets.add(pb);
             }
             else{
+
                 any_failures = true;
                 log.severe(String.format("Failed to place %s on bet %s in matchbook. Bet not fully matched.",
                         betOrder.investment.toString(), betOrder.bet_offer.bet.id(), jstring(response)));
