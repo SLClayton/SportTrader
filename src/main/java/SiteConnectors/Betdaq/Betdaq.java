@@ -22,6 +22,8 @@ import static tools.printer.print;
 
 public class Betdaq extends BettingSite {
 
+    public final static String name = "betdaq";
+
     public static final String WSDL = "http://api.betdaq.com/v2.0/API.wsdl";
 
 

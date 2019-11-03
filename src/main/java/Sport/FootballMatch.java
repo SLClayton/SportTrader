@@ -86,7 +86,7 @@ public class FootballMatch extends Match{
 
 
     @Override
-    public Boolean same_match(Match match){
+    public Boolean same_match(Match match, boolean attempt_verify){
 
         // Check Start time, false if different
         if (!start_time.equals(match.start_time)){
@@ -215,7 +215,7 @@ public class FootballMatch extends Match{
 
     public static boolean list_contains(List<FootballMatch> list, Match match){
         for (FootballMatch match2: list){
-            if (match.same_match(match2) == true){
+            if (match.same_match(match2, true) == true){
                 return true;
             }
         }

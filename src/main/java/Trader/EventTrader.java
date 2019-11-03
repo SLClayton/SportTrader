@@ -52,8 +52,8 @@ public class EventTrader implements Runnable {
     public SportsTraderStats stats;
 
     public FootballMatch match;
-    public HashMap<String, BettingSite> sites;
-    public HashMap<String, SiteEventTracker> siteEventTrackers;
+    public Map<String, BettingSite> sites;
+    public Map<String, SiteEventTracker> siteEventTrackers;
     public BlockingQueue<RequestHandler> siteMarketOddsToGetQueue;
     public ArrayList<MarketOddsReportWorker> marketOddsReportWorkers;
 
@@ -63,7 +63,7 @@ public class EventTrader implements Runnable {
     public Set<String> sites_used_last;
     public BigDecimal best_profit_last;
 
-    public EventTrader(SportsTrader sportsTrader, FootballMatch match, HashMap<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
+    public EventTrader(SportsTrader sportsTrader, FootballMatch match, Map<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
         this.sportsTrader = sportsTrader;
         this.match = match;
         this.sites = sites;
@@ -216,11 +216,11 @@ public class EventTrader implements Runnable {
     public class MarketOddsReportWorker implements Runnable{
 
         BlockingQueue<RequestHandler> job_queue;
-        HashMap<String, SiteEventTracker> siteEventTrackers;
+        Map<String, SiteEventTracker> siteEventTrackers;
         Thread thread;
 
-        public MarketOddsReportWorker(BlockingQueue<RequestHandler> job_queue, HashMap<String,
-                SiteEventTracker> siteEventTrackers){
+        public MarketOddsReportWorker(BlockingQueue<RequestHandler> job_queue,
+                                      Map<String, SiteEventTracker> siteEventTrackers){
 
             this.job_queue = job_queue;
             this.siteEventTrackers = siteEventTrackers;

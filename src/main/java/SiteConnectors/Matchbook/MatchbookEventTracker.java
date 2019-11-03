@@ -60,10 +60,19 @@ public class MatchbookEventTracker extends SiteEventTracker {
         match = null;
         // Verify each match in flashscores and see if it matches
         for (FootballMatch fm: events){
-            if (Boolean.TRUE.equals(fm.same_match(setup_match))){
+            if (Boolean.TRUE.equals(fm.same_match(setup_match, false))){
                 match = fm;
                 event_id = fm.metadata.get("matchbook_event_id");
                 break;
+            }
+        }
+        if (match == null){
+            for (FootballMatch fm: events){
+                if (Boolean.TRUE.equals(fm.same_match(setup_match, true))){
+                    match = fm;
+                    event_id = fm.metadata.get("matchbook_event_id");
+                    break;
+                }
             }
         }
 

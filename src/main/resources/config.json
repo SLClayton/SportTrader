@@ -3,6 +3,10 @@
     "IN_PLAY": false,
     "HOURS_AHEAD": 24,
 
+    "SINGLE_MATCH_TEST": true,
+    "SM_NAME": "everton v tottenham",
+    "SM_TIME": "2019-11-03T16:30:00.000Z",
+
     "CHECK_MARKETS": true,
     "RATE_LIMIT": 100,
     "REQUEST_TIMEOUT": 200,

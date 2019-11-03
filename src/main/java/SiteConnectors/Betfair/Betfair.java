@@ -51,6 +51,7 @@ import static tools.printer.*;
 public class Betfair extends BettingSite {
 
     public static final int FOOTBALL_ID = 1;
+    public final static String name = "betfair";
 
     public String hostname = "https://api.betfair.com/";
     public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
@@ -72,18 +73,7 @@ public class Betfair extends BettingSite {
     int markets_per_req = (int) (max_weight_per_req / weight_per_market);
 
 
-    public static String[] football_market_types = new String[] {
-            "OVER_UNDER_05",
-            "OVER_UNDER_15",
-            "OVER_UNDER_25",
-            "OVER_UNDER_35",
-            "OVER_UNDER_45",
-            "OVER_UNDER_55",
-            "OVER_UNDER_65",
-            "OVER_UNDER_75",
-            "OVER_UNDER_85",
-            "MATCH_ODDS",
-            "CORRECT_SCORE"};
+
 
 
     public Betfair() throws IOException, CertificateException, UnrecoverableKeyException,
@@ -92,7 +82,6 @@ public class Betfair extends BettingSite {
 
         super();
         log.info("Creating new Betfair Connector");
-        name = "betfair";
         balance = BigDecimal.ZERO;
         commission_rate = new BigDecimal("0.02");
         min_back_stake = new BigDecimal("2.00");
@@ -430,7 +419,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public JSONArray getMarketOdds(Set<String> market_ids) throws InterruptedException {
+    public JSONArray getMarketOdds(Collection<String> market_ids) throws InterruptedException {
         String[] market_id_array = new String[market_ids.size()];
 
         int i = 0;
@@ -509,7 +498,6 @@ public class Betfair extends BettingSite {
         }
         return footballMatches;
     }
-
 
 
     public JSONArray getMarketCatalogue(JSONObject params) throws IOException, URISyntaxException {
@@ -644,27 +632,28 @@ public class Betfair extends BettingSite {
     public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
 
-        // Sort bets into groups by their market
+        // Sort bets into groups depending on their market ID
         Map<String, ArrayList<BetOrder>> market_betOrders = new HashMap<>();
         for (BetOrder betOrder: betOrders){
             String marketId = betOrder.bet_offer.metadata.get("marketId");
-
             if (!market_betOrders.containsKey(marketId)) {
                 market_betOrders.put(marketId, new ArrayList<BetOrder>());
             }
             market_betOrders.get(marketId).add(betOrder);
         }
 
+
         // Clear list so it can be reordered as they're put into payload
         betOrders = new ArrayList<>();
 
-        // Create RPC request
+
+        // Create whole RPC request
         JSONArray RPCs = new JSONArray();
         for (Map.Entry<String, ArrayList<BetOrder>> entry: market_betOrders.entrySet()){
             String marketId = entry.getKey();
             ArrayList<BetOrder> marketBetOrders = entry.getValue();
 
-            // One rpc request part, per market
+            // One part of the RPC request per market
             JSONArray instructions_list = new JSONArray();
             for (BetOrder betOrder: marketBetOrders){
 
@@ -805,6 +794,53 @@ public class Betfair extends BettingSite {
     }
 
 
+
+    public void testbet(Double size, Double price, String market, String selection, Double handicap) throws IOException, URISyntaxException {
+
+        if (handicap == null){
+            handicap = 0.0;
+        }
+
+        JSONObject limitOrder = new JSONObject();
+        limitOrder.put("size", String.valueOf(size));
+        limitOrder.put("price", String.valueOf(price));
+        limitOrder.put("persistenceType", "PERSIST");
+        limitOrder.put("timeInForce", "FILL_OR_KILL");
+
+        JSONObject instructions = new JSONObject();
+        instructions.put("orderType", "LIMIT");
+        instructions.put("handicap", handicap.toString());
+        instructions.put("selectionId", selection);
+        instructions.put("side", "BACK");
+        instructions.put("limitOrder", limitOrder);
+
+        JSONArray instructions_list = new JSONArray();
+        instructions_list.add(instructions);
+
+
+        JSONObject params = new JSONObject();
+        params.put("marketId", market);
+        params.put("instructions", instructions_list);
+
+        JSONObject rpc = new JSONObject();
+        rpc.put("jsonrpc", "2.0");
+        rpc.put("method", "SportsAPING/v1.0/placeOrders");
+        rpc.put("id", 1);
+        rpc.put("params", params);
+
+
+        JSONArray RPCs = new JSONArray();
+        RPCs.add(rpc);
+
+
+        // Send off request to place bets on betfair exchange
+        JSONArray response = (JSONArray) requester.post(betting_endpoint, RPCs);
+
+        toFile(response);
+
+    }
+
+
     public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
         if (increment.signum() == 0) {
             // 0 increment does not make much sense, but prevent division by 0
@@ -858,12 +894,10 @@ public class Betfair extends BettingSite {
         try {
 
 
-            BigDecimal a = null;
-            BigDecimal b = new BigDecimal(23);
+            Betfair b = new Betfair();
 
-            BigDecimal c = b.max(a);
 
-            print(c.toString());
+            b.testbet(2.00, 1.4, "1.163930531", "56343", 1.0);
 
 
 

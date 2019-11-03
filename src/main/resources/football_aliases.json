@@ -122,7 +122,8 @@
       "augsburg ii"
     ],
     [
-      "basel"
+      "basel",
+      "fc basel"
     ],
     [
       "de graafschap"
@@ -193,6 +194,9 @@
     ],
     [
       "ittihad khemisset"
+    ],
+    [
+      "rad"
     ],
     [
       "leverkusen"
@@ -272,6 +276,9 @@
     ],
     [
       "zacatepec"
+    ],
+    [
+      "olimpia elblag"
     ],
     [
       "norwich u23"
@@ -445,6 +452,9 @@
       "stratford town"
     ],
     [
+      "ud alzira"
+    ],
+    [
       "elfsborg",
       "if elfsborg"
     ],
@@ -522,7 +532,13 @@
       "carlisle united"
     ],
     [
+      "fk javor ivanjica"
+    ],
+    [
       "stourbridge"
+    ],
+    [
+      "sonderjyske"
     ],
     [
       "derby",
@@ -564,8 +580,15 @@
       "hannover ii"
     ],
     [
+      "alcorcon",
+      "alcorcón"
+    ],
+    [
       "yenisey krasnoyarsk",
       "yenisey"
+    ],
+    [
+      "rigas futbola skola"
     ],
     [
       "braga",
@@ -589,6 +612,9 @@
     ],
     [
       "atletico bucaramanga"
+    ],
+    [
+      "eldense"
     ],
     [
       "salzburg",
@@ -664,6 +690,9 @@
       "leiston"
     ],
     [
+      "vozdovac"
+    ],
+    [
       "arminia bielefeld"
     ],
     [
@@ -706,6 +735,9 @@
     ],
     [
       "stamford"
+    ],
+    [
+      "tulevik viljandi"
     ],
     [
       "chrobry glogow"
@@ -867,6 +899,9 @@
       "rionegro"
     ],
     [
+      "ciudad de torredonjimeno"
+    ],
+    [
       "atlanta united fc",
       "atlanta united"
     ],
@@ -874,7 +909,8 @@
       "eintracht frankfurt"
     ],
     [
-      "riga"
+      "riga",
+      "fk riga"
     ],
     [
       "alloa athletic"
@@ -978,6 +1014,9 @@
       "orebro"
     ],
     [
+      "giana erminio"
+    ],
+    [
       "lokomotiv moscow",
       "lokomotiv"
     ],
@@ -988,10 +1027,16 @@
       "trabzonspor"
     ],
     [
+      "rakow czestochowa"
+    ],
+    [
       "shanghai shenhua"
     ],
     [
       "monagas"
+    ],
+    [
+      "fk spartak"
     ],
     [
       "standard"
@@ -1092,7 +1137,13 @@
       "guabira"
     ],
     [
+      "fk proleter"
+    ],
+    [
       "chennaiyin fc"
+    ],
+    [
+      "fk napredak"
     ],
     [
       "bognor regis"
@@ -1134,6 +1185,9 @@
       "poole town"
     ],
     [
+      "brondby"
+    ],
+    [
       "wolfsberger ac"
     ],
     [
@@ -1172,6 +1226,9 @@
       "kolding if"
     ],
     [
+      "mladost lucani"
+    ],
+    [
       "borussia dortmund ii",
       "dortmund ii"
     ],
@@ -1180,6 +1237,9 @@
     ],
     [
       "st ives town"
+    ],
+    [
+      "juventus b"
     ],
     [
       "kofu"
@@ -1216,6 +1276,9 @@
       "gent"
     ],
     [
+      "rio ave"
+    ],
+    [
       "swindon supermarine"
     ],
     [
@@ -1237,6 +1300,9 @@
     ],
     [
       "asteras tripolis"
+    ],
+    [
+      "eupen"
     ],
     [
       "rizespor"
@@ -1269,6 +1335,9 @@
       "middlesbrough"
     ],
     [
+      "racing santander"
+    ],
+    [
       "saarbrucken"
     ],
     [
@@ -1285,6 +1354,9 @@
     [
       "swansea",
       "swansea city"
+    ],
+    [
+      "macva sabac"
     ],
     [
       "orleans"
@@ -1339,10 +1411,16 @@
       "lens"
     ],
     [
+      "antalyaspor"
+    ],
+    [
       "dundela"
     ],
     [
       "nancy"
+    ],
+    [
+      "bologna"
     ],
     [
       "morecambe"
@@ -1466,6 +1544,9 @@
       "warrenpoint"
     ],
     [
+      "soroksar"
+    ],
+    [
       "cfr cluj"
     ],
     [
@@ -1506,6 +1587,9 @@
     ],
     [
       "etoile sportive sahel"
+    ],
+    [
+      "tammeka tartu"
     ],
     [
       "fc vaduz"
@@ -1550,6 +1634,9 @@
       "midtjylland"
     ],
     [
+      "antequera cf"
+    ],
+    [
       "gainsborough"
     ],
     [
@@ -1570,6 +1657,9 @@
     [
       "nottingham forest",
       "nottm forest"
+    ],
+    [
+      "moreirense"
     ],
     [
       "chongqing lifan"
@@ -1624,6 +1714,9 @@
     ],
     [
       "apoel"
+    ],
+    [
+      "gyirmot"
     ],
     [
       "na hussein dey"

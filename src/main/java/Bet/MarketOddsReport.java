@@ -29,7 +29,7 @@ public class MarketOddsReport {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public HashMap<String, ArrayList<BetOffer>> betOffers;
+    public Map<String, ArrayList<BetOffer>> betOffers;
     public Set<String> sites_used;
 
 

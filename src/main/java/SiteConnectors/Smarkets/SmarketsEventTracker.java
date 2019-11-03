@@ -78,10 +78,19 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         match = null;
         for (FootballMatch fm: events){
-            if (Boolean.TRUE.equals(setup_match.same_match(fm))){
+            if (Boolean.TRUE.equals(setup_match.same_match(fm, false))){
                 match = fm;
                 event_id = fm.metadata.get("smarkets_event_id");
                 break;
+            }
+        }
+        if (match == null){
+            for (FootballMatch fm: events){
+                if (Boolean.TRUE.equals(setup_match.same_match(fm, true))){
+                    match = fm;
+                    event_id = fm.metadata.get("smarkets_event_id");
+                    break;
+                }
             }
         }
 
@@ -279,14 +288,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
         }
 
 
-        MarketOddsReport mor = new MarketOddsReport();
-        for (String bet: new_marketOddsReport.betOffers.keySet()){
-            if (bet.contains("HCP")){
-                mor.addBetOffers(bet, new_marketOddsReport.get(bet));
-            }
-        }
-        toFile(mor.toJSON(true));
-        eventTrader.sportsTrader.safe_exit();
 
         return new_marketOddsReport;
     }

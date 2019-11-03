@@ -54,10 +54,7 @@ public abstract class Match {
     public abstract String key();
 
 
-    public abstract Boolean same_match(Match match);
-
-
-
+    public abstract Boolean same_match(Match match, boolean attempt_verify);
 }
 
 

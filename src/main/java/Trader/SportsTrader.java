@@ -2,6 +2,7 @@ package Trader;
 
 import Bet.Bet;
 import Bet.FootballBet.FootballBetGenerator;
+import Bet.FootballBet.FootballHandicapBet;
 import SiteConnectors.*;
 import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.Matchbook.Matchbook;
@@ -21,6 +22,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -57,11 +59,14 @@ public class SportsTrader {
     public BigDecimal TARGET_INVESTMENT;
     public long REQUEST_TIMEOUT;
     public boolean RUN_STATS;
+    public boolean SINGLE_MATCH_TEST;
+    public String SM_NAME;
+    public String SM_TIME;
 
     public Lock betlock = new ReentrantLock();
 
-    public HashMap<String, Class> siteClasses;
-    public HashMap<String, BettingSite> siteObjects;
+    public ArrayList<Class> siteClasses;
+    public Map<String, BettingSite> siteObjects;
     public int session_Update_interval_hours = 4; // in hours
 
     public FootballBetGenerator footballBetGenerator;
@@ -93,10 +98,11 @@ public class SportsTrader {
 
         setupConfig("config.json");
 
-        siteClasses = new HashMap<String, Class>();
-        siteClasses.put("betfair", Betfair.class);
-        siteClasses.put("matchbook", Matchbook.class);
-        siteClasses.put("smarkets", Smarkets.class);
+        siteClasses = new ArrayList<Class>();
+        siteClasses.add(Betfair.class);
+        siteClasses.add(Matchbook.class);
+        siteClasses.add(Smarkets.class);
+
 
         siteObjects = new HashMap<>();
         eventTraders = new ArrayList<>();
@@ -138,7 +144,7 @@ public class SportsTrader {
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
                 "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
-                "REQUEST_TIMEOUT", "RUN_STATS"};
+                "REQUEST_TIMEOUT", "RUN_STATS", "SINGLE_MATCH_TEST", "SM_NAME", "SM_TIME"};
 
         List<String> missingFields = new ArrayList<>();
         for (String field: required){
@@ -166,6 +172,9 @@ public class SportsTrader {
         TARGET_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("TARGET_INVESTMENT")));
         REQUEST_TIMEOUT = (long) ((Double) config.get("REQUEST_TIMEOUT")).intValue();
         RUN_STATS = (boolean) config.get("RUN_STATS");
+        SINGLE_MATCH_TEST = (boolean) config.get("SINGLE_MATCH_TEST");
+        SM_NAME = (String) config.get("SM_NAME");
+        SM_TIME = (String) config.get("SM_TIME");
 
 
         // Check target inv per bet is lower than max investment per bet
@@ -196,24 +205,30 @@ public class SportsTrader {
     }
 
 
-    public void run(){
-        log.info("Running SportsTrader.");
+    public Map<String, BettingSite> getSiteObjects(ArrayList<Class> siteClasses){
 
-        // Run bet/taut generator and generate the tautologies.
-        footballBetGenerator = new FootballBetGenerator();
-        footballBetGenerator.getAllTautologies();
-
+        Map<String, BettingSite> new_site_objects = new HashMap<>();
 
         // Initialize site object for each site class and add to map
-        for (Map.Entry<String, Class> entry : siteClasses.entrySet() ) {
-            String site_name = entry.getKey();
-            Class site_class = entry.getValue();
+        for (Class betting_site_class : siteClasses) {
+            Class site_class = betting_site_class;
+            String site_name = null;
+            try {
+                site_name = (String) betting_site_class.getField("name").get(null);
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+                log.severe(String.format("Site class '%s' has no static variable 'name' to extract.",
+                        betting_site_class.toString()));
+                return null;
+            }
 
-            // Check site appears in config and is set to active
+            // Check site appears in config
             if (!ACTIVE_SITES.containsKey(site_name)){
                 log.severe("Site %s appears in class list but has no config entry. Skipping.");
-                continue;
+                return null;
             }
+
+            // Check config is set as active for this class
             boolean site_active = ACTIVE_SITES.get(site_name);
             if (!site_active){
                 log.info(String.format("Site %s not activated in config. Skipping.", site_name));
@@ -224,7 +239,7 @@ public class SportsTrader {
             try {
                 //BettingSite site_obj = (BettingSite) site_class.getConstructor().newInstance();
                 BettingSite site_obj =  (BettingSite) Class.forName(site_class.getName()).newInstance();
-                siteObjects.put(site_name, site_obj);
+                new_site_objects.put(site_name, site_obj);
 
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -235,43 +250,60 @@ public class SportsTrader {
             log.info(String.format("Successfully setup betting site connector for %s.", site_name));
         }
 
+        return new_site_objects;
+    }
 
-        // Exit if no sites have worked.
+
+    public void run(){
+        log.info("Running SportsTrader.");
+
+        // Run bet/taut generator and generate the tautologies.
+        footballBetGenerator = new FootballBetGenerator();
+        footballBetGenerator.getAllTautologies();
+
+
+        // initialize our site classes to objects
+        siteObjects = getSiteObjects(siteClasses);
+        if (siteObjects == null){
+            log.severe("Error in site classes, exiting.");
+            return;
+        }
         if (siteObjects.size() <= 0){
-            log.severe("None of the sites could be instantiated, finishing.");
+            log.severe("No site objects created successfully. Exiting.");
             return;
         }
 
         // Begin thread to update site details periodically.
         siteAccountInfoUpdater = new SiteAccountInfoUpdater(siteObjects);
         siteAccountInfoUpdater.start();
+
         // Begin thread to update site sessions periodically
         sessionsUpdater = new SessionsUpdater(siteObjects);
         sessionsUpdater.start();
 
 
-        // Collect initial football matches
+
         ArrayList<FootballMatch> footballMatches = null;
+        // (for testing) add single manually inputted match
         try {
-            footballMatches = getFootballMatches();
-        } catch (IOException | URISyntaxException | InterruptedException e) {
+            if (SINGLE_MATCH_TEST) {
+                footballMatches = new ArrayList<>();
+                FootballMatch fm = FootballMatch.parse(SM_TIME, SM_NAME);
+                footballMatches.add(fm);
+                log.info(String.format("Using %s match for testing.", fm.name));
+            }
+            else {
+                footballMatches = getFootballMatches();
+                log.info(String.format("Found %d matches within given time frame.", footballMatches.size()));
+            }
+        }
+        catch (ParseException | IOException | URISyntaxException | InterruptedException e){
             e.printStackTrace();
+            footballMatches = null;
+        }
+        if (footballMatches == null) {
             log.severe("Error getting initial football matches. Exiting...");
             return;
-        }
-        if (footballMatches == null){
-            log.severe("Error getting initial football matches. Exiting...");
-            return;
-        }
-
-        log.info(String.format("Found %d matches within given timeframe.", footballMatches.size()));
-
-
-        // (For testing) Remove all matches and add single manually inputted match
-        if (true) {
-            footballMatches.clear();
-            FootballMatch fm = new FootballMatch("2019-11-02T12:30:00.000Z", "Bournemouth", "Manchester United");
-            footballMatches.add(fm);
         }
 
 

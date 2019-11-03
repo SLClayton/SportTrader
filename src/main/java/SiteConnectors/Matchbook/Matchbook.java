@@ -41,6 +41,8 @@ import static tools.printer.*;
 
 public class Matchbook extends BettingSite {
 
+    public final static String name = "matchbook";
+
     public static String baseurl = "https://api.matchbook.com/edge/rest";
     public static String[] marketTypes = new String[]{
             "one_x_two",
@@ -69,7 +71,6 @@ public class Matchbook extends BettingSite {
         }
         log.info("Creating new Matchbook Connector");
 
-        name = "matchbook";
         min_back_stake = new BigDecimal("0.10");
         commission_rate = new BigDecimal("0.02");
 

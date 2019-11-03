@@ -33,7 +33,7 @@ public abstract class BettingSite {
 
     public static Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public String name;
+    public final static String name = "NA";
     public String ssldir;
     public Requester requester;
 
@@ -58,6 +58,7 @@ public abstract class BettingSite {
 
         balance = new BigDecimal("0.00");
     }
+
 
     public abstract void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException;
