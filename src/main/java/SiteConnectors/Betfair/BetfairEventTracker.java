@@ -46,6 +46,19 @@ public class BetfairEventTracker extends SiteEventTracker {
             "MATCH_ODDS",
             "CORRECT_SCORE"};
 
+    public static String[] football_market_types_over_under = new String[] {
+            "OVER_UNDER_05",
+            "OVER_UNDER_15",
+            "OVER_UNDER_25",
+            "OVER_UNDER_35",
+            "OVER_UNDER_45",
+            "OVER_UNDER_55",
+            "OVER_UNDER_65",
+            "OVER_UNDER_75",
+            "OVER_UNDER_85"};
+
+
+
     public Betfair betfair;
 
     public String event_id;
@@ -53,7 +66,10 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     public Instant lastMarketDataUpdate;
     public Map<String, String> marketType_id_map;
-    public Map<String, Long> correctScore_selectionId_map;
+    public Map<String, Integer> correctScore_selectionId_map;
+    public Map<Integer, Integer> result_sortPriority_selectionId_map;
+    public Map<String, Integer> handicap_runnerName_selectionId_map;
+    public Map<String, Integer> overunder_runnerName_selectionId_map;
 
 
     public BetfairEventTracker(Betfair betfair, EventTrader eventTrader){
@@ -64,6 +80,9 @@ public class BetfairEventTracker extends SiteEventTracker {
         lastMarketDataUpdate = null;
         marketType_id_map = new HashMap<>();
         correctScore_selectionId_map = new HashMap<>();
+        result_sortPriority_selectionId_map = new HashMap<>();
+        handicap_runnerName_selectionId_map = new HashMap<>();
+        overunder_runnerName_selectionId_map = new HashMap<>();
         bet_blacklist = new HashSet<>();
     }
 
@@ -144,11 +163,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
 
 
-        toFile(markets);
-        System.exit(0);
-
-
-        // Fill mapping of marketId and market type name
+        // Get initial data from markets of this event
         for (Object market_obj: markets){
             JSONObject market = (JSONObject) market_obj;
 
@@ -160,15 +175,33 @@ public class BetfairEventTracker extends SiteEventTracker {
             if (market_type.equals("CORRECT_SCORE")){
                 for (Object item: (JSONArray) market.get("runners")){
                     JSONObject runner = (JSONObject) item;
-
-                    correctScore_selectionId_map.put(
-                            (String) runner.get("runnerName"),
-                            (long) runner.get("selectionId"));
+                    correctScore_selectionId_map.put(((String) runner.get("runnerName")).toLowerCase(),
+                            ((Long) runner.get("selectionId")).intValue());
+                }
+            }
+            else if (market_type.equals("MATCH_ODDS")){
+                for (Object item: (JSONArray) market.get("runners")){
+                    JSONObject runner = (JSONObject) item;
+                    result_sortPriority_selectionId_map.put(((Long) runner.get("sortPriority")).intValue(),
+                            ((Long) runner.get("selectionId")).intValue());
+                }
+            }
+            else if (market_type.equals("ASIAN_HANDICAP")){
+                for (Object item: (JSONArray) market.get("runners")){
+                    JSONObject runner = (JSONObject) item;
+                    handicap_runnerName_selectionId_map.put(Team.normalize((String) runner.get("runnerName")),
+                            ((Long) runner.get("selectionId")).intValue());
+                }
+            }
+            else if (Arrays.asList(football_market_types_over_under).contains(market_type)){
+                for (Object item: (JSONArray) market.get("runners")){
+                    JSONObject runner = (JSONObject) item;
+                    overunder_runnerName_selectionId_map.put(Team.normalize((String) runner.get("runnerName")),
+                            ((Long) runner.get("selectionId")).intValue());
                 }
             }
         }
 
-        match = setup_match;
         return true;
     }
 
@@ -243,6 +276,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         JSONArray market_odds = betfair.getMarketOdds(marketType_id_map.values());
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
 
+
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
                 continue;
@@ -308,7 +342,7 @@ public class BetfairEventTracker extends SiteEventTracker {
                 BigDecimal volume = new BigDecimal(bf_offer.get("size").toString());
                 HashMap<String, String> metadata = new HashMap<String, String>();
                 metadata.put("selectionId", runner.get("selectionId").toString());
-                metadata.put("marketId", runner.get("market_id").toString());
+                metadata.put("marketId", runner.get("marketId").toString());
 
                 betOffers.add(new BetOffer(match, bet, betfair, odds, volume, metadata));
             }
@@ -319,7 +353,6 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         return new_marketOddsReport;
     }
-
 
 
     public JSONObject getMarketFromArray(String id, JSONArray array){
@@ -339,8 +372,15 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         FootballHandicapBet bet = (FootballHandicapBet) BET;
 
-        // Different market used if handicap is integer or 0.5 multiple
-        if (bet.a_handicap.stripTrailingZeros().scale() <= 0){
+        // Check if handicap is integer or 0.5 interval
+        boolean integer_handicap = bet.a_handicap.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0;
+        boolean half_handicap = !integer_handicap
+                && bet.a_handicap.remainder(new BigDecimal("0.5")).compareTo(BigDecimal.ZERO) == 0;
+        String market_type = null;
+
+
+        // Different market_type name used if handicap is integer or 0.5 multiple
+        if (integer_handicap){
             String team = null;
 
             // Create market type name
@@ -351,32 +391,51 @@ public class BetfairEventTracker extends SiteEventTracker {
                 team = "TEAM_B";
             }
             else{
-                log.severe("HANDICAP of 0 not allowed in betfair.");
                 return null;
             }
 
-            String market_type = String.format("%s_%s",
+            market_type = String.format("%s_%s",
                     team, bet.a_handicap.abs().setScale(0, RoundingMode.HALF_UP).toString());
+        }
+        else if (half_handicap) {
+            market_type = "ASIAN_HANDICAP";
+        }
+        else {
+            log.severe(String.format("a_handicap in bet %s was not multiple of 1 or 0.5.", bet.id()));
+            return null;
+        }
 
-            // Get market from mapping
-            String market_id = marketType_id_map.get(market_type);
-            if (market_id == null){
-                return null;
-            }
 
-            JSONObject market = getMarketFromArray(market_id, market_odds);
-            if (market == null){
-                return null;
-            }
+        // Get market id from mapping
+        String market_id = marketType_id_map.get(market_type);
+        if (market_id == null){
+            return null;
+        }
 
+        // get market from id
+        JSONObject market = getMarketFromArray(market_id, market_odds);
+        if (market == null){
+            return null;
+        }
+
+        // Get runners from market
+        JSONArray runners = (JSONArray) market.get("runners");
+        if (runners == null){
+            log.severe("runners not found in market\n" + jstring(runners));
+            return null;
+        }
+
+
+        JSONObject runner = null;
+        if (integer_handicap) {
+
+            // A appears first, then B, then draw
             Integer sortPriority = null;
             if (bet.winnerA()){ sortPriority = 1;}
             else if (bet.winnerB()){ sortPriority = 2;}
             else if (bet.isDraw()){ sortPriority = 3;}
 
 
-            JSONArray runners = (JSONArray) market.get("runners");
-            JSONObject runner = null;
             for (Object item: runners){
                 JSONObject potential_runner = (JSONObject) item;
                 if ((Integer) potential_runner.get("sortPriority") == sortPriority){
@@ -387,42 +446,46 @@ public class BetfairEventTracker extends SiteEventTracker {
 
             return runner;
         }
-        else{
-            // Find market id for this market in this event from map
-            String market_id = marketType_id_map.get("ASIAN_HANDICAP");
-            if (market_id == null){
-                return null;
+        else if (half_handicap) {
+
+
+            Integer correct_selectionId = null;
+            BigDecimal correct_handicap = null;
+            if (bet.winnerA()){
+                correct_selectionId = handicap_runnerName_selectionId_map.get(match.team_a.normal_name());
+                correct_handicap = bet.a_handicap;
+            }
+            else if (bet.winnerB()){
+                correct_selectionId = handicap_runnerName_selectionId_map.get(match.team_b.normal_name());
+                correct_handicap = bet.a_handicap.multiply(new BigDecimal(-1));
+            }
+            else{
+                log.severe(String.format("Betfair handicap bet %s is not winner A or winner B for Asian handicap.",
+                        bet.id()));
             }
 
+            for (Object item: runners){
+                JSONObject potential_runner = (JSONObject) item;
 
-            //TODO: Selection for handicap bet in betfair.
+                Integer selectionId = ((Long) potential_runner.get("selectionId")).intValue();
+                BigDecimal handicap = new BigDecimal(String.valueOf(potential_runner.get("handicap")));
 
+                if (correct_selectionId.equals(selectionId)
+                        && handicap.compareTo(correct_handicap) == 0){
+                    runner = potential_runner;
+                    break;
+                }
+            }
 
         }
-
-        // Find market id for this market in this event from map
-        String market_id = marketType_id_map.get("ASIAN_HANDICAP");
-        if (market_id == null){
+        else {
+            log.severe("Bet handicap not 0.5 or 1 multiple.");
             return null;
         }
 
-        JSONObject market = getMarketFromArray(market_id, market_odds);
-        if (market == null){
-            return null;
+        if (runner != null){
+            runner.put("marketId", market_id);
         }
-
-
-
-        print("Here");
-        toFile(market);
-        System.exit(0);
-
-
-
-
-
-        JSONObject runner = null;
-
         return runner;
     }
 
@@ -445,27 +508,34 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
 
         JSONArray runners = (JSONArray) market.get("runners");
-        String runner_name = String.format("%s %s goals", bet.side, bet.goals.toString()).toLowerCase();
-
+        String goals = bet.goals.toString().replace(".", "");
+        if (goals.length() == 1){
+            goals = "0" + goals;
+        }
+        String runner_name = String.format("%s %s goals", bet.side, goals).toLowerCase();
+        Integer selectionId = overunder_runnerName_selectionId_map.get(runner_name);
 
         JSONObject runner = null;
-        for (Object r_obj: runners){
-            JSONObject r = (JSONObject) r_obj;
-            if (r.get("runnerName").toString().toLowerCase().equals(runner_name)){
-                runner = r;
+        for (Object item: runners){
+            JSONObject possible_runner = (JSONObject) item;
+            Integer possible_selectionId = ((Long) possible_runner.get("selectionId")).intValue();
+            if (possible_selectionId.equals(selectionId)){
+                runner = possible_runner;
                 break;
             }
         }
 
         if (runner != null){
-            runner.put("market_id", market_id);
+            runner.put("marketId", market_id);
         }
+
         return runner;
     }
 
 
     private JSONObject extractRunnerSCORE(FootballBet BET, JSONArray market_odds) {
         FootballScoreBet bet = (FootballScoreBet) BET;
+
 
         // Find market id for this market in this event from map
         String market_id = marketType_id_map.get("CORRECT_SCORE");
@@ -482,23 +552,24 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         JSONArray runners = (JSONArray) market.get("runners");
         String runner_name = String.format("%d - %d", bet.score_a, bet.score_b);
-        Long selectionId = correctScore_selectionId_map.get(runner_name);
+        Integer selectionId = correctScore_selectionId_map.get(runner_name);
         if (selectionId == null){
             return null;
         }
 
         JSONObject runner = null;
-        for (Object r_obj: runners){
-            JSONObject r = (JSONObject) r_obj;
+        for (Object item: runners){
+            JSONObject possible_runner = (JSONObject) item;
+            Integer possible_selectionId = ((Long) possible_runner.get("selectionId")).intValue();
 
-            if (selectionId.equals(runner_name)){
-                runner = r;
+            if (possible_selectionId.equals(selectionId)){
+                runner = possible_runner;
                 break;
             }
         }
 
         if (runner != null){
-            runner.put("market_id", market_id);
+            runner.put("marketId", market_id);
         }
 
         return runner;
@@ -513,16 +584,13 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Find market id for this market in this event from map
         String market_id = marketType_id_map.get("MATCH_ODDS");
         if (market_id == null){
-            log.fine(String.format("MATCH_ODDS not found for %s in market id map", match));
             return null;
         }
-
 
         JSONObject market = getMarketFromArray(market_id, market_odds);
         if (market == null){
             return null;
         }
-
 
         // Check it has 3 runners TEAMA DRAW and TEAMB
         JSONArray runners = (JSONArray) market.get("runners");
@@ -532,16 +600,10 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
 
 
-        Integer sortPriority = null;
-        if (bet.winnerA()){
-            sortPriority = 1;
-        }
-        else if (bet.winnerB()){
-            sortPriority = 2;
-        }
-        else if (bet.isDraw()){
-            sortPriority = 3;
-        }
+        Integer selectionId = null;
+        if (bet.winnerA()){ selectionId = result_sortPriority_selectionId_map.get(1);}
+        else if (bet.winnerB()){selectionId = result_sortPriority_selectionId_map.get(2);}
+        else if (bet.isDraw()){selectionId = result_sortPriority_selectionId_map.get(3);}
         else{
             log.severe("Result bet wasn't A B or draw.");
             return null;
@@ -550,16 +612,17 @@ public class BetfairEventTracker extends SiteEventTracker {
         JSONObject runner = null;
         for (Object item: runners){
             JSONObject potential_runner = (JSONObject) item;
-            if ((int) potential_runner.get("sortPriority") == sortPriority){
+            Integer potential_selectionId = ((Long) potential_runner.get("selectionId")).intValue();
+
+            if (potential_selectionId.equals(selectionId)){
                 runner = potential_runner;
                 break;
             }
         }
 
         if (runner != null){
-            runner.put("market_id", market_id);
+            runner.put("marketId", market_id);
         }
-
         return runner;
     }
 

@@ -2,7 +2,7 @@ package Bet.FootballBet;
 
 import org.json.simple.JSONObject;
 
-public class FootballOtherScoreBet extends FootballBet{
+public class FootballOtherScoreBet extends FootballBet {
 
     public int over_score;
     public String result;

@@ -166,14 +166,18 @@ public class FootballBetGenerator {
 
         BigDecimal smallest = new BigDecimal(-1*highest);
         BigDecimal largest = new BigDecimal(highest);
-        BigDecimal step = new BigDecimal("0.5");
+        BigDecimal half = new BigDecimal("0.5");
 
-        for (BigDecimal handicap = smallest; handicap.compareTo(largest) != 1; handicap = handicap.add(step)){
-            for (int i=0; i<FootballResultBet.RESULTS.length; i++) {
-                String result = FootballResultBet.RESULTS[i];
-                for (int j = 0; j < Bet.BET_TYPES.length; j++) {
-                    String type = Bet.BET_TYPES[j];
+        for (BigDecimal handicap = smallest; handicap.compareTo(largest) != 1; handicap = handicap.add(half)){
+            for (String result: FootballBet.RESULTS){
 
+                if (result.equals(FootballBet.DRAW)
+                        && handicap.remainder(half).compareTo(BigDecimal.ZERO) == 0
+                        && handicap.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+                    continue;
+                }
+
+                for (String type: Bet.BET_TYPES){
                     bets.add(new FootballHandicapBet(type, handicap, result));
                 }
             }

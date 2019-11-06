@@ -1,5 +1,5 @@
 {
-  "size": 326,
+  "size": 320,
   "groups": {
     "7332b053b0": [
       "UNDER_3.5_BACK",
@@ -385,10 +385,6 @@
     "c9910deeac": [
       "HCP-A+0.5_TEAM-B_BACK",
       "HCP-A+0.5_TEAM-B_LAY"
-    ],
-    "8f0bf9b1a8": [
-      "HCP-A-0.5_DRAW_BACK",
-      "HCP-A-0.5_DRAW_LAY"
     ],
     "9d931b5e49": [
       "OVER_5.5_BACK",
@@ -780,10 +776,6 @@
       "CORRECT-SCORE_4-3_BACK",
       "CORRECT-SCORE_4-4_BACK",
       "OVER_4.5_LAY"
-    ],
-    "e3a14dae76": [
-      "HCP-A+2.5_DRAW_BACK",
-      "HCP-A+2.5_DRAW_LAY"
     ],
     "2f237c7fd9": [
       "UNDER_1.5_BACK",
@@ -1572,10 +1564,6 @@
       "CORRECT-SCORE_2-0_BACK",
       "UNDER_2.5_LAY"
     ],
-    "3c9d6e593a": [
-      "HCP-A+0.5_DRAW_BACK",
-      "HCP-A+0.5_DRAW_LAY"
-    ],
     "c90695c9e8": [
       "CORRECT-SCORE_2-1_BACK",
       "CORRECT-SCORE_2-1_LAY"
@@ -1982,10 +1970,6 @@
       "CORRECT-SCORE_3-0_BACK",
       "UNDER_3.5_LAY"
     ],
-    "7f31e3c75b": [
-      "HCP-A-1.5_DRAW_BACK",
-      "HCP-A-1.5_DRAW_LAY"
-    ],
     "1b25525190": [
       "RESULT_TEAM-B_LAY",
       "ANY-OVER_3-3_TEAM-B_BACK",
@@ -2080,10 +2064,6 @@
       "CORRECT-SCORE-HT_0-1_BACK",
       "CORRECT-SCORE-HT_0-2_BACK",
       "CORRECT-SCORE-HT_1-2_BACK"
-    ],
-    "61ac1a27c4": [
-      "HCP-A+1.5_DRAW_BACK",
-      "HCP-A+1.5_DRAW_LAY"
     ],
     "6fbfe8ea3a": [
       "HCP-A-0.5_TEAM-A_BACK",
@@ -3064,10 +3044,6 @@
     "65b4c46b9f": [
       "CORRECT-SCORE-HT_1-2_BACK",
       "CORRECT-SCORE-HT_1-2_LAY"
-    ],
-    "dbf5fd7d83": [
-      "HCP-A-2.5_DRAW_BACK",
-      "HCP-A-2.5_DRAW_LAY"
     ],
     "20580e7aae": [
       "UNDER_3.5_BACK",

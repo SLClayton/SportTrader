@@ -171,11 +171,6 @@ public class EventTrader implements Runnable {
                 loop_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
 
 
-                // Add to tally, the amount of sites made use of in this arb check
-                for (String site_used: sites_used_last){
-                    count_sites_used.put(site_used, count_sites_used.get(site_used) + 1);
-                }
-
                 if (best_profit_last != null) {
                     if (best_profit == null) {
                         best_profit = best_profit_last;
@@ -183,7 +178,6 @@ public class EventTrader implements Runnable {
                         best_profit.max(best_profit_last);
                     }
                 }
-
 
                 // Calculate the timing metrics over past timings
                 if (loop_times.size() >= loops_per_check){
@@ -312,7 +306,6 @@ public class EventTrader implements Runnable {
 
         // Combine all odds reports into one.
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
-        sites_used_last = fullOddsReport.sites_used;
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
@@ -445,10 +438,10 @@ public class EventTrader implements Runnable {
         Map<String, ArrayList<BetOrder>> site_bets = new HashMap<>();
         for (BetOrder betOrder: betOrders){
 
-            if (!site_bets.containsKey(betOrder.bet_offer.site.name)){
-                site_bets.put(betOrder.bet_offer.site.name, new ArrayList<>());
+            if (!site_bets.containsKey(betOrder.bet_offer.site.getName())){
+                site_bets.put(betOrder.bet_offer.site.getName(), new ArrayList<>());
             }
-            site_bets.get(betOrder.bet_offer.site.name).add(betOrder);
+            site_bets.get(betOrder.bet_offer.site.getName()).add(betOrder);
         }
 
         // Place the list of bets for each site
@@ -471,7 +464,7 @@ public class EventTrader implements Runnable {
                 placeBetsRunnable.thread.join();
                 placedBets.addAll(placeBetsRunnable.placedBets);
             } catch (InterruptedException e) {
-                log.severe(String.format("Error with bets sent to %s.", placeBetsRunnable.site.name));
+                log.severe(String.format("Error with bets sent to %s.", placeBetsRunnable.site.getName()));
                 e.printStackTrace();
 
                 ArrayList<PlacedBet> failedbets = new ArrayList<>();
@@ -479,7 +472,7 @@ public class EventTrader implements Runnable {
                     BetOrder betOrder = placeBetsRunnable.betOrders.get(failedbets.size());
                     failedbets.add(new PlacedBet(PlacedBet.FAILED_STATE, betOrder,
                             String.format("Error with all bets sent in this batch to %s.",
-                                    placeBetsRunnable.site.name)));
+                                    placeBetsRunnable.site.getName())));
                 }
                 placedBets.addAll(failedbets);
             }
@@ -506,13 +499,13 @@ public class EventTrader implements Runnable {
             try {
                 placedBets = site.placeBets(betOrders, MIN_ODDS_RATIO);
             } catch (IOException | URISyntaxException e) {
-                log.severe(String.format("Error while sending bets off to %s", site.name));
+                log.severe(String.format("Error while sending bets off to %s", site.getName()));
                 e.printStackTrace();
                 placedBets = new ArrayList<>();
                 while (placedBets.size() < betOrders.size()){
                     placedBets.add(new PlacedBet(PlacedBet.FAILED_STATE,
                             betOrders.get(placedBets.size()),
-                            String.format("placeBets batch fail for %s", site.name)));
+                            String.format("placeBets batch fail for %s", site.getName())));
                 }
             }
         }

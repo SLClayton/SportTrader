@@ -35,6 +35,7 @@ public abstract class FootballBet extends Bet {
     public FootballBet(String bet_type){
         super(bet_type);
     }
+
 }
 
 

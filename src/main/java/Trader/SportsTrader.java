@@ -284,7 +284,6 @@ public class SportsTrader {
 
 
         ArrayList<FootballMatch> footballMatches = null;
-        // (for testing) add single manually inputted match
         try {
             if (SINGLE_MATCH_TEST) {
                 footballMatches = new ArrayList<>();

@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static net.dongliu.commons.Prints.print;
+import static tools.printer.toFile;
 
 public class MarketOddsReport {
     /*
@@ -29,36 +30,24 @@ public class MarketOddsReport {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public Map<String, ArrayList<BetOffer>> betOffers;
-    public Set<String> sites_used;
+
+    private Map<String, ArrayList<BetOffer>> betOffers;
 
 
     public MarketOddsReport(){
         betOffers = new HashMap<String, ArrayList<BetOffer>>();
-        sites_used = new HashSet<>();
     }
 
 
     public void addBetOffers(String bet_id, ArrayList<BetOffer> new_betOffers){
         betOffers.put(bet_id, new_betOffers);
-        for (BetOffer bo: new_betOffers){
-            sites_used.add(bo.site.name);
-        }
-
     }
 
 
-    public String site_name(){
-        if (sites_used.size() == 1){
-            return sites_used.iterator().next();
-        }
-        else if (sites_used.size() > 1){
-            log.severe(String.format("Odds report for single site but has this many %s",
-                    sites_used.toString()));
-            return null;
-        }
-        return null;
+    public Set<Map.Entry<String, ArrayList<BetOffer>>> entrySet(){
+        return betOffers.entrySet();
     }
+
 
 
     public Match match(){
@@ -74,6 +63,31 @@ public class MarketOddsReport {
     }
 
 
+
+    public Set<String> sites_used(){
+        Set<String> sites_used = new HashSet<>();
+        for (Map.Entry<String, ArrayList<BetOffer>> entry: betOffers.entrySet()){
+            for (BetOffer betOffer: entry.getValue()){
+                sites_used.add(betOffer.site.getName());
+            }
+        }
+        return sites_used;
+    }
+
+
+    public BettingSite site(){
+        if (betOffers.size() <= 0){
+            return null;
+        }
+        for (Map.Entry<String, ArrayList<BetOffer>> entry: betOffers.entrySet()){
+            for (BetOffer betOffer: entry.getValue()){
+                return betOffer.site;
+            }
+        }
+        return null;
+    }
+
+
     public ArrayList<BetOffer> get(String key){
         return betOffers.get(key);
     }
@@ -81,6 +95,17 @@ public class MarketOddsReport {
 
     public int size(){
         return betOffers.size();
+    }
+
+
+    public int bets_with_offers(){
+        int n = 0;
+        for (Map.Entry<String, ArrayList<BetOffer>> entry: betOffers.entrySet()){
+            if (entry.getValue().size() > 0){
+                n++;
+            }
+        }
+        return n;
     }
 
 
@@ -102,9 +127,6 @@ public class MarketOddsReport {
 
         // Add all market odds together
         for (MarketOddsReport mor: marketOddsReports){
-
-            // Combine sites set
-            combined.sites_used.addAll(mor.sites_used);
 
             // Add each list of offers into the respective bet input
             for (Map.Entry<String, ArrayList<BetOffer>> entry: mor.betOffers.entrySet()){
@@ -147,11 +169,11 @@ public class MarketOddsReport {
             else{
                 JSONObject site_sums = new JSONObject();
                 for (BetOffer offer: bet_offers) {
-                    if (!site_sums.containsKey(offer.site.name)){
-                        site_sums.put(offer.site.name, 1);
+                    if (!site_sums.containsKey(offer.site.getName())){
+                        site_sums.put(offer.site.getName(), 1);
                     }
                     else{
-                        site_sums.put(offer.site.name, ((int) site_sums.get(offer.site.name)) + 1);
+                        site_sums.put(offer.site.getName(), ((int) site_sums.get(offer.site.getName())) + 1);
                     }
                 }
                 odds_reports.put(bet_id, site_sums);
@@ -160,7 +182,9 @@ public class MarketOddsReport {
         }
         JSONObject j = new JSONObject();
         j.put("bet_offers", odds_reports);
-        j.put("match", match().toString());
+        j.put("match", String.valueOf(match()));
+        j.put("bets", betOffers.size());
+        j.put("bets_with_offers", bets_with_offers());
         return j;
     }
 
@@ -170,20 +194,6 @@ public class MarketOddsReport {
     }
 
 
-    public Set<String> sitesPresent(){
-        Set<String> sites = new HashSet<>();
-
-        for (Map.Entry<String, ArrayList<BetOffer>> entry: betOffers.entrySet()){
-            ArrayList<BetOffer> betoffers = entry.getValue();
-
-            for (BetOffer betOffer: betoffers){
-                sites.add(betOffer.site.name);
-            }
-        }
-
-        return sites;
-
-    }
 
     @Override
     public String toString() {

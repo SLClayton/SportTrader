@@ -45,6 +45,12 @@ public class Betdaq extends BettingSite {
         return null;
     }
 
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
     @Override
     public BigDecimal minBackersStake() {
         return null;

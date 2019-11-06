@@ -25,6 +25,7 @@ public  class FootballScoreBet extends FootballBet{
         }
     }
 
+
     public String id(){
         return String.format("%s_%s-%s_%s",
                              category,

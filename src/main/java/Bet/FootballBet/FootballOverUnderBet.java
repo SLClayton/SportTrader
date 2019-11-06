@@ -3,6 +3,7 @@ package Bet.FootballBet;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class FootballOverUnderBet extends FootballBet{
 
@@ -14,7 +15,7 @@ public class FootballOverUnderBet extends FootballBet{
         super(bet_type);
 
         side = SIDE;
-        goals = GOALS;
+        goals = GOALS.setScale(1);
         category = "OVER-UNDER";
     }
 

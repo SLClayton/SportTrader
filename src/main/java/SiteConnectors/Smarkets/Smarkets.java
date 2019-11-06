@@ -319,6 +319,12 @@ public class Smarkets extends BettingSite {
 
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+
+    @Override
     public BigDecimal minBackersStake() {
         return min_back_stake;
     }

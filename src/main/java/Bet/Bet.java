@@ -63,5 +63,4 @@ public abstract class Bet {
         return taut_list;
     }
 
-
 }

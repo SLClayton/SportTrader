@@ -39,8 +39,6 @@ public class BetOffer implements Comparable<BetOffer> {
         roi_ratio = ROI_ratio();
     }
 
-    public BetOffer(){}
-
 
     public BetOffer newOdds(BigDecimal odds){
         // Returns a new betOffer with the same attributes except new odds and volume
@@ -65,7 +63,7 @@ public class BetOffer implements Comparable<BetOffer> {
         m.put("created", String.valueOf(time_created));
         m.put("match", String.valueOf(match));
         m.put("bet", String.valueOf(bet.id()));
-        m.put("site", String.valueOf(site.name));
+        m.put("site", String.valueOf(site.getName()));
         m.put("odds", String.valueOf(odds));
         m.put("volume", String.valueOf(volume));
         m.put("roi_ratio", String.valueOf(roi_ratio));

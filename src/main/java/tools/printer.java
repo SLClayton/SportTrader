@@ -79,6 +79,16 @@ public abstract class printer {
     }
 
 
+    public static void toFile(JSONObject j, int i){
+        toFile(j, "output" + i + ".json");
+    }
+
+
+    public static void toFile(JSONArray j, int i){
+        toFile(j, "output" + i + ".json");
+    }
+
+
     public static void toFile(String s, String filename) {
         PrintWriter writer = null;
 

@@ -73,7 +73,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
         min_profit = min_return.subtract(total_investment);
         max_profit = max_return.subtract(total_investment);
 
-        if (total_investment.equals(BigDecimal.ZERO)){
+        if (total_investment.compareTo(BigDecimal.ZERO) == 0){
             profit_ratio = null;
         }
         else{

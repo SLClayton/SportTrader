@@ -178,7 +178,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
                     && (!this_market.containsKey("asian-handicap"))    // Isn't asian handicap
                     && (this_market.containsKey("handicap"))           // Has handicap in name
                                                                        // Handicap is amount of over/under goals for bet
-                    && (bet.goals.equals(new BigDecimal(String.valueOf(this_market.get("handicap")))))){
+                    && (bet.goals.compareTo(new BigDecimal(String.valueOf(this_market.get("handicap")))) == 0)){
 
                 market = (JSONObject) market_obj;
             }
@@ -251,14 +251,15 @@ public class MatchbookEventTracker extends SiteEventTracker {
         }
 
         JSONObject market = null;
-        for (Object market_obj: (JSONArray) eventMarketData.get("markets")){
-            JSONObject market_json = (JSONObject) market_obj;
-            String market_type = (String) market_json.get("market-type");
+        for (Object item: (JSONArray) eventMarketData.get("markets")){
+            JSONObject potential_market = (JSONObject) item;
+            String market_type = (String) potential_market.get("market-type");
 
-            if (market_type.equals("handicap") && market_json.containsKey("handicap")){
-                BigDecimal handicap = new BigDecimal(String.valueOf(market_json.get("handicap")));
-                if (bet.a_handicap.equals(handicap)){
-                    market = (JSONObject) market_obj;
+            if (market_type.equals("handicap") && potential_market.containsKey("handicap")){
+                BigDecimal handicap = new BigDecimal(String.valueOf(potential_market.get("handicap")));
+                if (bet.a_handicap.compareTo(handicap) == 0){
+                    market = potential_market;
+                    break;
                 }
             }
         }

@@ -125,8 +125,15 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
 
 
+        toFile(markets);
+        System.exit(0);
+
+
+
         // Build a smarkets 'fullname' for each possible contract and map to its id
         JSONArray contracts = smarkets.getContracts(market_ids);
+
+
 
         for (Object market_obj: markets) {
             JSONObject market = (JSONObject) market_obj;
@@ -157,8 +164,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
                     }
 
                     // Construct an original 'fullname' for this contract and add its ID to map
-                    String fullname = String.format("%s%s_%s%s",
-                            market_type_name, market_type_param, contract_type_name, contract_type_param);
+                    String fullname = fullname(market_type_name, market_type_param,
+                            contract_type_name, contract_type_param);
                     fullname_contract_map.put(fullname, contract_id);
                     contract_market_map.put(contract_id, market_id);
                 }
@@ -166,6 +173,15 @@ public class SmarketsEventTracker extends SiteEventTracker {
         }
         return true;
     }
+
+
+    public static String fullname(String marketType, String market_type_param,
+                                  String contractType, String contractType_param){
+
+        return String.format("%s%s_%s%s",
+                marketType, market_type_param, contractType, contractType_param);
+    }
+
 
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
@@ -205,7 +221,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
                         contract_fullname = "WINNER_3_WAY_DRAW";
                     }
                     break;
-
                 case FootballBet.CORRECT_SCORE:
                     FootballScoreBet sb = (FootballScoreBet) bet;
                     contract_fullname = String.format("CORRECT_SCORE_SCORE%d-%d", sb.score_a, sb.score_b);
@@ -288,6 +303,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
         }
 
 
+        toFile(new_marketOddsReport.toJSON());
+        eventTrader.sportsTrader.safe_exit();
 
         return new_marketOddsReport;
     }

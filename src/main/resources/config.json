@@ -4,8 +4,8 @@
     "HOURS_AHEAD": 24,
 
     "SINGLE_MATCH_TEST": true,
-    "SM_NAME": "everton v tottenham",
-    "SM_TIME": "2019-11-03T16:30:00.000Z",
+    "SM_NAME": "atalanta vs manchester city",
+    "SM_TIME": "2019-11-06T20:00:00.000Z",
 
     "CHECK_MARKETS": true,
     "RATE_LIMIT": 100,
@@ -23,8 +23,8 @@
     	"matchbook": true,
         "smarkets": true
     },
-    "EVENT_SOURCE": "smarkets",
-    "MIN_SITES_PER_MATCH": 2,
+    "EVENT_SOURCE": "betfair",
+    "MIN_SITES_PER_MATCH": 1,
 
     "RUN_STATS": true
 }

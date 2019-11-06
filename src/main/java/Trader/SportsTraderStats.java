@@ -319,7 +319,7 @@ public class SportsTraderStats implements Runnable {
 
             // Update each siteTrackerStats with its corresponding odds report
             for (MarketOddsReport oddsReport: oddsReports){
-                String site_name = oddsReport.site_name();
+                String site_name = oddsReport.site().getName();
 
                 SiteTrackerStats siteTrackerStats = siteTrackerStatsMap.get(site_name);
                 if (siteTrackerStats == null){
@@ -368,7 +368,7 @@ public class SportsTraderStats implements Runnable {
 
 
             JSONObject j = new JSONObject();
-            if (n_tauts != null){
+            if (n_tauts != null && n_tauts < taut_bests.size()){
                 j.put("tautologies", taut_bests.subList(0, n_tauts));
             }
             else{
@@ -410,7 +410,9 @@ public class SportsTraderStats implements Runnable {
             bets_available = new HashSet<>();
             bets_with_offers = new HashSet<>();
 
-            for (Map.Entry<String, ArrayList<BetOffer>> entry: oddsReport.betOffers.entrySet()){
+
+            for (Map.Entry<String, ArrayList<BetOffer>> entry:
+                    oddsReport.entrySet()){
                 String bet_id = entry.getKey();
                 ArrayList<BetOffer> offers = entry.getValue();
 

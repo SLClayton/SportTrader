@@ -3,8 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/Bet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/Bet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOverUnderBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOverUnderBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballScoreBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballScoreBet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java" afterDir="false" />
@@ -13,13 +22,14 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Sport/FootballMatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Sport/FootballMatch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Sport/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Sport/Match.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/printer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/printer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/football_aliases.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/football_aliases.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/football_ids_flashscores.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/football_ids_flashscores.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/football_bets.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/football_bets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/football_tautologies.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/football_tautologies.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/stats.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/stats.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -39,231 +49,32 @@
             <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/main/resources/config.json">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="144">
-                    <caret line="9" column="25" selection-start-line="9" selection-start-column="25" selection-end-line="9" selection-end-column="25" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/output.json">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="960">
-                    <caret line="461" column="28" selection-start-line="461" selection-start-column="23" selection-end-line="461" selection-end-column="28" />
-                    <folding>
-                      <element signature="e#4#3216#0" />
-                      <element signature="e#89#2762#0" />
-                      <element signature="e#2577#2612#0" />
-                      <element signature="e#2779#3181#0" />
-                      <element signature="e#2787#2910#0" />
-                      <element signature="e#2918#3043#0" />
-                      <element signature="e#3051#3175#0" />
-                      <element signature="e#3220#5934#0" />
-                      <element signature="e#3311#5595#0" />
-                      <element signature="e#5409#5444#0" />
-                      <element signature="e#5612#5899#0" />
-                      <element signature="e#5620#5753#0" />
-                      <element signature="e#5761#5893#0" />
-                      <element signature="e#5938#8653#0" />
-                      <element signature="e#6030#8314#0" />
-                      <element signature="e#8128#8163#0" />
-                      <element signature="e#8331#8618#0" />
-                      <element signature="e#8339#8472#0" />
-                      <element signature="e#8480#8612#0" />
-                      <element signature="e#8657#11601#0" />
-                      <element signature="e#8740#11141#0" />
-                      <element signature="e#10955#10990#0" />
-                      <element signature="e#11158#11566#0" />
-                      <element signature="e#11166#11293#0" />
-                      <element signature="e#11301#11431#0" />
-                      <element signature="e#11439#11560#0" />
-                      <element signature="e#11605#14552#0" />
-                      <element signature="e#11690#14091#0" />
-                      <element signature="e#13905#13940#0" />
-                      <element signature="e#14108#14517#0" />
-                      <element signature="e#14116#14246#0" />
-                      <element signature="e#14254#14382#0" />
-                      <element signature="e#14390#14511#0" />
-                      <element signature="e#14556#17502#0" />
-                      <element signature="e#14640#17041#0" />
-                      <element signature="e#16855#16890#0" />
-                      <element signature="e#17058#17467#0" />
-                      <element signature="e#17066#17196#0" />
-                      <element signature="e#17204#17332#0" />
-                      <element signature="e#17340#17461#0" />
-                      <element signature="e#17506#20452#0" />
-                      <element signature="e#17590#19991#0" />
-                      <element signature="e#19805#19840#0" />
-                      <element signature="e#20008#20417#0" />
-                      <element signature="e#20016#20146#0" />
-                      <element signature="e#20154#20282#0" />
-                      <element signature="e#20290#20411#0" />
-                      <element signature="e#20456#23173#0" />
-                      <element signature="e#20550#22834#0" />
-                      <element signature="e#22648#22683#0" />
-                      <element signature="e#22851#23138#0" />
-                      <element signature="e#22859#22992#0" />
-                      <element signature="e#23000#23132#0" />
-                      <element signature="e#23177#25894#0" />
-                      <element signature="e#23271#25555#0" />
-                      <element signature="e#25369#25404#0" />
-                      <element signature="e#25572#25859#0" />
-                      <element signature="e#25580#25713#0" />
-                      <element signature="e#25721#25853#0" />
-                      <element signature="e#25898#28841#0" />
-                      <element signature="e#25980#28381#0" />
-                      <element signature="e#28195#28230#0" />
-                      <element signature="e#28398#28806#0" />
-                      <element signature="e#28406#28534#0" />
-                      <element signature="e#28542#28671#0" />
-                      <element signature="e#28679#28800#0" />
-                      <element signature="e#31671#31795#0" />
-                      <element signature="e#32735#32859#0" />
-                      <element signature="e#32867#32993#0" />
-                      <element signature="e#33001#33127#0" />
-                      <element signature="e#33135#33262#0" />
-                      <element signature="e#33270#33395#0" />
-                      <element signature="e#33403#33529#0" />
-                      <element signature="e#33537#33663#0" />
-                      <element signature="e#33671#33798#0" />
-                      <element signature="e#33806#33931#0" />
-                      <element signature="e#33939#34065#0" />
-                      <element signature="e#34073#34199#0" />
-                      <element signature="e#34207#34334#0" />
-                      <element signature="e#34342#34467#0" />
-                      <element signature="e#34475#34601#0" />
-                      <element signature="e#34609#34735#0" />
-                      <element signature="e#34743#34870#0" />
-                      <element signature="e#34878#35003#0" />
-                      <element signature="e#35011#35137#0" />
-                      <element signature="e#35145#35271#0" />
-                      <element signature="e#35279#35406#0" />
-                      <element signature="e#35414#35539#0" />
-                      <element signature="e#35950#36074#0" />
-                      <element signature="e#36082#36208#0" />
-                      <element signature="e#36216#36341#0" />
-                      <element signature="e#36349#36477#0" />
-                      <element signature="e#36485#36609#0" />
-                      <element signature="e#36617#36744#0" />
-                      <element signature="e#36752#36877#0" />
-                      <element signature="e#36885#37013#0" />
-                      <element signature="e#37021#37145#0" />
-                      <element signature="e#37153#37280#0" />
-                      <element signature="e#37288#37413#0" />
-                      <element signature="e#37421#37549#0" />
-                      <element signature="e#37557#37681#0" />
-                      <element signature="e#37689#37816#0" />
-                      <element signature="e#37824#37949#0" />
-                      <element signature="e#37957#38085#0" />
-                      <element signature="e#38093#38217#0" />
-                      <element signature="e#38225#38352#0" />
-                      <element signature="e#38360#38485#0" />
-                      <element signature="e#38493#38621#0" />
-                      <element signature="e#38629#38753#0" />
-                      <element signature="e#38761#38888#0" />
-                      <element signature="e#38896#39021#0" />
-                      <element signature="e#39029#39157#0" />
-                      <element signature="e#39165#39289#0" />
-                      <element signature="e#39297#39424#0" />
-                      <element signature="e#39432#39557#0" />
-                      <element signature="e#39565#39693#0" />
-                      <element signature="e#39701#39825#0" />
-                      <element signature="e#39833#39960#0" />
-                      <element signature="e#39968#40093#0" />
-                      <element signature="e#40101#40229#0" />
-                      <element signature="e#40237#40361#0" />
-                      <element signature="e#40369#40496#0" />
-                      <element signature="e#40541#43254#0" />
-                      <element signature="e#40635#42919#0" />
-                      <element signature="e#42733#42768#0" />
-                      <element signature="e#42936#43219#0" />
-                      <element signature="e#42944#43075#0" />
-                      <element signature="e#43083#43213#0" />
-                      <element signature="e#43258#45974#0" />
-                      <element signature="e#43351#45635#0" />
-                      <element signature="e#45449#45484#0" />
-                      <element signature="e#45652#45939#0" />
-                      <element signature="e#45660#45793#0" />
-                      <element signature="e#45801#45933#0" />
-                      <element signature="e#45978#50940#0" />
-                      <element signature="e#46064#48437#0" />
-                      <element signature="e#48251#48286#0" />
-                      <element signature="e#48454#50905#0" />
-                      <element signature="e#48462#48579#0" />
-                      <element signature="e#48587#48704#0" />
-                      <element signature="e#48712#48829#0" />
-                      <element signature="e#48837#48955#0" />
-                      <element signature="e#48963#49080#0" />
-                      <element signature="e#49088#49205#0" />
-                      <element signature="e#49213#49330#0" />
-                      <element signature="e#49338#49456#0" />
-                      <element signature="e#49464#49581#0" />
-                      <element signature="e#49589#49707#0" />
-                      <element signature="e#49715#49833#0" />
-                      <element signature="e#49841#49960#0" />
-                      <element signature="e#49968#50087#0" />
-                      <element signature="e#50095#50214#0" />
-                      <element signature="e#50222#50341#0" />
-                      <element signature="e#50349#50468#0" />
-                      <element signature="e#50476#50613#0" />
-                      <element signature="e#50621#50758#0" />
-                      <element signature="e#50766#50899#0" />
-                      <element signature="e#50944#53659#0" />
-                      <element signature="e#51036#53320#0" />
-                      <element signature="e#53134#53169#0" />
-                      <element signature="e#53337#53624#0" />
-                      <element signature="e#53345#53478#0" />
-                      <element signature="e#53486#53618#0" />
-                      <element signature="e#53663#56380#0" />
-                      <element signature="e#53757#56041#0" />
-                      <element signature="e#55855#55890#0" />
-                      <element signature="e#56058#56345#0" />
-                      <element signature="e#56066#56199#0" />
-                      <element signature="e#56207#56339#0" />
-                      <element signature="e#56384#59100#0" />
-                      <element signature="e#56477#58761#0" />
-                      <element signature="e#58575#58610#0" />
-                      <element signature="e#58778#59065#0" />
-                      <element signature="e#58786#58919#0" />
-                      <element signature="e#58927#59059#0" />
-                      <element signature="e#59104#62048#0" />
-                      <element signature="e#297382#299783#0" />
-                      <element signature="e#299597#299632#0" />
-                      <element signature="e#299800#300209#0" />
-                      <element signature="e#299808#299936#0" />
-                      <element signature="e#299944#300074#0" />
-                      <element signature="e#300082#300203#0" />
-                    </folding>
+                  <state relative-caret-position="448">
+                    <caret line="28" column="21" selection-start-line="28" selection-start-column="21" selection-end-line="28" selection-end-column="21" />
                   </state>
                 </provider>
               </entry>
             </file>
             <file pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/output.json">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="592">
+                    <caret line="100" column="30" lean-forward="true" selection-start-line="100" selection-start-column="30" selection-end-line="100" selection-end-column="30" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOffer.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="416">
-                    <caret line="51" column="40" selection-start-line="51" selection-start-column="40" selection-end-line="51" selection-end-column="40" />
+                  <state relative-caret-position="368">
+                    <caret line="65" column="51" selection-start-line="65" selection-start-column="51" selection-end-line="65" selection-end-column="51" />
                     <folding>
                       <element signature="method#newOdds#0;class#BetOffer#0" />
                       <element signature="method#backStake2LayStake#0;class#BetOffer#0" />
                       <element signature="method#layStake2backStake#0;class#BetOffer#0" />
                       <element signature="method#dec2americ#0;class#BetOffer#0" />
                       <element signature="method#americ2dec#0;class#BetOffer#0" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="752">
-                    <caret line="154" column="26" selection-start-line="154" selection-start-column="26" selection-end-line="154" selection-end-column="26" />
-                    <folding>
-                      <element signature="method#ProfitReport#0;class#ProfitReport#0" />
-                      <element signature="method#toJSON#0;class#ProfitReport#0" />
-                      <element signature="method#newProfitReportReturn#0;class#ProfitReport#0" />
-                      <element signature="method#newProfitReportInvestment#0;class#ProfitReport#0" />
                     </folding>
                   </state>
                 </provider>
@@ -281,8 +92,8 @@
             <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/main/java/Bet/Bet.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="608">
-                    <caret line="50" selection-start-line="50" selection-end-line="50" />
+                  <state relative-caret-position="832">
+                    <caret line="64" selection-start-line="64" selection-end-line="64" />
                   </state>
                 </provider>
               </entry>
@@ -290,8 +101,8 @@
             <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetGroup.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="512">
-                    <caret line="46" column="29" selection-start-line="46" selection-start-column="29" selection-end-line="46" selection-end-column="29" />
+                  <state relative-caret-position="352">
+                    <caret line="35" column="37" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
                   </state>
                 </provider>
               </entry>
@@ -304,80 +115,79 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="289" column="52" lean-forward="true" selection-start-line="289" selection-start-column="52" selection-end-line="289" selection-end-column="52" />
+            <state relative-caret-position="487">
+              <caret line="507" column="87" selection-start-line="507" selection-start-column="87" selection-end-line="507" selection-end-column="87" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="class#ConfigException#0;class#SportsTrader#0" />
-                <element signature="method#getSiteObjects#0;class#SportsTrader#0" />
-                <element signature="class#SessionsUpdater#0;class#SportsTrader#0" />
-                <element signature="class#SportDataFileSaver#0;class#SportsTrader#0" />
-                <element signature="method#getFootballMatches#0;class#SportsTrader#0" />
+                <element signature="method#setupMatch#0;class#EventTrader#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/FlashScores.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="92">
-              <caret line="423" column="44" selection-start-line="423" selection-start-column="25" selection-end-line="423" selection-end-column="44" />
+            <state relative-caret-position="268">
+              <caret line="321" column="62" selection-start-line="321" selection-start-column="62" selection-end-line="321" selection-end-column="62" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#queryFootballTeam#0;class#FlashScores#0" />
-                <element signature="method#getFootballMatch#0;class#FlashScores#0" />
-                <element signature="method#getFootballFixtures#0;class#FlashScores#0" />
-                <element signature="method#saveFootballAliases#0;class#FlashScores#0" />
-                <element signature="method#loadFootballAliases#0;class#FlashScores#0" />
-                <element signature="method#getFootballState#0;class#FlashScores#0" />
-                <element signature="method#update_team_id_map#0;class#FlashScores#0" />
+                <element signature="method#update#0;class#SportsTraderStats#0" />
+                <element signature="method#toJSON#0;class#SportsTraderStats#0" />
+                <element signature="method#getSummaryTautologies#0;class#SportsTraderStats#0" />
+                <element signature="class#Taut#0;class#SportsTraderStats#0" />
+                <element signature="method#toJSON#0;class#SiteTrackerStats#0;class#SportsTraderStats#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="539">
+              <caret line="350" column="9" selection-start-line="350" selection-start-column="9" selection-end-line="350" selection-end-column="9" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2615#2616#0" expanded="true" />
+                <element signature="e#2650#2651#0" expanded="true" />
+                <element signature="method#setupMatch#0;class#BetfairEventTracker#0" />
+                <element signature="method#updateMarketData#0;class#BetfairEventTracker#0" />
+                <element signature="method#getMarketFromArray#0;class#BetfairEventTracker#0" />
+                <element signature="method#extractRunnerHANDICAP#0;class#BetfairEventTracker#0" />
+                <element signature="method#extractRunnerOVERUNDER#0;class#BetfairEventTracker#0" />
+                <element signature="method#extractRunnerSCORE#0;class#BetfairEventTracker#0" />
+                <element signature="method#extractRunnerRESULT#0;class#BetfairEventTracker#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3310">
-              <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1809#1810#0" expanded="true" />
-                <element signature="e#1844#1845#0" expanded="true" />
-                <element signature="method#updateMarketData#0;class#BetfairEventTracker#0" />
-                <element signature="method#getMarketOddsReport#0;class#BetfairEventTracker#0" />
-                <element signature="method#extractRunnerOVERUNDER#0;class#BetfairEventTracker#0" />
-                <element signature="method#extractRunnerSCORE#0;class#BetfairEventTracker#0" />
-              </folding>
+            <state relative-caret-position="512">
+              <caret line="222" column="26" selection-start-line="222" selection-start-column="26" selection-end-line="222" selection-end-column="26" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5563">
-              <caret line="840" column="5" lean-forward="true" selection-start-line="840" selection-start-column="5" selection-end-line="840" selection-end-column="5" />
-              <folding>
-                <element signature="class#EventSearchHandler#0;class#Betfair#0" />
-                <element signature="class#RPCRequestHandler#0;class#Betfair#0" />
-                <element signature="class#RPCRequestSender#0;class#Betfair#0" />
-                <element signature="n#!!block;n#RPCRequestSender#0;n#RPCRequestSender#0;n#Betfair#0" />
-                <element signature="method#getSessionToken#0;class#Betfair#0" />
-                <element signature="method#getMarketOdds#0;class#Betfair#0" />
-                <element signature="method#getEvents#0;class#Betfair#0" />
-                <element signature="method#getFootballMatches#0;class#Betfair#0" />
-                <element signature="method#getMarketCatalogue#0;class#Betfair#0" />
-                <element signature="method#getEventFromSearch#0;class#Betfair#0" />
-                <element signature="method#_getEventFromSearch#0;class#Betfair#0" />
-                <element signature="method#getEventFromMarket#0;class#Betfair#0" />
-                <element signature="method#round#0;class#Betfair#0" />
-                <element signature="method#validPrice#0;class#Betfair#0" />
-              </folding>
+            <state relative-caret-position="-336">
+              <caret line="47" column="10" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="19" column="33" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -385,65 +195,15 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-183">
-              <caret line="70" column="71" selection-start-line="70" selection-start-column="71" selection-end-line="70" selection-end-column="71" />
+            <state relative-caret-position="602">
+              <caret line="165" column="9" selection-start-line="165" selection-start-column="9" selection-end-line="165" selection-end-column="9" />
               <folding>
+                <element signature="method#setupMatch#0;class#MatchbookEventTracker#0" />
                 <element signature="method#extractRunnerGOALCOUNT#0;class#MatchbookEventTracker#0" />
                 <element signature="method#extractRunnerCORRECTSCORE#0;class#MatchbookEventTracker#0" />
+                <element signature="method#extractRunnerHandicap#0;class#MatchbookEventTracker#0" />
                 <element signature="method#extractRunnerRESULT#0;class#MatchbookEventTracker#0" />
                 <element signature="method#updateMarketData#0;class#MatchbookEventTracker#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="553">
-              <caret line="88" column="71" selection-start-line="88" selection-start-column="71" selection-end-line="88" selection-end-column="71" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/Sport/FootballMatch.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1298">
-              <caret line="217" column="56" lean-forward="true" selection-start-line="217" selection-start-column="56" selection-end-line="217" selection-end-column="56" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#FootballMatch#1;class#FootballMatch#0" />
-                <element signature="method#parse#0;class#FootballMatch#0" />
-                <element signature="method#key#0;class#FootballMatch#0" />
-                <element signature="method#same_team#1;class#FootballMatch#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/Sport/Match.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="619">
-              <caret line="53" column="33" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="33" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="989">
-              <caret line="227" column="9" lean-forward="true" selection-start-line="227" selection-start-column="9" selection-end-line="227" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#setupMatch#0;class#EventTrader#0" />
-                <element signature="method#run#0;class#EventTrader#0" />
-                <element signature="method#checkArbs#0;class#EventTrader#0" />
-                <element signature="method#profitFound#0;class#EventTrader#0" />
-                <element signature="method#placeBets#0;class#EventTrader#0" />
-                <element signature="class#PlaceBetsRunnable#0;class#EventTrader#0" />
               </folding>
             </state>
           </provider>
@@ -461,11 +221,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getTeamFixtures</find>
-      <find>already exists in mapp</find>
-      <find>No function to update team alias</find>
-      <find>update_match_id_map</find>
-      <find>ps(</find>
       <find>System</find>
       <find>System.exit(</find>
       <find>thread.start()</find>
@@ -491,6 +246,11 @@
       <find>verifyFootballMatch</find>
       <find>&quot;handicap&quot;: -1.0</find>
       <find>HANDICAP</find>
+      <find>.equals</find>
+      <find>System.e</find>
+      <find>exit(</find>
+      <find>sites_used_last</find>
+      <find>toFile</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -514,42 +274,43 @@
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/JsonHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/RequestHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/tools/Requester.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" />
-        <option value="$PROJECT_DIR$/src/main/java/tools/printer.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/SportData.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/FlashScores.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java" />
         <option value="$PROJECT_DIR$/src/main/java/Sport/FootballTeam.java" />
         <option value="$PROJECT_DIR$/src/main/java/Sport/Team.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/Bet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOverUnderBet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballResultBet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballScoreBet.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" />
         <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballHandicapBet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" />
         <option value="$PROJECT_DIR$/src/main/java/Sport/Match.java" />
         <option value="$PROJECT_DIR$/src/main/java/Sport/FootballMatch.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/config.json" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/tools/printer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOverUnderBet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/Bet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballScoreBet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" />
+        <option value="$PROJECT_DIR$/output2.json" />
         <option value="$PROJECT_DIR$/output.json" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" />
         <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/config.json" />
+        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" />
       </list>
     </option>
   </component>
@@ -562,7 +323,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-7" />
-    <option name="width" value="1454" />
+    <option name="width" value="1511" />
     <option name="height" value="1407" />
   </component>
   <component name="ProjectId" id="1OaYuNHPzsaDFnulTZLzJck6p7J" />
@@ -574,6 +335,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -696,7 +458,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -718,18 +479,18 @@
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
-    </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="SiteConnectors" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java\SiteConnectors\Betdaq" />
+    </key>
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="SiteConnectors" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -819,17 +580,17 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1454" height="1407" extended-state="0" />
+    <frame x="-7" y="0" width="1511" height="1407" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22955523" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22674018" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.29513344" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.22762951" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.2598116" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -895,16 +656,6 @@
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-48" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="32">
-          <caret line="14" column="34" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/tools/MyLogHandler.java">
@@ -993,60 +744,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="28" column="31" selection-start-line="28" selection-start-column="31" selection-end-line="28" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballResultBet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="32" column="31" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballScoreBet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="656">
-          <caret line="44" column="17" lean-forward="true" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOverUnderBet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="24" selection-start-line="24" selection-end-line="25" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1248">
-          <caret line="27" column="32" lean-forward="true" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
-          <folding>
-            <element signature="method#getScoreBets#0;class#FootballBetGenerator#0" />
-            <element signature="method#getOtherScoreBets#0;class#FootballBetGenerator#0" />
-            <element signature="method#getOtherScoreBetsHT#0;class#FootballBetGenerator#0" />
-            <element signature="method#getResultBets#0;class#FootballBetGenerator#0" />
-            <element signature="method#getHandicapBets#0;class#FootballBetGenerator#0" />
-            <element signature="method#getOverUnderBets#0;class#FootballBetGenerator#0" />
-            <element signature="method#tautsBackWithLay#0;class#FootballBetGenerator#0" />
-            <element signature="method#tautsResultsWithScores#0;class#FootballBetGenerator#0" />
-            <element signature="method#tautsResultsWithScoresHT#0;class#FootballBetGenerator#0" />
-            <element signature="method#tautsScoresOtherGoalsHT#0;class#FootballBetGenerator#0" />
-            <element signature="method#tautsTotalGoalsWithScores#0;class#FootballBetGenerator#0" />
-            <element signature="method#tautsAllScores#0;class#FootballBetGenerator#0" />
-            <element signature="method#tautTotalGoalsSandwich#0;class#FootballBetGenerator#0" />
-            <element signature="method#getTwins#0;class#FootballBetGenerator#0" />
-            <element signature="method#getTwinSwaps#0;class#FootballBetGenerator#0" />
-            <element signature="method#removeIfContains#0;class#FootballBetGenerator#0" />
-            <element signature="method#toArray#0;class#FootballBetGenerator#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballHandicapBet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
@@ -1064,196 +761,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="704">
-          <caret line="63" selection-start-line="63" selection-end-line="63" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#update#0;class#SportsTraderStats#0" />
-            <element signature="method#getSummaryTautologies#0;class#SportsTraderStats#0" />
-            <element signature="class#Taut#0;class#SportsTraderStats#0" />
-            <element signature="method#toJSON#0;class#EventTraderStats#0;class#SportsTraderStats#0" />
-            <element signature="class#SiteTrackerStats#0;class#SportsTraderStats#0" />
-            <element signature="method#toJSON#0;class#SiteTrackerStats#0;class#SportsTraderStats#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
-          <folding>
-            <element signature="e#1147#1148#0" expanded="true" />
-            <element signature="e#1178#1179#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/tools/printer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1344">
-          <caret line="135" column="31" selection-start-line="135" selection-start-column="31" selection-end-line="135" selection-end-column="31" />
-          <folding>
-            <element signature="method#print#0;class#printer#0" />
-            <element signature="method#toFile#4;class#printer#0" />
-            <element signature="method#getJSONResourceMap#0;class#printer#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="752">
-          <caret line="154" column="26" selection-start-line="154" selection-start-column="26" selection-end-line="154" selection-end-column="26" />
-          <folding>
-            <element signature="method#ProfitReport#0;class#ProfitReport#0" />
-            <element signature="method#toJSON#0;class#ProfitReport#0" />
-            <element signature="method#newProfitReportReturn#0;class#ProfitReport#0" />
-            <element signature="method#newProfitReportInvestment#0;class#ProfitReport#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
-          <caret line="65" column="60" selection-start-line="65" selection-start-column="53" selection-end-line="65" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetGroup.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="512">
-          <caret line="46" column="29" selection-start-line="46" selection-start-column="29" selection-end-line="46" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="64">
-          <caret line="45" column="43" selection-start-line="45" selection-start-column="43" selection-end-line="45" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="72" column="8" selection-start-line="72" selection-start-column="8" selection-end-line="72" selection-end-column="8" />
-          <folding>
-            <element signature="class#marketDataRequestHandler#0;class#Matchbook#0" />
-            <element signature="class#marketDataRequestSender#0;class#Matchbook#0" />
-            <element signature="method#login#0;class#Matchbook#0" />
-            <element signature="method#updateAccountInfo#0;class#Matchbook#0" />
-            <element signature="method#getSessionToken#0;class#Matchbook#0" />
-            <element signature="method#getFootballMatches#0;class#Matchbook#0" />
-            <element signature="method#getEvents#0;class#Matchbook#0" />
-            <element signature="method#getEvents#1;class#Matchbook#0" />
-            <element signature="method#getMarketData#0;class#Matchbook#0" />
-            <element signature="method#getMarketDataFromHandler#0;class#Matchbook#0" />
-            <element signature="method#closestMatchbookOdds#0;class#Matchbook#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="24" column="45" selection-start-line="24" selection-start-column="45" selection-end-line="24" selection-end-column="45" />
-          <folding>
-            <element signature="e#1340#1341#0" expanded="true" />
-            <element signature="e#1367#1368#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="35" column="4" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="43" />
-          <folding>
-            <element signature="method#getBalance#0;class#BettingSite#0" />
-            <element signature="method#setBalance#0;class#BettingSite#0" />
-            <element signature="method#useBalance#0;class#BettingSite#0" />
-            <element signature="method#ROI_old#0;class#BettingSite#0" />
-            <element signature="method#ROI#0;class#BettingSite#0" />
-            <element signature="method#ROI#1;class#BettingSite#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="31" column="11" selection-start-line="31" selection-start-column="11" selection-end-line="31" selection-end-column="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5231#5232#0" expanded="true" />
-            <element signature="e#5274#5275#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="989">
-          <caret line="227" column="9" lean-forward="true" selection-start-line="227" selection-start-column="9" selection-end-line="227" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#setupMatch#0;class#EventTrader#0" />
-            <element signature="method#run#0;class#EventTrader#0" />
-            <element signature="method#checkArbs#0;class#EventTrader#0" />
-            <element signature="method#profitFound#0;class#EventTrader#0" />
-            <element signature="method#placeBets#0;class#EventTrader#0" />
-            <element signature="class#PlaceBetsRunnable#0;class#EventTrader#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="289" column="52" lean-forward="true" selection-start-line="289" selection-start-column="52" selection-end-line="289" selection-end-column="52" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="class#ConfigException#0;class#SportsTrader#0" />
-            <element signature="method#getSiteObjects#0;class#SportsTrader#0" />
-            <element signature="class#SessionsUpdater#0;class#SportsTrader#0" />
-            <element signature="class#SportDataFileSaver#0;class#SportsTrader#0" />
-            <element signature="method#getFootballMatches#0;class#SportsTrader#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/FlashScores.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="423" column="44" selection-start-line="423" selection-start-column="25" selection-end-line="423" selection-end-column="44" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#queryFootballTeam#0;class#FlashScores#0" />
-            <element signature="method#getFootballMatch#0;class#FlashScores#0" />
-            <element signature="method#getFootballFixtures#0;class#FlashScores#0" />
-            <element signature="method#saveFootballAliases#0;class#FlashScores#0" />
-            <element signature="method#loadFootballAliases#0;class#FlashScores#0" />
-            <element signature="method#getFootballState#0;class#FlashScores#0" />
-            <element signature="method#update_team_id_map#0;class#FlashScores#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Sport/Match.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="619">
-          <caret line="53" column="33" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Sport/FootballMatch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1298">
-          <caret line="217" column="56" lean-forward="true" selection-start-line="217" selection-start-column="56" selection-end-line="217" selection-end-column="56" />
+        <state relative-caret-position="2160">
+          <caret line="217" column="56" selection-start-line="217" selection-start-column="56" selection-end-line="217" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#FootballMatch#1;class#FootballMatch#0" />
@@ -1264,64 +775,1046 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="553">
-          <caret line="88" column="71" selection-start-line="88" selection-start-column="71" selection-end-line="88" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="9" column="25" selection-start-line="9" selection-start-column="25" selection-end-line="9" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-183">
-          <caret line="70" column="71" selection-start-line="70" selection-start-column="71" selection-end-line="70" selection-end-column="71" />
-          <folding>
-            <element signature="method#extractRunnerGOALCOUNT#0;class#MatchbookEventTracker#0" />
-            <element signature="method#extractRunnerCORRECTSCORE#0;class#MatchbookEventTracker#0" />
-            <element signature="method#extractRunnerRESULT#0;class#MatchbookEventTracker#0" />
-            <element signature="method#updateMarketData#0;class#MatchbookEventTracker#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOffer.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballResultBet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="416">
-          <caret line="51" column="40" selection-start-line="51" selection-start-column="40" selection-end-line="51" selection-end-column="40" />
+          <caret line="32" column="31" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="752">
+          <caret line="75" column="60" selection-start-line="75" selection-start-column="60" selection-end-line="75" selection-end-column="60" />
           <folding>
-            <element signature="method#newOdds#0;class#BetOffer#0" />
-            <element signature="method#backStake2LayStake#0;class#BetOffer#0" />
-            <element signature="method#layStake2backStake#0;class#BetOffer#0" />
-            <element signature="method#dec2americ#0;class#BetOffer#0" />
-            <element signature="method#americ2dec#0;class#BetOffer#0" />
+            <element signature="method#toJSON#0;class#ProfitReport#0" />
+            <element signature="method#newProfitReportReturn#0;class#ProfitReport#0" />
+            <element signature="method#newProfitReportInvestment#0;class#ProfitReport#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1376">
+          <caret line="175" column="96" selection-start-line="175" selection-start-column="96" selection-end-line="175" selection-end-column="96" />
+          <folding>
+            <element signature="method#getAllBetsList#0;class#FootballBetGenerator#0" />
+            <element signature="method#getAllBets#0;class#FootballBetGenerator#0" />
+            <element signature="method#save#0;class#FootballBetGenerator#0" />
+            <element signature="method#getScoreBets#0;class#FootballBetGenerator#0" />
+            <element signature="method#getOtherScoreBets#0;class#FootballBetGenerator#0" />
+            <element signature="method#getOtherScoreBetsHT#0;class#FootballBetGenerator#0" />
+            <element signature="method#getResultBets#0;class#FootballBetGenerator#0" />
+            <element signature="method#getOverUnderBets#0;class#FootballBetGenerator#0" />
+            <element signature="method#tautsBackWithLay#0;class#FootballBetGenerator#0" />
+            <element signature="method#tautsResultsWithScores#0;class#FootballBetGenerator#0" />
+            <element signature="method#tautsResultsWithScoresHT#0;class#FootballBetGenerator#0" />
+            <element signature="method#tautsScoresOtherGoalsHT#0;class#FootballBetGenerator#0" />
+            <element signature="method#tautsTotalGoalsWithScores#0;class#FootballBetGenerator#0" />
+            <element signature="method#tautsAllScores#0;class#FootballBetGenerator#0" />
+            <element signature="method#tautTotalGoalsSandwich#0;class#FootballBetGenerator#0" />
+            <element signature="method#getTwins#0;class#FootballBetGenerator#0" />
+            <element signature="method#getTwinSwaps#0;class#FootballBetGenerator#0" />
+            <element signature="method#removeIfContains#0;class#FootballBetGenerator#0" />
+            <element signature="method#toArray#0;class#FootballBetGenerator#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Sport/Match.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="736">
+          <caret line="53" column="33" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="65" column="60" selection-start-line="65" selection-start-column="53" selection-end-line="65" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/tools/printer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="87" column="42" selection-start-line="87" selection-start-column="42" selection-end-line="87" selection-end-column="42" />
+          <folding>
+            <element signature="method#print#0;class#printer#0" />
+            <element signature="method#toFile#4;class#printer#0" />
+            <element signature="method#getJSONResourceMap#0;class#printer#0" />
+            <element signature="method#renameResourceFile#0;class#printer#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/FlashScores.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="996">
+          <caret line="423" column="44" selection-start-line="423" selection-start-column="25" selection-end-line="423" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#queryFootballTeam#0;class#FlashScores#0" />
+            <element signature="method#getFootballMatch#0;class#FlashScores#0" />
+            <element signature="method#getFootballFixtures#0;class#FlashScores#0" />
+            <element signature="method#saveFootballAliases#0;class#FlashScores#0" />
+            <element signature="method#loadFootballAliases#0;class#FlashScores#0" />
+            <element signature="method#getFootballState#0;class#FlashScores#0" />
+            <element signature="method#update_team_id_map#0;class#FlashScores#0" />
+            <element signature="method#verifyFootballMatch#0;class#FlashScores#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetGroup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="35" column="37" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Bet/Bet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
+        <state relative-caret-position="832">
+          <caret line="64" selection-start-line="64" selection-end-line="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballScoreBet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+          <folding>
+            <element signature="method#FootballScoreBet#0;class#FootballScoreBet#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOverUnderBet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="512">
+          <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
+          <folding>
+            <element signature="e#1201#1202#0" expanded="true" />
+            <element signature="e#1232#1233#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output2.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1785">
+          <caret line="7736" selection-start-line="7736" selection-end-line="7736" />
+          <folding>
+            <element signature="e#126#2921#0" />
+            <element signature="e#134#474#0" />
+            <element signature="e#482#823#0" />
+            <element signature="e#831#1171#0" />
+            <element signature="e#1179#1520#0" />
+            <element signature="e#1528#1870#0" />
+            <element signature="e#1878#2218#0" />
+            <element signature="e#2226#2567#0" />
+            <element signature="e#2575#2915#0" />
+            <element signature="e#2952#5458#0" />
+            <element signature="e#2960#3310#0" />
+            <element signature="e#3318#3668#0" />
+            <element signature="e#3676#4026#0" />
+            <element signature="e#4034#4382#0" />
+            <element signature="e#4390#4739#0" />
+            <element signature="e#4747#5096#0" />
+            <element signature="e#5104#5452#0" />
+            <element signature="e#5489#6181#0" />
+            <element signature="e#5497#5832#0" />
+            <element signature="e#5840#6175#0" />
+            <element signature="e#6203#7618#0" />
+            <element signature="e#6211#6555#0" />
+            <element signature="e#6563#6908#0" />
+            <element signature="e#6916#7260#0" />
+            <element signature="e#7268#7612#0" />
+            <element signature="e#7648#8739#0" />
+            <element signature="e#7656#8010#0" />
+            <element signature="e#8018#8372#0" />
+            <element signature="e#8380#8733#0" />
+            <element signature="e#8770#13392#0" />
+            <element signature="e#8778#9126#0" />
+            <element signature="e#9134#9481#0" />
+            <element signature="e#9489#9836#0" />
+            <element signature="e#9844#10191#0" />
+            <element signature="e#10199#10546#0" />
+            <element signature="e#10554#10901#0" />
+            <element signature="e#10909#11256#0" />
+            <element signature="e#11264#11611#0" />
+            <element signature="e#11619#11966#0" />
+            <element signature="e#11974#12321#0" />
+            <element signature="e#12329#12676#0" />
+            <element signature="e#12684#13031#0" />
+            <element signature="e#13039#13386#0" />
+            <element signature="e#13415#13776#0" />
+            <element signature="e#13423#13770#0" />
+            <element signature="e#13807#15956#0" />
+            <element signature="e#13815#14164#0" />
+            <element signature="e#14172#14520#0" />
+            <element signature="e#14528#14877#0" />
+            <element signature="e#14885#15234#0" />
+            <element signature="e#15242#15592#0" />
+            <element signature="e#15600#15950#0" />
+            <element signature="e#15979#16653#0" />
+            <element signature="e#15987#16313#0" />
+            <element signature="e#16321#16647#0" />
+            <element signature="e#16684#20258#0" />
+            <element signature="e#16692#17042#0" />
+            <element signature="e#17050#17400#0" />
+            <element signature="e#17408#17756#0" />
+            <element signature="e#17764#18114#0" />
+            <element signature="e#18122#18471#0" />
+            <element signature="e#18479#18828#0" />
+            <element signature="e#18836#19184#0" />
+            <element signature="e#19192#19540#0" />
+            <element signature="e#19548#19896#0" />
+            <element signature="e#19904#20252#0" />
+            <element signature="e#20281#20960#0" />
+            <element signature="e#20289#20619#0" />
+            <element signature="e#20627#20954#0" />
+            <element signature="e#20983#21324#0" />
+            <element signature="e#20991#21318#0" />
+            <element signature="e#21348#30066#0" />
+            <element signature="e#21356#21680#0" />
+            <element signature="e#21688#22015#0" />
+            <element signature="e#22023#22350#0" />
+            <element signature="e#22358#22685#0" />
+            <element signature="e#22693#23020#0" />
+            <element signature="e#23028#23355#0" />
+            <element signature="e#23363#23688#0" />
+            <element signature="e#23696#24023#0" />
+            <element signature="e#24031#24358#0" />
+            <element signature="e#24366#24693#0" />
+            <element signature="e#24701#25028#0" />
+            <element signature="e#25036#25363#0" />
+            <element signature="e#25371#25698#0" />
+            <element signature="e#25706#26033#0" />
+            <element signature="e#26041#26368#0" />
+            <element signature="e#26376#26703#0" />
+            <element signature="e#26711#27036#0" />
+            <element signature="e#27044#27371#0" />
+            <element signature="e#27379#27706#0" />
+            <element signature="e#27714#28041#0" />
+            <element signature="e#28049#28377#0" />
+            <element signature="e#28385#28714#0" />
+            <element signature="e#28722#29050#0" />
+            <element signature="e#29058#29387#0" />
+            <element signature="e#29395#29723#0" />
+            <element signature="e#29731#30060#0" />
+            <element signature="e#30090#40164#0" />
+            <element signature="e#30098#30424#0" />
+            <element signature="e#30432#30758#0" />
+            <element signature="e#30766#31092#0" />
+            <element signature="e#31100#31427#0" />
+            <element signature="e#31435#31761#0" />
+            <element signature="e#31769#32096#0" />
+            <element signature="e#32104#32431#0" />
+            <element signature="e#32439#32766#0" />
+            <element signature="e#32774#33101#0" />
+            <element signature="e#33109#33436#0" />
+            <element signature="e#33444#33770#0" />
+            <element signature="e#33778#34106#0" />
+            <element signature="e#34114#34442#0" />
+            <element signature="e#34450#34778#0" />
+            <element signature="e#34786#35114#0" />
+            <element signature="e#35122#35450#0" />
+            <element signature="e#35458#35786#0" />
+            <element signature="e#35794#36122#0" />
+            <element signature="e#36130#36458#0" />
+            <element signature="e#36466#36794#0" />
+            <element signature="e#36802#37129#0" />
+            <element signature="e#37137#37465#0" />
+            <element signature="e#37473#37801#0" />
+            <element signature="e#37809#38138#0" />
+            <element signature="e#38146#38475#0" />
+            <element signature="e#38483#38812#0" />
+            <element signature="e#38820#39148#0" />
+            <element signature="e#39156#39484#0" />
+            <element signature="e#39492#39821#0" />
+            <element signature="e#39829#40158#0" />
+            <element signature="e#40188#46972#0" />
+            <element signature="e#40196#40524#0" />
+            <element signature="e#40532#40863#0" />
+            <element signature="e#40871#41202#0" />
+            <element signature="e#41210#41541#0" />
+            <element signature="e#41549#41880#0" />
+            <element signature="e#41888#42219#0" />
+            <element signature="e#42227#42558#0" />
+            <element signature="e#42566#42897#0" />
+            <element signature="e#42905#43236#0" />
+            <element signature="e#43244#43576#0" />
+            <element signature="e#43584#43914#0" />
+            <element signature="e#43922#44253#0" />
+            <element signature="e#44261#44591#0" />
+            <element signature="e#44599#44930#0" />
+            <element signature="e#44938#45269#0" />
+            <element signature="e#45277#45609#0" />
+            <element signature="e#45617#45948#0" />
+            <element signature="e#45956#46287#0" />
+            <element signature="e#46295#46626#0" />
+            <element signature="e#46634#46966#0" />
+            <element signature="e#46995#47359#0" />
+            <element signature="e#47003#47353#0" />
+            <element signature="e#47382#49706#0" />
+            <element signature="e#47390#47713#0" />
+            <element signature="e#47721#48045#0" />
+            <element signature="e#48053#48377#0" />
+            <element signature="e#48385#48710#0" />
+            <element signature="e#48718#49039#0" />
+            <element signature="e#49047#49370#0" />
+            <element signature="e#49378#49700#0" />
+            <element signature="e#49728#51127#0" />
+            <element signature="e#49736#50078#0" />
+            <element signature="e#50086#50427#0" />
+            <element signature="e#50435#50773#0" />
+            <element signature="e#50781#51121#0" />
+            <element signature="e#51158#54018#0" />
+            <element signature="e#51166#51515#0" />
+            <element signature="e#51523#51872#0" />
+            <element signature="e#51880#52230#0" />
+            <element signature="e#52238#52586#0" />
+            <element signature="e#52594#52942#0" />
+            <element signature="e#52950#53299#0" />
+            <element signature="e#53307#53656#0" />
+            <element signature="e#53664#54012#0" />
+            <element signature="e#54042#55406#0" />
+            <element signature="e#54050#54381#0" />
+            <element signature="e#54389#54721#0" />
+            <element signature="e#54729#55061#0" />
+            <element signature="e#55069#55400#0" />
+            <element signature="e#55429#56115#0" />
+            <element signature="e#55437#55769#0" />
+            <element signature="e#55777#56109#0" />
+            <element signature="e#56146#56842#0" />
+            <element signature="e#56154#56491#0" />
+            <element signature="e#56499#56836#0" />
+            <element signature="e#56872#57238#0" />
+            <element signature="e#56880#57232#0" />
+            <element signature="e#57293#57643#0" />
+            <element signature="e#57301#57637#0" />
+            <element signature="e#57665#58377#0" />
+            <element signature="e#57673#58017#0" />
+            <element signature="e#58025#58371#0" />
+            <element signature="e#58407#59134#0" />
+            <element signature="e#58415#58768#0" />
+            <element signature="e#58776#59128#0" />
+            <element signature="e#59164#59532#0" />
+            <element signature="e#59172#59526#0" />
+            <element signature="e#59596#62456#0" />
+            <element signature="e#59604#59953#0" />
+            <element signature="e#59961#60311#0" />
+            <element signature="e#60319#60668#0" />
+            <element signature="e#60676#61023#0" />
+            <element signature="e#61031#61379#0" />
+            <element signature="e#61387#61736#0" />
+            <element signature="e#61744#62093#0" />
+            <element signature="e#62101#62450#0" />
+            <element signature="e#62487#63182#0" />
+            <element signature="e#62495#62832#0" />
+            <element signature="e#62840#63176#0" />
+            <element signature="e#63213#66076#0" />
+            <element signature="e#63221#63571#0" />
+            <element signature="e#63579#63928#0" />
+            <element signature="e#63936#64286#0" />
+            <element signature="e#64294#64643#0" />
+            <element signature="e#64651#65000#0" />
+            <element signature="e#65008#65357#0" />
+            <element signature="e#65365#65714#0" />
+            <element signature="e#65722#66070#0" />
+            <element signature="e#66108#70861#0" />
+            <element signature="e#66116#66447#0" />
+            <element signature="e#66455#66787#0" />
+            <element signature="e#66795#67126#0" />
+            <element signature="e#67134#67465#0" />
+            <element signature="e#67473#67804#0" />
+            <element signature="e#67812#68143#0" />
+            <element signature="e#68151#68483#0" />
+            <element signature="e#68491#68823#0" />
+            <element signature="e#68831#69163#0" />
+            <element signature="e#69171#69501#0" />
+            <element signature="e#69509#69839#0" />
+            <element signature="e#69847#70177#0" />
+            <element signature="e#70185#70515#0" />
+            <element signature="e#70523#70855#0" />
+            <element signature="e#70893#74987#0" />
+            <element signature="e#70901#71235#0" />
+            <element signature="e#71243#71576#0" />
+            <element signature="e#71584#71918#0" />
+            <element signature="e#71926#72260#0" />
+            <element signature="e#72268#72602#0" />
+            <element signature="e#72610#72943#0" />
+            <element signature="e#72951#73284#0" />
+            <element signature="e#73292#73623#0" />
+            <element signature="e#73631#73962#0" />
+            <element signature="e#73970#74301#0" />
+            <element signature="e#74309#74640#0" />
+            <element signature="e#74648#74981#0" />
+            <element signature="e#75019#79426#0" />
+            <element signature="e#75027#75362#0" />
+            <element signature="e#75370#75704#0" />
+            <element signature="e#75712#76046#0" />
+            <element signature="e#76054#76386#0" />
+            <element signature="e#76394#76725#0" />
+            <element signature="e#76733#77063#0" />
+            <element signature="e#77071#77401#0" />
+            <element signature="e#77409#77738#0" />
+            <element signature="e#77746#78074#0" />
+            <element signature="e#78082#78410#0" />
+            <element signature="e#78418#78746#0" />
+            <element signature="e#78754#79082#0" />
+            <element signature="e#79090#79420#0" />
+            <element signature="e#79448#80158#0" />
+            <element signature="e#79456#79800#0" />
+            <element signature="e#79808#80152#0" />
+            <element signature="e#80181#84792#0" />
+            <element signature="e#80189#80533#0" />
+            <element signature="e#80541#80883#0" />
+            <element signature="e#80891#81235#0" />
+            <element signature="e#81243#81588#0" />
+            <element signature="e#81596#81942#0" />
+            <element signature="e#81950#82294#0" />
+            <element signature="e#82302#82650#0" />
+            <element signature="e#82658#83006#0" />
+            <element signature="e#83014#83362#0" />
+            <element signature="e#83370#83719#0" />
+            <element signature="e#83727#84074#0" />
+            <element signature="e#84082#84430#0" />
+            <element signature="e#84438#84786#0" />
+            <element signature="e#84840#87180#0" />
+            <element signature="e#84848#85174#0" />
+            <element signature="e#85182#85508#0" />
+            <element signature="e#85516#85841#0" />
+            <element signature="e#85849#86174#0" />
+            <element signature="e#86182#86507#0" />
+            <element signature="e#86515#86842#0" />
+            <element signature="e#86850#87174#0" />
+            <element signature="e#87204#95662#0" />
+            <element signature="e#87212#87542#0" />
+            <element signature="e#87550#87880#0" />
+            <element signature="e#87888#88218#0" />
+            <element signature="e#88226#88556#0" />
+            <element signature="e#88564#88894#0" />
+            <element signature="e#88902#89230#0" />
+            <element signature="e#89238#89568#0" />
+            <element signature="e#89576#89906#0" />
+            <element signature="e#89914#90244#0" />
+            <element signature="e#90252#90582#0" />
+            <element signature="e#90590#90920#0" />
+            <element signature="e#90928#91258#0" />
+            <element signature="e#91266#91596#0" />
+            <element signature="e#91604#91934#0" />
+            <element signature="e#91942#92272#0" />
+            <element signature="e#92280#92608#0" />
+            <element signature="e#92616#92946#0" />
+            <element signature="e#92954#93284#0" />
+            <element signature="e#93292#93622#0" />
+            <element signature="e#93630#93960#0" />
+            <element signature="e#93968#94298#0" />
+            <element signature="e#94306#94637#0" />
+            <element signature="e#94645#94976#0" />
+            <element signature="e#94984#95316#0" />
+            <element signature="e#95324#95656#0" />
+            <element signature="e#95686#105851#0" />
+            <element signature="e#95694#96023#0" />
+            <element signature="e#96031#96358#0" />
+            <element signature="e#96366#96695#0" />
+            <element signature="e#96703#97034#0" />
+            <element signature="e#97042#97372#0" />
+            <element signature="e#97380#97710#0" />
+            <element signature="e#97718#98048#0" />
+            <element signature="e#98056#98386#0" />
+            <element signature="e#98394#98724#0" />
+            <element signature="e#98732#99062#0" />
+            <element signature="e#99070#99399#0" />
+            <element signature="e#99407#99738#0" />
+            <element signature="e#99746#100077#0" />
+            <element signature="e#100085#100416#0" />
+            <element signature="e#100424#100755#0" />
+            <element signature="e#100763#101094#0" />
+            <element signature="e#101102#101433#0" />
+            <element signature="e#101441#101772#0" />
+            <element signature="e#101780#102111#0" />
+            <element signature="e#102119#102451#0" />
+            <element signature="e#102459#102789#0" />
+            <element signature="e#102797#103128#0" />
+            <element signature="e#103136#103466#0" />
+            <element signature="e#103474#103806#0" />
+            <element signature="e#103814#104146#0" />
+            <element signature="e#104154#104486#0" />
+            <element signature="e#104494#104826#0" />
+            <element signature="e#104834#105165#0" />
+            <element signature="e#105173#105505#0" />
+            <element signature="e#105513#105845#0" />
+            <element signature="e#105882#106574#0" />
+            <element signature="e#105890#106224#0" />
+            <element signature="e#106232#106568#0" />
+            <element signature="e#106601#110870#0" />
+            <element signature="e#106609#106959#0" />
+            <element signature="e#106967#107317#0" />
+            <element signature="e#107325#107675#0" />
+            <element signature="e#107683#108033#0" />
+            <element signature="e#108041#108388#0" />
+            <element signature="e#108396#108743#0" />
+            <element signature="e#108751#109097#0" />
+            <element signature="e#109105#109449#0" />
+            <element signature="e#109457#109802#0" />
+            <element signature="e#109810#110155#0" />
+            <element signature="e#110163#110508#0" />
+            <element signature="e#110516#110864#0" />
+            <element signature="e#110898#116009#0" />
+            <element signature="e#110906#111238#0" />
+            <element signature="e#111246#111578#0" />
+            <element signature="e#111586#111918#0" />
+            <element signature="e#111926#112258#0" />
+            <element signature="e#112266#112597#0" />
+            <element signature="e#112605#112935#0" />
+            <element signature="e#112943#113273#0" />
+            <element signature="e#113281#113610#0" />
+            <element signature="e#113618#113948#0" />
+            <element signature="e#113956#114287#0" />
+            <element signature="e#114295#114630#0" />
+            <element signature="e#114638#114973#0" />
+            <element signature="e#114981#115316#0" />
+            <element signature="e#115324#115660#0" />
+            <element signature="e#115668#116003#0" />
+            <element signature="e#116039#116769#0" />
+            <element signature="e#116047#116401#0" />
+            <element signature="e#116409#116763#0" />
+            <element signature="e#116801#120535#0" />
+            <element signature="e#116809#117142#0" />
+            <element signature="e#117150#117481#0" />
+            <element signature="e#117489#117820#0" />
+            <element signature="e#117828#118160#0" />
+            <element signature="e#118168#118499#0" />
+            <element signature="e#118507#118837#0" />
+            <element signature="e#118845#119175#0" />
+            <element signature="e#119183#119513#0" />
+            <element signature="e#119521#119851#0" />
+            <element signature="e#119859#120189#0" />
+            <element signature="e#120197#120529#0" />
+            <element signature="e#120559#121245#0" />
+            <element signature="e#120567#120899#0" />
+            <element signature="e#120907#121239#0" />
+            <element signature="e#121276#121627#0" />
+            <element signature="e#121284#121621#0" />
+            <element signature="e#121658#123093#0" />
+            <element signature="e#121666#122016#0" />
+            <element signature="e#122024#122373#0" />
+            <element signature="e#122381#122730#0" />
+            <element signature="e#122738#123087#0" />
+            <element signature="e#123124#123820#0" />
+            <element signature="e#123132#123469#0" />
+            <element signature="e#123477#123814#0" />
+            <element signature="e#123882#124609#0" />
+            <element signature="e#123890#124242#0" />
+            <element signature="e#124250#124603#0" />
+            <element signature="e#124631#140532#0" />
+            <element signature="e#124639#124989#0" />
+            <element signature="e#124997#125346#0" />
+            <element signature="e#125354#125700#0" />
+            <element signature="e#125708#126054#0" />
+            <element signature="e#126062#126408#0" />
+            <element signature="e#126416#126762#0" />
+            <element signature="e#126770#127115#0" />
+            <element signature="e#127123#127468#0" />
+            <element signature="e#127476#127821#0" />
+            <element signature="e#127829#128174#0" />
+            <element signature="e#128182#128527#0" />
+            <element signature="e#128535#128880#0" />
+            <element signature="e#128888#129233#0" />
+            <element signature="e#129241#129586#0" />
+            <element signature="e#129594#129939#0" />
+            <element signature="e#129947#130291#0" />
+            <element signature="e#130299#130644#0" />
+            <element signature="e#130652#130997#0" />
+            <element signature="e#131005#131350#0" />
+            <element signature="e#131358#131703#0" />
+            <element signature="e#131711#132056#0" />
+            <element signature="e#132064#132409#0" />
+            <element signature="e#132417#132762#0" />
+            <element signature="e#132770#133115#0" />
+            <element signature="e#133123#133468#0" />
+            <element signature="e#133476#133820#0" />
+            <element signature="e#133828#134173#0" />
+            <element signature="e#134181#134526#0" />
+            <element signature="e#134534#134879#0" />
+            <element signature="e#134887#135232#0" />
+            <element signature="e#135240#135584#0" />
+            <element signature="e#135592#135937#0" />
+            <element signature="e#135945#136290#0" />
+            <element signature="e#136298#136643#0" />
+            <element signature="e#136651#136996#0" />
+            <element signature="e#137004#137348#0" />
+            <element signature="e#137356#137702#0" />
+            <element signature="e#137710#138055#0" />
+            <element signature="e#138063#138408#0" />
+            <element signature="e#138416#138761#0" />
+            <element signature="e#138769#139114#0" />
+            <element signature="e#139122#139467#0" />
+            <element signature="e#139475#139820#0" />
+            <element signature="e#139828#140173#0" />
+            <element signature="e#140181#140526#0" />
+            <element signature="e#140558#145269#0" />
+            <element signature="e#140566#140894#0" />
+            <element signature="e#140902#141232#0" />
+            <element signature="e#141240#141569#0" />
+            <element signature="e#141577#141907#0" />
+            <element signature="e#141915#142243#0" />
+            <element signature="e#142251#142579#0" />
+            <element signature="e#142587#142914#0" />
+            <element signature="e#142922#143249#0" />
+            <element signature="e#143257#143583#0" />
+            <element signature="e#143591#143918#0" />
+            <element signature="e#143926#144253#0" />
+            <element signature="e#144261#144589#0" />
+            <element signature="e#144597#144926#0" />
+            <element signature="e#144934#145263#0" />
+            <element signature="e#145301#149708#0" />
+            <element signature="e#145309#145641#0" />
+            <element signature="e#145649#145979#0" />
+            <element signature="e#145987#146319#0" />
+            <element signature="e#146327#146659#0" />
+            <element signature="e#146667#146998#0" />
+            <element signature="e#147006#147336#0" />
+            <element signature="e#147344#147674#0" />
+            <element signature="e#147682#148012#0" />
+            <element signature="e#148020#148350#0" />
+            <element signature="e#148358#148686#0" />
+            <element signature="e#148694#149024#0" />
+            <element signature="e#149032#149362#0" />
+            <element signature="e#149370#149702#0" />
+            <element signature="e#149738#150825#0" />
+            <element signature="e#149746#150098#0" />
+            <element signature="e#150106#150459#0" />
+            <element signature="e#150467#150819#0" />
+            <element signature="e#150847#155414#0" />
+            <element signature="e#150855#151201#0" />
+            <element signature="e#151209#151556#0" />
+            <element signature="e#151564#151909#0" />
+            <element signature="e#151917#152261#0" />
+            <element signature="e#152269#152613#0" />
+            <element signature="e#152621#152964#0" />
+            <element signature="e#152972#153317#0" />
+            <element signature="e#153325#153666#0" />
+            <element signature="e#153674#154014#0" />
+            <element signature="e#154022#154362#0" />
+            <element signature="e#154370#154711#0" />
+            <element signature="e#154719#155060#0" />
+            <element signature="e#155068#155408#0" />
+            <element signature="e#155446#159177#0" />
+            <element signature="e#155454#155787#0" />
+            <element signature="e#155795#156127#0" />
+            <element signature="e#156135#156466#0" />
+            <element signature="e#156474#156805#0" />
+            <element signature="e#156813#157143#0" />
+            <element signature="e#157151#157481#0" />
+            <element signature="e#157489#157819#0" />
+            <element signature="e#157827#158155#0" />
+            <element signature="e#158163#158493#0" />
+            <element signature="e#158501#158831#0" />
+            <element signature="e#158839#159171#0" />
+            <element signature="e#159209#164273#0" />
+            <element signature="e#159217#159547#0" />
+            <element signature="e#159555#159885#0" />
+            <element signature="e#159893#160222#0" />
+            <element signature="e#160230#160559#0" />
+            <element signature="e#160567#160896#0" />
+            <element signature="e#160904#161234#0" />
+            <element signature="e#161242#161571#0" />
+            <element signature="e#161579#161909#0" />
+            <element signature="e#161917#162247#0" />
+            <element signature="e#162255#162585#0" />
+            <element signature="e#162593#162921#0" />
+            <element signature="e#162929#163257#0" />
+            <element signature="e#163265#163593#0" />
+            <element signature="e#163601#163929#0" />
+            <element signature="e#163937#164267#0" />
+            <element signature="e#164295#164655#0" />
+            <element signature="e#164303#164649#0" />
+            <element signature="e#164687#169112#0" />
+            <element signature="e#164695#165028#0" />
+            <element signature="e#165036#165369#0" />
+            <element signature="e#165377#165710#0" />
+            <element signature="e#165718#166051#0" />
+            <element signature="e#166059#166392#0" />
+            <element signature="e#166400#166732#0" />
+            <element signature="e#166740#167071#0" />
+            <element signature="e#167079#167411#0" />
+            <element signature="e#167419#167748#0" />
+            <element signature="e#167756#168087#0" />
+            <element signature="e#168095#168426#0" />
+            <element signature="e#168434#168765#0" />
+            <element signature="e#168773#169106#0" />
+            <element signature="e#169143#171651#0" />
+            <element signature="e#169151#169501#0" />
+            <element signature="e#169509#169859#0" />
+            <element signature="e#169867#170216#0" />
+            <element signature="e#170224#170573#0" />
+            <element signature="e#170581#170930#0" />
+            <element signature="e#170938#171287#0" />
+            <element signature="e#171295#171645#0" />
+            <element signature="e#171682#174188#0" />
+            <element signature="e#171690#172040#0" />
+            <element signature="e#172048#172398#0" />
+            <element signature="e#172406#172755#0" />
+            <element signature="e#172763#173113#0" />
+            <element signature="e#173121#173470#0" />
+            <element signature="e#173478#173826#0" />
+            <element signature="e#173834#174182#0" />
+            <element signature="e#174220#177630#0" />
+            <element signature="e#174228#174561#0" />
+            <element signature="e#174569#174903#0" />
+            <element signature="e#174911#175245#0" />
+            <element signature="e#175253#175588#0" />
+            <element signature="e#175596#175929#0" />
+            <element signature="e#175937#176268#0" />
+            <element signature="e#176276#176605#0" />
+            <element signature="e#176613#176944#0" />
+            <element signature="e#176952#177283#0" />
+            <element signature="e#177291#177624#0" />
+            <element signature="e#177662#181749#0" />
+            <element signature="e#177670#178003#0" />
+            <element signature="e#178011#178345#0" />
+            <element signature="e#178353#178686#0" />
+            <element signature="e#178694#179027#0" />
+            <element signature="e#179035#179366#0" />
+            <element signature="e#179374#179706#0" />
+            <element signature="e#179714#180046#0" />
+            <element signature="e#180054#180385#0" />
+            <element signature="e#180393#180724#0" />
+            <element signature="e#180732#181063#0" />
+            <element signature="e#181071#181402#0" />
+            <element signature="e#181410#181743#0" />
+            <element signature="e#181780#184995#0" />
+            <element signature="e#181788#182138#0" />
+            <element signature="e#182146#182494#0" />
+            <element signature="e#182502#182850#0" />
+            <element signature="e#182858#183207#0" />
+            <element signature="e#183215#183563#0" />
+            <element signature="e#183571#183920#0" />
+            <element signature="e#183928#184276#0" />
+            <element signature="e#184284#184633#0" />
+            <element signature="e#184641#184989#0" />
+            <element signature="e#185026#186101#0" />
+            <element signature="e#185034#185383#0" />
+            <element signature="e#185391#185739#0" />
+            <element signature="e#185747#186095#0" />
+            <element signature="e#186133#189190#0" />
+            <element signature="e#186141#186474#0" />
+            <element signature="e#186482#186815#0" />
+            <element signature="e#186823#187154#0" />
+            <element signature="e#187162#187494#0" />
+            <element signature="e#187502#187832#0" />
+            <element signature="e#187840#188168#0" />
+            <element signature="e#188176#188506#0" />
+            <element signature="e#188514#188844#0" />
+            <element signature="e#188852#189184#0" />
+            <element signature="e#189215#194540#0" />
+            <element signature="e#189223#189570#0" />
+            <element signature="e#189578#189925#0" />
+            <element signature="e#189933#190281#0" />
+            <element signature="e#190289#190637#0" />
+            <element signature="e#190645#190993#0" />
+            <element signature="e#191001#191348#0" />
+            <element signature="e#191356#191703#0" />
+            <element signature="e#191711#192056#0" />
+            <element signature="e#192064#192411#0" />
+            <element signature="e#192419#192765#0" />
+            <element signature="e#192773#193118#0" />
+            <element signature="e#193126#193471#0" />
+            <element signature="e#193479#193824#0" />
+            <element signature="e#193832#194178#0" />
+            <element signature="e#194186#194534#0" />
+            <element signature="e#194572#198312#0" />
+            <element signature="e#194580#194912#0" />
+            <element signature="e#194920#195253#0" />
+            <element signature="e#195261#195594#0" />
+            <element signature="e#195602#195936#0" />
+            <element signature="e#195944#196276#0" />
+            <element signature="e#196284#196616#0" />
+            <element signature="e#196624#196952#0" />
+            <element signature="e#196960#197290#0" />
+            <element signature="e#197298#197628#0" />
+            <element signature="e#197636#197966#0" />
+            <element signature="e#197974#198306#0" />
+            <element signature="e#198343#201924#0" />
+            <element signature="e#198351#198701#0" />
+            <element signature="e#198709#199059#0" />
+            <element signature="e#199067#199417#0" />
+            <element signature="e#199425#199775#0" />
+            <element signature="e#199783#200133#0" />
+            <element signature="e#200141#200491#0" />
+            <element signature="e#200499#200847#0" />
+            <element signature="e#200855#201204#0" />
+            <element signature="e#201212#201561#0" />
+            <element signature="e#201569#201918#0" />
+            <element signature="e#201947#202309#0" />
+            <element signature="e#201955#202303#0" />
+            <element signature="e#202364#202732#0" />
+            <element signature="e#202372#202726#0" />
+            <element signature="e#202755#203119#0" />
+            <element signature="e#202763#203113#0" />
+            <element signature="e#203150#205657#0" />
+            <element signature="e#203158#203507#0" />
+            <element signature="e#203515#203865#0" />
+            <element signature="e#203873#204223#0" />
+            <element signature="e#204231#204580#0" />
+            <element signature="e#204588#204937#0" />
+            <element signature="e#204945#205294#0" />
+            <element signature="e#205302#205651#0" />
+            <element signature="e#205688#206382#0" />
+            <element signature="e#205696#206032#0" />
+            <element signature="e#206040#206376#0" />
+            <element signature="e#206413#207106#0" />
+            <element signature="e#206421#206757#0" />
+            <element signature="e#206765#207100#0" />
+            <element signature="e#207138#211895#0" />
+            <element signature="e#207146#207478#0" />
+            <element signature="e#207486#207818#0" />
+            <element signature="e#207826#208157#0" />
+            <element signature="e#208165#208497#0" />
+            <element signature="e#208505#208837#0" />
+            <element signature="e#208845#209177#0" />
+            <element signature="e#209185#209517#0" />
+            <element signature="e#209525#209857#0" />
+            <element signature="e#209865#210195#0" />
+            <element signature="e#210203#210535#0" />
+            <element signature="e#210543#210873#0" />
+            <element signature="e#210881#211211#0" />
+            <element signature="e#211219#211549#0" />
+            <element signature="e#211557#211889#0" />
+            <element signature="e#211918#213695#0" />
+            <element signature="e#211926#212272#0" />
+            <element signature="e#212280#212626#0" />
+            <element signature="e#212634#212980#0" />
+            <element signature="e#212988#213334#0" />
+            <element signature="e#213342#213689#0" />
+            <element signature="e#213727#219163#0" />
+            <element signature="e#213735#214067#0" />
+            <element signature="e#214075#214407#0" />
+            <element signature="e#214415#214747#0" />
+            <element signature="e#214755#215085#0" />
+            <element signature="e#215093#215425#0" />
+            <element signature="e#215433#215765#0" />
+            <element signature="e#215773#216105#0" />
+            <element signature="e#216113#216445#0" />
+            <element signature="e#216453#216785#0" />
+            <element signature="e#216793#217125#0" />
+            <element signature="e#217133#217465#0" />
+            <element signature="e#217473#217803#0" />
+            <element signature="e#217811#218141#0" />
+            <element signature="e#218149#218479#0" />
+            <element signature="e#218487#218817#0" />
+            <element signature="e#218825#219157#0" />
+            <element signature="e#219191#224987#0" />
+            <element signature="e#219199#219530#0" />
+            <element signature="e#219538#219868#0" />
+            <element signature="e#219876#220207#0" />
+            <element signature="e#220215#220546#0" />
+            <element signature="e#220554#220885#0" />
+            <element signature="e#220893#221227#0" />
+            <element signature="e#221235#221569#0" />
+            <element signature="e#221577#221909#0" />
+            <element signature="e#221917#222248#0" />
+            <element signature="e#222256#222589#0" />
+            <element signature="e#222597#222929#0" />
+            <element signature="e#222937#223266#0" />
+            <element signature="e#223274#223609#0" />
+            <element signature="e#223617#223952#0" />
+            <element signature="e#223960#224295#0" />
+            <element signature="e#224303#224638#0" />
+            <element signature="e#224646#224981#0" />
+            <element signature="e#225018#225710#0" />
+            <element signature="e#225026#225362#0" />
+            <element signature="e#225370#225704#0" />
+            <element signature="e#225741#227884#0" />
+            <element signature="e#225749#226098#0" />
+            <element signature="e#226106#226454#0" />
+            <element signature="e#226462#226811#0" />
+            <element signature="e#226819#227166#0" />
+            <element signature="e#227174#227522#0" />
+            <element signature="e#227530#227878#0" />
+            <element signature="e#227911#233268#0" />
+            <element signature="e#227919#228269#0" />
+            <element signature="e#228277#228628#0" />
+            <element signature="e#228636#228986#0" />
+            <element signature="e#228994#229345#0" />
+            <element signature="e#229353#229702#0" />
+            <element signature="e#229710#230060#0" />
+            <element signature="e#230068#230417#0" />
+            <element signature="e#230425#230774#0" />
+            <element signature="e#230782#231129#0" />
+            <element signature="e#231137#231485#0" />
+            <element signature="e#231493#231840#0" />
+            <element signature="e#231848#232194#0" />
+            <element signature="e#232202#232548#0" />
+            <element signature="e#232556#232904#0" />
+            <element signature="e#232912#233262#0" />
+            <element signature="e#233291#233631#0" />
+            <element signature="e#233299#233625#0" />
+            <element signature="e#233688#243367#0" />
+            <element signature="e#233696#234020#0" />
+            <element signature="e#234028#234351#0" />
+            <element signature="e#234359#234683#0" />
+            <element signature="e#234691#235013#0" />
+            <element signature="e#235021#235346#0" />
+            <element signature="e#235354#235679#0" />
+            <element signature="e#235687#236012#0" />
+            <element signature="e#236020#236345#0" />
+            <element signature="e#236353#236678#0" />
+            <element signature="e#236686#237010#0" />
+            <element signature="e#237018#237344#0" />
+            <element signature="e#237352#237678#0" />
+            <element signature="e#237686#238012#0" />
+            <element signature="e#238020#238346#0" />
+            <element signature="e#238354#238680#0" />
+            <element signature="e#238688#239014#0" />
+            <element signature="e#239022#239348#0" />
+            <element signature="e#239356#239682#0" />
+            <element signature="e#239690#240017#0" />
+            <element signature="e#240025#240350#0" />
+            <element signature="e#240358#240684#0" />
+            <element signature="e#240692#241018#0" />
+            <element signature="e#241026#241352#0" />
+            <element signature="e#241360#241687#0" />
+            <element signature="e#241695#242021#0" />
+            <element signature="e#242029#242356#0" />
+            <element signature="e#242364#242691#0" />
+            <element signature="e#242699#243026#0" />
+            <element signature="e#243034#243361#0" />
+            <element signature="e#243391#246452#0" />
+            <element signature="e#243399#243728#0" />
+            <element signature="e#243736#244068#0" />
+            <element signature="e#244076#244408#0" />
+            <element signature="e#244416#244748#0" />
+            <element signature="e#244756#245088#0" />
+            <element signature="e#245096#245427#0" />
+            <element signature="e#245435#245766#0" />
+            <element signature="e#245774#246106#0" />
+            <element signature="e#246114#246446#0" />
+            <element signature="e#246515#248311#0" />
+            <element signature="e#246523#246874#0" />
+            <element signature="e#246882#247232#0" />
+            <element signature="e#247240#247590#0" />
+            <element signature="e#247598#247948#0" />
+            <element signature="e#247956#248305#0" />
+            <element signature="e#248341#249068#0" />
+            <element signature="e#248349#248701#0" />
+            <element signature="e#248709#249062#0" />
+            <element signature="e#249100#252836#0" />
+            <element signature="e#249108#249439#0" />
+            <element signature="e#249447#249779#0" />
+            <element signature="e#249787#250119#0" />
+            <element signature="e#250127#250459#0" />
+            <element signature="e#250467#250798#0" />
+            <element signature="e#250806#251138#0" />
+            <element signature="e#251146#251476#0" />
+            <element signature="e#251484#251814#0" />
+            <element signature="e#251822#252152#0" />
+            <element signature="e#252160#252490#0" />
+            <element signature="e#252498#252830#0" />
+            <element signature="e#252868#257296#0" />
+            <element signature="e#252876#253209#0" />
+            <element signature="e#253217#253549#0" />
+            <element signature="e#253557#253891#0" />
+            <element signature="e#253899#254231#0" />
+            <element signature="e#254239#254572#0" />
+            <element signature="e#254580#254912#0" />
+            <element signature="e#254920#255253#0" />
+            <element signature="e#255261#255593#0" />
+            <element signature="e#255601#255932#0" />
+            <element signature="e#255940#256271#0" />
+            <element signature="e#256279#256610#0" />
+            <element signature="e#256618#256949#0" />
+            <element signature="e#256957#257290#0" />
+            <element signature="e#257318#259424#0" />
+            <element signature="e#257326#257670#0" />
+            <element signature="e#257678#258019#0" />
+            <element signature="e#258027#258369#0" />
+            <element signature="e#258377#258717#0" />
+            <element signature="e#258725#259069#0" />
+            <element signature="e#259077#259418#0" />
+            <element signature="e#259447#260164#0" />
+            <element signature="e#259455#259802#0" />
+            <element signature="e#259810#260158#0" />
+            <element signature="e#260187#262556#0" />
+            <element signature="e#260195#260523#0" />
+            <element signature="e#260531#260860#0" />
+            <element signature="e#260868#261199#0" />
+            <element signature="e#261207#261538#0" />
+            <element signature="e#261546#261877#0" />
+            <element signature="e#261885#262215#0" />
+            <element signature="e#262223#262550#0" />
+            <element signature="e#262586#263314#0" />
+            <element signature="e#262594#262947#0" />
+            <element signature="e#262955#263308#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="216" column="16" selection-start-line="216" selection-start-column="16" selection-end-line="216" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3687#3995#0" />
+            <element signature="e#9532#13882#0" />
+            <element signature="e#13889#14412#0" />
+            <element signature="e#14419#15920#0" />
+            <element signature="e#15927#18275#0" />
+            <element signature="e#18282#20432#0" />
+            <element signature="e#20439#22056#0" />
+            <element signature="e#22063#23238#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="16">
+          <caret line="43" column="10" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="10" />
+          <folding>
+            <element signature="class#marketDataRequestHandler#0;class#Matchbook#0" />
+            <element signature="class#marketDataRequestSender#0;class#Matchbook#0" />
+            <element signature="method#login#0;class#Matchbook#0" />
+            <element signature="method#updateAccountInfo#0;class#Matchbook#0" />
+            <element signature="method#getSessionToken#0;class#Matchbook#0" />
+            <element signature="e#12954#12955#0" expanded="true" />
+            <element signature="e#12981#12982#0" expanded="true" />
+            <element signature="method#getFootballMatches#0;class#Matchbook#0" />
+            <element signature="method#getEvents#0;class#Matchbook#0" />
+            <element signature="method#getEvents#1;class#Matchbook#0" />
+            <element signature="method#getMarketData#0;class#Matchbook#0" />
+            <element signature="method#getMarketDataFromHandler#0;class#Matchbook#0" />
+            <element signature="method#closestMatchbookOdds#0;class#Matchbook#0" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5563">
-          <caret line="840" column="5" lean-forward="true" selection-start-line="840" selection-start-column="5" selection-end-line="840" selection-end-column="5" />
+        <state relative-caret-position="-1424">
+          <caret line="53" column="48" lean-forward="true" selection-start-line="53" selection-start-column="48" selection-end-line="53" selection-end-column="48" />
           <folding>
             <element signature="class#EventSearchHandler#0;class#Betfair#0" />
             <element signature="class#RPCRequestHandler#0;class#Betfair#0" />
             <element signature="class#RPCRequestSender#0;class#Betfair#0" />
             <element signature="n#!!block;n#RPCRequestSender#0;n#RPCRequestSender#0;n#Betfair#0" />
             <element signature="method#getSessionToken#0;class#Betfair#0" />
+            <element signature="e#12929#12930#0" expanded="true" />
+            <element signature="e#12956#12957#0" expanded="true" />
             <element signature="method#getMarketOdds#0;class#Betfair#0" />
             <element signature="method#getEvents#0;class#Betfair#0" />
             <element signature="method#getFootballMatches#0;class#Betfair#0" />
@@ -1335,210 +1828,161 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3310">
-          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+        <state relative-caret-position="355">
+          <caret line="97" column="49" selection-start-line="97" selection-start-column="49" selection-end-line="97" selection-end-column="49" />
+          <folding>
+            <element signature="method#getBalance#0;class#BettingSite#0" />
+            <element signature="method#setBalance#0;class#BettingSite#0" />
+            <element signature="method#useBalance#0;class#BettingSite#0" />
+            <element signature="method#ROI_old#0;class#BettingSite#0" />
+            <element signature="method#ROI#0;class#BettingSite#0" />
+            <element signature="method#ROI#1;class#BettingSite#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="487">
+          <caret line="507" column="87" selection-start-line="507" selection-start-column="87" selection-end-line="507" selection-end-column="87" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1809#1810#0" expanded="true" />
-            <element signature="e#1844#1845#0" expanded="true" />
+            <element signature="method#setupMatch#0;class#EventTrader#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="321" column="62" selection-start-line="321" selection-start-column="62" selection-end-line="321" selection-end-column="62" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#update#0;class#SportsTraderStats#0" />
+            <element signature="method#toJSON#0;class#SportsTraderStats#0" />
+            <element signature="method#getSummaryTautologies#0;class#SportsTraderStats#0" />
+            <element signature="class#Taut#0;class#SportsTraderStats#0" />
+            <element signature="method#toJSON#0;class#SiteTrackerStats#0;class#SportsTraderStats#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="165" column="61" selection-start-line="165" selection-start-column="61" selection-end-line="165" selection-end-column="61" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="47" column="4" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="4" />
+          <folding>
+            <element signature="e#1377#1378#0" expanded="true" />
+            <element signature="e#1404#1405#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="762">
+          <caret line="175" column="101" selection-start-line="175" selection-start-column="101" selection-end-line="175" selection-end-column="101" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1022#1023#0" expanded="true" />
+            <element signature="e#1074#1075#0" expanded="true" />
+            <element signature="method#combine#0;class#MarketOddsReport#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="539">
+          <caret line="350" column="9" selection-start-line="350" selection-start-column="9" selection-end-line="350" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2615#2616#0" expanded="true" />
+            <element signature="e#2650#2651#0" expanded="true" />
+            <element signature="method#setupMatch#0;class#BetfairEventTracker#0" />
             <element signature="method#updateMarketData#0;class#BetfairEventTracker#0" />
-            <element signature="method#getMarketOddsReport#0;class#BetfairEventTracker#0" />
+            <element signature="method#getMarketFromArray#0;class#BetfairEventTracker#0" />
+            <element signature="method#extractRunnerHANDICAP#0;class#BetfairEventTracker#0" />
             <element signature="method#extractRunnerOVERUNDER#0;class#BetfairEventTracker#0" />
             <element signature="method#extractRunnerSCORE#0;class#BetfairEventTracker#0" />
+            <element signature="method#extractRunnerRESULT#0;class#BetfairEventTracker#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="602">
+          <caret line="165" column="9" selection-start-line="165" selection-start-column="9" selection-end-line="165" selection-end-column="9" />
+          <folding>
+            <element signature="method#setupMatch#0;class#MatchbookEventTracker#0" />
+            <element signature="method#extractRunnerGOALCOUNT#0;class#MatchbookEventTracker#0" />
+            <element signature="method#extractRunnerCORRECTSCORE#0;class#MatchbookEventTracker#0" />
+            <element signature="method#extractRunnerHandicap#0;class#MatchbookEventTracker#0" />
+            <element signature="method#extractRunnerRESULT#0;class#MatchbookEventTracker#0" />
+            <element signature="method#updateMarketData#0;class#MatchbookEventTracker#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="448">
+          <caret line="28" column="21" selection-start-line="28" selection-start-column="21" selection-end-line="28" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/output.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="461" column="28" selection-start-line="461" selection-start-column="23" selection-end-line="461" selection-end-column="28" />
+        <state relative-caret-position="592">
+          <caret line="100" column="30" lean-forward="true" selection-start-line="100" selection-start-column="30" selection-end-line="100" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="19" column="33" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOffer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="368">
+          <caret line="65" column="51" selection-start-line="65" selection-start-column="51" selection-end-line="65" selection-end-column="51" />
           <folding>
-            <element signature="e#4#3216#0" />
-            <element signature="e#89#2762#0" />
-            <element signature="e#2577#2612#0" />
-            <element signature="e#2779#3181#0" />
-            <element signature="e#2787#2910#0" />
-            <element signature="e#2918#3043#0" />
-            <element signature="e#3051#3175#0" />
-            <element signature="e#3220#5934#0" />
-            <element signature="e#3311#5595#0" />
-            <element signature="e#5409#5444#0" />
-            <element signature="e#5612#5899#0" />
-            <element signature="e#5620#5753#0" />
-            <element signature="e#5761#5893#0" />
-            <element signature="e#5938#8653#0" />
-            <element signature="e#6030#8314#0" />
-            <element signature="e#8128#8163#0" />
-            <element signature="e#8331#8618#0" />
-            <element signature="e#8339#8472#0" />
-            <element signature="e#8480#8612#0" />
-            <element signature="e#8657#11601#0" />
-            <element signature="e#8740#11141#0" />
-            <element signature="e#10955#10990#0" />
-            <element signature="e#11158#11566#0" />
-            <element signature="e#11166#11293#0" />
-            <element signature="e#11301#11431#0" />
-            <element signature="e#11439#11560#0" />
-            <element signature="e#11605#14552#0" />
-            <element signature="e#11690#14091#0" />
-            <element signature="e#13905#13940#0" />
-            <element signature="e#14108#14517#0" />
-            <element signature="e#14116#14246#0" />
-            <element signature="e#14254#14382#0" />
-            <element signature="e#14390#14511#0" />
-            <element signature="e#14556#17502#0" />
-            <element signature="e#14640#17041#0" />
-            <element signature="e#16855#16890#0" />
-            <element signature="e#17058#17467#0" />
-            <element signature="e#17066#17196#0" />
-            <element signature="e#17204#17332#0" />
-            <element signature="e#17340#17461#0" />
-            <element signature="e#17506#20452#0" />
-            <element signature="e#17590#19991#0" />
-            <element signature="e#19805#19840#0" />
-            <element signature="e#20008#20417#0" />
-            <element signature="e#20016#20146#0" />
-            <element signature="e#20154#20282#0" />
-            <element signature="e#20290#20411#0" />
-            <element signature="e#20456#23173#0" />
-            <element signature="e#20550#22834#0" />
-            <element signature="e#22648#22683#0" />
-            <element signature="e#22851#23138#0" />
-            <element signature="e#22859#22992#0" />
-            <element signature="e#23000#23132#0" />
-            <element signature="e#23177#25894#0" />
-            <element signature="e#23271#25555#0" />
-            <element signature="e#25369#25404#0" />
-            <element signature="e#25572#25859#0" />
-            <element signature="e#25580#25713#0" />
-            <element signature="e#25721#25853#0" />
-            <element signature="e#25898#28841#0" />
-            <element signature="e#25980#28381#0" />
-            <element signature="e#28195#28230#0" />
-            <element signature="e#28398#28806#0" />
-            <element signature="e#28406#28534#0" />
-            <element signature="e#28542#28671#0" />
-            <element signature="e#28679#28800#0" />
-            <element signature="e#31671#31795#0" />
-            <element signature="e#32735#32859#0" />
-            <element signature="e#32867#32993#0" />
-            <element signature="e#33001#33127#0" />
-            <element signature="e#33135#33262#0" />
-            <element signature="e#33270#33395#0" />
-            <element signature="e#33403#33529#0" />
-            <element signature="e#33537#33663#0" />
-            <element signature="e#33671#33798#0" />
-            <element signature="e#33806#33931#0" />
-            <element signature="e#33939#34065#0" />
-            <element signature="e#34073#34199#0" />
-            <element signature="e#34207#34334#0" />
-            <element signature="e#34342#34467#0" />
-            <element signature="e#34475#34601#0" />
-            <element signature="e#34609#34735#0" />
-            <element signature="e#34743#34870#0" />
-            <element signature="e#34878#35003#0" />
-            <element signature="e#35011#35137#0" />
-            <element signature="e#35145#35271#0" />
-            <element signature="e#35279#35406#0" />
-            <element signature="e#35414#35539#0" />
-            <element signature="e#35950#36074#0" />
-            <element signature="e#36082#36208#0" />
-            <element signature="e#36216#36341#0" />
-            <element signature="e#36349#36477#0" />
-            <element signature="e#36485#36609#0" />
-            <element signature="e#36617#36744#0" />
-            <element signature="e#36752#36877#0" />
-            <element signature="e#36885#37013#0" />
-            <element signature="e#37021#37145#0" />
-            <element signature="e#37153#37280#0" />
-            <element signature="e#37288#37413#0" />
-            <element signature="e#37421#37549#0" />
-            <element signature="e#37557#37681#0" />
-            <element signature="e#37689#37816#0" />
-            <element signature="e#37824#37949#0" />
-            <element signature="e#37957#38085#0" />
-            <element signature="e#38093#38217#0" />
-            <element signature="e#38225#38352#0" />
-            <element signature="e#38360#38485#0" />
-            <element signature="e#38493#38621#0" />
-            <element signature="e#38629#38753#0" />
-            <element signature="e#38761#38888#0" />
-            <element signature="e#38896#39021#0" />
-            <element signature="e#39029#39157#0" />
-            <element signature="e#39165#39289#0" />
-            <element signature="e#39297#39424#0" />
-            <element signature="e#39432#39557#0" />
-            <element signature="e#39565#39693#0" />
-            <element signature="e#39701#39825#0" />
-            <element signature="e#39833#39960#0" />
-            <element signature="e#39968#40093#0" />
-            <element signature="e#40101#40229#0" />
-            <element signature="e#40237#40361#0" />
-            <element signature="e#40369#40496#0" />
-            <element signature="e#40541#43254#0" />
-            <element signature="e#40635#42919#0" />
-            <element signature="e#42733#42768#0" />
-            <element signature="e#42936#43219#0" />
-            <element signature="e#42944#43075#0" />
-            <element signature="e#43083#43213#0" />
-            <element signature="e#43258#45974#0" />
-            <element signature="e#43351#45635#0" />
-            <element signature="e#45449#45484#0" />
-            <element signature="e#45652#45939#0" />
-            <element signature="e#45660#45793#0" />
-            <element signature="e#45801#45933#0" />
-            <element signature="e#45978#50940#0" />
-            <element signature="e#46064#48437#0" />
-            <element signature="e#48251#48286#0" />
-            <element signature="e#48454#50905#0" />
-            <element signature="e#48462#48579#0" />
-            <element signature="e#48587#48704#0" />
-            <element signature="e#48712#48829#0" />
-            <element signature="e#48837#48955#0" />
-            <element signature="e#48963#49080#0" />
-            <element signature="e#49088#49205#0" />
-            <element signature="e#49213#49330#0" />
-            <element signature="e#49338#49456#0" />
-            <element signature="e#49464#49581#0" />
-            <element signature="e#49589#49707#0" />
-            <element signature="e#49715#49833#0" />
-            <element signature="e#49841#49960#0" />
-            <element signature="e#49968#50087#0" />
-            <element signature="e#50095#50214#0" />
-            <element signature="e#50222#50341#0" />
-            <element signature="e#50349#50468#0" />
-            <element signature="e#50476#50613#0" />
-            <element signature="e#50621#50758#0" />
-            <element signature="e#50766#50899#0" />
-            <element signature="e#50944#53659#0" />
-            <element signature="e#51036#53320#0" />
-            <element signature="e#53134#53169#0" />
-            <element signature="e#53337#53624#0" />
-            <element signature="e#53345#53478#0" />
-            <element signature="e#53486#53618#0" />
-            <element signature="e#53663#56380#0" />
-            <element signature="e#53757#56041#0" />
-            <element signature="e#55855#55890#0" />
-            <element signature="e#56058#56345#0" />
-            <element signature="e#56066#56199#0" />
-            <element signature="e#56207#56339#0" />
-            <element signature="e#56384#59100#0" />
-            <element signature="e#56477#58761#0" />
-            <element signature="e#58575#58610#0" />
-            <element signature="e#58778#59065#0" />
-            <element signature="e#58786#58919#0" />
-            <element signature="e#58927#59059#0" />
-            <element signature="e#59104#62048#0" />
-            <element signature="e#297382#299783#0" />
-            <element signature="e#299597#299632#0" />
-            <element signature="e#299800#300209#0" />
-            <element signature="e#299808#299936#0" />
-            <element signature="e#299944#300074#0" />
-            <element signature="e#300082#300203#0" />
+            <element signature="method#newOdds#0;class#BetOffer#0" />
+            <element signature="method#backStake2LayStake#0;class#BetOffer#0" />
+            <element signature="method#layStake2backStake#0;class#BetOffer#0" />
+            <element signature="method#dec2americ#0;class#BetOffer#0" />
+            <element signature="method#americ2dec#0;class#BetOffer#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-336">
+          <caret line="47" column="10" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="512">
+          <caret line="222" column="26" selection-start-line="222" selection-start-column="26" selection-end-line="222" selection-end-column="26" />
         </state>
       </provider>
     </entry>

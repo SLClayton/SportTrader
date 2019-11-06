@@ -163,7 +163,7 @@ public class BetOrder {
 
         m.put("bet_offer", bo);
         m.put("match", String.valueOf(bet_offer.match));
-        m.put("site", String.valueOf(bet_offer.site.name));
+        m.put("site", String.valueOf(bet_offer.site.getName()));
         m.put("target_return", String.valueOf(target_return));
         m.put("investment", String.valueOf(investment));
         m.put("real", String.valueOf(real));

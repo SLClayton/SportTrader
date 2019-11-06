@@ -33,7 +33,7 @@ public abstract class BettingSite {
 
     public static Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public final static String name = "NA";
+    //public final static String name = "ABSTRACT_BETTING_SITE";
     public String ssldir;
     public Requester requester;
 
@@ -71,6 +71,9 @@ public abstract class BettingSite {
     public abstract BigDecimal commission();
 
 
+    public abstract String getName();
+
+
     public abstract BigDecimal minBackersStake();
 
 
@@ -105,7 +108,7 @@ public abstract class BettingSite {
         } else {
             result = false;
             log.warning(String.format("Request to use %s of %s balance failed as this would take it below the buffer of %s.",
-                    amount.toString(), name, balance_buffer.toString()));
+                    amount.toString(), this.getName(), balance_buffer.toString()));
         }
 
         balanceLock.unlock();
