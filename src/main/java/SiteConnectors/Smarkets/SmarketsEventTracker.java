@@ -40,7 +40,9 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public static String[] market_type_names = new String[] {
             "OVER_UNDER",
             "WINNER_3_WAY",
+            "HALF_TIME_WINNER_3_WAY",
             "CORRECT_SCORE",
+            "HALF_TIME_CORRECT_SCORE",
             "ASIAN_HANDICAP"
     };
 
@@ -123,17 +125,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
             }
         }
 
-
-
-        toFile(markets);
-        System.exit(0);
-
-
-
         // Build a smarkets 'fullname' for each possible contract and map to its id
         JSONArray contracts = smarkets.getContracts(market_ids);
-
-
 
         for (Object market_obj: markets) {
             JSONObject market = (JSONObject) market_obj;
@@ -209,21 +202,27 @@ public class SmarketsEventTracker extends SiteEventTracker {
             String contract_fullname = null;
             switch (bet.category){
 
+                case FootballBet.RESULT_HT:
                 case FootballBet.RESULT:
                     FootballResultBet rb = (FootballResultBet) bet;
-                    if (rb.winnerA()){
-                        contract_fullname = "WINNER_3_WAY_HOME";
-                    }
-                    else if (rb.winnerB()) {
-                        contract_fullname = "WINNER_3_WAY_AWAY";
-                    }
-                    else if (rb.isDraw()) {
-                        contract_fullname = "WINNER_3_WAY_DRAW";
-                    }
+
+                    String result = "NO-RESULT";
+                    if (rb.winnerA()){       result = "HOME"; }
+                    else if (rb.winnerB()) { result = "AWAY"; }
+                    else if (rb.isDraw()) {  result = "DRAW"; }
+
+                    String halftime = "";
+                    if (rb.halftime == true){ halftime = "HALF_TIME_"; }
+
+                    contract_fullname = String.format("%sWINNER_3_WAY_%s", halftime, result);
                     break;
+
+                case FootballBet.CORRECT_SCORE_HT:
                 case FootballBet.CORRECT_SCORE:
                     FootballScoreBet sb = (FootballScoreBet) bet;
-                    contract_fullname = String.format("CORRECT_SCORE_SCORE%d-%d", sb.score_a, sb.score_b);
+                    String cs_halftime = "";
+                    if (sb.halftime){ cs_halftime = "HALF_TIME_"; }
+                    contract_fullname = String.format("%sCORRECT_SCORE_SCORE%d-%d", cs_halftime, sb.score_a, sb.score_b);
                     break;
 
                 case FootballBet.OVER_UNDER:
@@ -232,17 +231,11 @@ public class SmarketsEventTracker extends SiteEventTracker {
                     break;
                 case FootballBet.HANDICAP:
                     FootballHandicapBet hb = (FootballHandicapBet) bet;
-                    String result;
-                    if (hb.winnerB()){
-                        result = "AWAY";
-                    }
-                    else if (hb.winnerA()){
-                        result = "HOME";
-                    }
-                    else{
-                        continue;
-                    }
-                    contract_fullname = String.format("ASIAN_HANDICAP%s_%s", hb.a_handicap.toString(), result);
+                    String hc_result;
+                    if (hb.winnerB()){      hc_result = "AWAY"; }
+                    else if (hb.winnerA()){ hc_result = "HOME"; }
+                    else{ continue; }
+                    contract_fullname = String.format("ASIAN_HANDICAP%s_%s", hb.a_handicap.toString(), hc_result);
                     break;
 
                 default:
@@ -302,9 +295,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
 
-
-        toFile(new_marketOddsReport.toJSON());
-        eventTrader.sportsTrader.safe_exit();
 
         return new_marketOddsReport;
     }

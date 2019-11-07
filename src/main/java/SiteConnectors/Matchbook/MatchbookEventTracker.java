@@ -50,6 +50,10 @@ public class MatchbookEventTracker extends SiteEventTracker {
         return matchbook.name;
     }
 
+
+
+
+
     @Override
     public boolean setupMatch(FootballMatch setup_match) throws IOException, URISyntaxException, InterruptedException {
 
@@ -88,6 +92,12 @@ public class MatchbookEventTracker extends SiteEventTracker {
         return true;
     }
 
+
+    public JSONObject getMarketData() throws InterruptedException {
+        return matchbook.getMarketDataFromHandler(event_id);
+    }
+
+
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
 
@@ -96,9 +106,12 @@ public class MatchbookEventTracker extends SiteEventTracker {
         }
 
         // Update the raw odds for this event
-        updateMarketData();
+        eventMarketData = getMarketData();
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
         JSONObject eventMarketData = (JSONObject) this.eventMarketData.clone();
+
+        toFile(eventMarketData);
+        eventTrader.sportsTrader.safe_exit();
 
 
         for (FootballBet bet: bets){
@@ -353,9 +366,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
     }
 
 
-    public void updateMarketData() throws InterruptedException {
-        eventMarketData = matchbook.getMarketDataFromHandler(event_id);
-    }
+
 
     public static void main(String[] args){
 

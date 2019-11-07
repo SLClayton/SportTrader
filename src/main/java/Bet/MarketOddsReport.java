@@ -29,8 +29,6 @@ public class MarketOddsReport {
      */
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
-
-
     private Map<String, ArrayList<BetOffer>> betOffers;
 
 
@@ -106,6 +104,17 @@ public class MarketOddsReport {
             }
         }
         return n;
+    }
+
+
+    public MarketOddsReport filter(String filter){
+        MarketOddsReport mor = new MarketOddsReport();
+        for (String bet: betOffers.keySet()){
+            if (bet.contains(filter)){
+                mor.addBetOffers(bet, betOffers.get(bet));
+            }
+        }
+        return mor;
     }
 
 

@@ -2,11 +2,15 @@ package Bet.FootballBet;
 
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class FootballOtherScoreBet extends FootballBet {
 
     public int over_score;
     public String result;
     public Boolean halftime;
+
 
     public FootballOtherScoreBet(String bet_type, int OVER_SCORE, String RESULT, Boolean HALFTIME){
         super(bet_type);

@@ -21,6 +21,8 @@ import java.text.Normalizer;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static tools.printer.*;
 
@@ -44,7 +46,9 @@ public class BetfairEventTracker extends SiteEventTracker {
             "OVER_UNDER_75",
             "OVER_UNDER_85",
             "MATCH_ODDS",
-            "CORRECT_SCORE"};
+            "HALF_TIME",
+            "CORRECT_SCORE",
+            "HALF_TIME_SCORE"};
 
     public static String[] football_market_types_over_under = new String[] {
             "OVER_UNDER_05",
@@ -179,7 +183,7 @@ public class BetfairEventTracker extends SiteEventTracker {
                             ((Long) runner.get("selectionId")).intValue());
                 }
             }
-            else if (market_type.equals("MATCH_ODDS")){
+            else if (market_type.equals("MATCH_ODDS") || market_type.equals("HALF_TIME")){
                 for (Object item: (JSONArray) market.get("runners")){
                     JSONObject runner = (JSONObject) item;
                     result_sortPriority_selectionId_map.put(((Long) runner.get("sortPriority")).intValue(),
@@ -285,11 +289,17 @@ public class BetfairEventTracker extends SiteEventTracker {
             // Extract runner from market data depending on category.
             JSONObject runner = null;
             switch (bet.category) {
+                case FootballBet.RESULT_HT:
                 case FootballBet.RESULT:
                     runner = extractRunnerRESULT(bet, market_odds);
                     break;
+                case FootballBet.CORRECT_SCORE_HT:
                 case FootballBet.CORRECT_SCORE:
                     runner = extractRunnerSCORE(bet, market_odds);
+                    break;
+                case FootballBet.ANY_OVER:
+                case FootballBet.ANY_OVER_HT:
+                    runner = extractRunnerANYOVERSCORE(bet, market_odds);
                     break;
                 case FootballBet.OVER_UNDER:
                     runner = extractRunnerOVERUNDER(bet, market_odds);
@@ -350,8 +360,53 @@ public class BetfairEventTracker extends SiteEventTracker {
             new_marketOddsReport.addBetOffers(bet.id(), betOffers);
         }
 
-
         return new_marketOddsReport;
+    }
+
+    private JSONObject extractRunnerANYOVERSCORE(FootballBet bet, JSONArray market_odds) {
+
+        FootballOtherScoreBet fbosb = (FootballOtherScoreBet) bet;
+
+        // Find market id for this market in this event from map
+        String market_type = "CORRECT_SCORE";
+        if (fbosb.halftime){
+            market_type = "HALF_TIME_SCORE";
+        }
+
+        String market_id = marketType_id_map.get(market_type);
+        if (market_id == null){
+            log.fine(String.format("CORRECT_SCORE not found for %s in market id map", match));
+            return null;
+        }
+
+        JSONObject market = getMarketFromArray(market_id, market_odds);
+        if (market == null){
+            return null;
+        }
+
+        Pattern score_regex = Pattern.compile("\\A\\d - \\d\\z");
+        int max = 0;
+
+        JSONArray runners = (JSONArray) market.get("runners");
+        ArrayList<JSONObject> aother_runners = new ArrayList<>();
+        for (Object item: runners){
+            JSONObject runner = (JSONObject) item;
+            String runnerName = (String) runner.get("runnerName");
+
+            if (score_regex.matcher(runnerName).find()){
+                String[] score_parts = runnerName.split(" - ");
+                max = Integer.max(max,
+                                  Integer.max(Integer.valueOf(score_parts[0]), Integer.valueOf(score_parts[2])));
+            }
+
+            //TODO: find otherscore bets
+
+
+        }
+
+
+
+
     }
 
 
@@ -538,7 +593,11 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
         // Find market id for this market in this event from map
-        String market_id = marketType_id_map.get("CORRECT_SCORE");
+        String market_type = "CORRECT_SCORE";
+        if (bet.halftime){
+            market_type = "HALF_TIME_SCORE";
+        }
+        String market_id = marketType_id_map.get(market_type);
         if (market_id == null){
             log.fine(String.format("CORRECT_SCORE not found for %s in market id map", match));
             return null;
@@ -582,7 +641,11 @@ public class BetfairEventTracker extends SiteEventTracker {
         FootballResultBet bet = (FootballResultBet) BET;
 
         // Find market id for this market in this event from map
-        String market_id = marketType_id_map.get("MATCH_ODDS");
+        String market_type = "MATCH_ODDS";
+        if (bet.halftime){
+            market_type = "HALF_TIME";
+        }
+        String market_id = marketType_id_map.get(market_type);
         if (market_id == null){
             return null;
         }
@@ -592,7 +655,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             return null;
         }
 
-        // Check it has 3 runners TEAMA DRAW and TEAMB
+        // Check it has 3 runners TEAMA, DRAW and TEAMB
         JSONArray runners = (JSONArray) market.get("runners");
         if (runners.size() != 3){
             log.severe(String.format("RESULT market for %s has %d runners and not 3.", match, runners.size()));
