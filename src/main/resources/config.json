@@ -4,11 +4,11 @@
     "HOURS_AHEAD": 24,
 
     "SINGLE_MATCH_TEST": true,
-    "SM_NAME": "Leicester v Arsenal",
-    "SM_TIME": "2019-11-09T17:30:00.000Z",
+    "SM_NAME": "chelsea vs crystal palace",
+    "SM_TIME": "2019-11-09T12:30:00.000Z",
 
     "CHECK_MARKETS": true,
-    "RATE_LIMIT": 100,
+    "RATE_LIMIT": 1250,
     "REQUEST_TIMEOUT": 200,
 
     "PLACE_BETS": false,
@@ -19,11 +19,11 @@
     "MAX_INVESTMENT": 50.00,
 
     "ACTIVE_SITES": {
-        "betfair": true,
+        "betfair": false,
     	"matchbook": false,
-        "smarkets": false
+        "smarkets": true
     },
-    "EVENT_SOURCE": "betfair",
+    "EVENT_SOURCE": "smarkets",
     "MIN_SITES_PER_MATCH": 1,
 
     "RUN_STATS": true

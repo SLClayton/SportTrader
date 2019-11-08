@@ -71,6 +71,7 @@ public class BetfairEventTracker extends SiteEventTracker {
     public Instant lastMarketDataUpdate;
     public Map<String, String> marketType_id_map;
     public Map<String, Integer> correctScore_selectionId_map;
+    public Map<Integer, String> selectionId_correctScore_map;
     public Map<Integer, Integer> result_sortPriority_selectionId_map;
     public Map<String, Integer> handicap_runnerName_selectionId_map;
     public Map<String, Integer> overunder_runnerName_selectionId_map;
@@ -84,6 +85,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         lastMarketDataUpdate = null;
         marketType_id_map = new HashMap<>();
         correctScore_selectionId_map = new HashMap<>();
+        selectionId_correctScore_map = new HashMap<>();
         result_sortPriority_selectionId_map = new HashMap<>();
         handicap_runnerName_selectionId_map = new HashMap<>();
         overunder_runnerName_selectionId_map = new HashMap<>();
@@ -181,6 +183,8 @@ public class BetfairEventTracker extends SiteEventTracker {
                     JSONObject runner = (JSONObject) item;
                     correctScore_selectionId_map.put(((String) runner.get("runnerName")).toLowerCase(),
                             ((Long) runner.get("selectionId")).intValue());
+                    selectionId_correctScore_map.put(((Long) runner.get("selectionId")).intValue(),
+                            ((String) runner.get("runnerName")).toLowerCase());
                 }
             }
             else if (market_type.equals("MATCH_ODDS") || market_type.equals("HALF_TIME")){
@@ -363,9 +367,11 @@ public class BetfairEventTracker extends SiteEventTracker {
         return new_marketOddsReport;
     }
 
+
     private JSONObject extractRunnerANYOVERSCORE(FootballBet bet, JSONArray market_odds) {
 
         FootballOtherScoreBet fbosb = (FootballOtherScoreBet) bet;
+
 
         // Find market id for this market in this event from map
         String market_type = "CORRECT_SCORE";
@@ -379,34 +385,87 @@ public class BetfairEventTracker extends SiteEventTracker {
             return null;
         }
 
+        // Get market from array of markets
         JSONObject market = getMarketFromArray(market_id, market_odds);
         if (market == null){
             return null;
         }
 
-        Pattern score_regex = Pattern.compile("\\A\\d - \\d\\z");
-        int max = 0;
 
+        // Check runner size is expected for this other score bet
         JSONArray runners = (JSONArray) market.get("runners");
-        ArrayList<JSONObject> aother_runners = new ArrayList<>();
+        int expected_runners_size = ((fbosb.over_score + 1) * (fbosb.over_score + 1));
+        if (runners == null || runners.size() != expected_runners_size + 3){
+            return null;
+        }
+
+
+        ArrayList<JSONObject> other_runners = new ArrayList<>();
+        Pattern score_regex = Pattern.compile("\\A\\d - \\d\\z");
+        int max_score = 0;
+        int score_runners = 0;
+
+        // For each correct_score runner, find the highest score listed and organise other-score bets into list
         for (Object item: runners){
             JSONObject runner = (JSONObject) item;
-            String runnerName = (String) runner.get("runnerName");
+            Integer selectionId = ((Long) runner.get("selectionId")).intValue();
+            String runnerName = selectionId_correctScore_map.get(selectionId);
 
             if (score_regex.matcher(runnerName).find()){
                 String[] score_parts = runnerName.split(" - ");
-                max = Integer.max(max,
-                                  Integer.max(Integer.valueOf(score_parts[0]), Integer.valueOf(score_parts[2])));
+                max_score = Integer.max(max_score,
+                                  Integer.max(Integer.valueOf(score_parts[0]), Integer.valueOf(score_parts[1])));
+                score_runners++;
+
             }
+            else{
+                other_runners.add(runner);
+            }
+        }
 
-            //TODO: find otherscore bets
+        // Only continue if the context max score for this 'other-score' bet is the same as the betting sites for
+        // this event
+        if (fbosb.over_score != max_score){
+            log.severe(String.format("betfair correct score market has correct number of runners but other-score" +
+                    " bet doesn't match up with max bet shown.\n%s\n%s", bet.id(), jstring(runners)));
+            return null;
+        }
+        if (score_runners != expected_runners_size){
+            log.severe(String.format("betfair other score bet has right amount of runners but not right amount" +
+                    " of correct score runners.\n", jstring(runners)));
+            return null;
+        }
 
 
+        // Get name of runner depending on other score bet type result
+        Integer target_selectionId = null;
+        if (fbosb.winnerA()){ target_selectionId = correctScore_selectionId_map.get("any other home win"); }
+        else if (fbosb.winnerB()){ target_selectionId = correctScore_selectionId_map.get("any other away win"); }
+        else if (fbosb.isDraw()){ target_selectionId = correctScore_selectionId_map.get("any other draw"); }
+        else{
+            log.severe(String.format("Other score bet result invalid: '%s'", fbosb.result));
         }
 
 
 
+        // Search runners for name
+        JSONObject runner = null;
+        for (JSONObject potential_runner: other_runners){
+            Integer potential_selectionId = ((Long) potential_runner.get("selectionId")).intValue();
+            if (potential_selectionId.equals(target_selectionId)){
+                runner = potential_runner;
+                break;
+            }
+        }
 
+        if (runner == null){
+            log.severe(String.format("Could not find betfair other score bet selectionId '%d' in non-score runners.\n%s",
+                    target_selectionId, jstring(runners)));
+        }
+        else{
+            runner.put("marketId", market_id);
+        }
+        return runner;
     }
 
 

@@ -2,6 +2,7 @@ package Bet.FootballBet;
 
 import org.json.simple.JSONObject;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -28,6 +29,28 @@ public class FootballOtherScoreBet extends FootballBet {
     public String id(){
         return String.format("%s_%s-%s_%s_%s", category, over_score, over_score, result, type);
     }
+
+
+    public boolean winnerA(){
+        return result.equals(FootballBet.TEAM_A);
+    }
+
+
+    public boolean winnerB(){
+        return result.equals(FootballBet.TEAM_B);
+    }
+
+
+    public boolean isDraw(){
+        return result.equals(FootballBet.DRAW);
+    }
+
+
+    public boolean isAnyResult(){
+        return result.equals(FootballBet.ANY);
+    }
+
+
 
     @Override
     public JSONObject toJSON(){

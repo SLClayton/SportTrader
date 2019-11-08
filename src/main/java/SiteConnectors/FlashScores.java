@@ -392,17 +392,18 @@ public class FlashScores implements SportData {
         // FOOTBALL
         try{
             FootballTeam ft = (FootballTeam) team;
-            String key = ft.normal_name();
-            String current_id = football_alias_id_map.get(key);
+            String normal_name = ft.normal_name();
+            String current_id = football_alias_id_map.get(normal_name);
+
             if (current_id != null){
                 if (!ft.id.equals(current_id)) {
-                    log.severe(String.format("Trying to add %s to football_alias_id_map but key %s " +
-                                    "already exists in mapping.",
-                            ft.toString(), key));
+                    log.severe(String.format("Trying to add '%s' to football_alias_id_map with ID '%s' but " +
+                            "it already has an entry with ID '%s'.",
+                            normal_name, ft.id, current_id));
                 }
                 return;
             }
-            football_alias_id_map.put(key, ft.id);
+            football_alias_id_map.put(normal_name, ft.id);
             save();
             return;
         } catch (ClassCastException e){}

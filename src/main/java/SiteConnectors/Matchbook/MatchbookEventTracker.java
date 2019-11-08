@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static tools.printer.*;
 
@@ -49,9 +50,6 @@ public class MatchbookEventTracker extends SiteEventTracker {
     public String name() {
         return matchbook.name;
     }
-
-
-
 
 
     @Override
@@ -110,9 +108,6 @@ public class MatchbookEventTracker extends SiteEventTracker {
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
         JSONObject eventMarketData = (JSONObject) this.eventMarketData.clone();
 
-        toFile(eventMarketData);
-        eventTrader.sportsTrader.safe_exit();
-
 
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
@@ -127,6 +122,9 @@ public class MatchbookEventTracker extends SiteEventTracker {
                     break;
                 case FootballBet.CORRECT_SCORE:
                     runner = extractRunnerCORRECTSCORE((FootballScoreBet) bet, eventMarketData);
+                    break;
+                case FootballBet.ANY_OVER:
+                    runner = extractRunnerANYOTHERSCORE((FootballOtherScoreBet) bet, eventMarketData);
                     break;
                 case FootballBet.OVER_UNDER:
                     runner = extractRunnerGOALCOUNT((FootballOverUnderBet) bet, eventMarketData);
@@ -182,6 +180,91 @@ public class MatchbookEventTracker extends SiteEventTracker {
     }
 
 
+    private JSONObject extractRunnerANYOTHERSCORE(FootballOtherScoreBet bet, JSONObject eventMarketData) {
+        JSONObject market = null;
+        for (Object market_obj: (JSONArray) eventMarketData.get("markets")){
+            if (((JSONObject) market_obj).get("market-type").equals("correct_score")){
+                market = (JSONObject) market_obj;
+            }
+        }
+
+        // Check correct market was found in raw data
+        if (market == null){
+            return null;
+        }
+
+        // Extract runners
+        JSONArray runners = (JSONArray) market.get("runners");
+        if (runners == null){
+            log.severe(String.format("Runners not found in %s matchbook market\n%s", bet.id(), jstring(market)));
+            return null;
+        }
+
+        int expected__score_runner_size = (bet.over_score + 1) * (bet.over_score + 1);
+        if (runners.size() != expected__score_runner_size + 3){
+            return null;
+        }
+
+        ArrayList<JSONObject> other_runners = new ArrayList<>();
+        Pattern score_regex = Pattern.compile("\\A\\d-\\d\\z");
+        int max_score = 0;
+        int score_runners = 0;
+
+        // For each correct_score runner, find the highest score listed and organise other-score bets into list
+        for (Object item: runners){
+            JSONObject runner = (JSONObject) item;
+            String name = (String) runner.get("name");
+
+            if (score_regex.matcher(name).find()){
+                String[] score_parts = name.split("-");
+                max_score = Integer.max(max_score,
+                        Integer.max(Integer.valueOf(score_parts[0]), Integer.valueOf(score_parts[1])));
+                score_runners++;
+            }
+            else{
+                other_runners.add(runner);
+            }
+        }
+
+        if (max_score != bet.over_score){
+            log.severe(String.format("matchbook correct score market has correct number of runners but other-score" +
+                    " bet doesn't match up with max bet shown.\n%s\n%s", bet.id(), jstring(runners)));
+            return null;
+        }
+        if (score_runners != expected__score_runner_size){
+            log.severe(String.format("matchbook other score bet has right amount of runners but not right amount" +
+                    " of correct score runners.\n", jstring(runners)));
+            return null;
+        }
+
+        // Get name of runner depending on other score bet type result
+        String target_name = null;
+        if (bet.winnerA()){ target_name = "ANY OTHER HOME WIN"; }
+        else if (bet.winnerB()){ target_name = "ANY OTHER AWAY WIN"; }
+        else if (bet.isDraw()){ target_name = "ANY OTHER DRAW"; }
+        else{
+            log.severe(String.format("Other score bet result invalid: '%s'", bet.result));
+        }
+
+        // Search runners for name
+        JSONObject runner = null;
+        for (JSONObject potential_runner: other_runners){
+            String potential_name = (String) potential_runner.get("name");
+            if (potential_name.equals(target_name)){
+                runner = potential_runner;
+                break;
+            }
+        }
+
+        if (runner == null){
+            log.severe(String.format("Could not find matchbook other score bet name '%d' in non-score runners.\n%s",
+                    target_name, jstring(runners)));
+        }
+
+        return runner;
+    }
+
+
     public JSONObject extractRunnerGOALCOUNT(FootballOverUnderBet bet, JSONObject eventMarketData) {
         JSONObject market = null;
         for (Object market_obj: (JSONArray) eventMarketData.get("markets")){
@@ -209,6 +292,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         // Extract runners
         JSONArray runners = (JSONArray) market.get("runners");
         if (runners == null){
+            log.severe(String.format("Runners not found in %s matchbook market\n%s", bet.id(), jstring(market)));
             return null;
         }
 
@@ -240,6 +324,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         // Extract runners
         JSONArray runners = (JSONArray) market.get("runners");
         if (runners == null){
+            log.severe(String.format("Runners not found in %s matchbook market\n%s", bet.id(), jstring(market)));
             return null;
         }
 
@@ -285,6 +370,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         // Extract runners
         JSONArray runners = (JSONArray) market.get("runners");
         if (runners == null){
+            log.severe(String.format("Runners not found in %s matchbook market\n%s", bet.id(), jstring(market)));
             return null;
         }
 
@@ -332,6 +418,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         // Extract runners
         JSONArray runners = (JSONArray) market.get("runners");
         if (runners == null){
+            log.severe(String.format("Runners not found in %s matchbook market\n%s", bet.id(), jstring(market)));
             return null;
         }
 

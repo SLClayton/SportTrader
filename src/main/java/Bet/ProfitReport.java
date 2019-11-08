@@ -152,6 +152,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
         return total_investment.compareTo(pr.total_investment) == -1;
     }
 
+
     public boolean biggerInvestment(ProfitReport pr){
         return total_investment.compareTo(pr.total_investment) == 1;
     }

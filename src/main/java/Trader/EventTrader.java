@@ -186,7 +186,7 @@ public class EventTrader implements Runnable {
                     avg_ms = avg_ms / loop_times.size();
                     log.info(String.format("%s Arb Checks: avg=%dms %s best: %s",
                             loops_per_check, avg_ms, count_sites_used.toString(),
-                            best_profit.setScale(5, RoundingMode.HALF_UP).toString()));
+                            String.valueOf(best_profit)));
 
                     loop_times.clear();
                     best_profit = null;

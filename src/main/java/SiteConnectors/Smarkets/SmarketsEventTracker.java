@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import static tools.printer.*;
 
@@ -36,6 +37,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public Smarkets smarkets;
     public String event_id;
     public FootballMatch match;
+    public Integer correct_score_max_goals;
+    public Integer half_time_correct_score_max_goals;
 
     public static String[] market_type_names = new String[] {
             "OVER_UNDER",
@@ -68,6 +71,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public String name() {
         return "smarkets";
     }
+
 
     @Override
     public boolean setupMatch(FootballMatch setup_match) throws IOException, URISyntaxException, InterruptedException {
@@ -127,6 +131,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         // Build a smarkets 'fullname' for each possible contract and map to its id
         JSONArray contracts = smarkets.getContracts(market_ids);
+        String correct_score_market_id = null;
+        String half_time_correct_score_market_id = null;
 
         for (Object market_obj: markets) {
             JSONObject market = (JSONObject) market_obj;
@@ -139,6 +145,15 @@ public class SmarketsEventTracker extends SiteEventTracker {
             if (market_type.containsKey("param")) {
                 market_type_param = (String) market_type.get("param");
             }
+
+            if (market_type_name.equals("CORRECT_SCORE")){
+                correct_score_market_id = market_id;
+            }
+            else if (market_type_name.equals("HALF_TIME_CORRECT_SCORE")){
+                half_time_correct_score_market_id = market_id;
+            }
+
+
 
             for (Object contract_obj : contracts) {
                 JSONObject contract = (JSONObject) contract_obj;
@@ -164,7 +179,59 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 }
             }
         }
+
+
+        if (correct_score_market_id != null){
+            correct_score_max_goals = max_correct_score_goals(contracts, correct_score_market_id, 3);
+            if (correct_score_max_goals == null){
+                return false;
+            }
+        }
+        if (half_time_correct_score_market_id != null){
+            half_time_correct_score_max_goals = max_correct_score_goals(contracts, half_time_correct_score_market_id, 1);
+            if (half_time_correct_score_max_goals == null){
+                return false;
+            }
+        }
+
         return true;
+    }
+
+
+    public Integer max_correct_score_goals(JSONArray contracts, String market_id, int other_contracts_size){
+
+        Pattern score_regex = Pattern.compile("\\A\\d - \\d\\z");
+        ArrayList<JSONObject> other_contracts = new ArrayList<>();
+        int max_score = 0;
+        int score_contracts = 0;
+
+        for (Object item: contracts){
+            JSONObject contract = (JSONObject) item;
+            String contract_market_id = (String) contract.get("market_id");
+
+            if (contract_market_id.equals(market_id)){
+                String contract_name = (String) contract.get("name");
+
+                if (score_regex.matcher(contract_name).find()){
+                    String[] scores = contract_name.split(" - ");
+                    max_score = Integer.max(max_score,
+                            Integer.max(Integer.valueOf(scores[0]), Integer.valueOf(scores[1])));
+                    score_contracts++;
+                }
+                else{
+                    other_contracts.add(contract);
+                }
+            }
+        }
+        int expected_score_runners = (max_score + 1) * (max_score + 1);
+        if (score_contracts != expected_score_runners || other_contracts.size() != other_contracts_size){
+            log.severe(String.format("smarkets otherscorebet setup error." +
+                            "\nmax_score: %d\nexpected score runners: %d\n",
+                    max_score, expected_score_runners, jstring(contracts)));
+            return null;
+        }
+
+        return max_score;
     }
 
 
@@ -176,21 +243,23 @@ public class SmarketsEventTracker extends SiteEventTracker {
     }
 
 
+    public JSONObject getPrices() throws InterruptedException, IOException, URISyntaxException {
+        return smarkets.getPricesFromHandler(market_ids);
+    }
+
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
-
         if (event_id == null){
             return null;
         }
         log.fine(String.format("%s Updating market odds report for smarkets.", match));
 
-        updatePrices();
+        JSONObject lastPrices = getPrices();
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
         if (lastPrices == null){
-            marketOddsReport = new_marketOddsReport;
+            marketOddsReport = null;
             return null;
         }
-        JSONObject lastPrices = (JSONObject) this.lastPrices.clone();
 
 
         for (FootballBet bet: bets){
@@ -225,10 +294,36 @@ public class SmarketsEventTracker extends SiteEventTracker {
                     contract_fullname = String.format("%sCORRECT_SCORE_SCORE%d-%d", cs_halftime, sb.score_a, sb.score_b);
                     break;
 
+                case FootballBet.ANY_OVER_HT:
+                case FootballBet.ANY_OVER:
+                    FootballOtherScoreBet osb = (FootballOtherScoreBet) bet;
+                    String osb_halftime;
+                    if (osb.halftime){
+                        osb_halftime = "HALF_TIME_";
+                        if (osb.over_score != half_time_correct_score_max_goals){
+                            continue;
+                        }
+                    }
+                    else {
+                        osb_halftime = "";
+                        if (osb.over_score != correct_score_max_goals){
+                            continue;
+                        }
+                    }
+                    String osb_result = null;
+                    if (osb.winnerA()){ osb_result = "HOME_WIN"; }
+                    if (osb.winnerB()){ osb_result = "AWAY_WIN"; }
+                    if (osb.isDraw()){ osb_result = "DRAW"; }
+                    if (osb.isAnyResult()){ osb_result = "SCORE"; }
+
+                    contract_fullname = String.format("%sCORRECT_SCORE_ANY_OTHER_%s", osb_halftime, osb_result);
+                    break;
+
                 case FootballBet.OVER_UNDER:
                     FootballOverUnderBet oub = (FootballOverUnderBet) bet;
                     contract_fullname = String.format("OVER_UNDER%s_%s", oub.goals.toString(), oub.side.toUpperCase());
                     break;
+
                 case FootballBet.HANDICAP:
                     FootballHandicapBet hb = (FootballHandicapBet) bet;
                     String hc_result;
@@ -245,7 +340,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
             }
 
             if (contract_fullname == null){
-                log.warning(String.format("Could not create fullname for smarket bet %s", bet));
+                log.warning(String.format("Failed to create mapping fullname for smarket bet %s", bet));
             }
 
             String contract_id = fullname_contract_map.get(contract_fullname);
@@ -270,6 +365,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
             else {
                 offers = (JSONArray) prices.get("bids");
             }
+
 
             // Convert to our list to betOffer objects list
             ArrayList<BetOffer> new_betOffers = new ArrayList<>();
@@ -296,13 +392,19 @@ public class SmarketsEventTracker extends SiteEventTracker {
         }
 
 
+
+
+
+        toFile(new_marketOddsReport.filter("ANY").toJSON());
+        System.exit(0);
+
+
+
         return new_marketOddsReport;
     }
 
 
-    public void updatePrices() throws InterruptedException, IOException, URISyntaxException {
-        lastPrices = smarkets.getPricesFromHandler(market_ids);
-    }
+
 
 
     public static void main(String[] args){

@@ -179,9 +179,6 @@ public class Smarkets extends BettingSite {
 
         public BlockingQueue<ArrayList<RequestHandler>> jobQueue;
 
-        public int req_limit_time = 60;
-        public int req_limit_requests = 200;
-
         public PriceQuoteRequestSender(BlockingQueue jobQueue){
             this.jobQueue = jobQueue;
         }
@@ -238,8 +235,8 @@ public class Smarkets extends BettingSite {
                             expiry_time = ZonedDateTime.parse(expiry, dtf).toInstant()
                                     .plus(1, ChronoUnit.SECONDS);
 
-                            log.info(String.format("Smarkets request limit reached, waiting until %s",
-                                    expiry_time.toString()));
+                            log.info(String.format("Smarkets request limit reached, waiting until %s    %s",
+                                    expiry_time.toString(), market_prices.toString()));
 
                             // Sanity check expiry time
                             if (expiry_time.isAfter(Instant.now().plus(2, ChronoUnit.MINUTES))){
