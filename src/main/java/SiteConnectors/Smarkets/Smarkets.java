@@ -14,7 +14,7 @@ import Sport.FootballMatch;
 import Sport.FootballTeam;
 import Sport.Team;
 import Trader.EventTrader;
-import org.apache.axis2.databinding.types.xsd.DateTime;
+import org.hamcrest.core.Is;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.Requester;
@@ -55,7 +55,7 @@ public class Smarkets extends BettingSite {
 
     public static int[] prices_enum = new int[] {1, 10, 20, 33, 34, 36, 37, 38, 40, 42, 43, 45, 48, 50, 53, 56, 59, 62, 67, 71, 77, 83, 91, 100, 105, 111, 118, 125, 133, 143, 154, 167, 182, 200, 208, 217, 227, 238, 250, 263, 278, 294, 312, 333, 345, 357, 370, 385, 400, 417, 435, 455, 476, 500, 513, 526, 541, 556, 571, 588, 606, 625, 645, 667, 690, 714, 741, 769, 800, 833, 870, 909, 952, 1000, 1020, 1042, 1064, 1087, 1111, 1136, 1163, 1190, 1220, 1250, 1282, 1316, 1351, 1389, 1429, 1471, 1515, 1562, 1613, 1667, 1695, 1724, 1754, 1786, 1818, 1852, 1887, 1923, 1961, 2000, 2041, 2083, 2128, 2174, 2222, 2273, 2326, 2381, 2439, 2500, 2532, 2564, 2597, 2632, 2667, 2703, 2740, 2778, 2817, 2857, 2899, 2941, 2985, 3030, 3077, 3125, 3175, 3226, 3279, 3333, 3356, 3378, 3401, 3425, 3448, 3472, 3497, 3521, 3546, 3571, 3597, 3623, 3650, 3676, 3704, 3731, 3759, 3788, 3817, 3846, 3876, 3906, 3937, 3968, 4000, 4032, 4065, 4098, 4132, 4167, 4202, 4237, 4274, 4310, 4348, 4386, 4425, 4464, 4505, 4545, 4587, 4630, 4673, 4717, 4762, 4808, 4854, 4902, 4950, 5000, 5025, 5051, 5076, 5102, 5128, 5155, 5181, 5208, 5236, 5263, 5291, 5319, 5348, 5376, 5405, 5435, 5464, 5495, 5525, 5556, 5587, 5618, 5650, 5682, 5714, 5747, 5780, 5814, 5848, 5882, 5917, 5952, 5988, 6024, 6061, 6098, 6135, 6173, 6211, 6250, 6289, 6329, 6369, 6410, 6452, 6494, 6536, 6579, 6623, 6667, 6711, 6757, 6803, 6849, 6897, 6944, 6993, 7042, 7092, 7143, 7194, 7246, 7299, 7353, 7407, 7463, 7519, 7576, 7634, 7692, 7752, 7812, 7874, 7937, 8000, 8065, 8130, 8197, 8264, 8333, 8403, 8475, 8547, 8621, 8696, 8772, 8850, 8929, 9009, 9091, 9174, 9259, 9346, 9434, 9524, 9615, 9709, 9804, 9901, 9999};
 
-
+    Instant expiry_time = null;
 
 
     public Instant lastPriceQuoteRequest;
@@ -190,7 +190,6 @@ public class Smarkets extends BettingSite {
 
             int reqs_sent = 0;
             Instant first_request_time = null;
-            Instant expiry_time = null;
 
             mainloop:
             while (!exit_flag){
@@ -737,20 +736,34 @@ public class Smarkets extends BettingSite {
         public Thread thread;
         public BetOrder betOrder;
 
+        public Instant time_sent;
+        public Instant time_response;
+
         public PlaceBetRunnable(BetOrder betOrder, JSONObject payload){
             this.betOrder = betOrder;
             this.payload = payload;
+            thread = new Thread(this);
+        }
+
+        public void start(){
+            thread.start();
         }
 
         @Override
         public void run() {
+            time_sent = Instant.now();
             try {
                 response = (JSONObject) requester.post(baseurl + "orders/", payload, true);
+                time_response = Instant.now();
             } catch (IOException | URISyntaxException e) {
                 log.severe("IO or URI exception when placing smarket part bet.");
                 response = null;
                 exception = e;
             }
+        }
+
+        public Instant server_time_estimate(){
+            return time_sent.plusMillis((time_response.toEpochMilli() - time_sent.toEpochMilli()) / 2);
         }
     }
 
@@ -770,6 +783,31 @@ public class Smarkets extends BettingSite {
             j.add(pbr.response);
         }
         return j;
+    }
+
+
+    public void testplacebets(String contract_id, String market_id, BigDecimal odds, BigDecimal back_stake,
+                              String side){
+
+        JSONObject payload = new JSONObject();
+        payload.put("contract_id", contract_id);
+        payload.put("market_id", market_id);
+        payload.put("price", validPrice(dec2price(odds)));
+        payload.put("quantity", size2quantity(back_stake, odds));
+        payload.put("side", side);
+        payload.put("type", "immediate_or_cancel");
+
+        JSONObject response = null;
+        try {
+            response = (JSONObject) requester.post(baseurl + "orders/", payload, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        pp(response);
+        toFile(response);
     }
 
 
@@ -803,9 +841,8 @@ public class Smarkets extends BettingSite {
 
             // Create thread to run this single request and add runnable to list.
             PlaceBetRunnable placeBetRunnable = new PlaceBetRunnable(betOrder, payload);
-            placeBetRunnable.thread = new Thread(placeBetRunnable);
             placeBetRunnable.thread.setName("Smarkets Bet Placer");
-            placeBetRunnable.thread.start();
+            placeBetRunnable.start();
             placeBetRunnables.add(placeBetRunnable);
 
             betOrder.site_json_request = payload;
@@ -821,7 +858,6 @@ public class Smarkets extends BettingSite {
                 e.printStackTrace();
             }
         }
-        Instant time = Instant.now();
 
         ArrayList<PlacedBet> placedBets = new ArrayList<>();
         for (PlaceBetRunnable placeBetRunnable: placeBetRunnables) {
@@ -832,7 +868,8 @@ public class Smarkets extends BettingSite {
             if (response == null) {
                 log.severe(String.format("Failed to placed %s on bet %s in smarkets. Response null.",
                         betOrder.investment.toString(), betOrder.bet_offer.bet.id()));
-                pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, "Error getting response.");
+                pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, "Error getting response.",
+                        null, placeBetRunnable.time_sent);
             }
             else if (response.containsKey("error_type")) {
                 String error = (String) response.get("error_type");
@@ -840,7 +877,8 @@ public class Smarkets extends BettingSite {
                 log.severe(String.format("Failed to place %s @ %s on bet %s in smarkets. '%s'.",
                         betOrder.investment.toString(), betOrder.odds().toString(),
                         betOrder.bet_offer.bet.id(), error));
-                pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, error);
+                pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, error,
+                        null, placeBetRunnable.time_sent);
             }
             else {
                 String bet_id = (String) response.get("order_id");
@@ -861,7 +899,8 @@ public class Smarkets extends BettingSite {
                         investment.toString(), odds.toString(), betOrder.bet_offer.bet.id(),
                         betOrder.match().name, returns.toString()));
 
-                pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, backers_stake, odds, returns, time);
+                pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, backers_stake, odds, returns,
+                        placeBetRunnable.server_time_estimate(), placeBetRunnable.time_sent);
             }
             pb.site_json_response = jsonConverter(response);
             placedBets.add(pb);
@@ -910,19 +949,6 @@ public class Smarkets extends BettingSite {
 
 
     public static void main(String[] args){
-
-        try {
-
-            Smarkets s = new Smarkets();
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
 
     }
 }

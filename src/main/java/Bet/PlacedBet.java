@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import java.lang.management.BufferPoolMXBean;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,14 +31,18 @@ public class PlacedBet {
     public BigDecimal profit_commission;
     public BigDecimal avg_odds;
     public BigDecimal returns;
-    public Instant time_placed;
     public String error;
     public JSONObject site_json_response;
-    public long time_since_offer;
+
+    public Instant time_sent;
+    public Instant time_created;
+    public Instant time_placed;
 
 
     public PlacedBet(String state, String bet_id, BetOrder betOrder, BigDecimal back_stake, BigDecimal lay_stake,
-                     BigDecimal avg_odds, BigDecimal returns, Instant time_placed){
+                     BigDecimal avg_odds, BigDecimal returns, Instant time_placed, Instant time_sent){
+
+        this.time_created = Instant.now();
 
         this.state = state;
         this.bet_id = bet_id;
@@ -46,7 +51,9 @@ public class PlacedBet {
         this.backersProfit_layersStake = lay_stake;
         this.avg_odds = avg_odds;
         this.returns = returns;
+
         this.time_placed = time_placed;
+        this.time_sent = time_sent;
 
 
         if (isBack()){
@@ -59,23 +66,23 @@ public class PlacedBet {
         }
 
         profit_commission = profit.multiply(betOrder.commission());
-        time_since_offer = time_placed.toEpochMilli() - betOrder.bet_offer.time_created.toEpochMilli();
     }
 
     public PlacedBet(String state, String bet_id, BetOrder betOrder, BigDecimal back_stake,
-                     BigDecimal avg_odds, BigDecimal returns, Instant time_placed){
+                     BigDecimal avg_odds, BigDecimal returns, Instant time_placed, Instant time_sent){
         // Constructor without given lay stake, so calculated and put into main constructor
 
         this(state, bet_id, betOrder, back_stake, BetOffer.backStake2LayStake(back_stake, avg_odds),
-                avg_odds, returns, time_placed);
+                avg_odds, returns, time_placed, time_sent);
     }
 
 
-    public PlacedBet(String state, BetOrder betOrder, String error, Instant time_placed){
+    public PlacedBet(String state, BetOrder betOrder, String error, Instant time_placed, Instant time_sent){
         this.state = state;
         this.betOrder = betOrder;
         this.error = error;
         this.time_placed = time_placed;
+        this.time_sent = time_sent;
 
         backersProfit_layersStake = BigDecimal.ZERO;
         backersStake_layersProfit = BigDecimal.ZERO;
@@ -84,9 +91,8 @@ public class PlacedBet {
     }
 
     public PlacedBet(String state, BetOrder betOrder, String error){
-        this(state, betOrder, error, null);
+        this(state, betOrder, error, null, null);
     }
-
 
     public boolean isBack(){
         return betOrder.isBack();
@@ -117,13 +123,43 @@ public class PlacedBet {
         return toJSON().toString();
     }
 
+
+    public BetOffer getBetOffer(){
+        return betOrder.bet_offer;
+    }
+
+
+    public Duration time_oddsRequest_to_placedBet(){
+        return Duration.between(getBetOffer().time_start_getMarketOddsReport, time_placed);
+    }
+
+    public Duration time_offerResponse_to_placedBet(){
+        return Duration.between(getBetOffer().time_betOffer_creation, time_placed);
+    }
+
+    public Duration time_sent_to_placed(){
+        return Duration.between(time_sent, time_placed);
+    }
+
+    public Duration time_offerResponse_to_sent(){
+        return Duration.between(getBetOffer().time_betOffer_creation, time_sent);
+    }
+
+
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
 
         m.put("state", String.valueOf(state));
         m.put("betOrder", betOrder.toJSON());
         m.put("time_placed", String.valueOf(time_placed));
-        m.put("delay", String.valueOf(time_since_offer) + "ms");
+
+        JSONObject timings = new JSONObject();
+        timings.put("time_oddsReq-placed", (time_oddsRequest_to_placedBet().getNano()/1000) + "ms");
+        timings.put("time_offerGot-placed", (time_offerResponse_to_placedBet().getNano()/1000) + "ms");
+        timings.put("time_sent-placed", (time_sent_to_placed().getNano()/1000) + "ms");
+        timings.put("time_offerGot-sent", (time_offerResponse_to_sent().getNano()/1000) + "ms");
+        m.put("timings", timings);
+
 
         if (successful()){
             m.put("bet_id", String.valueOf(bet_id));

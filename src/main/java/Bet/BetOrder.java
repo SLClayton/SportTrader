@@ -31,8 +31,12 @@ public class BetOrder {
 
     public JSONObject site_json_request;
 
+    public Instant time_created;
+
 
     public BetOrder(BetOffer bet_offer, BigDecimal target_return, boolean real) {
+
+        time_created = Instant.now();
 
         this.bet_offer = bet_offer;
         this.target_return = target_return;
@@ -151,7 +155,7 @@ public class BetOrder {
         JSONObject m = new JSONObject();
 
         JSONObject bo = new JSONObject();
-        bo.put("created", String.valueOf(bet_offer.time_created));
+        bo.put("created", String.valueOf(bet_offer.time_betOffer_creation));
         bo.put("roi_ratio", String.valueOf(bet_offer.roi_ratio));
         bo.put("volume", String.valueOf(bet_offer.volume));
         bo.put("metadata", String.valueOf(bet_offer.metadata));

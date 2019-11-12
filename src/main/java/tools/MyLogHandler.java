@@ -62,8 +62,8 @@ public class MyLogHandler extends Handler {
         Instant time = Instant.ofEpochMilli(record.getMillis());
         String timestring = time.toString()
                 .replace("T", " ");
-        if (timestring.length() > 24){
-            timestring = timestring.substring(0, 24);
+        if (timestring.length() > 23){
+            timestring = timestring.substring(0, 23);
         }
         sb.append(timestring)
                 .append(String.format(" [%s] ", threadname))

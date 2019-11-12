@@ -275,6 +275,8 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
+        lastMarketOddsReport = null;
+        lastMarketOddsReport_start_time = Instant.now();
 
         if (match == null){
             log.severe("Trying to get market odds report on null event.");
@@ -358,12 +360,14 @@ public class BetfairEventTracker extends SiteEventTracker {
                 metadata.put("selectionId", runner.get("selectionId").toString());
                 metadata.put("marketId", runner.get("marketId").toString());
 
-                betOffers.add(new BetOffer(match, bet, betfair, odds, volume, metadata));
+                betOffers.add(new BetOffer(lastMarketOddsReport_start_time, match, bet, betfair, odds, volume, metadata));
             }
 
             new_marketOddsReport.addBetOffers(bet.id(), betOffers);
         }
 
+        lastMarketOddsReport_end_time = Instant.now();
+        lastMarketOddsReport = new_marketOddsReport;
         return new_marketOddsReport;
     }
 

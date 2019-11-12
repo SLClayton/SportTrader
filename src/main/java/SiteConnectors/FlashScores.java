@@ -3,6 +3,7 @@ package SiteConnectors;
 import Bet.MarketOddsReport;
 import Sport.*;
 import Trader.SportsTrader;
+import org.apache.http.client.HttpResponseException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,13 +32,14 @@ public class FlashScores implements SportData {
     public static final String FOOTBALL = "1";
     public static final String football_team_ids_filename = "football_ids_flashscores.json";
 
-
+    public Set<String> invalid_team_ids;
 
     Requester requester;
 
     public FlashScores(){
         requester = new Requester();
         loadFootballAliases();
+        invalid_team_ids = new HashSet<>();
     }
 
 
@@ -56,7 +58,7 @@ public class FlashScores implements SportData {
         String response = null;
         try {
             response = requester.getRaw("https://s.livesport.services/search/", params).trim();
-        } catch (IOException | URISyntaxException | InterruptedException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             log.severe(String.format("%s while getting response from flashscores for team '%s' query.",
                     e.toString(), query));
@@ -138,7 +140,7 @@ public class FlashScores implements SportData {
     @Override
     public ArrayList<FootballMatch> getFootballFixtures(Team team) {
 
-        if (team.id == null){
+        if (team.id == null || invalid_team_ids.contains(team.id)){
             return null;
         }
 
@@ -155,9 +157,15 @@ public class FlashScores implements SportData {
         try {
             raw = requester.getRaw(url);
         }
-        catch (IOException | URISyntaxException | InterruptedException e){
-            log.severe(String.format("Failed to get fixtures for " + team.name + " in flashscores due to: %s",
-                    e.toString()));
+        catch (IOException | URISyntaxException e){
+            log.severe(String.format("Failed to get fixtures for " + team.name + " in flashscores."));
+            if (e instanceof HttpResponseException){
+                log.warning(String.format("Flashscores 404'd when trying to get team fixtures for %s", team.id));
+                invalid_team_ids.add(team.id);
+            }
+            else{
+                log.severe(((Exception) e).toString());
+            }
             return null;
         }
 
@@ -277,7 +285,7 @@ public class FlashScores implements SportData {
         }
 
 
-        // Load
+        // Load id json for flashscores
         JSONObject flashscores_id_json;
         try{
             flashscores_id_json = getJSONResource(football_team_ids_filename);
@@ -318,9 +326,6 @@ public class FlashScores implements SportData {
     public static String[] seperate_id(String id){
         return id.split("/");
     }
-
-
-
 
 
     public FootballEventState getFootballState(String match_id) throws InterruptedException, IOException, URISyntaxException {
@@ -531,6 +536,5 @@ public class FlashScores implements SportData {
 
 
     public static void main(String[] args){
-
     }
 }

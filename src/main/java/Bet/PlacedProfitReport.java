@@ -21,27 +21,32 @@ public class PlacedProfitReport {
     public BigDecimal min_profit;
     public BigDecimal max_profit;
     public BigDecimal profit_ratio;
-
-    public String state;
     public ProfitReport blueprint;
+
+    public State state;
+
+    public enum State {ALL_SUCCESS, ALL_FAILURES, MIX_STATES}
 
 
     public PlacedProfitReport(ArrayList<PlacedBet> placedBets, ProfitReport blueprint) {
 
         this.placedBets = placedBets;
         this.blueprint = blueprint;
-        this.state = "SUCCESS";
 
         // Sum up all investments
         // Find minimum return of all placed bets
         // Find maximum return of all placed bets
         total_investment = BigDecimal.ZERO;
+        boolean any_success = false;
+        boolean any_failures = false;
         for (PlacedBet pb: placedBets){
 
             if (!pb.state.equals(PlacedBet.SUCCESS_STATE)){
-                this.state = "FAIL";
+                any_failures = true;
                 continue;
             }
+            any_success = true;
+
 
             total_investment = total_investment.add(pb.investment);
 
@@ -52,6 +57,9 @@ public class PlacedProfitReport {
                 max_return = pb.returns;
             }
         }
+        if      (any_success && any_failures){  state = State.MIX_STATES; }
+        else if (any_success && !any_failures){ state = State.ALL_SUCCESS; }
+        else {                                  state = State.ALL_FAILURES; }
 
         min_profit = min_return.subtract(total_investment);
         max_profit = max_return.subtract(total_investment);

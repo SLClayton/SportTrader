@@ -553,7 +553,7 @@ public class Betfair extends BettingSite {
         Requester requester = new Requester();
         try {
             html = requester.getRaw("https://www.betfair.com/exchange/search", params);
-        } catch (IOException | URISyntaxException | InterruptedException e) {
+        } catch (IOException | URISyntaxException e) {
             log.warning(String.format("Could not find betfair event id for search query '%s'", query));
             return null;
         }
@@ -708,6 +708,7 @@ public class Betfair extends BettingSite {
         }
 
         // Send off request to place bets on betfair exchange
+        Instant time_sent = Instant.now();
         JSONArray response = (JSONArray) requester.post(betting_endpoint, RPCs);
 
         // Get responses and generate PlaceBet for each
@@ -729,7 +730,7 @@ public class Betfair extends BettingSite {
                 JSONObject bet_report = (JSONObject) report_obj;
 
 
-                Instant time = Instant.parse((String) bet_report.get("placedDate"));
+                Instant time_placed = Instant.parse((String) bet_report.get("placedDate"));
                 String orderStatus = (String) bet_report.get("orderStatus");
                 String status = (String) bet_report.get("status");
                 int bet_order_id = Integer.valueOf((String) ((JSONObject) bet_report.get("instruction")).get("customerOrderRef"));
@@ -760,7 +761,8 @@ public class Betfair extends BettingSite {
                             betOrder.bet_offer.match.name, returns.toString()));
 
 
-                    PlacedBet pb = new PlacedBet("SUCCESS", bet_id, betOrder, size_matched, avg_odds, returns, time);
+                    PlacedBet pb = new PlacedBet("SUCCESS", bet_id, betOrder, size_matched, avg_odds,
+                            returns, time_placed, time_sent);
                     pb.site_json_response = bet_report;
                     placedBets.add(pb);
                 }
@@ -770,7 +772,7 @@ public class Betfair extends BettingSite {
                     log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
                             String.valueOf(orderStatus), jstring(bet_report)));
 
-                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(orderStatus), time);
+                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(orderStatus), time_placed, time_sent);
                     pb.site_json_response = bet_report;
                     placedBets.add(pb);
                 }
@@ -781,7 +783,7 @@ public class Betfair extends BettingSite {
                     log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
                             String.valueOf(error), jstring(bet_report)));
 
-                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(error), time);
+                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(error), time_placed, time_sent);
                     pb.site_json_response = bet_report;
                     placedBets.add(pb);
                 }

@@ -1,13 +1,6 @@
 {
   "aliases": [
     [
-      "truro city"
-    ],
-    [
-      "barcelona",
-      "fc barcelona"
-    ],
-    [
       "maidenhead"
     ],
     [
@@ -25,10 +18,6 @@
       "avangard kursk"
     ],
     [
-      "doncaster rovers",
-      "doncaster"
-    ],
-    [
       "wolves",
       "wolverhampton wanderers"
     ],
@@ -36,22 +25,26 @@
       "union berlin"
     ],
     [
-      "optik rathenow"
-    ],
-    [
       "necaxa"
     ],
     [
-      "luch vladivostok"
+      "start"
     ],
     [
-      "shimizu"
+      "albion",
+      "albion rovers"
     ],
     [
       "oita"
     ],
     [
       "derry city"
+    ],
+    [
+      "brest"
+    ],
+    [
+      "hellas verona"
     ],
     [
       "pogon szczecin"
@@ -61,41 +54,18 @@
       "beroe stara za"
     ],
     [
-      "lugano"
-    ],
-    [
       "queens park rangers",
       "qpr"
     ],
     [
-      "burton albion",
-      "burton"
+      "armenia"
     ],
     [
-      "ipswich",
-      "ipswich town"
+      "malta"
     ],
     [
-      "man utd u23"
-    ],
-    [
-      "tamworth fc"
-    ],
-    [
-      "cimarrones de sonora"
-    ],
-    [
-      "chambly"
-    ],
-    [
-      "folkestone invicta"
-    ],
-    [
-      "notts co"
-    ],
-    [
-      "bradford city",
-      "bradford"
+      "bradford",
+      "bradford city"
     ],
     [
       "los angeles fc"
@@ -104,43 +74,23 @@
       "pachuca"
     ],
     [
-      "leyton orient"
-    ],
-    [
       "tosu"
     ],
     [
-      "reggina"
-    ],
-    [
-      "mvv maastricht",
-      "mvv"
-    ],
-    [
-      "hvidovre"
-    ],
-    [
-      "pickering town"
-    ],
-    [
-      "augsburg ii"
+      "pescara"
     ],
     [
       "basel",
       "fc basel"
     ],
     [
+      "empoli"
+    ],
+    [
+      "tromsdalen"
+    ],
+    [
       "de graafschap"
-    ],
-    [
-      "carmarthen town"
-    ],
-    [
-      "niort"
-    ],
-    [
-      "inter",
-      "internazionale"
     ],
     [
       "lille"
@@ -150,48 +100,32 @@
       "vitesse arnhem"
     ],
     [
-      "jong psv eindhoven"
-    ],
-    [
       "na hussein dey u21"
     ],
     [
-      "port vale"
+      "jong psv eindhoven"
     ],
     [
-      "thatcham town"
+      "greece"
+    ],
+    [
+      "clyde"
     ],
     [
       "leicester u23"
     ],
     [
-      "vendsyssel ff"
-    ],
-    [
       "union magdalena"
     ],
     [
-      "hamburger sv ii"
+      "union furstenwalde"
     ],
     [
       "hayes  yeading"
     ],
     [
-      "dordrecht",
-      "fc dordrecht"
-    ],
-    [
-      "chesterfield"
-    ],
-    [
-      "puszcza niepolomice",
-      "puszcza niepołomice"
-    ],
-    [
+      "aberystwyth town",
       "aberystwyth"
-    ],
-    [
-      "dunston uts"
     ],
     [
       "eastleigh"
@@ -200,49 +134,23 @@
       "ittihad khemisset"
     ],
     [
-      "rad"
-    ],
-    [
-      "leverkusen"
-    ],
-    [
       "carrarese"
     ],
     [
-      "bromley"
-    ],
-    [
-      "preston",
-      "preston north end"
-    ],
-    [
-      "rosenheim"
+      "serbia"
     ],
     [
       "nomme kalju"
-    ],
-    [
-      "msv duisburg",
-      "duisburg"
-    ],
-    [
-      "altınordu"
     ],
     [
       "dortmund",
       "borussia dortmund"
     ],
     [
-      "alemannia aachen"
-    ],
-    [
       "la equidad"
     ],
     [
-      "lazio"
-    ],
-    [
-      "padova"
+      "numancia"
     ],
     [
       "carpi"
@@ -257,17 +165,13 @@
       "cray wanderers"
     ],
     [
+      "sivasspor"
+    ],
+    [
       "como"
     ],
     [
       "caen"
-    ],
-    [
-      "coventry city",
-      "coventry"
-    ],
-    [
-      "wrexham"
     ],
     [
       "santa clara"
@@ -276,10 +180,7 @@
       "rotor volgograd"
     ],
     [
-      "young boys"
-    ],
-    [
-      "zacatepec"
+      "rsd alcala"
     ],
     [
       "olimpia elblag"
@@ -291,7 +192,7 @@
       "south shields"
     ],
     [
-      "margate"
+      "biggleswade town"
     ],
     [
       "le havre"
@@ -300,30 +201,10 @@
       "valencia"
     ],
     [
-      "botev vratsa"
-    ],
-    [
-      "deportivo pasto"
-    ],
-    [
-      "everton"
-    ],
-    [
-      "kings langley"
+      "chester"
     ],
     [
       "dundee"
-    ],
-    [
-      "huddersfield",
-      "huddersfield town"
-    ],
-    [
-      "ifk mariehamn",
-      "mariehamn"
-    ],
-    [
-      "fano"
     ],
     [
       "accrington stanley",
@@ -334,26 +215,26 @@
       "peterborough"
     ],
     [
-      "levadia tallinn"
-    ],
-    [
-      "sv ried"
+      "hyde"
     ],
     [
       "dover"
+    ],
+    [
+      "falkirk"
     ],
     [
       "twente",
       "fc twente"
     ],
     [
+      "czech republic"
+    ],
+    [
       "sholing"
     ],
     [
-      "khimki"
-    ],
-    [
-      "prescot cables"
+      "gateshead"
     ],
     [
       "wealdstone"
@@ -362,24 +243,16 @@
       "odra opole"
     ],
     [
-      "west bromwich albion",
-      "west brom"
-    ],
-    [
       "us tataouine"
     ],
     [
-      "lahti"
-    ],
-    [
-      "amed"
-    ],
-    [
-      "drogheda united",
-      "drogheda"
+      "gloucester"
     ],
     [
       "mc oran"
+    ],
+    [
+      "zrinjski"
     ],
     [
       "psg"
@@ -388,50 +261,46 @@
       "chateauroux"
     ],
     [
-      "sudtirol"
-    ],
-    [
-      "southport"
+      "concord rangers"
     ],
     [
       "cardiff",
       "cardiff city"
     ],
     [
-      "jelgava"
+      "stirling albion",
+      "stirling"
     ],
     [
-      "stuttgart",
-      "vfb stuttgart"
+      "cheshunt"
+    ],
+    [
+      "erzgebirge",
+      "erzgebirge aue"
+    ],
+    [
+      "chelmsford"
     ],
     [
       "besiktas",
       "besiktas jk"
     ],
     [
-      "porto",
-      "fc porto"
+      "sevilla b"
+    ],
+    [
+      "sport recife"
     ],
     [
       "fc eindhoven",
       "eindhoven"
     ],
     [
-      "sport recife"
-    ],
-    [
-      "forest green rovers",
-      "forest green"
-    ],
-    [
-      "ballymena"
+      "bath city"
     ],
     [
       "fc ural yekaterinburg",
       "ural"
-    ],
-    [
-      "kingstonian"
     ],
     [
       "feyenoord"
@@ -447,7 +316,8 @@
       "wycombe wanderers"
     ],
     [
-      "mjallby"
+      "ross co",
+      "ross county"
     ],
     [
       "redditch united"
@@ -456,28 +326,17 @@
       "stratford town"
     ],
     [
-      "ud alzira"
-    ],
-    [
-      "elfsborg",
-      "if elfsborg"
-    ],
-    [
       "pas giannina"
     ],
     [
-      "stoke",
-      "stoke city"
+      "karlsruher sc",
+      "karlsruhe"
     ],
     [
       "degerfors"
     ],
     [
-      "hull city",
-      "hull"
-    ],
-    [
-      "mc alger"
+      "ullensaker kisa"
     ],
     [
       "rubin kazan"
@@ -486,28 +345,14 @@
       "fc goa"
     ],
     [
-      "veria"
-    ],
-    [
-      "crewe",
-      "crewe alexandra"
+      "crewe alexandra",
+      "crewe"
     ],
     [
       "binh duong"
     ],
     [
-      "colchester united",
-      "colchester"
-    ],
-    [
       "merstham"
-    ],
-    [
-      "vasco da gama u20"
-    ],
-    [
-      "macclesfield",
-      "macclesfield town"
     ],
     [
       "fulham"
@@ -516,37 +361,22 @@
       "pontedera"
     ],
     [
-      "dunfermline"
+      "dunfermline",
+      "dunfermline athletic"
     ],
     [
       "zaglebie sosnowiec"
     ],
     [
-      "haringey borough"
-    ],
-    [
-      "scunthorpe",
-      "scunthorpe united"
-    ],
-    [
-      "liverpool"
+      "scunthorpe united",
+      "scunthorpe"
     ],
     [
       "carlisle",
       "carlisle united"
     ],
     [
-      "fk javor ivanjica"
-    ],
-    [
-      "stourbridge"
-    ],
-    [
-      "sonderjyske"
-    ],
-    [
-      "derby",
-      "derby county"
+      "southampton"
     ],
     [
       "hamburger sv"
@@ -556,120 +386,68 @@
       "cheltenham town"
     ],
     [
-      "paradou"
-    ],
-    [
       "bristol rovers"
     ],
     [
-      "renate"
-    ],
-    [
-      "sc wiener neustadt"
-    ],
-    [
-      "lyon",
-      "olympique lyonnais"
-    ],
-    [
-      "sevilla"
+      "olympique lyonnais",
+      "lyon"
     ],
     [
       "feralpisalo"
     ],
     [
+      "alcorcón",
+      "alcorcon"
+    ],
+    [
       "manchester united"
     ],
     [
-      "hannover ii"
+      "yenisey",
+      "yenisey krasnoyarsk"
     ],
     [
-      "alcorcon",
-      "alcorcón"
+      "kongsvinger il",
+      "kongsvinger"
     ],
     [
-      "yenisey krasnoyarsk",
-      "yenisey"
-    ],
-    [
-      "rigas futbola skola"
-    ],
-    [
-      "braga",
-      "sporting braga",
-      "sporting de braga"
-    ],
-    [
-      "schalke 04"
+      "larne"
     ],
     [
       "ajax"
     ],
     [
+      "extremadura ud"
+    ],
+    [
       "crvena zvezda"
     ],
     [
-      "hatta"
+      "rampla juniors"
     ],
     [
-      "stal mielec"
+      "lancaster city"
     ],
     [
-      "atletico bucaramanga"
-    ],
-    [
-      "eldense"
-    ],
-    [
-      "salzburg",
-      "red bull salzburg"
+      "coalville town"
     ],
     [
       "tsv havelse"
     ],
     [
-      "triestina"
-    ],
-    [
-      "us pianese"
-    ],
-    [
-      "partick"
-    ],
-    [
-      "aldershot town"
+      "inverness caledonian thistle"
     ],
     [
       "helmond sport"
     ],
     [
-      "yeovil"
-    ],
-    [
       "freiburg"
-    ],
-    [
-      "gubbio"
-    ],
-    [
-      "zfc meuselwitz",
-      "meuselwitz"
     ],
     [
       "glenavon"
     ],
     [
-      "vibonese"
-    ],
-    [
       "coleraine"
-    ],
-    [
-      "tas casablanca"
-    ],
-    [
-      "racing genk",
-      "genk"
     ],
     [
       "tps"
@@ -684,8 +462,8 @@
       "grasshoppers zurich"
     ],
     [
-      "slavia praha",
-      "slavia prague"
+      "slavia prague",
+      "slavia praha"
     ],
     [
       "stoke u23"
@@ -694,30 +472,25 @@
       "leiston"
     ],
     [
-      "vozdovac"
-    ],
-    [
       "arminia bielefeld"
     ],
     [
-      "sao paulo u20"
+      "radnik surdulica"
     ],
     [
-      "zadar"
-    ],
-    [
-      "robur siena"
+      "raufoss"
     ],
     [
       "royston town"
     ],
     [
-      "oldham",
-      "oldham athletic"
+      "glentoran"
     ],
     [
-      "mansfield",
-      "mansfield town"
+      "huesca"
+    ],
+    [
+      "hibernian"
     ],
     [
       "ben guerdane"
@@ -726,96 +499,62 @@
       "bristol city"
     ],
     [
+      "hastings united"
+    ],
+    [
       "esbjerg"
-    ],
-    [
-      "real sociedad"
-    ],
-    [
-      "finn harps"
     ],
     [
       "barnsley"
     ],
     [
-      "ska khabarovsk"
-    ],
-    [
       "stamford"
-    ],
-    [
-      "tulevik viljandi"
     ],
     [
       "chrobry glogow"
     ],
     [
-      "crusaders"
+      "chelsea"
     ],
     [
-      "chelsea"
+      "st johnstone"
     ],
     [
       "hjk"
     ],
     [
-      "monopoli"
-    ],
-    [
-      "viktoria berlin"
-    ],
-    [
-      "horsham fc"
-    ],
-    [
-      "ayr united",
-      "ayr"
+      "carabobo fc"
     ],
     [
       "newport county"
     ],
     [
-      "carabobo fc"
-    ],
-    [
-      "ac ajaccio",
-      "ajaccio"
-    ],
-    [
-      "halesowen town"
+      "ajaccio",
+      "ac ajaccio"
     ],
     [
       "stm sports"
     ],
     [
-      "dundee utd"
-    ],
-    [
-      "sparta rotterdam"
-    ],
-    [
-      "rieti"
-    ],
-    [
-      "az",
-      "az alkmaar"
+      "az alkmaar",
+      "az"
     ],
     [
       "corinthian casuals"
     ],
     [
-      "guimaraes",
-      "vitoria guimaraes"
+      "tuzla city"
     ],
     [
-      "afc wimbledon"
+      "vitoria guimaraes",
+      "guimaraes"
+    ],
+    [
+      "metropolitan police"
     ],
     [
       "wigan",
       "wigan athletic"
-    ],
-    [
-      "go ahead eagles"
     ],
     [
       "luton town",
@@ -831,33 +570,19 @@
       "gks jastrzebie"
     ],
     [
-      "mumbai city fc"
-    ],
-    [
       "armavir"
     ],
     [
       "sv deutz 05"
     ],
     [
-      "basaksehir",
-      "istanbul basaksehir"
-    ],
-    [
-      "manchester city",
-      "man city"
-    ],
-    [
-      "celtic"
-    ],
-    [
-      "valenciennes"
+      "stomil olsztyn"
     ],
     [
       "f91 dudelange"
     ],
     [
-      "djurgardens"
+      "maldon  tiptree"
     ],
     [
       "newry"
@@ -866,10 +591,7 @@
       "sv leobendorf"
     ],
     [
-      "berliner ak"
-    ],
-    [
-      "espanyol"
+      "york city"
     ],
     [
       "potters bar town"
@@ -882,38 +604,28 @@
       "hednesford town"
     ],
     [
-      "torpedo moskva"
-    ],
-    [
       "imolese"
     ],
     [
-      "kidderminster",
-      "kidderminster harriers"
+      "kidderminster harriers",
+      "kidderminster"
     ],
     [
-      "colne"
+      "east fife"
     ],
     [
-      "northampton",
-      "northampton town"
+      "ludogorets razgrad",
+      "ludogorets"
     ],
     [
-      "sambenedettese"
-    ],
-    [
-      "ludogorets",
-      "ludogorets razgrad"
+      "konyaspor"
     ],
     [
       "rionegro"
     ],
     [
-      "ciudad de torredonjimeno"
-    ],
-    [
-      "atlanta united fc",
-      "atlanta united"
+      "atlanta united",
+      "atlanta united fc"
     ],
     [
       "eintracht frankfurt"
@@ -921,9 +633,6 @@
     [
       "riga",
       "fk riga"
-    ],
-    [
-      "alloa athletic"
     ],
     [
       "jaguares de cordoba"
@@ -939,6 +648,9 @@
       "nec nijmegen"
     ],
     [
+      "santos laguna w"
+    ],
+    [
       "birmingham city",
       "birmingham"
     ],
@@ -946,24 +658,10 @@
       "piacenza"
     ],
     [
-      "salford city"
-    ],
-    [
-      "portsmouth"
+      "kosovo"
     ],
     [
       "nuneaton"
-    ],
-    [
-      "qarabag fk",
-      "fk qarabag",
-      "qarabag"
-    ],
-    [
-      "tijuana"
-    ],
-    [
-      "stevenage"
     ],
     [
       "watford"
@@ -972,25 +670,10 @@
       "den bosch"
     ],
     [
-      "wolfsburg ii"
+      "torquay united"
     ],
     [
       "novara"
-    ],
-    [
-      "reading"
-    ],
-    [
-      "nk radomlje"
-    ],
-    [
-      "heerenveen"
-    ],
-    [
-      "stalybridge"
-    ],
-    [
-      "flamengo u20"
     ],
     [
       "alessandria"
@@ -999,26 +682,7 @@
       "getafe"
     ],
     [
-      "misr el makasa"
-    ],
-    [
-      "exeter city",
-      "exeter"
-    ],
-    [
       "bordj bou arreridj"
-    ],
-    [
-      "cesena"
-    ],
-    [
-      "juventus"
-    ],
-    [
-      "east thurrock"
-    ],
-    [
-      "hifk"
     ],
     [
       "marlow"
@@ -1030,29 +694,20 @@
       "giana erminio"
     ],
     [
-      "lokomotiv moscow",
-      "lokomotiv"
-    ],
-    [
       "aurora"
     ],
     [
-      "trabzonspor"
-    ],
-    [
-      "rakow czestochowa"
-    ],
-    [
-      "shanghai shenhua"
-    ],
-    [
-      "monagas"
+      "spain"
     ],
     [
       "fk spartak"
     ],
     [
-      "standard"
+      "monagas"
+    ],
+    [
+      "mirandes",
+      "mirandés"
     ],
     [
       "real madrid"
@@ -1061,25 +716,24 @@
       "puebla"
     ],
     [
-      "astana",
-      "fc astana"
+      "znicz pruszkow"
     ],
     [
-      "znicz pruszkow"
+      "astana",
+      "fc astana"
     ],
     [
       "the strongest"
     ],
     [
-      "parana",
-      "paraná"
+      "paraná",
+      "parana"
     ],
     [
       "bisceglie"
     ],
     [
-      "plymouth",
-      "plymouth argyle"
+      "airdrieonians"
     ],
     [
       "paris fc"
@@ -1091,38 +745,10 @@
       "syrianska fc"
     ],
     [
-      "crawley town"
+      "nantwich town"
     ],
     [
-      "barnet"
-    ],
-    [
-      "fluminense u20"
-    ],
-    [
-      "kristianstad"
-    ],
-    [
-      "stade rennais",
-      "rennes"
-    ],
-    [
-      "mc alger u21"
-    ],
-    [
-      "sv breinig"
-    ],
-    [
-      "emmen",
-      "fc emmen"
-    ],
-    [
-      "galatasaray sk",
-      "galatasaray"
-    ],
-    [
-      "blackburn",
-      "blackburn rovers"
+      "braunschweig"
     ],
     [
       "norwich city",
@@ -1132,21 +758,11 @@
       "seattle sounders"
     ],
     [
-      "lechia gdansk"
-    ],
-    [
-      "sheff utd u23"
-    ],
-    [
-      "fc københavn",
-      "copenhagen"
-    ],
-    [
       "leicester",
       "leicester city"
     ],
     [
-      "fremad amager"
+      "strasbourg"
     ],
     [
       "sunderland"
@@ -1158,28 +774,31 @@
       "vejle"
     ],
     [
-      "guabira"
+      "chennaiyin fc"
     ],
     [
       "fk proleter"
     ],
     [
-      "chennaiyin fc"
-    ],
-    [
       "fk napredak"
     ],
     [
-      "bognor regis"
+      "sogndal"
     ],
     [
       "aik"
     ],
     [
+      "bognor regis"
+    ],
+    [
       "auxerre"
     ],
     [
-      "linfield"
+      "boston united"
+    ],
+    [
+      "lugo"
     ],
     [
       "kashima"
@@ -1188,28 +807,14 @@
       "thanh hoa"
     ],
     [
-      "aurora pro patria 1919"
-    ],
-    [
-      "potenza"
-    ],
-    [
-      "clermont foot",
-      "clermont"
-    ],
-    [
       "milton keynes dons",
       "mk dons"
     ],
     [
-      "grimsby town",
-      "grimsby"
+      "brondby"
     ],
     [
       "poole town"
-    ],
-    [
-      "brondby"
     ],
     [
       "wolfsberger ac"
@@ -1218,26 +823,22 @@
       "rodez"
     ],
     [
+      "dumbarton"
+    ],
+    [
       "neftekhimik"
+    ],
+    [
+      "alfreton town"
     ],
     [
       "blackfield  langley"
     ],
     [
-      "werder bremen ii"
-    ],
-    [
       "jong az alkmaar"
     ],
     [
-      "leeds united",
-      "leeds"
-    ],
-    [
-      "monastir"
-    ],
-    [
-      "west ham u23"
+      "fc mauerwerk"
     ],
     [
       "zamora fc"
@@ -1253,14 +854,10 @@
       "mladost lucani"
     ],
     [
-      "borussia dortmund ii",
-      "dortmund ii"
-    ],
-    [
       "nam dinh"
     ],
     [
-      "st ives town"
+      "maidstone united"
     ],
     [
       "juventus b"
@@ -1269,7 +866,8 @@
       "kofu"
     ],
     [
-      "pistoiese"
+      "oviedo",
+      "real oviedo"
     ],
     [
       "chayka"
@@ -1278,35 +876,10 @@
       "dinamo zagreb"
     ],
     [
-      "fc volendam"
+      "guadalajara w"
     ],
     [
-      "charlton",
-      "charlton athletic"
-    ],
-    [
-      "newtown"
-    ],
-    [
-      "real salt lake"
-    ],
-    [
-      "nk celje"
-    ],
-    [
-      "blackpool"
-    ],
-    [
-      "gent"
-    ],
-    [
-      "rio ave"
-    ],
-    [
-      "swindon supermarine"
-    ],
-    [
-      "paok"
+      "preussen munster"
     ],
     [
       "ofi"
@@ -1319,60 +892,49 @@
       "puerto cabello"
     ],
     [
-      "st pauli ii"
+      "granada"
     ],
     [
       "sheff wed",
       "sheffield wednesday"
     ],
     [
+      "portugal"
+    ],
+    [
+      "the new saints"
+    ],
+    [
       "philadelphia union"
     ],
     [
-      "asteras tripolis"
-    ],
-    [
-      "eupen"
-    ],
-    [
-      "rizespor"
+      "cercle brugge"
     ],
     [
       "shakhtar",
       "shakhtar donetsk"
     ],
     [
-      "gillingham"
+      "western united"
     ],
     [
       "orgryte"
     ],
     [
-      "bodø  glimt",
-      "bodo glimt"
-    ],
-    [
-      "pro vercelli"
-    ],
-    [
-      "benfica"
+      "crystal palace"
     ],
     [
       "lincoln",
       "lincoln city"
     ],
     [
-      "middlesbrough"
-    ],
-    [
       "racing santander"
     ],
     [
-      "saarbrucken"
+      "warrington town"
     ],
     [
-      "grenoble foot 38",
-      "grenoble"
+      "botafogo"
     ],
     [
       "cambridge utd",
@@ -1392,18 +954,10 @@
       "orleans"
     ],
     [
-      "tranmere rovers",
-      "tranmere"
-    ],
-    [
-      "tottenham hotspur",
-      "tottenham"
-    ],
-    [
       "mineros de zacatecas"
     ],
     [
-      "ifk goteborg"
+      "witton albion"
     ],
     [
       "sochaux"
@@ -1412,14 +966,7 @@
       "st polten"
     ],
     [
-      "buchbach"
-    ],
-    [
       "sportive de tunis"
-    ],
-    [
-      "hoffenheim",
-      "1899 hoffenheim"
     ],
     [
       "farsley celtic"
@@ -1428,29 +975,27 @@
       "salisbury city"
     ],
     [
-      "cavese"
+      "guingamp",
+      "en avant guingamp"
     ],
     [
-      "en avant guingamp",
-      "guingamp"
+      "sheff utd",
+      "sheffield united"
     ],
     [
       "osijek"
     ],
     [
-      "lens"
+      "ssv jeddeloh"
     ],
     [
-      "antalyaspor"
+      "kings lynn"
     ],
     [
       "dundela"
     ],
     [
-      "nancy"
-    ],
-    [
-      "bologna"
+      "antalyaspor"
     ],
     [
       "morecambe"
@@ -1459,11 +1004,8 @@
       "gremio"
     ],
     [
-      "verl"
-    ],
-    [
-      "krasnodar",
-      "fk krasnodar"
+      "fk krasnodar",
+      "krasnodar"
     ],
     [
       "atletico madrid"
@@ -1472,11 +1014,8 @@
       "kobe"
     ],
     [
-      "malmö ff",
-      "malmo ff"
-    ],
-    [
-      "skive"
+      "malmo ff",
+      "malmö ff"
     ],
     [
       "viktoria arnoldsweiler"
@@ -1485,25 +1024,25 @@
       "southampton u23"
     ],
     [
+      "solihull moors"
+    ],
+    [
+      "cowdenbeath"
+    ],
+    [
       "nacional potosi"
     ],
     [
       "catania"
     ],
     [
-      "enfield town"
+      "ca puerto nuevo"
     ],
     [
       "new york city"
     ],
     [
-      "raja beni mellal"
-    ],
-    [
       "brann"
-    ],
-    [
-      "woking"
     ],
     [
       "shrewsbury town",
@@ -1522,25 +1061,12 @@
       "le mans"
     ],
     [
-      "partizan",
-      "fk partizan"
-    ],
-    [
-      "rb leipzig"
+      "fk partizan",
+      "partizan"
     ],
     [
       "warta poznan",
       "warta poznań"
-    ],
-    [
-      "zenit",
-      "zenit st petersburg"
-    ],
-    [
-      "napoli"
-    ],
-    [
-      "stockport county"
     ],
     [
       "dynamo kyiv"
@@ -1552,26 +1078,24 @@
       "wacker nordhausen"
     ],
     [
-      "lamia"
-    ],
-    [
       "edinburgh city"
-    ],
-    [
-      "flamengo"
-    ],
-    [
-      "wadi degla"
-    ],
-    [
-      "brentford"
     ],
     [
       "kerala blasters fc"
     ],
     [
-      "warrenpoint town",
-      "warrenpoint"
+      "brentford"
+    ],
+    [
+      "mainz 05",
+      "mainz"
+    ],
+    [
+      "hamilton",
+      "hamilton academical"
+    ],
+    [
+      "dorking wanderers"
     ],
     [
       "soroksar"
@@ -1580,31 +1104,16 @@
       "cfr cluj"
     ],
     [
-      "rotherham",
-      "rotherham united"
-    ],
-    [
       "walsall"
     ],
     [
       "club brugge"
     ],
     [
-      "hiroshima",
-      "sanfrecce hiroshima"
+      "norway"
     ],
     [
-      "usm alger"
-    ],
-    [
-      "psv eindhoven",
-      "psv"
-    ],
-    [
-      "hapoel katamon"
-    ],
-    [
-      "crewe alexandra u23"
+      "farense"
     ],
     [
       "landskrona"
@@ -1619,55 +1128,59 @@
       "etoile sportive sahel"
     ],
     [
-      "tammeka tartu"
+      "bowers  pitsea"
     ],
     [
       "fc vaduz"
     ],
     [
-      "kidsgrove athletic"
-    ],
-    [
       "ferencvaros"
-    ],
-    [
-      "boreham wood"
     ],
     [
       "paganese"
     ],
     [
-      "wigry suwalki"
-    ],
-    [
-      "raja casablanca"
+      "mickleover sports"
     ],
     [
       "arezzo"
     ],
     [
-      "hornchurch"
+      "fc oss"
     ],
     [
-      "fc oss"
+      "aberdeen"
     ],
     [
       "hereford"
     ],
     [
-      "rochdale"
+      "bradford pa"
     ],
     [
       "stenhousemuir"
     ],
     [
+      "lubeck"
+    ],
+    [
       "midtjylland"
+    ],
+    [
+      "slaven belupo"
+    ],
+    [
+      "gainsborough"
     ],
     [
       "antequera cf"
     ],
     [
-      "gainsborough"
+      "brechin city"
+    ],
+    [
+      "sandefjord fotball",
+      "sandefjord"
     ],
     [
       "millwall"
@@ -1676,13 +1189,14 @@
       "fleetwood town"
     ],
     [
-      "telstar"
+      "annan athletic",
+      "annan"
     ],
     [
       "wolfsburg"
     ],
     [
-      "sv oberachern"
+      "darlington"
     ],
     [
       "nottingham forest",
@@ -1695,36 +1209,14 @@
       "chongqing lifan"
     ],
     [
-      "fc nottingen"
-    ],
-    [
-      "urawa",
-      "urawa red diamonds"
-    ],
-    [
-      "dorchester"
+      "urawa red diamonds",
+      "urawa"
     ],
     [
       "fortuna koln ii"
     ],
     [
       "tus haltern"
-    ],
-    [
-      "sai gon"
-    ],
-    [
-      "swindon town",
-      "swindon"
-    ],
-    [
-      "casertana"
-    ],
-    [
-      "fc memmingen"
-    ],
-    [
-      "viterbese"
     ],
     [
       "az picerno asd"
@@ -1743,13 +1235,1223 @@
       "lask"
     ],
     [
-      "apoel"
-    ],
-    [
       "gyirmot"
     ],
     [
       "na hussein dey"
+    ],
+    [
+      "raith rovers",
+      "raith"
+    ],
+    [
+      "sandnes ulf"
+    ],
+    [
+      "truro city"
+    ],
+    [
+      "barcelona",
+      "fc barcelona"
+    ],
+    [
+      "queen of the south",
+      "queen of south"
+    ],
+    [
+      "miedz legnica"
+    ],
+    [
+      "doncaster rovers",
+      "doncaster"
+    ],
+    [
+      "optik rathenow"
+    ],
+    [
+      "pachuca w"
+    ],
+    [
+      "luch vladivostok"
+    ],
+    [
+      "shimizu"
+    ],
+    [
+      "hearts"
+    ],
+    [
+      "lugano"
+    ],
+    [
+      "paderborn"
+    ],
+    [
+      "burton",
+      "burton albion"
+    ],
+    [
+      "wales w"
+    ],
+    [
+      "ipswich",
+      "ipswich town"
+    ],
+    [
+      "man utd u23"
+    ],
+    [
+      "tamworth fc"
+    ],
+    [
+      "chambly"
+    ],
+    [
+      "cimarrones de sonora"
+    ],
+    [
+      "folkestone invicta"
+    ],
+    [
+      "notts co"
+    ],
+    [
+      "leyton orient"
+    ],
+    [
+      "reggina"
+    ],
+    [
+      "mvv maastricht",
+      "mvv"
+    ],
+    [
+      "hvidovre"
+    ],
+    [
+      "pickering town"
+    ],
+    [
+      "augsburg"
+    ],
+    [
+      "augsburg ii"
+    ],
+    [
+      "ad union adarve"
+    ],
+    [
+      "merida"
+    ],
+    [
+      "carmarthen town"
+    ],
+    [
+      "niort"
+    ],
+    [
+      "inter",
+      "internazionale"
+    ],
+    [
+      "port vale"
+    ],
+    [
+      "bełchatów"
+    ],
+    [
+      "thatcham town"
+    ],
+    [
+      "afc fylde"
+    ],
+    [
+      "faroe islands"
+    ],
+    [
+      "vendsyssel ff"
+    ],
+    [
+      "cottbus"
+    ],
+    [
+      "hamburger sv ii"
+    ],
+    [
+      "dordrecht",
+      "fc dordrecht"
+    ],
+    [
+      "avai"
+    ],
+    [
+      "chesterfield"
+    ],
+    [
+      "puszcza niepolomice",
+      "puszcza niepołomice"
+    ],
+    [
+      "dunston uts"
+    ],
+    [
+      "harrow borough fc"
+    ],
+    [
+      "rad"
+    ],
+    [
+      "n ireland w"
+    ],
+    [
+      "albacete balompié"
+    ],
+    [
+      "leverkusen"
+    ],
+    [
+      "brazil"
+    ],
+    [
+      "scotland"
+    ],
+    [
+      "bromley"
+    ],
+    [
+      "varazdin"
+    ],
+    [
+      "montrose"
+    ],
+    [
+      "preston",
+      "preston north end"
+    ],
+    [
+      "metz"
+    ],
+    [
+      "rosenheim"
+    ],
+    [
+      "msv duisburg",
+      "duisburg"
+    ],
+    [
+      "cliftonville"
+    ],
+    [
+      "altınordu"
+    ],
+    [
+      "alemannia aachen"
+    ],
+    [
+      "lazio"
+    ],
+    [
+      "padova"
+    ],
+    [
+      "stafford rangers"
+    ],
+    [
+      "chippenham town",
+      "chippenham"
+    ],
+    [
+      "coventry city",
+      "coventry"
+    ],
+    [
+      "wrexham"
+    ],
+    [
+      "carrick rangers"
+    ],
+    [
+      "young boys"
+    ],
+    [
+      "zacatepec"
+    ],
+    [
+      "cuiaba"
+    ],
+    [
+      "defensores de belgrano"
+    ],
+    [
+      "margate"
+    ],
+    [
+      "skeid"
+    ],
+    [
+      "botev vratsa"
+    ],
+    [
+      "chemie leipzig"
+    ],
+    [
+      "deportivo pasto"
+    ],
+    [
+      "everton"
+    ],
+    [
+      "kings langley"
+    ],
+    [
+      "burnley"
+    ],
+    [
+      "ifk mariehamn",
+      "mariehamn"
+    ],
+    [
+      "sweden"
+    ],
+    [
+      "huddersfield town",
+      "huddersfield"
+    ],
+    [
+      "fano"
+    ],
+    [
+      "levadia tallinn"
+    ],
+    [
+      "sv ried"
+    ],
+    [
+      "deportivo santani"
+    ],
+    [
+      "khimki"
+    ],
+    [
+      "prescot cables"
+    ],
+    [
+      "west brom",
+      "west bromwich albion"
+    ],
+    [
+      "lahti"
+    ],
+    [
+      "amed"
+    ],
+    [
+      "drogheda united",
+      "drogheda"
+    ],
+    [
+      "lithuania"
+    ],
+    [
+      "whitehawk"
+    ],
+    [
+      "sudtirol"
+    ],
+    [
+      "deportivo riestra"
+    ],
+    [
+      "southport"
+    ],
+    [
+      "jelgava"
+    ],
+    [
+      "stuttgart",
+      "vfb stuttgart"
+    ],
+    [
+      "fc porto",
+      "porto"
+    ],
+    [
+      "forest green rovers",
+      "forest green"
+    ],
+    [
+      "ballymena"
+    ],
+    [
+      "kingstonian"
+    ],
+    [
+      "leandro n alem"
+    ],
+    [
+      "mjallby"
+    ],
+    [
+      "ud alzira"
+    ],
+    [
+      "if elfsborg",
+      "elfsborg"
+    ],
+    [
+      "stoke",
+      "stoke city"
+    ],
+    [
+      "hull",
+      "hull city"
+    ],
+    [
+      "alvechurch"
+    ],
+    [
+      "mc alger"
+    ],
+    [
+      "veria"
+    ],
+    [
+      "colchester united",
+      "colchester"
+    ],
+    [
+      "vasco da gama u20"
+    ],
+    [
+      "macclesfield",
+      "macclesfield town"
+    ],
+    [
+      "haringey borough"
+    ],
+    [
+      "liverpool"
+    ],
+    [
+      "argentina"
+    ],
+    [
+      "fk javor ivanjica"
+    ],
+    [
+      "stourbridge"
+    ],
+    [
+      "jerv"
+    ],
+    [
+      "derby county",
+      "derby"
+    ],
+    [
+      "sonderjyske"
+    ],
+    [
+      "olimpia"
+    ],
+    [
+      "dungannon swifts"
+    ],
+    [
+      "paradou"
+    ],
+    [
+      "renate"
+    ],
+    [
+      "sc wiener neustadt"
+    ],
+    [
+      "sevilla"
+    ],
+    [
+      "peterhead"
+    ],
+    [
+      "hannover ii"
+    ],
+    [
+      "rigas futbola skola"
+    ],
+    [
+      "sporting braga",
+      "sporting de braga",
+      "braga"
+    ],
+    [
+      "schalke 04"
+    ],
+    [
+      "cadiz b"
+    ],
+    [
+      "hatta"
+    ],
+    [
+      "stal mielec"
+    ],
+    [
+      "eldense"
+    ],
+    [
+      "atletico bucaramanga"
+    ],
+    [
+      "salzburg",
+      "red bull salzburg"
+    ],
+    [
+      "triestina"
+    ],
+    [
+      "us pianese"
+    ],
+    [
+      "partick",
+      "partick thistle"
+    ],
+    [
+      "aldershot town"
+    ],
+    [
+      "academica"
+    ],
+    [
+      "yeovil"
+    ],
+    [
+      "gubbio"
+    ],
+    [
+      "zfc meuselwitz",
+      "meuselwitz"
+    ],
+    [
+      "deportivo la coruña"
+    ],
+    [
+      "vibonese"
+    ],
+    [
+      "tas casablanca"
+    ],
+    [
+      "moldova"
+    ],
+    [
+      "racing genk",
+      "genk"
+    ],
+    [
+      "billericay town"
+    ],
+    [
+      "vozdovac"
+    ],
+    [
+      "sao paulo u20"
+    ],
+    [
+      "zadar"
+    ],
+    [
+      "telford"
+    ],
+    [
+      "dijon"
+    ],
+    [
+      "robur siena"
+    ],
+    [
+      "kettering"
+    ],
+    [
+      "oldham athletic",
+      "oldham"
+    ],
+    [
+      "mansfield",
+      "mansfield town"
+    ],
+    [
+      "agropecuario"
+    ],
+    [
+      "fortuna dusseldorf"
+    ],
+    [
+      "rushall olympic"
+    ],
+    [
+      "real sociedad"
+    ],
+    [
+      "finn harps"
+    ],
+    [
+      "andorra"
+    ],
+    [
+      "ska khabarovsk"
+    ],
+    [
+      "tulevik viljandi"
+    ],
+    [
+      "crusaders"
+    ],
+    [
+      "ca lugano"
+    ],
+    [
+      "monopoli"
+    ],
+    [
+      "viktoria berlin"
+    ],
+    [
+      "ayr",
+      "ayr united"
+    ],
+    [
+      "horsham fc"
+    ],
+    [
+      "halesowen town"
+    ],
+    [
+      "dundee utd"
+    ],
+    [
+      "sparta rotterdam"
+    ],
+    [
+      "denmark"
+    ],
+    [
+      "rieti"
+    ],
+    [
+      "team wiener linien"
+    ],
+    [
+      "eibar",
+      "sd eibar"
+    ],
+    [
+      "afc wimbledon"
+    ],
+    [
+      "go ahead eagles"
+    ],
+    [
+      "mumbai city fc"
+    ],
+    [
+      "basaksehir",
+      "istanbul basaksehir"
+    ],
+    [
+      "manchester city",
+      "man city"
+    ],
+    [
+      "celtic"
+    ],
+    [
+      "valenciennes"
+    ],
+    [
+      "djurgardens"
+    ],
+    [
+      "kilmarnock"
+    ],
+    [
+      "kfum oslo"
+    ],
+    [
+      "carshalton athletic"
+    ],
+    [
+      "berliner ak"
+    ],
+    [
+      "espanyol"
+    ],
+    [
+      "haugesund"
+    ],
+    [
+      "cove rangers"
+    ],
+    [
+      "torpedo moskva"
+    ],
+    [
+      "colne"
+    ],
+    [
+      "northampton town",
+      "northampton"
+    ],
+    [
+      "sambenedettese"
+    ],
+    [
+      "switzerland"
+    ],
+    [
+      "morton",
+      "greenock morton"
+    ],
+    [
+      "ciudad de torredonjimeno"
+    ],
+    [
+      "alloa athletic",
+      "alloa"
+    ],
+    [
+      "west ham",
+      "west ham united"
+    ],
+    [
+      "salford city"
+    ],
+    [
+      "portsmouth"
+    ],
+    [
+      "qarabag",
+      "qarabag fk",
+      "fk qarabag"
+    ],
+    [
+      "tijuana"
+    ],
+    [
+      "montenegro"
+    ],
+    [
+      "stevenage"
+    ],
+    [
+      "wolfsburg ii"
+    ],
+    [
+      "gibraltar"
+    ],
+    [
+      "reading"
+    ],
+    [
+      "eastbourne"
+    ],
+    [
+      "altrincham"
+    ],
+    [
+      "nk radomlje"
+    ],
+    [
+      "heerenveen"
+    ],
+    [
+      "stalybridge"
+    ],
+    [
+      "flamengo u20"
+    ],
+    [
+      "misr el makasa"
+    ],
+    [
+      "exeter city",
+      "exeter"
+    ],
+    [
+      "cesena"
+    ],
+    [
+      "juventus"
+    ],
+    [
+      "east thurrock"
+    ],
+    [
+      "hifk"
+    ],
+    [
+      "lokomotiv moscow",
+      "lokomotiv"
+    ],
+    [
+      "trabzonspor"
+    ],
+    [
+      "cukaricki"
+    ],
+    [
+      "rakow czestochowa"
+    ],
+    [
+      "shanghai shenhua"
+    ],
+    [
+      "don benito"
+    ],
+    [
+      "stranraer"
+    ],
+    [
+      "georgia"
+    ],
+    [
+      "standard"
+    ],
+    [
+      "plymouth",
+      "plymouth argyle"
+    ],
+    [
+      "crawley town"
+    ],
+    [
+      "barnet"
+    ],
+    [
+      "newcastle jets"
+    ],
+    [
+      "strommen"
+    ],
+    [
+      "fluminense u20"
+    ],
+    [
+      "kristianstad"
+    ],
+    [
+      "mc alger u21"
+    ],
+    [
+      "stade rennais",
+      "rennes"
+    ],
+    [
+      "oxford city"
+    ],
+    [
+      "sv breinig"
+    ],
+    [
+      "fc emmen",
+      "emmen"
+    ],
+    [
+      "galatasaray sk",
+      "galatasaray"
+    ],
+    [
+      "blackburn rovers",
+      "blackburn"
+    ],
+    [
+      "lechia gdansk"
+    ],
+    [
+      "sheff utd u23"
+    ],
+    [
+      "fc københavn",
+      "copenhagen"
+    ],
+    [
+      "fremad amager"
+    ],
+    [
+      "guabira"
+    ],
+    [
+      "albania"
+    ],
+    [
+      "newcastle"
+    ],
+    [
+      "linfield"
+    ],
+    [
+      "aurora pro patria 1919"
+    ],
+    [
+      "bournemouth"
+    ],
+    [
+      "hemel hempstead"
+    ],
+    [
+      "liechtenstein"
+    ],
+    [
+      "potenza"
+    ],
+    [
+      "clermont foot",
+      "clermont"
+    ],
+    [
+      "aalesunds fk",
+      "aalesunds"
+    ],
+    [
+      "grimsby",
+      "grimsby town"
+    ],
+    [
+      "werder bremen ii"
+    ],
+    [
+      "union de salamanca"
+    ],
+    [
+      "leeds united",
+      "leeds"
+    ],
+    [
+      "monastir"
+    ],
+    [
+      "west ham u23"
+    ],
+    [
+      "dortmund ii",
+      "borussia dortmund ii"
+    ],
+    [
+      "st ives town"
+    ],
+    [
+      "pistoiese"
+    ],
+    [
+      "fc volendam"
+    ],
+    [
+      "real union"
+    ],
+    [
+      "newtown"
+    ],
+    [
+      "charlton",
+      "charlton athletic"
+    ],
+    [
+      "st mirren"
+    ],
+    [
+      "nk celje"
+    ],
+    [
+      "real salt lake"
+    ],
+    [
+      "blackpool"
+    ],
+    [
+      "gent"
+    ],
+    [
+      "rio ave"
+    ],
+    [
+      "swindon supermarine"
+    ],
+    [
+      "paok"
+    ],
+    [
+      "chojniczanka chojnice"
+    ],
+    [
+      "st pauli ii"
+    ],
+    [
+      "asteras tripolis"
+    ],
+    [
+      "eupen"
+    ],
+    [
+      "rizespor"
+    ],
+    [
+      "monaco"
+    ],
+    [
+      "gillingham"
+    ],
+    [
+      "luxembourg"
+    ],
+    [
+      "sint truiden"
+    ],
+    [
+      "bodø  glimt",
+      "bodo glimt"
+    ],
+    [
+      "pro vercelli"
+    ],
+    [
+      "benfica"
+    ],
+    [
+      "middlesbrough"
+    ],
+    [
+      "braintree"
+    ],
+    [
+      "saarbrucken"
+    ],
+    [
+      "grenoble foot 38",
+      "grenoble"
+    ],
+    [
+      "tranmere rovers",
+      "tranmere"
+    ],
+    [
+      "tottenham hotspur",
+      "tottenham"
+    ],
+    [
+      "ifk goteborg"
+    ],
+    [
+      "altglienicke"
+    ],
+    [
+      "buchbach"
+    ],
+    [
+      "hoffenheim",
+      "1899 hoffenheim"
+    ],
+    [
+      "cavese"
+    ],
+    [
+      "curzon ashton"
+    ],
+    [
+      "lens"
+    ],
+    [
+      "nancy"
+    ],
+    [
+      "bologna"
+    ],
+    [
+      "cyprus"
+    ],
+    [
+      "verl"
+    ],
+    [
+      "skive"
+    ],
+    [
+      "enfield town"
+    ],
+    [
+      "forfar",
+      "forfar athletic"
+    ],
+    [
+      "raja beni mellal"
+    ],
+    [
+      "viking fk"
+    ],
+    [
+      "hertha berlin ii"
+    ],
+    [
+      "woking"
+    ],
+    [
+      "guiseley"
+    ],
+    [
+      "sporting gijon"
+    ],
+    [
+      "rb leipzig"
+    ],
+    [
+      "zenit",
+      "zenit st petersburg"
+    ],
+    [
+      "elgin",
+      "elgin city"
+    ],
+    [
+      "napoli"
+    ],
+    [
+      "stockport county"
+    ],
+    [
+      "england"
+    ],
+    [
+      "lamia"
+    ],
+    [
+      "flamengo"
+    ],
+    [
+      "wadi degla"
+    ],
+    [
+      "france"
+    ],
+    [
+      "lowestoft town"
+    ],
+    [
+      "warrenpoint town",
+      "warrenpoint"
+    ],
+    [
+      "las palmas",
+      "ud las palmas"
+    ],
+    [
+      "chorley"
+    ],
+    [
+      "rotherham united",
+      "rotherham"
+    ],
+    [
+      "america mg"
+    ],
+    [
+      "sanfrecce hiroshima",
+      "hiroshima"
+    ],
+    [
+      "usm alger"
+    ],
+    [
+      "spennymoor town"
+    ],
+    [
+      "plaza colonia"
+    ],
+    [
+      "psv",
+      "psv eindhoven"
+    ],
+    [
+      "hapoel katamon"
+    ],
+    [
+      "crewe alexandra u23"
+    ],
+    [
+      "institute"
+    ],
+    [
+      "notodden fk"
+    ],
+    [
+      "tammeka tartu"
+    ],
+    [
+      "kidsgrove athletic"
+    ],
+    [
+      "boreham wood"
+    ],
+    [
+      "argentino de merlo"
+    ],
+    [
+      "wigry suwalki"
+    ],
+    [
+      "raja casablanca"
+    ],
+    [
+      "hornchurch"
+    ],
+    [
+      "rochdale"
+    ],
+    [
+      "nimes"
+    ],
+    [
+      "romania"
+    ],
+    [
+      "ferro carril oeste"
+    ],
+    [
+      "telstar"
+    ],
+    [
+      "sv oberachern"
+    ],
+    [
+      "finland"
+    ],
+    [
+      "bamber bridge"
+    ],
+    [
+      "fc nottingen"
+    ],
+    [
+      "dorchester"
+    ],
+    [
+      "sai gon"
+    ],
+    [
+      "swindon town",
+      "swindon"
+    ],
+    [
+      "casertana"
+    ],
+    [
+      "fc memmingen"
+    ],
+    [
+      "viterbese"
+    ],
+    [
+      "apoel"
+    ],
+    [
+      "toluca w"
     ],
     [
       "almere city"

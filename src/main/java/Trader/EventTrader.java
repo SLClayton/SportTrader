@@ -60,7 +60,7 @@ public class EventTrader implements Runnable {
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<BetGroup> tautologies;
 
-    public Set<String> sites_used_last;
+    public Set<String> last_sites_used;
     public BigDecimal best_profit_last;
 
     public EventTrader(SportsTrader sportsTrader, FootballMatch match, Map<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
@@ -81,6 +81,7 @@ public class EventTrader implements Runnable {
         RUN_STATS = sportsTrader.RUN_STATS;
 
         stats = sportsTrader.stats;
+        last_sites_used = new HashSet<>();
     }
 
 
@@ -145,22 +146,18 @@ public class EventTrader implements Runnable {
             marketOddsReportWorkers.add(morw);
         }
         
-        // Check for arbs, and update event constantly
-        Map<String, Integer> count_sites_used = new HashMap<>();
-        for (String site_name: siteEventTrackers.keySet()){
-            count_sites_used.put(site_name, 0);
-        }
+        // Check for Arbs
         Instant wait_until = null;
         ArrayList<Long> loop_times = new ArrayList<>();
+        ArrayList<String> sites_used_during_check = new ArrayList<>();
         BigDecimal best_profit = null;
         int loops_per_check = 100;
         for (long i=0; !sportsTrader.exit_flag; i++){
             try {
+
                 // RATE LIMITER: Sleeps until minimum wait period between calls is done.
-                Instant now = Instant.now();
-                if (wait_until != null && now.isBefore(wait_until)){
-                    long time_to_wait = wait_until.toEpochMilli() - now.toEpochMilli();
-                    Thread.sleep(time_to_wait);
+                if (wait_until != null && Instant.now().isBefore(wait_until)){
+                    Thread.sleep(wait_until.toEpochMilli() - Instant.now().toEpochMilli());
                 }
                 wait_until = Instant.now().plus(sportsTrader.RATE_LIMIT, ChronoUnit.MILLIS);
 
@@ -170,14 +167,16 @@ public class EventTrader implements Runnable {
                 checkArbs();
                 loop_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
 
-
-                if (best_profit_last != null) {
-                    if (best_profit == null) {
-                        best_profit = best_profit_last;
-                    } else {
-                        best_profit.max(best_profit_last);
-                    }
+                // Update best profit found in check interval
+                if (best_profit_last != null && best_profit != null) {
+                    best_profit = best_profit.max(best_profit_last);
                 }
+                else if (best_profit_last != null){
+                    best_profit = best_profit_last;
+                }
+
+                // Update sites used during check interval
+                sites_used_during_check.addAll(last_sites_used);
 
                 // Calculate the timing metrics over past timings
                 if (loop_times.size() >= loops_per_check){
@@ -185,14 +184,13 @@ public class EventTrader implements Runnable {
                     for (long arb_time: loop_times){ avg_ms += arb_time; }
                     avg_ms = avg_ms / loop_times.size();
                     log.info(String.format("%s Arb Checks: avg=%dms %s best: %s",
-                            loops_per_check, avg_ms, count_sites_used.toString(),
+                            loops_per_check, avg_ms,
+                            count_sites_used(sites.keySet(), sites_used_during_check).toString(),
                             String.valueOf(best_profit)));
 
                     loop_times.clear();
+                    sites_used_during_check.clear();
                     best_profit = null;
-                    for (String site_name: siteEventTrackers.keySet()){
-                        count_sites_used.put(site_name, 0);
-                    }
                 }
 
             } catch (InterruptedException e) {
@@ -200,6 +198,16 @@ public class EventTrader implements Runnable {
             }
         }
     }
+
+
+    public Map<String, Integer> count_sites_used(Set<String> possible_sites, Collection<String> used){
+        Map<String, Integer> count = new HashMap<>();
+        for (String site_name: possible_sites){
+            count.put(site_name, Collections.frequency(used, site_name));
+        }
+        return count;
+    }
+
 
 
     public String id(){
@@ -251,10 +259,7 @@ public class EventTrader implements Runnable {
                 SiteEventTracker set = siteEventTrackers.get(site_name);
 
                 try {
-                    set.marketOddsReportTime = null;
-                    Instant start = Instant.now();
                     MarketOddsReport mor = set.getMarketOddsReport(footballBetGenerator.getAllBets());
-                    set.marketOddsReportTime = Instant.now().toEpochMilli() - start.toEpochMilli();
                     requestHandler.setResponse(mor);
                 }
                 catch (InterruptedException e){
@@ -283,8 +288,9 @@ public class EventTrader implements Runnable {
         }
 
         // Wait for results to be generated in each thread and collect them all
-        // Use null if timout occurs for any site
+        // Use null if time-out occurs for any site
         ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
+        last_sites_used.clear();
         Instant timeout = Instant.now().plus(REQUEST_TIMEOUT, ChronoUnit.MILLIS);
         for (RequestHandler rh: requestHandlers){
             String site_name = (String) rh.request;
@@ -300,6 +306,7 @@ public class EventTrader implements Runnable {
 
             if (mor != null) {
                 marketOddsReports.add(mor);
+                last_sites_used.add(site_name);
             }
         }
 
@@ -329,7 +336,6 @@ public class EventTrader implements Runnable {
         if (in_profit.size() > 0){
             profitFound(in_profit);
         }
-
     }
 
 
@@ -470,9 +476,12 @@ public class EventTrader implements Runnable {
                 ArrayList<PlacedBet> failedbets = new ArrayList<>();
                 while (failedbets.size() < placeBetsRunnable.betOrders.size()){
                     BetOrder betOrder = placeBetsRunnable.betOrders.get(failedbets.size());
-                    failedbets.add(new PlacedBet(PlacedBet.FAILED_STATE, betOrder,
-                            String.format("Error with all bets sent in this batch to %s.",
-                                    placeBetsRunnable.site.getName())));
+
+                    PlacedBet generic_failbet = new PlacedBet(PlacedBet.FAILED_STATE,
+                            betOrder,
+                            String.format("Error with all bets sent in this batch to %s.", placeBetsRunnable.site.getName()));
+
+                    failedbets.add(generic_failbet);
                 }
                 placedBets.addAll(failedbets);
             }
@@ -513,7 +522,6 @@ public class EventTrader implements Runnable {
 
 
     public static void main(String[] args){
-
 
     }
 }

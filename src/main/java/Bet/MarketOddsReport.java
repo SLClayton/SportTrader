@@ -6,6 +6,7 @@ import Trader.SportsTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -108,13 +109,17 @@ public class MarketOddsReport {
 
 
     public MarketOddsReport filter(String filter){
-        MarketOddsReport mor = new MarketOddsReport();
+        Map<String, ArrayList<BetOffer>> filtered_offers = new HashMap<>();
         for (String bet: betOffers.keySet()){
             if (bet.contains(filter)){
-                mor.addBetOffers(bet, betOffers.get(bet));
+                filtered_offers.put(bet, betOffers.get(bet));
             }
         }
-        return mor;
+
+        MarketOddsReport filtered_mor = new MarketOddsReport();
+        filtered_mor.betOffers = filtered_offers;
+
+        return filtered_mor;
     }
 
 

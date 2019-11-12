@@ -8,6 +8,8 @@ import Trader.SportsTrader;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -24,10 +26,12 @@ public abstract class SiteEventTracker {
 
     public EventTrader eventTrader;
 
-    public MarketOddsReport marketOddsReport;
-    public Long marketOddsReportTime;
     public FootballMatch match;
     public Set<String> bet_blacklist;
+
+    public MarketOddsReport lastMarketOddsReport;
+    public Instant lastMarketOddsReport_start_time;
+    public Instant lastMarketOddsReport_end_time;
 
 
     public SiteEventTracker(EventTrader eventTrader){
@@ -37,6 +41,14 @@ public abstract class SiteEventTracker {
 
 
     public abstract String name();
+
+
+    public Long lastMarketOddsTime(){
+        if (lastMarketOddsReport == null){
+            return null;
+        }
+        return lastMarketOddsReport_end_time.toEpochMilli() - lastMarketOddsReport_start_time.toEpochMilli();
+    }
 
 
     public abstract boolean setupMatch(FootballMatch match) throws IOException,

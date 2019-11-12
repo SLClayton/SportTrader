@@ -36,7 +36,6 @@ public class MatchbookEventTracker extends SiteEventTracker {
     public Matchbook matchbook;
     public String event_id;
     public FootballMatch match;
-    public JSONObject eventMarketData;
     public Map<String, String> market_name_id_map;
 
 
@@ -98,15 +97,16 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
+        lastMarketOddsReport = null;
+        lastMarketOddsReport_start_time = Instant.now();
 
         if (event_id == null){
             return null;
         }
 
         // Update the raw odds for this event
-        eventMarketData = getMarketData();
+        JSONObject eventMarketData = getMarketData();
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
-        JSONObject eventMarketData = (JSONObject) this.eventMarketData.clone();
 
 
         for (FootballBet bet: bets){
@@ -169,13 +169,15 @@ public class MatchbookEventTracker extends SiteEventTracker {
                 metadata.put(Matchbook.MARKET_ID, String.valueOf(runner.get("market-id")));
                 metadata.put(Matchbook.RUNNER_ID, String.valueOf(runner.get("id")));
 
-                new_betOffers.add(new BetOffer(match, bet, matchbook, odds, volume, metadata));
+                new_betOffers.add(new BetOffer(lastMarketOddsReport_start_time, match, bet, matchbook, odds, volume, metadata));
             }
 
             // Add to final report only
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
 
+        lastMarketOddsReport_end_time = Instant.now();
+        lastMarketOddsReport = new_marketOddsReport;
         return new_marketOddsReport;
     }
 

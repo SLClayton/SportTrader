@@ -70,7 +70,15 @@ public class BetGroup {
 
 
     public String toString(){
-        return toJSON(false).toString();
+        String s = "[";
+        for (int i=0; i<bets.size(); i++){
+            s += bets.get(i).toString();
+            if (i != bets.size()-1){
+                s += ", ";
+            }
+        }
+        s += "]";
+        return s;
     }
 
 

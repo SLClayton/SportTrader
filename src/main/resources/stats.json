@@ -1,0 +1,47 @@
+{
+  "event_traders": {
+    "Switzerland v Georgia": {
+      "tauts_n": 13,
+      "tautologies": [
+        "dadf5034eb: n=1       best: -0.0446  avg: -0.0446   [CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-0_LAY]",
+        "ba760bd462: n=1       best: -0.0496  avg: -0.0496   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-A_LAY]",
+        "febcfd94a4: n=1       best: -0.0370  avg: -0.0370   [CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-0_LAY]",
+        "f4aff3d81d: n=1       best: -0.0845  avg: -0.0845   [HCP-A-2.0_TEAM-B_BACK, HCP-A-2.0_TEAM-B_LAY]",
+        "6a259a8e63: n=1       best: -0.0367  avg: -0.0367   [CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-0_LAY]",
+        "3c1c415d85: n=1       best: -0.0253  avg: -0.0253   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
+        "c90695c9e8: n=1       best: -0.0618  avg: -0.0618   [CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-1_LAY]",
+        "eeeecb85bc: n=1       best: -0.1191  avg: -0.1191   [OVER_2.5_BACK, OVER_2.5_LAY]",
+        "0c313b9366: n=1       best: -0.0169  avg: -0.0169   [RESULT_TEAM-A_BACK, RESULT_TEAM-A_LAY]",
+        "51a4456164: n=1       best: -0.1191  avg: -0.1191   [OVER_2.5_BACK, UNDER_2.5_BACK]"
+      ],
+      "sites": {
+        "matchbook": " n=1   bets with offers: 27   total bets: 76"
+      },
+      "n": 1
+    }
+  },
+  "metadata": {
+    "total_updates": 1,
+    "event_traders": 1,
+    "start_time": "2019-11-12T16:03:47.495952600Z",
+    "elapsed_time": "0:00:00"
+  },
+  "summary_tautologies": {
+    "size": 13,
+    "tautologies": [
+      "0c313b9366: n=1       best: -0.0169  avg: -0.0169   avg best: -0.0169   [RESULT_TEAM-A_BACK, RESULT_TEAM-A_LAY]",
+      "3c1c415d85: n=1       best: -0.0253  avg: -0.0253   avg best: -0.0253   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
+      "6a259a8e63: n=1       best: -0.0367  avg: -0.0367   avg best: -0.0367   [CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-0_LAY]",
+      "febcfd94a4: n=1       best: -0.0370  avg: -0.0370   avg best: -0.0370   [CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-0_LAY]",
+      "dadf5034eb: n=1       best: -0.0446  avg: -0.0446   avg best: -0.0446   [CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-0_LAY]",
+      "ba760bd462: n=1       best: -0.0496  avg: -0.0496   avg best: -0.0496   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-A_LAY]",
+      "c90695c9e8: n=1       best: -0.0618  avg: -0.0618   avg best: -0.0618   [CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-1_LAY]",
+      "051a75a4c2: n=1       best: -0.0845  avg: -0.0845   avg best: -0.0845   [HCP-A-2.0_TEAM-A_BACK, HCP-A-2.0_TEAM-A_LAY]",
+      "f4aff3d81d: n=1       best: -0.0845  avg: -0.0845   avg best: -0.0845   [HCP-A-2.0_TEAM-B_BACK, HCP-A-2.0_TEAM-B_LAY]",
+      "33e9e6b43d: n=1       best: -0.1191  avg: -0.1191   avg best: -0.1191   [UNDER_2.5_BACK, UNDER_2.5_LAY]",
+      "59e72069df: n=1       best: -0.1191  avg: -0.1191   avg best: -0.1191   [OVER_2.5_LAY, UNDER_2.5_LAY]",
+      "eeeecb85bc: n=1       best: -0.1191  avg: -0.1191   avg best: -0.1191   [OVER_2.5_BACK, OVER_2.5_LAY]",
+      "51a4456164: n=1       best: -0.1191  avg: -0.1191   avg best: -0.1191   [OVER_2.5_BACK, UNDER_2.5_BACK]"
+    ]
+  }
+}

@@ -243,25 +243,26 @@ public class SmarketsEventTracker extends SiteEventTracker {
     }
 
 
-    public JSONObject getPrices() throws InterruptedException, IOException, URISyntaxException {
+    public JSONObject getPrices() throws InterruptedException {
         return smarkets.getPricesFromHandler(market_ids);
     }
 
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
+        lastMarketOddsReport = null;
+        lastMarketOddsReport_start_time = Instant.now();
+
         if (event_id == null){
             return null;
         }
         log.fine(String.format("%s Updating market odds report for smarkets.", match));
 
         JSONObject lastPrices = getPrices();
-        MarketOddsReport new_marketOddsReport = new MarketOddsReport();
         if (lastPrices == null){
-            marketOddsReport = null;
             return null;
         }
 
-
+        MarketOddsReport new_marketOddsReport = new MarketOddsReport();
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
                 continue;
@@ -298,17 +299,16 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 case FootballBet.ANY_OVER:
                     FootballOtherScoreBet osb = (FootballOtherScoreBet) bet;
                     String osb_halftime;
-                    if (osb.halftime){
+                    if (osb.halftime && half_time_correct_score_max_goals != null){
                         osb_halftime = "HALF_TIME_";
-                        if (osb.over_score != half_time_correct_score_max_goals){
-                            continue;
-                        }
+                        if (osb.over_score != half_time_correct_score_max_goals){ continue; }
                     }
-                    else {
+                    else if (correct_score_max_goals != null) {
                         osb_halftime = "";
-                        if (osb.over_score != correct_score_max_goals){
-                            continue;
-                        }
+                        if (osb.over_score != correct_score_max_goals){ continue; }
+                    }
+                    else{
+                        continue;
                     }
                     String osb_result = null;
                     if (osb.winnerA()){ osb_result = "HOME_WIN"; }
@@ -366,7 +366,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 offers = (JSONArray) prices.get("bids");
             }
 
-
             // Convert to our list to betOffer objects list
             ArrayList<BetOffer> new_betOffers = new ArrayList<>();
             for (Object s_offer_obj: offers){
@@ -385,21 +384,16 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 metadata.put(Smarkets.SMARKETS_PRICE, String.valueOf(price));
                 metadata.put("fullname", contract_fullname);
 
-                new_betOffers.add(new BetOffer(match, bet, smarkets, decimal_odds, volume, metadata));
+                new_betOffers.add(new BetOffer(lastMarketOddsReport_start_time, match, bet, smarkets, decimal_odds, volume, metadata));
             }
 
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
 
+        toFile(new_marketOddsReport.toJSON());
 
-
-
-
-        toFile(new_marketOddsReport.filter("ANY").toJSON());
-        System.exit(0);
-
-
-
+        lastMarketOddsReport_end_time = Instant.now();
+        lastMarketOddsReport = new_marketOddsReport;
         return new_marketOddsReport;
     }
 
@@ -409,12 +403,5 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
     public static void main(String[] args){
 
-        try {
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

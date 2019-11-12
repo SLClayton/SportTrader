@@ -32,9 +32,11 @@ public class SportsTraderStats implements Runnable {
     public Map<String, EventTraderStats> eventTraderStatsMap;
     public BlockingQueue<Object[]> queue;
     public Instant start_time;
+    public long total_updates;
 
 
     public SportsTraderStats(String filename){
+        total_updates = 0;
         exit_flag = false;
         eventTraderStatsMap = new HashMap<>();
         queue = new ArrayBlockingQueue<>(200);
@@ -106,6 +108,7 @@ public class SportsTraderStats implements Runnable {
         }
 
         eventTraderStats.update(profitReportSet, marketOddsReports);
+        total_updates++;
     }
 
 
@@ -134,119 +137,168 @@ public class SportsTraderStats implements Runnable {
         summary_tauts_obj.put("tautologies", summary_tauts);
         summary_tauts_obj.put("size", summary_tauts.size());
 
-        JSONObject j = new JSONObject();
-        j.put("EventTraderStats", eventTraders_obj);
-        j.put("summary_tautologies", summary_tauts_obj);
 
-        j.put("start_time", String.valueOf(start_time));
+        JSONObject meta = new JSONObject();
+
+        meta.put("start_time", String.valueOf(start_time));
         long s = Duration.between(start_time, Instant.now()).getSeconds();
-        j.put("elapsed_time", String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60)));
+        meta.put("elapsed_time", String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60)));
+        meta.put("total_updates", total_updates);
+        meta.put("event_traders", eventTraders_obj.size());
+
+
+        JSONObject j = new JSONObject();
+        j.put("metadata", meta);
+        j.put("event_traders", eventTraders_obj);
+        j.put("summary_tautologies", summary_tauts_obj);
 
         return j;
     }
 
 
-
     public List<Taut> getSummaryTautologies(){
 
-        Map<String, BigDecimal> sum_best_ratio_map = new HashMap<>();
-        Map<String, Integer> n_best_ratio_map = new HashMap<>();
-        Map<String, BigDecimal> sum_avg_ratio_map = new HashMap<>();
-        Map<String, Integer> n_avg_ratio_map = new HashMap<>();
+        Map<String, Taut> summary_tauts = new HashMap<>();
 
         for (EventTraderStats eventTraderStats: eventTraderStatsMap.values()){
-            for (Taut tautology: eventTraderStats.tautologies.values()){
-                String id = tautology.id;
+            for (Taut taut: eventTraderStats.tautologies.values()){
 
-                if (tautology.best_ratio != null){
-                    BigDecimal current_sum = sum_best_ratio_map.get(id);
-                    if (current_sum == null){
-                        current_sum = BigDecimal.ZERO;
-                        n_best_ratio_map.put(id, 0);
-                    }
-                    sum_best_ratio_map.put(id, current_sum.add(tautology.best_ratio));
-                    n_best_ratio_map.put(id, n_best_ratio_map.get(id) + 1);
+                String taut_id = taut.getId();
+
+                // Establish taut exists in summary or create summary taut
+                Taut summary_taut = summary_tauts.get(taut_id);
+                if (summary_taut == null){
+                    summary_taut = new Taut(taut.bets);
+                    summary_tauts.put(taut_id, summary_taut);
                 }
 
-                if (tautology.avg_ratio != null){
-                    BigDecimal current_sum = sum_avg_ratio_map.get(id);
-                    if (current_sum == null){
-                        current_sum = BigDecimal.ZERO;
-                        n_avg_ratio_map.put(id, 0);
-                    }
-                    sum_avg_ratio_map.put(id, current_sum.add(tautology.avg_ratio));
-                    n_avg_ratio_map.put(id, n_avg_ratio_map.get(id) + 1);
+                // Update best of best in summary taut
+                summary_taut.update_best(taut.best_ratio);
+
+                // Add on the sum and n of this taut to summary
+                if (summary_taut.sum_ratios == null){
+                    summary_taut.sum_ratios = BigDecimal.ZERO;
                 }
+                summary_taut.sum_ratios = summary_taut.sum_ratios.add(taut.sum_ratios);
+                summary_taut.n = summary_taut.n.add(taut.n);
+
+                // Update 'average best'of the summary taut
+                if (summary_taut.sum_best_ratios == null){
+                    summary_taut.sum_best_ratios = BigDecimal.ZERO;
+                }
+                summary_taut.sum_best_ratios = summary_taut.sum_best_ratios.add(taut.best_ratio);
+                summary_taut.total_best_ratios = summary_taut.total_best_ratios.add(BigDecimal.ONE);
             }
         }
 
-        ArrayList<Taut> summary_tauts = new ArrayList<Taut>();
-        for (Map.Entry<String, BigDecimal> entry: sum_best_ratio_map.entrySet()){
-            String taut_id = entry.getKey();
-            BigDecimal best_sum = entry.getValue();
-            int n_best = n_best_ratio_map.get(taut_id);
-            BigDecimal avg_sum = sum_avg_ratio_map.get(taut_id);
-            int n_avg = n_avg_ratio_map.get(taut_id);
+        List<Taut> taut_list = new ArrayList(summary_tauts.values());
+        Collections.sort(taut_list, Collections.reverseOrder());
 
-            Taut t = new Taut(taut_id);
-            t.best_ratio = best_sum.divide(new BigDecimal(n_best), 5, RoundingMode.HALF_UP);
-            t.avg_ratio = avg_sum.divide(new BigDecimal(n_avg), 5, RoundingMode.HALF_UP);
-            t.n = new BigDecimal(n_best);
-            summary_tauts.add(t);
-        }
-
-        Collections.sort(summary_tauts, Collections.reverseOrder());
-        return summary_tauts;
+        return taut_list;
     }
 
 
     public class Taut implements Comparable<Taut>{
 
-        public String id;
+        public BetGroup bets;
         public BigDecimal best_ratio;
-        public BigDecimal avg_ratio;
+        public BigDecimal sum_ratios;
         public BigDecimal n;
 
-        public Taut(String id){
-            this.id = id;
+        public BigDecimal sum_best_ratios;
+        public BigDecimal total_best_ratios;
+
+        public Taut(BetGroup bets){
+            this.bets = bets;
             n = BigDecimal.ZERO;
+            total_best_ratios = BigDecimal.ZERO;
+        }
+
+
+        public BigDecimal avg_ratio(){
+            if (sum_ratios == null || n.compareTo(BigDecimal.ZERO) == 0){
+                return null;
+            }
+            return sum_ratios.divide(n, 20, RoundingMode.HALF_UP);
+        }
+
+
+        public BigDecimal avg_best_ratio(){
+            if (sum_best_ratios == null || total_best_ratios.compareTo(BigDecimal.ZERO) == 0){
+                return null;
+            }
+            return sum_best_ratios.divide(total_best_ratios, 20, RoundingMode.HALF_UP);
+        }
+
+
+        public String getId(){
+            return bets.id();
         }
 
 
         @Override
         public String toString(){
-            int gap = 12;
-
             String best = "null";
             if (best_ratio != null){
-                best = best_ratio.setScale(5, RoundingMode.HALF_UP).toString();
+                best = best_ratio.setScale(4, RoundingMode.HALF_UP).toString();
             }
-
             String avg = "null";
-            if (avg_ratio != null){
-                avg = avg_ratio.setScale(5, RoundingMode.HALF_UP).toString();
+            if (avg_ratio() != null){
+                avg = avg_ratio().setScale(4, RoundingMode.HALF_UP).toString();
             }
 
-            String s = id + ": n=";
+            String s = getId() + ": n=";
             int l = s.length();
-            s += String.valueOf(n);
-            while (s.length() < l + gap){
+            s += n.toString();
+            while (s.length() < l + 7){
                 s += " ";
             }
+
             s += " best: ";
             l = s.length();
             s += String.valueOf(best);
-            while (s.length() < l + gap){
+            while (s.length() < l + 8){
                 s += " ";
             }
-            s += " avg: " + avg.toString();
+
+            s += " avg: ";
+            l = s.length();
+            s += String.valueOf(avg);
+            while (s.length() < l + 10){
+                s += " ";
+            }
+
+            if (avg_best_ratio() != null){
+                s += "avg best: ";
+                l = s.length();
+                s += avg_best_ratio().setScale(4, RoundingMode.HALF_UP);
+                while (s.length() < l + 10){
+                    s += " ";
+                }
+            }
+
+            s += bets.toString();
             return s;
         }
 
 
+        public JSONObject toJSON(){
+            JSONObject j = new JSONObject();
+            j.put("best", best_ratio.setScale(4, RoundingMode.HALF_UP));
+            j.put("avg", avg_ratio().setScale(4, RoundingMode.HALF_UP));
+            j.put("n", n.toString());
+            j.put("id", getId());
+            j.put("bets", bets.toJSON(false));
+
+            return j;
+        }
+
+
+
         public void update(BigDecimal new_profit_ratio){
             update_best(new_profit_ratio);
-            update_average(new_profit_ratio);
+            update_sum(new_profit_ratio);
+            n = n.add(BigDecimal.ONE);
         }
 
 
@@ -262,39 +314,33 @@ public class SportsTraderStats implements Runnable {
         }
 
 
-        private void update_average(BigDecimal new_profit_ratio){
-
-            BigDecimal nplus1 = n.add(BigDecimal.ONE);
-
-            if (avg_ratio == null){
-                avg_ratio = new_profit_ratio;
+        private void update_sum(BigDecimal new_profit_ratio){
+            if (sum_ratios == null){
+                sum_ratios = BigDecimal.ZERO;
             }
-            else{
-                avg_ratio = avg_ratio.multiply(n)
-                        .add(new_profit_ratio)
-                        .divide(nplus1, 20, RoundingMode.HALF_UP);
-            }
-
-            n = nplus1;
+            sum_ratios = sum_ratios.add(new_profit_ratio);
         }
 
 
         @Override
         public int compareTo(Taut o) {
+            BigDecimal a = avg_best_ratio();
+            BigDecimal b = o.avg_best_ratio();
+
             if (o == null){
                 return 1;
             }
-            if (best_ratio == null){
-                if (o.best_ratio == null){
+            if (a == null){
+                if (b == null){
                     return 0;
                 }
                 return -1;
             }
-            else if (o.best_ratio == null){
+            else if (b == null){
                 return 1;
             }
 
-            return best_ratio.compareTo(o.best_ratio);
+            return a.compareTo(b);
         }
     }
 
@@ -311,6 +357,7 @@ public class SportsTraderStats implements Runnable {
             tautologies = new HashMap<>();
             siteTrackerStatsMap = new HashMap<>();
         }
+
 
         public void update(ProfitReportSet profitReportSet, ArrayList<MarketOddsReport> oddsReports){
             if (start_time == null){
@@ -330,16 +377,15 @@ public class SportsTraderStats implements Runnable {
             }
 
 
-            Instant start = Instant.now();
             for (ProfitReport profitReport: profitReportSet.profitReports){
-                String taut_id = profitReport.getTautology().id();
+                Taut taut = new Taut(profitReport.getTautology());
                 BigDecimal profit_ratio = profitReport.profit_ratio;
 
                 // update best profit if this beats it for this tautology.
-                Taut current_taut = tautologies.get(taut_id);
+                Taut current_taut = tautologies.get(taut.getId());
                 if (current_taut == null){
-                    current_taut = new Taut(taut_id);
-                    tautologies.put(taut_id,  current_taut);
+                    current_taut = new Taut(taut.bets);
+                    tautologies.put(taut.getId(),  current_taut);
                 }
                 current_taut.update(profit_ratio);
 
@@ -363,7 +409,7 @@ public class SportsTraderStats implements Runnable {
 
             JSONObject site_trackers = new JSONObject();
             for (Map.Entry<String, SiteTrackerStats> entry: siteTrackerStatsMap.entrySet()){
-                site_trackers.put(entry.getKey(), entry.getValue().toJSON(full_sites));
+                site_trackers.put(entry.getKey(), entry.getValue().toString());
             }
 
 
@@ -377,6 +423,7 @@ public class SportsTraderStats implements Runnable {
             j.put("tauts_n", taut_bests.size());
             j.put("sites", site_trackers);
             j.put("n", total_checks);
+
             return j;
         }
 
@@ -387,6 +434,7 @@ public class SportsTraderStats implements Runnable {
 
 
     }
+
 
     public class SiteTrackerStats{
 
@@ -430,33 +478,52 @@ public class SportsTraderStats implements Runnable {
 
         }
 
-        public String toJSON(boolean full){
+        @Override
+        public String toString(){
+            String s = "";
+
+            s += " n=" + total_checks;
+            s += "   ";
+
+            s += "bets with offers: " + bets_with_offers.size();
+            if (most_bets_with_offers.size() > bets_with_offers.size()){
+                s += " (max: " + most_bets_with_offers.size() + ")";
+            }
+            s += "   ";
+
+            s += "total bets: " + bets_available.size();
+            if (most_bets_available.size() > bets_available.size()){
+                s += " (max: " + most_bets_available.size() + ")";
+            }
+
+            return s;
+        }
+
+        public JSONObject toJSON(boolean full){
+            JSONObject j = new JSONObject();
             if (full){
-                Map<String, String> j = new HashMap<>();
                 if (most_bets_available.size() > bets_available.size()){
-                    j.put("most_bets_available", Arrays.asList(most_bets_available.toArray()).toString());
+                    j.put("max_bets", Arrays.asList(most_bets_available.toArray()).toString());
                 }
                 if (most_bets_with_offers.size() > bets_with_offers.size()){
-                    j.put("most_bets_with_offers", Arrays.asList(most_bets_with_offers.toArray()).toString());
+                    j.put("max_with_offers", Arrays.asList(most_bets_with_offers.toArray()).toString());
                 }
-                j.put("bets_with_offers", Arrays.asList(bets_with_offers.toArray()).toString());
-                j.put("bets_available", Arrays.asList(bets_available.toArray()).toString());
+                j.put("with_offers", Arrays.asList(bets_with_offers.toArray()).toString());
+                j.put("bets", Arrays.asList(bets_available.toArray()).toString());
                 j.put("n", String.valueOf(total_checks));
-                return j.toString();
             }
             else {
-                Map<String, Integer> j = new HashMap<>();
                 if (most_bets_available.size() > bets_available.size()){
-                    j.put("most_bets_available", most_bets_available.size());
+                    j.put("max_bets", most_bets_available.size());
                 }
                 if (most_bets_with_offers.size() > bets_with_offers.size()){
-                    j.put("most_bets_with_offers", most_bets_with_offers.size());
+                    j.put("max_with_offers", most_bets_with_offers.size());
                 }
-                j.put("bets_available", bets_available.size());
-                j.put("bets_with_offers", bets_with_offers.size());
+                j.put("bets", bets_available.size());
+                j.put("with_offers", bets_with_offers.size());
                 j.put("n", (int) total_checks);
-                return j.toString();
             }
+            return j;
         }
     }
 }

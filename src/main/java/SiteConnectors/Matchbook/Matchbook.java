@@ -475,6 +475,7 @@ public class Matchbook extends BettingSite {
         json.put("exchange-type", "back-lay");
         json.put("offers", offers);
 
+        Instant time_sent = Instant.now();
         JSONObject response = (JSONObject) requester.post(baseurl + "/v2/offers/", json);
 
 
@@ -533,7 +534,7 @@ public class Matchbook extends BettingSite {
                 String bet_id = String.valueOf((long) offer.get("id"));
                 BigDecimal returns = ROI(betOrder.betType(), avg_odds, betOrder.commission(), investment, false)
                         .setScale(2, RoundingMode.DOWN);
-                Instant time = Instant.parse((String) offer.get("created-at"));
+                Instant time_placed = Instant.parse((String) offer.get("created-at"));
 
                 log.info(String.format("Successfully placed £%s @ %s on %s '%s' in matchbook (returns %s).",
                         investment.toString(), avg_odds.toString(), betOrder.betID(),
@@ -541,7 +542,7 @@ public class Matchbook extends BettingSite {
 
 
                 PlacedBet pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, total_back_stake,
-                        total_lay_stake, avg_odds, returns, time);
+                        total_lay_stake, avg_odds, returns, time_placed, time_sent);
                 pb.site_json_response = offer;
                 placedBets.add(pb);
             }
@@ -551,7 +552,7 @@ public class Matchbook extends BettingSite {
                 log.severe(String.format("Failed to place %s on bet %s in matchbook. Bet not fully matched.",
                         betOrder.investment.toString(), betOrder.bet_offer.bet.id(), jstring(response)));
 
-                PlacedBet pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, status);
+                PlacedBet pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, status, null, time_sent);
                 pb.site_json_response = offer;
                 placedBets.add(pb);
             }

@@ -6,6 +6,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
@@ -156,8 +157,7 @@ public class Requester {
     }
 
 
-    public String getRaw(String url, Map<String, Object> params) throws IOException, URISyntaxException,
-            InterruptedException {
+    public String getRaw(String url, Map<String, Object> params) throws IOException, URISyntaxException {
 
         // Add in the paramters as the uri is made
         URIBuilder uriBuilder = new URIBuilder(url);
@@ -216,7 +216,7 @@ public class Requester {
                     httpGet.getURI().toString(),
                     response_body,
                     response.getStatusLine().toString());
-            throw new IOException(msg);
+            throw new HttpResponseException(status_code, msg);
         }
 
         // Convert body to json and return
@@ -225,8 +225,7 @@ public class Requester {
     }
 
 
-    public String getRaw(String url) throws IOException, URISyntaxException,
-            InterruptedException {
+    public String getRaw(String url) throws IOException, URISyntaxException {
 
         return getRaw(url, null);
     }
@@ -259,7 +258,7 @@ public class Requester {
                     response_body,
                     response.getStatusLine().toString());
             log.severe(msg);
-            throw new IOException(msg);
+            throw new HttpResponseException(status_code, msg);
         }
 
         // Convert body to json and return

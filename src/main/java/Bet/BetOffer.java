@@ -16,8 +16,6 @@ import static tools.printer.print;
 
 public class BetOffer implements Comparable<BetOffer> {
 
-    Instant time_created;
-
     public Match match;
     public Bet bet;
     public BettingSite site;
@@ -27,8 +25,15 @@ public class BetOffer implements Comparable<BetOffer> {
 
     public BigDecimal roi_ratio;
 
-    public BetOffer(Match MATCH, Bet BET, BettingSite SITE, BigDecimal ODDS, BigDecimal VOLUME, HashMap METADATA){
-        time_created = Instant.now();
+    public Instant time_start_getMarketOddsReport;
+    public Instant time_betOffer_creation;
+
+
+    public BetOffer(Instant time_getMarketOddsReport, Match MATCH, Bet BET, BettingSite SITE,
+                    BigDecimal ODDS, BigDecimal VOLUME, HashMap METADATA){
+
+        time_start_getMarketOddsReport = time_getMarketOddsReport;
+        time_betOffer_creation = Instant.now();
 
         match = MATCH;
         bet = BET;
@@ -42,7 +47,7 @@ public class BetOffer implements Comparable<BetOffer> {
 
     public BetOffer newOdds(BigDecimal odds){
         // Returns a new betOffer with the same attributes except new odds and volume
-        BetOffer newBetOffer = new BetOffer(match, bet, site, odds, volume, metadata);
+        BetOffer newBetOffer = new BetOffer(time_start_getMarketOddsReport, match, bet, site, odds, volume, metadata);
         return newBetOffer;
     }
 
@@ -60,7 +65,7 @@ public class BetOffer implements Comparable<BetOffer> {
 
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
-        m.put("created", String.valueOf(time_created));
+        m.put("created", String.valueOf(time_betOffer_creation));
         m.put("match", String.valueOf(match));
         m.put("bet", String.valueOf(bet.id()));
         m.put("site", String.valueOf(site.getName()));
