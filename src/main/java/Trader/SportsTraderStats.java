@@ -1,6 +1,7 @@
 package Trader;
 
 import Bet.*;
+import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.SiteEventTracker;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,6 +27,7 @@ public class SportsTraderStats implements Runnable {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public String filename;
+    public FootballBetGenerator footballBetGenerator;
 
     public Thread thread;
     public boolean exit_flag;
@@ -35,7 +37,7 @@ public class SportsTraderStats implements Runnable {
     public long total_updates;
 
 
-    public SportsTraderStats(String filename){
+    public SportsTraderStats(String filename, FootballBetGenerator footballBetGenerator){
         total_updates = 0;
         exit_flag = false;
         eventTraderStatsMap = new HashMap<>();
@@ -45,6 +47,7 @@ public class SportsTraderStats implements Runnable {
         thread.setName("StatKeeper");
 
         this.filename = filename;
+        this.footballBetGenerator = footballBetGenerator;
     }
 
 
@@ -138,6 +141,20 @@ public class SportsTraderStats implements Runnable {
         summary_tauts_obj.put("size", summary_tauts.size());
 
 
+        JSONArray bet_appearances = new JSONArray();
+        Map<String, Set<String>> site_bet_appreances = site_bet_appreances();
+        for (Bet bet: footballBetGenerator.getAllBets()) {
+            Set<String> appearances;
+            if (site_bet_appreances.containsKey(bet.id())) {
+                appearances = site_bet_appreances.get(bet.id());
+            } else {
+                appearances = new HashSet<>();
+            }
+
+            bet_appearances.add(String.format("%s     %s", bet.id(), appearances.toString()));
+        }
+
+
         JSONObject meta = new JSONObject();
 
         meta.put("start_time", String.valueOf(start_time));
@@ -151,6 +168,7 @@ public class SportsTraderStats implements Runnable {
         j.put("metadata", meta);
         j.put("event_traders", eventTraders_obj);
         j.put("summary_tautologies", summary_tauts_obj);
+        j.put("bet_appearances", bet_appearances);
 
         return j;
     }
@@ -197,6 +215,27 @@ public class SportsTraderStats implements Runnable {
         return taut_list;
     }
 
+
+    public Map<String, Set<String>> site_bet_appreances(){
+        Map<String, Set<String>> bet_appearances = new HashMap<>();
+
+        for (EventTraderStats eventTraderStats: eventTraderStatsMap.values()){
+            for (Map.Entry<String, SiteTrackerStats> entry: eventTraderStats.siteTrackerStatsMap.entrySet()){
+                String site_name = entry.getKey();
+                SiteTrackerStats siteTrackerStats = entry.getValue();
+
+                for (String bet: siteTrackerStats.most_bets_available){
+
+                    if (!bet_appearances.containsKey(bet)){
+                        bet_appearances.put(bet, new HashSet<>());
+                    }
+                    bet_appearances.get(bet).add(site_name);
+                }
+            }
+        }
+
+        return bet_appearances;
+    }
 
     public class Taut implements Comparable<Taut>{
 

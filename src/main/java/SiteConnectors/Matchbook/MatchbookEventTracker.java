@@ -346,7 +346,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
 
     public JSONObject extractRunnerHandicap(FootballHandicapBet bet, JSONObject eventMarketData){
-        if (bet.isDraw()){
+        if (bet.isDraw() || bet.isInteger()){
             return null;
         }
 

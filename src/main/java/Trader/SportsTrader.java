@@ -62,6 +62,7 @@ public class SportsTrader {
     public boolean SINGLE_MATCH_TEST;
     public String SM_NAME;
     public String SM_TIME;
+    public long RATE_LOCKSTEP_INTERVAL;
 
     public Lock betlock = new ReentrantLock();
 
@@ -108,10 +109,6 @@ public class SportsTrader {
         eventTraders = new ArrayList<>();
         eventTraderSetups = new ArrayList<>();
 
-
-        if (RUN_STATS){
-            stats = new SportsTraderStats("stats.json");
-        }
     }
 
 
@@ -144,7 +141,7 @@ public class SportsTrader {
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
                 "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
-                "REQUEST_TIMEOUT", "RUN_STATS", "SINGLE_MATCH_TEST", "SM_NAME", "SM_TIME"};
+                "REQUEST_TIMEOUT", "RUN_STATS", "SINGLE_MATCH_TEST", "SM_NAME", "SM_TIME", "RATE_LOCKSTEP_INTERVAL"};
 
         List<String> missingFields = new ArrayList<>();
         for (String field: required){
@@ -175,6 +172,7 @@ public class SportsTrader {
         SINGLE_MATCH_TEST = (boolean) config.get("SINGLE_MATCH_TEST");
         SM_NAME = (String) config.get("SM_NAME");
         SM_TIME = (String) config.get("SM_TIME");
+        RATE_LOCKSTEP_INTERVAL = (long) ((Double) config.get("RATE_LOCKSTEP_INTERVAL")).intValue();
 
 
         // Check target inv per bet is lower than max investment per bet
@@ -261,6 +259,9 @@ public class SportsTrader {
         footballBetGenerator = new FootballBetGenerator();
         footballBetGenerator.getAllTautologies();
 
+        if (RUN_STATS){
+            stats = new SportsTraderStats("stats.json", footballBetGenerator);
+        }
 
         // initialize our site classes to objects
         siteObjects = getSiteObjects(siteClasses);

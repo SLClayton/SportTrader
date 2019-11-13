@@ -13,7 +13,13 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
+
 
 public abstract class printer {
 
@@ -177,8 +183,40 @@ public abstract class printer {
     }
 
 
-    public static void main(String[] args) {
+    public static void sleepUntil(Instant sleep_until, Long milliLockStep) throws InterruptedException {
 
+        // If null then just return
+        if (sleep_until == null){
+            return;
+        }
+
+        // If a lockstep is in place then work out next step after the sleep until
+        if (milliLockStep != null) {
+            long millis_comp = sleep_until.getLong(ChronoField.MILLI_OF_SECOND);
+            long extra_millis = 0;
+            while (extra_millis < millis_comp) {
+                extra_millis += milliLockStep;
+            }
+            sleep_until = sleep_until.truncatedTo(ChronoUnit.SECONDS).plusMillis(extra_millis);
+        }
+
+        // Calculate time needed to sleep and sleep that long.
+        long time_to_sleep = sleep_until.toEpochMilli() - Instant.now().toEpochMilli();
+        if (time_to_sleep > 0){
+            Thread.sleep(time_to_sleep);
+        }
+    }
+
+    public static void sleepUntil(Instant sleep_until) throws InterruptedException {
+        sleepUntil(sleep_until, null);
+    }
+
+    public static void main(String[] args) {
+        try {
+            Thread.sleep(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

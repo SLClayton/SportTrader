@@ -1,9 +1,12 @@
 package Bet.FootballBet;
 
 import org.json.simple.JSONObject;
+import tools.printer;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static tools.printer.print;
 
 public class FootballHandicapBet extends FootballBet{
 
@@ -52,4 +55,14 @@ public class FootballHandicapBet extends FootballBet{
     }
 
 
+    public boolean isInteger(){
+        return a_handicap.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0;
+    }
+
+
+    public static void main(String[] args){
+        FootballHandicapBet b = new FootballHandicapBet("BACK", new BigDecimal("3.5"), FootballBet.TEAM_A);
+
+        print(b.isInteger());
+    }
 }

@@ -69,7 +69,7 @@ public class MyLogHandler extends Handler {
                 .append(String.format(" [%s] ", threadname))
                 .append(String.format("[%s] ", record.getLevel().toString()))
                 //.append(record.getSourceMethodName())
-                .append(": ")
+                .append("")
                 .append(record.getMessage());
 
         String log_msg = sb.toString();

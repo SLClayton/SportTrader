@@ -88,9 +88,9 @@ public class Smarkets extends BettingSite {
 
     public class PriceQuotesRequestHandler implements Runnable{
 
-        public int MAX_BATCH_SIZE = 300;
+        public int MAX_BATCH_SIZE = 100;
         public int REQUEST_THREADS = 5;
-        public long MAX_WAIT_TIME = 10;
+        public long MAX_WAIT_TIME = 30;
         public long MIN_REQ_INTERVAL = 0;
 
         public BlockingQueue<RequestHandler> requestQueue;
@@ -621,9 +621,8 @@ public class Smarkets extends BettingSite {
     public JSONObject getPrices(String market_ids) throws InterruptedException, IOException,
             URISyntaxException {
 
-        JSONObject response = (JSONObject) requester.get(String.format("%smarkets/%s/quotes/",
-                baseurl, market_ids));
-
+        String url = String.format("%smarkets/%s/quotes/", baseurl, market_ids);
+        JSONObject response = (JSONObject) requester.get(url);
         return response;
     }
 

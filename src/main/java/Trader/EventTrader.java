@@ -46,6 +46,7 @@ public class EventTrader implements Runnable {
     public BigDecimal TARGET_INVESTMENT;
     public long REQUEST_TIMEOUT;
     public boolean RUN_STATS;
+    public long RATE_LOCKSTEP_INTERVAL;
 
     public Thread thread;
     public SportsTrader sportsTrader;
@@ -79,6 +80,7 @@ public class EventTrader implements Runnable {
         TARGET_INVESTMENT = sportsTrader.TARGET_INVESTMENT;
         REQUEST_TIMEOUT = sportsTrader.REQUEST_TIMEOUT;
         RUN_STATS = sportsTrader.RUN_STATS;
+        RATE_LOCKSTEP_INTERVAL = sportsTrader.RATE_LOCKSTEP_INTERVAL;
 
         stats = sportsTrader.stats;
         last_sites_used = new HashSet<>();
@@ -156,11 +158,8 @@ public class EventTrader implements Runnable {
             try {
 
                 // RATE LIMITER: Sleeps until minimum wait period between calls is done.
-                if (wait_until != null && Instant.now().isBefore(wait_until)){
-                    Thread.sleep(wait_until.toEpochMilli() - Instant.now().toEpochMilli());
-                }
+                sleepUntil(wait_until, RATE_LOCKSTEP_INTERVAL);
                 wait_until = Instant.now().plus(sportsTrader.RATE_LIMIT, ChronoUnit.MILLIS);
-
 
                 // Check arbs and time how long it takes
                 Instant start = Instant.now();
@@ -180,13 +179,11 @@ public class EventTrader implements Runnable {
 
                 // Calculate the timing metrics over past timings
                 if (loop_times.size() >= loops_per_check){
-                    long avg_ms = 0;
-                    for (long arb_time: loop_times){ avg_ms += arb_time; }
-                    avg_ms = avg_ms / loop_times.size();
+                    String best = String.valueOf(best_profit);
+                    if (best.length() > 8){ best = best.substring(0, 8);}
                     log.info(String.format("%s Arb Checks: avg=%dms %s best: %s",
-                            loops_per_check, avg_ms,
-                            count_sites_used(sites.keySet(), sites_used_during_check).toString(),
-                            String.valueOf(best_profit)));
+                            loops_per_check, avg(loop_times),
+                            count_sites_used(sites.keySet(), sites_used_during_check).toString(), best));
 
                     loop_times.clear();
                     sites_used_during_check.clear();
@@ -208,6 +205,14 @@ public class EventTrader implements Runnable {
         return count;
     }
 
+
+    public long avg(Collection<Long> list){
+        long sum = 0;
+        for (long item: list){
+            sum += item;
+        }
+        return  sum / list.size();
+    }
 
 
     public String id(){
