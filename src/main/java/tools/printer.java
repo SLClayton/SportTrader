@@ -23,7 +23,7 @@ import java.util.*;
 
 public abstract class printer {
 
-    public static String resource_path = "src/main/resources/";
+    public static String resource_path = "resources/";
 
 
     public static String jstring(JSONArray j){
@@ -143,12 +143,12 @@ public abstract class printer {
     }
 
     public static void saveJSONResource(JSONObject json, String filename){
-        filename = "src/main/resources/" + filename;
+        filename = resource_path + filename;
         toFile(json, filename);
     }
 
     public static void saveJSONResource(JSONArray json, String filename){
-        filename = "src/main/resources/" + filename;
+        filename = resource_path + filename;
         toFile(json, filename);
     }
 

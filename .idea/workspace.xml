@@ -1,8 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="SportTrader:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/META-INF/MANIFEST.MF" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SportTrader.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/betfair/market_catalogue.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/football_aliases.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/football_bets.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/football_ids_flashscores.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/football_tautologies.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/matchbook/marketdata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/smarkets/smarkets_contracts.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/smarkets/smarkets_markets.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/stats.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/printer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/printer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/betfair/market_catalogue.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/football_aliases.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/football_bets.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/football_ids_flashscores.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/football_tautologies.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/matchbook/marketdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/smarkets/smarkets_contracts.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/smarkets/smarkets_markets.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/stats.json" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,11 +70,15 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
+    <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
+    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="sporttrader" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="C:/Program Files/axis2-1.7.9/lib/axiom-api-1.2.21.jar!/" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="false" />
@@ -57,18 +91,18 @@
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
+    </key>
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="SiteConnectors" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java\SiteConnectors\Betdaq" />
-    </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="SiteConnectors" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
     </key>
   </component>
   <component name="RunDashboard">
