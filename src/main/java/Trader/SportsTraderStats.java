@@ -35,7 +35,6 @@ public class SportsTraderStats implements Runnable {
     public Thread thread;
     public boolean exit_flag;
     public Map<String, EventTraderStats> eventTraderStatsMap;
-    public Lock eventTraderStatsMap_lock;
     public BlockingQueue<Object[]> queue;
     public Instant start_time;
     public long total_updates;
@@ -45,8 +44,6 @@ public class SportsTraderStats implements Runnable {
         total_updates = 0;
         exit_flag = false;
         eventTraderStatsMap = new HashMap<>();
-        eventTraderStatsMap_lock = new ReentrantLock();
-        queue = new ArrayBlockingQueue<>(200);
 
         thread = new Thread(this);
         thread.setName("StatKeeper");
@@ -65,36 +62,21 @@ public class SportsTraderStats implements Runnable {
     @Override
     public void run() {
 
-        Object[] queueObjects;
-        Instant next_save = null;
+        Instant next_save = Instant.now().plus(2, ChronoUnit.SECONDS);
 
         while (!exit_flag) {
 
-            queueObjects = null;
-            try {
-                while (!exit_flag && queueObjects == null) {
-                    queueObjects = queue.poll(1, TimeUnit.SECONDS);
+            while (!exit_flag && Instant.now().isBefore(next_save)){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
 
-            if (queueObjects == null) {
-                continue;
-            }
-
-
-            EventTrader eventTrader = (EventTrader) queueObjects[0];
-            ProfitReportSet profitReportSet = (ProfitReportSet) queueObjects[1];
-            ArrayList<MarketOddsReport> marketOddsReports = (ArrayList<MarketOddsReport>) queueObjects[2];
-            _update(eventTrader, profitReportSet, marketOddsReports);
-
-            if (next_save == null || Instant.now().isAfter(next_save)){
-                save();
-                next_save = Instant.now().plus(10, ChronoUnit.SECONDS);
-            }
+            save();
+            next_save = Instant.now().plus(10, ChronoUnit.SECONDS);
         }
-
     }
 
 
@@ -109,17 +91,15 @@ public class SportsTraderStats implements Runnable {
     public void _update(EventTrader eventTrader, ProfitReportSet profitReportSet,
                              ArrayList<MarketOddsReport> marketOddsReports){
 
-        eventTraderStatsMap_lock.lock();
+
         EventTraderStats eventTraderStats = eventTraderStatsMap.get(eventTrader.id());
         if (eventTraderStats == null){
-            eventTraderStats = new EventTraderStats();
+            eventTraderStats = new EventTraderStats(eventTrader);
             eventTraderStatsMap.put(eventTrader.id(), eventTraderStats);
         }
-        eventTraderStatsMap_lock.unlock();
 
         eventTraderStats.update(profitReportSet, marketOddsReports);
         total_updates++;
-        save();
     }
 
 
@@ -130,17 +110,12 @@ public class SportsTraderStats implements Runnable {
 
     public JSONObject toJSON(boolean full_sites, Integer n_tauts){
 
-        BigDecimal best_taut_avg = BigDecimal.ZERO;
-        EventTraderStats summary_eventTraderStat = new EventTraderStats();
-
 
         JSONObject eventTraders_obj = new JSONObject();
-        eventTraderStatsMap_lock.lock();
         for (Map.Entry<String, EventTraderStats> entry: eventTraderStatsMap.entrySet()){
             EventTraderStats eventTraderStats = entry.getValue();
             eventTraders_obj.put(entry.getKey(), eventTraderStats.toJSON(full_sites, n_tauts));
         }
-        eventTraderStatsMap_lock.unlock();
 
         JSONArray summary_tauts = new JSONArray();
         for (Taut taut: getSummaryTautologies()){
@@ -189,13 +164,11 @@ public class SportsTraderStats implements Runnable {
 
     public List<Taut> getSummaryTautologies(){
 
-        Map<String, Taut> summary_tauts = new HashMap<>();
-
-        eventTraderStatsMap_lock.lock();
+        Map<Integer, Taut> summary_tauts = new HashMap<>();
         for (EventTraderStats eventTraderStats: eventTraderStatsMap.values()){
             for (Taut taut: eventTraderStats.tautologies.values()){
 
-                String taut_id = taut.getId();
+                int taut_id = taut.getId();
 
                 // Establish taut exists in summary or create summary taut
                 Taut summary_taut = summary_tauts.get(taut_id);
@@ -222,7 +195,6 @@ public class SportsTraderStats implements Runnable {
                 summary_taut.total_best_ratios = summary_taut.total_best_ratios.add(BigDecimal.ONE);
             }
         }
-        eventTraderStatsMap_lock.unlock();
 
         List<Taut> taut_list = new ArrayList(summary_tauts.values());
         Collections.sort(taut_list, Collections.reverseOrder());
@@ -251,6 +223,7 @@ public class SportsTraderStats implements Runnable {
 
         return bet_appearances;
     }
+
 
     public class Taut implements Comparable<Taut>{
 
@@ -285,7 +258,7 @@ public class SportsTraderStats implements Runnable {
         }
 
 
-        public String getId(){
+        public int getId(){
             return bets.id();
         }
 
@@ -401,17 +374,18 @@ public class SportsTraderStats implements Runnable {
 
     public class EventTraderStats{
 
+        public EventTrader eventTrader;
         public long total_checks;
         public Instant start_time;
-        public Map<String, Taut> tautologies;
-        public Lock tautologies_lock;
+        public Map<Integer, Taut> tautologies;
         public Map<String, SiteTrackerStats> siteTrackerStatsMap;
 
-        public EventTraderStats(){
+
+        public EventTraderStats(EventTrader eventTrader){
+            this.eventTrader = eventTrader;
             total_checks = 0;
             tautologies = new HashMap<>();
             siteTrackerStatsMap = new HashMap<>();
-            tautologies_lock = new ReentrantLock();
         }
 
 
@@ -421,40 +395,38 @@ public class SportsTraderStats implements Runnable {
             }
 
             // Update each siteTrackerStats with its corresponding odds report
-            for (MarketOddsReport oddsReport: oddsReports){
+            for (MarketOddsReport oddsReport: oddsReports) {
                 String site_name = oddsReport.site().getName();
 
                 SiteTrackerStats siteTrackerStats = siteTrackerStatsMap.get(site_name);
-                if (siteTrackerStats == null){
+                if (siteTrackerStats == null) {
                     siteTrackerStats = new SiteTrackerStats();
                     siteTrackerStatsMap.put(site_name, siteTrackerStats);
                 }
                 siteTrackerStats.update(oddsReport);
             }
 
-
             for (ProfitReport profitReport: profitReportSet.profitReports){
-                Taut taut = new Taut(profitReport.getTautology());
+                int taut_id = profitReport.getTautology().id();
                 BigDecimal profit_ratio = profitReport.profit_ratio;
 
                 // update best profit if this beats it for this tautology.
-                Taut current_taut = tautologies.get(taut.getId());
+                Taut current_taut = tautologies.get(taut_id);
                 if (current_taut == null){
-                    current_taut = new Taut(taut.bets);
-                    tautologies.put(taut.getId(),  current_taut);
+                    current_taut = new Taut(profitReport.getTautology());
+                    tautologies.put(taut_id,  current_taut);
                 }
                 current_taut.update(profit_ratio);
 
             }
+
             total_checks += 1;
         }
 
 
         public JSONObject toJSON(boolean full_sites, Integer n_tauts){
 
-            tautologies_lock.lock();
             ArrayList<Taut> tauts = new ArrayList<Taut>(tautologies.values());
-            tautologies_lock.unlock();
             Collections.sort(tauts, Collections.reverseOrder());
 
             JSONArray taut_bests = new JSONArray();
@@ -508,17 +480,17 @@ public class SportsTraderStats implements Runnable {
             total_checks = 0;
             most_bets_with_offers = new HashSet<>();
             most_bets_available = new HashSet<>();
+            bets_available = new HashSet<>();
+            bets_with_offers = new HashSet<>();
         }
 
 
         public void update(MarketOddsReport oddsReport){
 
-            bets_available = new HashSet<>();
-            bets_with_offers = new HashSet<>();
+            bets_available.clear();
+            bets_with_offers.clear();
 
-
-            for (Map.Entry<String, ArrayList<BetOffer>> entry:
-                    oddsReport.entrySet()){
+            for (Map.Entry<String, ArrayList<BetOffer>> entry: oddsReport.entrySet()){
                 String bet_id = entry.getKey();
                 ArrayList<BetOffer> offers = entry.getValue();
 
@@ -531,9 +503,6 @@ public class SportsTraderStats implements Runnable {
             most_bets_available.addAll(bets_available);
             most_bets_with_offers.addAll(bets_with_offers);
             total_checks += 1;
-
-
-
         }
 
         @Override
@@ -556,6 +525,7 @@ public class SportsTraderStats implements Runnable {
 
             return s;
         }
+
 
         public JSONObject toJSON(boolean full){
             JSONObject j = new JSONObject();

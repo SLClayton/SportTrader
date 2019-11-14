@@ -12,9 +12,12 @@
       <change beforePath="$PROJECT_DIR$/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/football_aliases.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_aliases.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/football_ids_flashscores.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_ids_flashscores.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/football_tautologies.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_tautologies.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/stats.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/stats.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/printer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/printer.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -138,8 +141,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.SportsTrader" />
-        <item itemvalue="Application.FootballHandicapBet" />
         <item itemvalue="Application.printer" />
+        <item itemvalue="Application.FootballHandicapBet" />
         <item itemvalue="Application.Smarkets" />
         <item itemvalue="Application.FlashScores" />
       </list>

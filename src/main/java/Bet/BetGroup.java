@@ -25,9 +25,11 @@ public class BetGroup {
         bets = new ArrayList<>();
     }
 
+
     public int size(){
         return bets.size();
     }
+
 
     public JSONArray toJSON(boolean full){
         JSONArray ja = new JSONArray();
@@ -48,24 +50,12 @@ public class BetGroup {
     }
 
 
-    public String id(){
-        ArrayList<String> betids = new ArrayList<>();
+    public int id(){
+        StringBuilder joinedbetids = new StringBuilder();
         for (Bet bet: bets){
-            betids.add(bet.id());
+            joinedbetids.append(bet.id());
         }
-        Collections.sort(betids);
-        String joinedbetids = String.join("", betids);
-
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-        byte[] digest = md.digest(joinedbetids.getBytes(StandardCharsets.UTF_8));
-        String sha256 = DatatypeConverter.printHexBinary(digest).toLowerCase();
-        return sha256.substring(0, 10);
+        return joinedbetids.toString().hashCode();
     }
 
 

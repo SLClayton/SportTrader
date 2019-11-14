@@ -64,6 +64,8 @@ public class EventTrader implements Runnable {
     public Set<String> last_sites_used;
     public BigDecimal best_profit_last;
 
+    public ArrayList<Long> times = new ArrayList<>();
+
     public EventTrader(SportsTrader sportsTrader, FootballMatch match, Map<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
         this.sportsTrader = sportsTrader;
         this.match = match;

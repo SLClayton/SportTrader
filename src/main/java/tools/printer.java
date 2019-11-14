@@ -7,11 +7,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;
 import java.time.Instant;
 import java.time.temporal.ChronoField;
@@ -212,11 +216,7 @@ public abstract class printer {
     }
 
     public static void main(String[] args) {
-        try {
-            Thread.sleep(0);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
     }
 
 
