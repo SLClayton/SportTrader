@@ -327,12 +327,6 @@ public class EventTrader implements Runnable {
         best_profit_last = tautologyProfitReports.best_profit();
 
 
-        // Update the stats
-        if (RUN_STATS) {
-            stats.update(this, tautologyProfitReports, marketOddsReports);
-        }
-
-
         // Create list of profit reports with profits over min_prof_margin
         ProfitReportSet in_profit = tautologyProfitReports.filter_reports(MIN_PROFIT_RATIO);
 
@@ -340,6 +334,12 @@ public class EventTrader implements Runnable {
         // If any profit reports are found to be IN profit
         if (in_profit.size() > 0){
             profitFound(in_profit);
+        }
+
+
+        // Update the stats
+        if (RUN_STATS) {
+            stats._update(this, tautologyProfitReports, marketOddsReports);
         }
     }
 

@@ -7,6 +7,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.printer;
 
+import java.lang.management.LockInfo;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,6 +18,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,7 @@ public class SportsTraderStats implements Runnable {
     public Thread thread;
     public boolean exit_flag;
     public Map<String, EventTraderStats> eventTraderStatsMap;
+    public Lock eventTraderStatsMap_lock;
     public BlockingQueue<Object[]> queue;
     public Instant start_time;
     public long total_updates;
@@ -41,6 +45,7 @@ public class SportsTraderStats implements Runnable {
         total_updates = 0;
         exit_flag = false;
         eventTraderStatsMap = new HashMap<>();
+        eventTraderStatsMap_lock = new ReentrantLock();
         queue = new ArrayBlockingQueue<>(200);
 
         thread = new Thread(this);
@@ -101,17 +106,20 @@ public class SportsTraderStats implements Runnable {
     }
 
 
-    private void _update(EventTrader eventTrader, ProfitReportSet profitReportSet,
+    public void _update(EventTrader eventTrader, ProfitReportSet profitReportSet,
                              ArrayList<MarketOddsReport> marketOddsReports){
 
+        eventTraderStatsMap_lock.lock();
         EventTraderStats eventTraderStats = eventTraderStatsMap.get(eventTrader.id());
         if (eventTraderStats == null){
             eventTraderStats = new EventTraderStats();
             eventTraderStatsMap.put(eventTrader.id(), eventTraderStats);
         }
+        eventTraderStatsMap_lock.unlock();
 
         eventTraderStats.update(profitReportSet, marketOddsReports);
         total_updates++;
+        save();
     }
 
 
@@ -127,10 +135,12 @@ public class SportsTraderStats implements Runnable {
 
 
         JSONObject eventTraders_obj = new JSONObject();
+        eventTraderStatsMap_lock.lock();
         for (Map.Entry<String, EventTraderStats> entry: eventTraderStatsMap.entrySet()){
             EventTraderStats eventTraderStats = entry.getValue();
             eventTraders_obj.put(entry.getKey(), eventTraderStats.toJSON(full_sites, n_tauts));
         }
+        eventTraderStatsMap_lock.unlock();
 
         JSONArray summary_tauts = new JSONArray();
         for (Taut taut: getSummaryTautologies()){
@@ -140,23 +150,26 @@ public class SportsTraderStats implements Runnable {
         summary_tauts_obj.put("tautologies", summary_tauts);
         summary_tauts_obj.put("size", summary_tauts.size());
 
+        int max_len = 0;
+        for (Bet bet: footballBetGenerator.getAllBets()) {
+            max_len = Integer.max(max_len, bet.id().length());
+        }
 
         JSONArray bet_appearances = new JSONArray();
         Map<String, Set<String>> site_bet_appreances = site_bet_appreances();
         for (Bet bet: footballBetGenerator.getAllBets()) {
-            Set<String> appearances;
+            String s = bet.id();
+            while (s.length() < max_len + 3){ s += " "; }
             if (site_bet_appreances.containsKey(bet.id())) {
-                appearances = site_bet_appreances.get(bet.id());
+                s += site_bet_appreances.get(bet.id()).toString();
             } else {
-                appearances = new HashSet<>();
+                s += "[]";
             }
-
-            bet_appearances.add(String.format("%s     %s", bet.id(), appearances.toString()));
+            bet_appearances.add(s);
         }
 
 
         JSONObject meta = new JSONObject();
-
         meta.put("start_time", String.valueOf(start_time));
         long s = Duration.between(start_time, Instant.now()).getSeconds();
         meta.put("elapsed_time", String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60)));
@@ -178,6 +191,7 @@ public class SportsTraderStats implements Runnable {
 
         Map<String, Taut> summary_tauts = new HashMap<>();
 
+        eventTraderStatsMap_lock.lock();
         for (EventTraderStats eventTraderStats: eventTraderStatsMap.values()){
             for (Taut taut: eventTraderStats.tautologies.values()){
 
@@ -208,6 +222,7 @@ public class SportsTraderStats implements Runnable {
                 summary_taut.total_best_ratios = summary_taut.total_best_ratios.add(BigDecimal.ONE);
             }
         }
+        eventTraderStatsMap_lock.unlock();
 
         List<Taut> taut_list = new ArrayList(summary_tauts.values());
         Collections.sort(taut_list, Collections.reverseOrder());
@@ -389,12 +404,14 @@ public class SportsTraderStats implements Runnable {
         public long total_checks;
         public Instant start_time;
         public Map<String, Taut> tautologies;
+        public Lock tautologies_lock;
         public Map<String, SiteTrackerStats> siteTrackerStatsMap;
 
         public EventTraderStats(){
             total_checks = 0;
             tautologies = new HashMap<>();
             siteTrackerStatsMap = new HashMap<>();
+            tautologies_lock = new ReentrantLock();
         }
 
 
@@ -435,7 +452,9 @@ public class SportsTraderStats implements Runnable {
 
         public JSONObject toJSON(boolean full_sites, Integer n_tauts){
 
+            tautologies_lock.lock();
             ArrayList<Taut> tauts = new ArrayList<Taut>(tautologies.values());
+            tautologies_lock.unlock();
             Collections.sort(tauts, Collections.reverseOrder());
 
             JSONArray taut_bests = new JSONArray();
