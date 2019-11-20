@@ -23,6 +23,7 @@ import static tools.printer.print;
 public class Betdaq extends BettingSite {
 
     public final static String name = "betdaq";
+    public final static String id = "BD";
 
     public static final String WSDL = "http://api.betdaq.com/v2.0/API.wsdl";
 
@@ -49,6 +50,12 @@ public class Betdaq extends BettingSite {
     @Override
     public String getName() {
         return name;
+    }
+
+
+    @Override
+    public String getID() {
+        return id;
     }
 
     @Override

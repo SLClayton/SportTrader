@@ -34,7 +34,7 @@ public interface SportData {
     void loadFootballAliases();
 
 
-    String getTeamID(Team team);
+    String getFootballTeamID(Team team);
 
 
     String getMatchID(Match match);
@@ -43,13 +43,14 @@ public interface SportData {
     void update_match_id_map(Match match);
 
 
-    void update_team_id_map(Team team);
+    boolean update_football_team_id_map(FootballTeam team);
 
 
     void save_all();
 
-    FootballMatch verifyFootballMatch(FootballMatch match) throws FlashScores.verificationException;
+
+    boolean verifyFootballMatch(FootballMatch match) throws verificationException;
 
 
-    static class verificationException extends Exception {}
+    //static class verificationException extends Exception {}
 }

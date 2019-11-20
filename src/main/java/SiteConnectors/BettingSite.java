@@ -22,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -74,7 +74,19 @@ public abstract class BettingSite {
     public abstract String getName();
 
 
+    public abstract String getID();
+
+
     public abstract BigDecimal minBackersStake();
+
+
+    public static Set<String> getIDs(Collection<BettingSite> sites){
+        Set<String> ids = new HashSet<>();
+        for (BettingSite site: sites){
+            ids.add(site.getID());
+        }
+        return ids;
+    }
 
 
     public BigDecimal getBalance() {
@@ -129,10 +141,12 @@ public abstract class BettingSite {
     public abstract SiteEventTracker getEventTracker(EventTrader eventTrader);
 
 
-    public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException;
+    public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until)
+            throws IOException, URISyntaxException, InterruptedException;
 
 
-    public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException;
+    public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+            throws IOException, URISyntaxException;
 
 
     public BigDecimal ROI_old(BetOffer bet_offer, BigDecimal investment, boolean real) {
@@ -200,6 +214,12 @@ public abstract class BettingSite {
         }
 
         return roi;
+    }
+
+
+    @Override
+    public boolean equals(Object o){
+        return ((o instanceof BettingSite) && getName().equals(((BettingSite) o).getName()));
     }
 
 

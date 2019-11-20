@@ -10,7 +10,7 @@ import java.text.Normalizer;
 import java.time.Instant;
 import java.util.ArrayList;
 
-public class Team {
+public abstract class Team {
 
     public SportData sportData;
 
@@ -22,7 +22,6 @@ public class Team {
     public Team(String name){
         sportData = SportsTrader.getSportData();
         this.name = name;
-        id = this.id();
     }
 
 
@@ -30,6 +29,7 @@ public class Team {
     public String toString(){
         return name;
     }
+
 
     public static String normalize(String string){
         return Normalizer.normalize(string.trim().toLowerCase(), Normalizer.Form.NFD)
@@ -42,16 +42,11 @@ public class Team {
     }
 
 
-    public String id(){
-        if (id == null){
-            id = sportData.getTeamID(this);
-        }
-        return id;
-    }
+
+    public abstract String getID();
 
 
-    public void set_id(String id){
-        this.id = id;
-        sportData.update_team_id_map(this);
-    }
+    public abstract void setID(String id);
+
+
 }

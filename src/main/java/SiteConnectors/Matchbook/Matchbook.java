@@ -42,6 +42,7 @@ import static tools.printer.*;
 public class Matchbook extends BettingSite {
 
     public final static String name = "matchbook";
+    public final static String id = "MB";
 
     public static String baseurl = "https://api.matchbook.com/edge/rest";
     public static String[] marketTypes = new String[]{
@@ -229,6 +230,12 @@ public class Matchbook extends BettingSite {
         updateAccountInfo();
         log.info(String.format("Successfully logged into Matchbook. Balance: %s  Exposure: %s",
                 balance.toString(), exposure.toString()));
+    }
+
+
+    @Override
+    public String getID() {
+        return id;
     }
 
 

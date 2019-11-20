@@ -76,14 +76,13 @@ public class SmarketsEventTracker extends SiteEventTracker {
     @Override
     public boolean setupMatch(FootballMatch setup_match) throws IOException, URISyntaxException, InterruptedException {
 
-        // Get events from smarkets which match the sport and time
-        ArrayList<FootballMatch> events = smarkets.getEvents(
+        // Get events from smarkets that match the sport and time
+        ArrayList<FootballMatch> footballMatches = smarkets.getFootballMatches(
                 setup_match.start_time.minus(1, ChronoUnit.SECONDS),
-                setup_match.start_time.plus(1, ChronoUnit.SECONDS),
-                smarkets.FOOTBALL);
+                setup_match.start_time.plus(1, ChronoUnit.SECONDS));
 
         match = null;
-        for (FootballMatch fm: events){
+        for (FootballMatch fm: footballMatches){
             if (Boolean.TRUE.equals(setup_match.same_match(fm, false))){
                 match = fm;
                 event_id = fm.metadata.get("smarkets_event_id");
@@ -91,7 +90,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
             }
         }
         if (match == null){
-            for (FootballMatch fm: events){
+            for (FootballMatch fm: footballMatches){
                 if (Boolean.TRUE.equals(setup_match.same_match(fm, true))){
                     match = fm;
                     event_id = fm.metadata.get("smarkets_event_id");
@@ -103,7 +102,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
         // Check for no match
         if (match == null){
             log.warning(String.format("%s No match found in smarkets. Searched %d events %s.",
-                    setup_match, events.size(), Match.listtostring(events)));
+                    setup_match, footballMatches.size(), Match.listtostring(footballMatches)));
             return false;
         }
 
@@ -152,7 +151,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
             else if (market_type_name.equals("HALF_TIME_CORRECT_SCORE")){
                 half_time_correct_score_market_id = market_id;
             }
-
 
 
             for (Object contract_obj : contracts) {

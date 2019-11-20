@@ -6,12 +6,14 @@ import Bet.BetOrder;
 import Bet.FootballBet.FootballResultBet;
 import Bet.FootballBet.FootballScoreBet;
 import Bet.PlacedBet;
+import Bet.MarketOddsReport;
 import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Sport.FootballTeam;
+import Sport.Match;
 import Sport.Team;
 import Trader.EventTrader;
 import org.hamcrest.core.Is;
@@ -46,9 +48,10 @@ import static tools.printer.*;
 public class Smarkets extends BettingSite {
 
     public final static String name = "smarkets";
+    public final static String id = "SM";
 
     public static String baseurl = "https://api.smarkets.com/v3/";
-    public static String FOOTBALL = "football_match";
+    public static String FOOTBALL = "football";
     public static String CONTRACT_ID = "CONTRACT_ID";
     public static String MARKET_ID = "MARKET_ID";
     public static String SMARKETS_PRICE = "SMARKETS_PRICE";
@@ -58,8 +61,11 @@ public class Smarkets extends BettingSite {
     Instant expiry_time = null;
 
 
-    public Instant lastPriceQuoteRequest;
-    public long rate_limit = 301;
+    int rh_total = 0;
+    int rh_success = 0;
+    int markets_total = 0;
+    int markets_success = 0;
+    Instant start_time;
 
     BlockingQueue<RequestHandler> priceQuotesRequestHandlerQueue;
     PriceQuotesRequestHandler priceQuotesRequestHandler;
@@ -90,8 +96,7 @@ public class Smarkets extends BettingSite {
 
         public int MAX_BATCH_SIZE = 100;
         public int REQUEST_THREADS = 5;
-        public long MAX_WAIT_TIME = 30;
-        public long MIN_REQ_INTERVAL = 0;
+        public long MAX_WAIT_TIME = 50;
 
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
@@ -186,14 +191,13 @@ public class Smarkets extends BettingSite {
         @Override
         public void run() {
             ArrayList<RequestHandler> requestHandlers = null;
-            JSONObject final_request = new JSONObject();
 
-            int reqs_sent = 0;
-            Instant first_request_time = null;
 
             mainloop:
             while (!exit_flag){
                 try {
+
+                    // Wait for next requestHandler or command to exit
                     requestHandlers = null;
                     while (!exit_flag && requestHandlers == null){
                         requestHandlers = jobQueue.poll(1, TimeUnit.SECONDS);
@@ -202,10 +206,23 @@ public class Smarkets extends BettingSite {
                         break mainloop;
                     }
 
+                    if (start_time == null){
+                        start_time = Instant.now();
+                    }
+
+
+                    // Get tally of request handlers and markets requested
+                    for (RequestHandler rh: requestHandlers){
+                        rh_total += 1;
+                        markets_total += ((ArrayList<String>) rh.request).size();
+                    }
+
+
+
                     if (expiry_time != null && Instant.now().isBefore(expiry_time)){
                         // Fail all these handlers
                         for (RequestHandler rh: requestHandlers){
-                            rh.setFail();
+                            rh.setResponse(MarketOddsReport.RATE_LIMITED());
                         }
                     }
                     else{
@@ -216,13 +233,8 @@ public class Smarkets extends BettingSite {
                             market_ids.addAll((ArrayList<String>) rh.request);
                         }
 
-                        Instant start = Instant.now();
                         // Send request
                         JSONObject market_prices = getPrices(market_ids);
-
-                        long time = Instant.now().toEpochMilli() - start.toEpochMilli();
-                        //print("TIME: " + time + "ms");
-
 
                         // If rate limit has been hit
                         if (market_prices.containsKey("error_type")
@@ -237,6 +249,16 @@ public class Smarkets extends BettingSite {
                             log.info(String.format("Smarkets request limit reached, waiting until %s    %s",
                                     expiry_time.toString(), market_prices.toString()));
 
+
+                            /*
+                            double minutes = (Instant.now().toEpochMilli() - start_time.toEpochMilli()) / 60000.0;
+                            log.info(String.format("--------------SMARKETS RATE STATS\nRH: %s/%s\nMK: %s/%s\nAVG\nRH avg: %s/%s\nMK avg: %s/%s\n---------------",
+                                    rh_success, rh_total, markets_success, markets_total,
+                                    Math.round(rh_success/minutes), Math.round(rh_total/minutes),
+                                    Math.round(markets_success/minutes), Math.round(markets_total/minutes)));
+                             */
+
+
                             // Sanity check expiry time
                             if (expiry_time.isAfter(Instant.now().plus(2, ChronoUnit.MINUTES))){
                                 log.warning("Rate limit expiry for smarkets is set to %s. Using 61 seconds instead.");
@@ -245,13 +267,15 @@ public class Smarkets extends BettingSite {
 
                             // Fail all these handlers
                             for (RequestHandler rh: requestHandlers){
-                                rh.setFail();
+                                rh.setResponse(MarketOddsReport.RATE_LIMITED());
                             }
                         }
                         else{
                             // Just send back the whole response to each handler
                             for (RequestHandler rh: requestHandlers){
                                 rh.setResponse(market_prices);
+                                rh_success += 1;
+                                markets_success += ((ArrayList<String>) rh.request).size();
                             }
                         }
                     }
@@ -262,6 +286,8 @@ public class Smarkets extends BettingSite {
             log.info("Ending smarkets request sender.");
         }
     }
+
+
 
 
     @Override
@@ -319,6 +345,11 @@ public class Smarkets extends BettingSite {
         return name;
     }
 
+    @Override
+    public String getID() {
+        return id;
+    }
+
 
     @Override
     public BigDecimal minBackersStake() {
@@ -352,10 +383,31 @@ public class Smarkets extends BettingSite {
     }
 
 
+    @Override
     public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException,
             URISyntaxException, InterruptedException {
 
-        return getEvents(from, until, FOOTBALL);
+        JSONArray events = getEvents(from, until, FOOTBALL);
+
+        // Create list of Football Match objects to send back
+        ArrayList<FootballMatch> footballMatches = new ArrayList<>();
+        for (Object event_obj: events){
+            JSONObject event = (JSONObject) event_obj;
+
+            Instant time = Instant.parse(((String) event.get("start_datetime")));
+            String name = (String) event.get("name");
+            String[] teams = name.split(" vs. ");
+            if (teams.length != 2){
+                log.warning(String.format("Cannot parse football match name '%s' in smarkets.", name));
+                continue;
+            }
+
+            FootballMatch fm = new FootballMatch(time, new FootballTeam(teams[0]), new FootballTeam(teams[1]));
+            fm.metadata.put("smarkets_event_id", (String) event.get("id"));
+            footballMatches.add(fm);
+        }
+
+        return footballMatches;
     }
 
 
@@ -490,40 +542,25 @@ public class Smarkets extends BettingSite {
 
 
 
-    public ArrayList<FootballMatch> getEvents(Instant from, Instant until, String sport) throws InterruptedException,
+    public JSONArray getEvents(Instant from, Instant until, String sport) throws InterruptedException,
             IOException, URISyntaxException {
 
+        // Create parameters for http request and send it
         Map<String, Object> params = new HashMap();
         params.put("start_datetime_min", from.toString());
         params.put("start_datetime_max", until.toString());
         params.put("limit", "1000");
-        params.put("type", sport);
-
+        params.put("type_domain", sport);
+        params.put("type_scope", "single_event");
+        params.put("with_new_type", true);
         JSONObject response = (JSONObject) requester.get(baseurl + "events/", params);
         if (!response.containsKey("events")) {
             String msg = String.format("No 'events' field found in smarkets response.\n%s", jstring(response));
             throw new IOException(msg);
         }
+
         JSONArray events = (JSONArray) response.get("events");
-        ArrayList<FootballMatch> footballMatches = new ArrayList<>();
-        for (Object event_obj: events){
-            JSONObject event = (JSONObject) event_obj;
-
-            Instant time = Instant.parse(((String) event.get("start_datetime")));
-            String name = (String) event.get("name");
-            String[] teams = name.split(" vs. ");
-            if (teams.length != 2){
-                log.warning(String.format("Cannot parse football match name '%s' in smarkets.", name));
-                continue;
-            }
-
-            FootballMatch fm = new FootballMatch(time, new FootballTeam(teams[0]), new FootballTeam(teams[1]));
-            fm.metadata.put("smarkets_event_id", (String) event.get("id"));
-            footballMatches.add(fm);
-        }
-
-        return footballMatches;
-
+        return events;
     }
 
 
@@ -632,14 +669,7 @@ public class Smarkets extends BettingSite {
         rh.request = market_ids;
         priceQuotesRequestHandlerQueue.put(rh);
         JSONObject response = (JSONObject) rh.getResponse();
-        if (rh.valid_response()){
-            return response;
-        }
-        else{
-            return null;
-        }
-
-
+        return response;
     }
 
 
@@ -948,6 +978,39 @@ public class Smarkets extends BettingSite {
 
 
     public static void main(String[] args){
+
+        try {
+            Smarkets s = new Smarkets();
+
+
+
+            toFile(s.getEvents(Instant.now(), Instant.now().plusSeconds(60*60*24), FOOTBALL));
+
+
+
+
+
+
+
+
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
     }
 }

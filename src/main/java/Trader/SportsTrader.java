@@ -73,10 +73,10 @@ public class SportsTrader {
     public FootballBetGenerator footballBetGenerator;
 
     public ArrayList<EventTrader> eventTraders;
+    public ArrayList<EventTraderSpawn> eventTraderSpawns;
     public SportDataFileSaver sportDataFileSaver;
     public SessionsUpdater sessionsUpdater;
     public SiteAccountInfoUpdater siteAccountInfoUpdater;
-    public ArrayList<EventTraderSetup> eventTraderSetups;
     public SportsTraderStats stats;
 
     public boolean exit_flag;
@@ -107,8 +107,6 @@ public class SportsTrader {
 
         siteObjects = new HashMap<>();
         eventTraders = new ArrayList<>();
-        eventTraderSetups = new ArrayList<>();
-
     }
 
 
@@ -315,11 +313,12 @@ public class SportsTrader {
 
         // Create same number of event trader setups as max matches allowed to concurrently
         // setup each event trader
+        eventTraderSpawns = new ArrayList<>();
         for (int i=0; i<MAX_MATCHES; i++){
-            EventTraderSetup eventTraderSetup = new EventTraderSetup(this, match_queue);
-            eventTraderSetup.thread.setName("EvntTderStp" + String.valueOf(i+1));
-            eventTraderSetup.start();
-            eventTraderSetups.add(eventTraderSetup);
+            EventTraderSpawn eventTraderSpawn = new EventTraderSpawn(this, match_queue);
+            eventTraderSpawn.thread.setName("EvntTderStp" + String.valueOf(i+1));
+            eventTraderSpawn.start();
+            eventTraderSpawns.add(eventTraderSpawn);
         }
 
 
@@ -329,18 +328,18 @@ public class SportsTrader {
 
 
         // Wait for each event trader setup to finish then add the result to the list of EventTraders
-        for (EventTraderSetup eventTraderSetup: eventTraderSetups){
+        for (EventTraderSpawn eventTraderSpawn: eventTraderSpawns){
             try {
-                eventTraderSetup.thread.join();
-                if (eventTraderSetup.result != null){
-                    eventTraders.add(eventTraderSetup.result);
+                eventTraderSpawn.thread.join();
+                if (eventTraderSpawn.result != null){
+                    eventTraders.add(eventTraderSpawn.result);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        log.info(String.format("%d matches setup successfully with at least %d site connectors.",
+        log.info(String.format("%d Event Traders setup successfully with at least %d site connectors.",
                 eventTraders.size(), MIN_SITES_PER_MATCH));
 
         // Exit if none have worked.
@@ -392,7 +391,7 @@ public class SportsTrader {
         siteAccountInfoUpdater.exit_flag = true;
         stats.exit_flag = true;
 
-        for (EventTraderSetup ets: eventTraderSetups){
+        for (EventTraderSpawn ets: eventTraderSpawns){
             ets.exit_flag = true;
         }
         for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
@@ -451,7 +450,7 @@ public class SportsTrader {
     }
 
 
-    public class EventTraderSetup implements Runnable{
+    public class EventTraderSpawn implements Runnable{
 
         // Should check match queue and attempt to create an event trader fully setup
         // One made per max event traders present and try until complete.
@@ -462,7 +461,7 @@ public class SportsTrader {
         Thread thread;
         boolean exit_flag;
 
-        public EventTraderSetup(SportsTrader sportsTrader, BlockingQueue<FootballMatch> match_queue){
+        public EventTraderSpawn(SportsTrader sportsTrader, BlockingQueue<FootballMatch> match_queue){
             this.match_queue = match_queue;
             this.sportsTrader = sportsTrader;
             exit_flag = false;
@@ -476,7 +475,8 @@ public class SportsTrader {
 
         @Override
         public void run() {
-            while (true){
+
+            while (!exit_flag){
 
                 // Get match from queue, break and finish if anything goes wrong.
                 FootballMatch footballMatch = null;

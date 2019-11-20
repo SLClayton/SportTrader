@@ -52,6 +52,7 @@ public class Betfair extends BettingSite {
 
     public static final int FOOTBALL_ID = 1;
     public final static String name = "betfair";
+    public final static String id = "BF";
 
     public String hostname = "https://api.betfair.com/";
     public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
@@ -357,6 +358,12 @@ public class Betfair extends BettingSite {
     @Override
     public String getName() {
         return name;
+    }
+
+
+    @Override
+    public String getID() {
+        return id;
     }
 
 

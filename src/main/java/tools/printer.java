@@ -49,6 +49,7 @@ public abstract class printer {
         print(jstring(j));
     }
 
+
     public static void pp(JSONObject j){
         print(jstring(j));
     }
@@ -146,15 +147,18 @@ public abstract class printer {
         return json;
     }
 
+
     public static void saveJSONResource(JSONObject json, String filename){
         filename = resource_path + filename;
         toFile(json, filename);
     }
 
+
     public static void saveJSONResource(JSONArray json, String filename){
         filename = resource_path + filename;
         toFile(json, filename);
     }
+
 
     public static Map getJSON(String filename) throws FileNotFoundException {
         String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
@@ -162,6 +166,7 @@ public abstract class printer {
         Map map = gson.fromJson(jsonString, Map.class);
         return map;
     }
+
 
     public static String fromFile(String filename) throws FileNotFoundException {
         String s = new Scanner(new File(filename)).useDelimiter("\\Z").next();
@@ -195,7 +200,7 @@ public abstract class printer {
         }
 
         // If a lockstep is in place then work out next step after the sleep until
-        if (milliLockStep != null) {
+        if (milliLockStep != null && milliLockStep > 1) {
             long millis_comp = sleep_until.getLong(ChronoField.MILLI_OF_SECOND);
             long extra_millis = 0;
             while (extra_millis < millis_comp) {
@@ -211,9 +216,11 @@ public abstract class printer {
         }
     }
 
+
     public static void sleepUntil(Instant sleep_until) throws InterruptedException {
         sleepUntil(sleep_until, null);
     }
+
 
     public static void main(String[] args) {
 
@@ -231,10 +238,20 @@ public abstract class printer {
         return false;
     }
 
+
     public static boolean nully(Object obj){
         return nully(obj, true);
     }
 
 
-
+    public static Map<String, Integer> count(Set<String> options, Collection<String> from_list){
+        int total = 0;
+        Map<String, Integer> count = new HashMap<>();
+        for (String site_name: options){
+            int n = Collections.frequency(from_list, site_name);
+            count.put(site_name, n);
+            total += n;
+        }
+        return count;
+    }
 }

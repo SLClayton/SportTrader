@@ -274,7 +274,12 @@ public class SportsTraderStats implements Runnable {
                 avg = avg_ratio().setScale(4, RoundingMode.HALF_UP).toString();
             }
 
-            String s = getId() + ": n=";
+            String s = String.valueOf(getId());
+            while (s.length() < 12){
+                s += " ";
+            }
+
+            s += ": n=";
             int l = s.length();
             s += n.toString();
             while (s.length() < l + 7){

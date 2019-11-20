@@ -23,18 +23,12 @@ public class RequestHandler {
         this.request = request;
     }
 
-    public boolean valid_response(){
-        return response != null;
-    }
 
     public void setResponse(Object resp) {
         response = resp;
         responseQueue.add(true);
     }
 
-    public void setFail() {
-        setResponse(null);
-    }
 
     public Object getResponse() throws InterruptedException {
         responseQueue.take();
@@ -50,6 +44,13 @@ public class RequestHandler {
         responseQueue.poll();
         return response;
     }
+
+
+    public Object removeResponse(){
+        responseQueue.remove();
+        return response;
+    }
+
 
     public void clear(){
         request = null;

@@ -1,17 +1,12 @@
 package Sport;
 
-import SiteConnectors.FlashScores;
 import SiteConnectors.SportData;
+import org.json.simple.JSONArray;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.Normalizer;
 import java.text.ParseException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static tools.printer.print;
 
@@ -50,11 +45,23 @@ public class FootballMatch extends Match{
 
 
     @Override
+    public String getID() {
+        return null;
+
+        //TODO: sort this mess out
+    }
+
+    @Override
+    public void refreshData() {
+
+    }
+
+    @Override
     public String key(){
-        if (team_a.id() == null || team_b.id() == null || start_time == null) {
+        if (team_a.getID() == null || team_b.getID() == null || start_time == null) {
             return null;
         }
-        return String.format("%s/%s/%s", team_a.id(), team_b.id(), start_time.toString());
+        return String.format("%s/%s/%s", team_a.getID(), team_b.getID(), start_time.toString());
     }
 
 
@@ -64,24 +71,13 @@ public class FootballMatch extends Match{
     }
 
 
-    public static void matches_alike(FootballMatch m1, FootballMatch m2){
-        // Matches are the same so make sure records are up to date
 
-        // equalise team A ids
-        if (m1.team_a.id() == null && m2.team_a.id() != null){
-            m1.team_a.set_id(m2.team_a.id());
+    public static JSONArray list2JSON(Collection<FootballMatch> footballMatches){
+        JSONArray j = new JSONArray();
+        for (FootballMatch fm: footballMatches){
+            j.add(fm.toString());
         }
-        if (m2.team_a.id() == null && m1.team_a.id() != null){
-            m2.team_a.set_id(m1.team_a.id());
-        }
-
-        // equalise team B ids
-        if (m1.team_a.id() == null && m2.team_a.id() != null){
-            m1.team_a.set_id(m2.team_a.id());
-        }
-        if (m2.team_a.id() == null && m1.team_a.id() != null){
-            m2.team_a.set_id(m1.team_a.id());
-        }
+        return j;
     }
 
 
@@ -110,7 +106,6 @@ public class FootballMatch extends Match{
         Boolean sameAteam = team_a.same_team(fm.team_a);
         Boolean sameBteam = team_b.same_team(fm.team_b);
         if (Boolean.TRUE.equals(sameAteam) || Boolean.TRUE.equals(sameBteam)){
-            matches_alike(this, fm);
             return true;
         }
         if (Boolean.FALSE.equals(sameAteam) || Boolean.FALSE.equals(sameBteam)) {
@@ -118,15 +113,11 @@ public class FootballMatch extends Match{
         }
 
         //Verify matches completely
-        try {
-            if (id() == null) {
-                sportData.verifyFootballMatch(this);
-            }
-            if (match.id() == null) {
-                sportData.verifyFootballMatch(fm);
-            }
-        } catch (SportData.verificationException e){
-            return null;
+        if (id() == null) {
+            sportData.verifyFootballMatch(this);
+        }
+        if (match.id() == null) {
+            sportData.verifyFootballMatch(fm);
         }
 
 
@@ -138,6 +129,9 @@ public class FootballMatch extends Match{
         // Unable to say for sure
         return null;
     }
+
+
+
 
 
     public static boolean same_team(String T1, String T2){
@@ -222,7 +216,5 @@ public class FootballMatch extends Match{
         return false;
     }
 
-
-    public void verify() {}
 
 }

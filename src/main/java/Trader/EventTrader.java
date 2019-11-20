@@ -9,6 +9,7 @@ import SiteConnectors.FlashScores;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
+import tools.printer.*;
 
 import javax.naming.directory.InvalidAttributesException;
 import java.io.BufferedInputStream;
@@ -61,10 +62,11 @@ public class EventTrader implements Runnable {
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<BetGroup> tautologies;
 
-    public Set<String> last_sites_used;
+    public Set<String> ok_site_oddsReports;
+    public Set<String> timout_site_oddsReports;
+    public Set<String> rateLimited_site_oddsReports;
+    public Set<String> error_site_oddsReports;
     public BigDecimal best_profit_last;
-
-    public ArrayList<Long> times = new ArrayList<>();
 
     public EventTrader(SportsTrader sportsTrader, FootballMatch match, Map<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
         this.sportsTrader = sportsTrader;
@@ -85,7 +87,11 @@ public class EventTrader implements Runnable {
         RATE_LOCKSTEP_INTERVAL = sportsTrader.RATE_LOCKSTEP_INTERVAL;
 
         stats = sportsTrader.stats;
-        last_sites_used = new HashSet<>();
+
+        ok_site_oddsReports = new HashSet<>();
+        timout_site_oddsReports = new HashSet<>();
+        rateLimited_site_oddsReports = new HashSet<>();
+        error_site_oddsReports = new HashSet<>();
     }
 
 
@@ -98,13 +104,13 @@ public class EventTrader implements Runnable {
 
         //Connect each site to event tracker
         for (Map.Entry<String, BettingSite> entry: sites.entrySet()){
-
             String site_name = entry.getKey();
             BettingSite site = entry.getValue();
 
-            // Try to setup match, remove site if fail
+            // Spawn an empty event tracker from the site object
             SiteEventTracker eventTracker = site.getEventTracker(this);
 
+            // Try to setup match ion site event tracker, remove site if fail
             boolean setup_success = false;
             try {
                 setup_success = eventTracker.setupMatch(match);
@@ -114,16 +120,14 @@ public class EventTrader implements Runnable {
             }
             if (!(setup_success)){
                 failed_sites.add(site_name);
-                log.info(String.format("%s failed to setup in %s Event Tracker.",
-                        match, site_name));
+                log.info(String.format("%s failed to setup in %s Event Tracker.", match, site_name));
                 continue;
             }
 
             // Add successful sites and trackers into maps
             siteEventTrackers.put(site_name, eventTracker);
             accepted_sites.put(site_name, site);
-            log.info(String.format("%s successfully setup in %s Event Tracker.",
-                    match, site_name));
+            log.info(String.format("%s successfully setup in %s Event Tracker.", match, site_name));
         }
 
         sites = accepted_sites;
@@ -154,6 +158,7 @@ public class EventTrader implements Runnable {
         Instant wait_until = null;
         ArrayList<Long> loop_times = new ArrayList<>();
         ArrayList<String> sites_used_during_check = new ArrayList<>();
+        Set<String> site_ids = BettingSite.getIDs(sites.values());
         BigDecimal best_profit = null;
         int loops_per_check = 100;
         for (long i=0; !sportsTrader.exit_flag; i++){
@@ -177,18 +182,25 @@ public class EventTrader implements Runnable {
                 }
 
                 // Update sites used during check interval
-                sites_used_during_check.addAll(last_sites_used);
+                sites_used_during_check.addAll(ok_site_oddsReports);
 
                 // Calculate the timing metrics over past timings
                 if (loop_times.size() >= loops_per_check){
                     String best = String.valueOf(best_profit);
                     if (best.length() > 8){ best = best.substring(0, 8);}
-                    log.info(String.format("%s Arb Checks: avg=%dms %s best: %s",
+                    log.info(String.format("%s Arb Checks: avg=%dms OK%s TIMEOUT%s LIMIT%s NA%s best: %s",
                             loops_per_check, avg(loop_times),
-                            count_sites_used(sites.keySet(), sites_used_during_check).toString(), best));
+                            count(site_ids, sites_used_during_check).toString(),
+                            count(new HashSet<>(timout_site_oddsReports), timout_site_oddsReports),
+                            count(new HashSet<>(rateLimited_site_oddsReports), rateLimited_site_oddsReports),
+                            count(new HashSet<>(error_site_oddsReports), error_site_oddsReports),
+                            best));
 
                     loop_times.clear();
                     sites_used_during_check.clear();
+                    timout_site_oddsReports.clear();
+                    rateLimited_site_oddsReports.clear();
+                    error_site_oddsReports.clear();
                     best_profit = null;
                 }
 
@@ -198,14 +210,6 @@ public class EventTrader implements Runnable {
         }
     }
 
-
-    public Map<String, Integer> count_sites_used(Set<String> possible_sites, Collection<String> used){
-        Map<String, Integer> count = new HashMap<>();
-        for (String site_name: possible_sites){
-            count.put(site_name, Collections.frequency(used, site_name));
-        }
-        return count;
-    }
 
 
     public long avg(Collection<Long> list){
@@ -265,6 +269,7 @@ public class EventTrader implements Runnable {
                 String site_name = (String) requestHandler.request;
                 SiteEventTracker set = siteEventTrackers.get(site_name);
 
+                // Update odds report and deal with errors if they happen during.
                 try {
                     MarketOddsReport mor = set.getMarketOddsReport(footballBetGenerator.getAllBets());
                     requestHandler.setResponse(mor);
@@ -274,8 +279,9 @@ public class EventTrader implements Runnable {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    log.severe(e.getStackTrace().toString());
-                    requestHandler.setFail();
+                    log.severe(String.format("Unexpected error when getting MarketOddsReport for %s.\n%s\n%s",
+                            site_name, e.toString(), e.getStackTrace().toString()));
+                    requestHandler.setResponse(MarketOddsReport.UNKNOWN_ERROR(e.toString()));
                 }
             }
             log.info("Exiting Event Trader Odds Report updater.");
@@ -297,23 +303,37 @@ public class EventTrader implements Runnable {
         // Wait for results to be generated in each thread and collect them all
         // Use null if time-out occurs for any site
         ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
-        last_sites_used.clear();
+        ok_site_oddsReports.clear();
+        timout_site_oddsReports.clear();
+        rateLimited_site_oddsReports.clear();
+        error_site_oddsReports.clear();
         Instant timeout = Instant.now().plus(REQUEST_TIMEOUT, ChronoUnit.MILLIS);
         for (RequestHandler rh: requestHandlers){
-            String site_name = (String) rh.request;
+            BettingSite site = sites.get((String) rh.request);
 
             MarketOddsReport mor;
-            if (Instant.now().isBefore(timeout)){
+            if (Instant.now().isBefore(timeout)) {
                 long millis_until_timeout = timeout.toEpochMilli() - Instant.now().toEpochMilli();
                 mor = (MarketOddsReport) rh.pollReponse(millis_until_timeout, TimeUnit.MILLISECONDS);
-            }
-            else{
+            } else {
                 mor = (MarketOddsReport) rh.pollReponse();
             }
+            if (mor == null){
+                mor = MarketOddsReport.TIMED_OUT();
 
-            if (mor != null) {
+            }
+
+
+            if (mor.noError()) {
                 marketOddsReports.add(mor);
-                last_sites_used.add(site_name);
+                ok_site_oddsReports.add(site.getID());
+            }
+            else{
+                log.warning(String.format("Failed to get MarkerOddsReport from %s - %s",
+                    site.getName(), mor.getErrorMessage()));
+                if (mor.timed_out()){ timout_site_oddsReports.add(site.getID()); }
+                else if (mor.unknown_error()){ error_site_oddsReports.add(site.getID());}
+                else if (mor.rate_limited()){ rateLimited_site_oddsReports.add(site.getID());}
             }
         }
 

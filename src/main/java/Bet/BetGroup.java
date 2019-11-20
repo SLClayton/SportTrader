@@ -51,11 +51,13 @@ public class BetGroup {
 
 
     public int id(){
-        StringBuilder joinedbetids = new StringBuilder();
+        ArrayList<String> id_list = new ArrayList<>();
         for (Bet bet: bets){
-            joinedbetids.append(bet.id());
+            id_list.add(bet.id());
         }
-        return joinedbetids.toString().hashCode();
+        Collections.sort(id_list);
+        String ids_string = String.join("", id_list);
+        return Math.abs(ids_string.hashCode());
     }
 
 

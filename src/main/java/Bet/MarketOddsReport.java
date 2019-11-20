@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static net.dongliu.commons.Prints.print;
+import static tools.printer.resource_path;
 import static tools.printer.toFile;
 
 public class MarketOddsReport {
@@ -30,11 +31,73 @@ public class MarketOddsReport {
      */
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+    public static final String MULTIPLE = "MULTIPLE";
+
     private Map<String, ArrayList<BetOffer>> betOffers;
+
+    public ErrorType errorType;
+    public String errorMessage;
+
+
+    public enum ErrorType {NONE, TIMED_OUT, RATE_LIMITED, UNIDENTIFIED}
 
 
     public MarketOddsReport(){
-        betOffers = new HashMap<String, ArrayList<BetOffer>>();
+        this(ErrorType.NONE);
+    }
+
+
+    public MarketOddsReport(ErrorType errorType){
+        this.errorType = errorType;
+        if (noError()){
+            betOffers = new HashMap<String, ArrayList<BetOffer>>();
+        }
+    }
+
+
+
+    public boolean timed_out(){
+        return errorType.equals(ErrorType.TIMED_OUT);
+    }
+
+
+    public boolean unknown_error(){
+        return errorType.equals(ErrorType.UNIDENTIFIED);
+    }
+
+    public boolean rate_limited(){
+        return errorType.equals(ErrorType.RATE_LIMITED);
+    }
+
+
+
+    public static MarketOddsReport TIMED_OUT(){
+        return new MarketOddsReport(ErrorType.TIMED_OUT);
+    }
+
+
+    public static MarketOddsReport UNKNOWN_ERROR(String msg){
+        MarketOddsReport mor = new MarketOddsReport(ErrorType.UNIDENTIFIED);
+        mor.errorMessage = msg;
+        return mor;
+    }
+
+
+    public String getErrorMessage(){
+        if (errorType.equals(ErrorType.UNIDENTIFIED)){
+            return String.format("%s: %s", errorType.toString(), String.valueOf(errorMessage));
+        }
+        return errorType.toString();
+    }
+
+
+    public static MarketOddsReport RATE_LIMITED(){
+        return new MarketOddsReport(ErrorType.RATE_LIMITED);
+    }
+
+
+    public boolean noError(){
+        return errorType.equals(ErrorType.NONE);
     }
 
 
@@ -62,18 +125,6 @@ public class MarketOddsReport {
     }
 
 
-
-    public Set<String> sites_used(){
-        Set<String> sites_used = new HashSet<>();
-        for (Map.Entry<String, ArrayList<BetOffer>> entry: betOffers.entrySet()){
-            for (BetOffer betOffer: entry.getValue()){
-                sites_used.add(betOffer.site.getName());
-            }
-        }
-        return sites_used;
-    }
-
-
     public BettingSite site(){
         if (betOffers.size() <= 0){
             return null;
@@ -84,6 +135,18 @@ public class MarketOddsReport {
             }
         }
         return null;
+    }
+
+
+
+    public Set<String> sites_used(){
+        Set<String> sites_used = new HashSet<>();
+        for (Map.Entry<String, ArrayList<BetOffer>> entry: betOffers.entrySet()){
+            for (BetOffer betOffer: entry.getValue()){
+                sites_used.add(betOffer.site.getName());
+            }
+        }
+        return sites_used;
     }
 
 
@@ -167,6 +230,16 @@ public class MarketOddsReport {
 
 
     public JSONObject toJSON(boolean full_offers){
+        JSONObject j = new JSONObject();
+        if (!noError()){
+            j.put("error_type", errorType.toString());
+            if (errorMessage != null){
+                j.put("error_message", String.valueOf(errorMessage));
+            }
+            return j;
+        }
+
+
         JSONObject odds_reports = new JSONObject();
         for (Map.Entry<String, ArrayList<BetOffer>> entry: betOffers.entrySet()){
             String bet_id = entry.getKey();
@@ -194,7 +267,6 @@ public class MarketOddsReport {
             }
 
         }
-        JSONObject j = new JSONObject();
         j.put("bet_offers", odds_reports);
         j.put("match", String.valueOf(match()));
         j.put("bets", betOffers.size());

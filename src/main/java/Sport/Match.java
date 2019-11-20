@@ -45,10 +45,14 @@ public abstract class Match {
         return id;
     }
 
+    public abstract String getID();
+
+
+    public abstract void refreshData();
+
 
     public void set_id(String id){
-        this.id = id;
-        sportData.update_match_id_map(this);
+
     }
 
     public abstract String key();
