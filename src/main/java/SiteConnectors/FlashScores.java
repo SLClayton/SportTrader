@@ -138,6 +138,7 @@ public class FlashScores implements SportData {
 
     @Override
     public ArrayList<FootballMatch> getFootballFixtures(Team team) {
+        // Returns a list of fully ID'd up football matches from a particular team.
 
         if (team.id == null || invalid_team_ids.contains(team.id)){
             return null;
@@ -199,6 +200,7 @@ public class FlashScores implements SportData {
         ArrayList<FootballMatch> footballMatches = new ArrayList<>();
         for (Map<String, String> row: parts){
 
+            // Extract data from weird coded row of raw html
             String match_id = row.get("AA");
             String start_epoch = row.get("AD");
             String team_a_name = row.get("AE");
@@ -213,6 +215,8 @@ public class FlashScores implements SportData {
                     || team_a_name == null || team_b_name == null
                     || team_a_FSID == null || team_b_FSID == null
                     || team_a_URLNAME == null || team_b_URLNAME == null) {
+                log.severe(String.format("Could not find all necessary values in raw return from flashscores" +
+                        "for fixtures for %s.\n%s", team.toString(), row.toString()));
                 continue;
             }
 
@@ -350,7 +354,6 @@ public class FlashScores implements SportData {
     }
 
 
-
     @Override
     public String getFootballTeamID(Team team){
         return football_alias_id_map.get(team.normal_name());
@@ -361,7 +364,6 @@ public class FlashScores implements SportData {
     public String getMatchID(Match match){
         return match_id_map.get((match.key()));
     }
-
 
 
     @Override
@@ -419,6 +421,9 @@ public class FlashScores implements SportData {
 
     @Override
     public boolean verifyFootballMatch(FootballMatch match) {
+        // Tries to find match in flashscores and updates match ID and team IDs in local maps
+        // Objects need to be refreshed after this to get their newly found IDs
+
 
         if (unverifiable_matches.contains(match.name)){
             return false;
@@ -457,7 +462,7 @@ public class FlashScores implements SportData {
 
             // Compile all fixtures for all possible teams for A and B teams
             for (int j=0; j<2; j++) {
-                all_matches[j] = new ArrayList<>();
+                all_matches[j].clear();
                 for (FootballTeam t : possible_teams[j]) {
                     if (t.getFixtures() != null) {
                         for (FootballMatch m : t.fixtures) {
@@ -504,8 +509,7 @@ public class FlashScores implements SportData {
         // Fill in Flashscores related data to match and return it
         update_football_team_id_map(verifiedMatch.team_a);
         update_football_team_id_map(verifiedMatch.team_b);
-
-        match.set_id(verifiedMatch.id());
+        update_match_id_map(verifiedMatch);
 
         return true;
     }

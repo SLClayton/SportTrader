@@ -49,7 +49,7 @@ public interface SportData {
     void save_all();
 
 
-    boolean verifyFootballMatch(FootballMatch match) throws verificationException;
+    boolean verifyFootballMatch(FootballMatch match);
 
 
     //static class verificationException extends Exception {}

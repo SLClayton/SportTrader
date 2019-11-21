@@ -42,11 +42,11 @@ public abstract class Team {
     }
 
 
+    public abstract Boolean same_team(Team team);
+
 
     public abstract String getID();
 
-
-    public abstract void setID(String id);
 
 
 }

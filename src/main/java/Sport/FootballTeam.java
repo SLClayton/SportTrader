@@ -17,6 +17,7 @@ public class FootballTeam extends Team {
     }
 
 
+    @Override
     public Boolean same_team(Team team){
 
         // Ensure other team is a football team
@@ -48,13 +49,6 @@ public class FootballTeam extends Team {
             id = sportData.getFootballTeamID(this);
         }
         return id;
-    }
-
-
-    @Override
-    public void setID(String id){
-        this.id = id;
-        sportData.update_football_team_id_map(this);
     }
 
 

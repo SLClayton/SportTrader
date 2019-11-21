@@ -1,8 +1,11 @@
 package Sport;
 
+import SiteConnectors.BettingSite;
 import SiteConnectors.SportData;
 import org.json.simple.JSONArray;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.Normalizer;
 import java.text.ParseException;
 import java.time.Instant;
@@ -23,7 +26,7 @@ public class FootballMatch extends Match{
         team_a = TEAM_A;
         team_b = TEAM_B;
         name = team_a.name + " v " + team_b.name;
-        id = id();
+        id = getID();
     }
 
 
@@ -46,22 +49,42 @@ public class FootballMatch extends Match{
 
     @Override
     public String getID() {
-        return null;
+        if (id == null){
+            id = sportData.getMatchID(this);
+        }
+        return id;
+    }
 
-        //TODO: sort this mess out
+
+    @Override
+    public boolean isVerified() {
+        return (team_a.getID() != null && team_b.getID() != null);
     }
 
     @Override
-    public void refreshData() {
-
+    public boolean verify() {
+        boolean verification_success = sportData.verifyFootballMatch(this);
+        if (verification_success){
+            refreshIDs();
+        }
+        return verification_success;
     }
+
+
+    @Override
+    public void refreshIDs() {
+        team_a.getID();
+        team_b.getID();
+        this.getID();
+    }
+
 
     @Override
     public String key(){
         if (team_a.getID() == null || team_b.getID() == null || start_time == null) {
             return null;
         }
-        return String.format("%s/%s/%s", team_a.getID(), team_b.getID(), start_time.toString());
+        return String.format("FB/%s/%s/%s", team_a.getID(), team_b.getID(), start_time.toString());
     }
 
 
@@ -82,19 +105,22 @@ public class FootballMatch extends Match{
 
 
     @Override
-    public Boolean same_match(Match match, boolean attempt_verify){
+    public Boolean same_match(Match match){
+        // Checks if match is the same given the currently known local information (no online verification)
 
         // Check Start time, false if different
         if (!start_time.equals(match.start_time)){
             return false;
         }
 
+
         // If both have IDs which match then they're the same
-        if (id() != null && match.id() != null){
-            return id.equals(match.id);
+        if (getID() != null && match.getClass() != null){
+            return getID().equals(match.getID());
         }
 
-        // If argument isn't football match then they're not the same
+
+        // If argument match isn't a football match then they're not the same
         FootballMatch fm;
         try{
             fm = (FootballMatch) match;
@@ -102,29 +128,37 @@ public class FootballMatch extends Match{
             return false;
         }
 
-        // If both teams are the same then same match, if either definitely isn't then not same match
+
+        // If both teams same or one same and other null, then match.
+        // If both null skip
+        // If one same and other not, then log error and dont match
         Boolean sameAteam = team_a.same_team(fm.team_a);
         Boolean sameBteam = team_b.same_team(fm.team_b);
-        if (Boolean.TRUE.equals(sameAteam) || Boolean.TRUE.equals(sameBteam)){
-            return true;
+        if (Boolean.TRUE.equals(sameAteam)){
+            if (Boolean.TRUE.equals(sameBteam) || sameBteam == null){
+                return true;
+            }
+            else{
+                log.severe(String.format("Matches %s and %s found sameAteam but not sameBteam"));
+                return false;
+            }
+
         }
-        if (Boolean.FALSE.equals(sameAteam) || Boolean.FALSE.equals(sameBteam)) {
-            return false;
+        else if (Boolean.FALSE.equals(sameAteam)){
+            if (sameBteam != null){
+                return sameBteam.booleanValue();
+            }
+        }
+        else {
+            if (Boolean.FALSE.equals(sameBteam) || sameBteam == null){
+                return false;
+            }
+            else {
+                log.severe(String.format("Matches %s and %s found not sameAteam but sameBteam"));
+                return false;
+            }
         }
 
-        //Verify matches completely
-        if (id() == null) {
-            sportData.verifyFootballMatch(this);
-        }
-        if (match.id() == null) {
-            sportData.verifyFootballMatch(fm);
-        }
-
-
-        // If both have IDs (Again) which match then they're the same
-        if (id() != null && match.id() != null){
-            return id.equals(match.id);
-        }
 
         // Unable to say for sure
         return null;
@@ -132,14 +166,12 @@ public class FootballMatch extends Match{
 
 
 
-
-
-    public static boolean same_team(String T1, String T2){
-        return same_team(T1, T2, true);
+    public static boolean same_team_old(String T1, String T2){
+        return same_team_old(T1, T2, true);
     }
 
 
-    public static boolean same_team(String T1, String T2, boolean deep_check){
+    public static boolean same_team_old(String T1, String T2, boolean deep_check){
         //log.fine(String.format("Checking teams match for %s and %s.", T1, T2));
 
         // Check exact strings
@@ -188,7 +220,7 @@ public class FootballMatch extends Match{
                 p1.remove(keyword);
                 p2.remove(keyword);
 
-                boolean success = same_team(String.join(" ", p1), String.join(" ", p2), false);
+                boolean success = same_team_old(String.join(" ", p1), String.join(" ", p2), false);
                 if (success){
                     //log.fine(String.format("Match found for teams once '%s' removed. '%s' & '%s'.", keyword, T1, T2));
                     return true;
@@ -200,21 +232,5 @@ public class FootballMatch extends Match{
         log.fine(String.format("No match found for %s and %s.", T1, T2));
         return false;
     }
-
-
-    public boolean inList(List<FootballMatch> list){
-        return list_contains(list, this);
-    }
-
-
-    public static boolean list_contains(List<FootballMatch> list, Match match){
-        for (FootballMatch match2: list){
-            if (match.same_match(match2, true) == true){
-                return true;
-            }
-        }
-        return false;
-    }
-
 
 }

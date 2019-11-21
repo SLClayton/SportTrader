@@ -1,11 +1,15 @@
 package Sport;
 
+import SiteConnectors.BettingSite;
 import SiteConnectors.SportData;
 import Trader.SportsTrader;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -17,7 +21,7 @@ public abstract class Match {
 
     public Instant start_time;
     public String name;
-    public String id;
+    protected String id;
     public Map<String, String> metadata;
 
     public Match(){
@@ -38,27 +42,28 @@ public abstract class Match {
     }
 
 
-    public String id(){
+    public String getID(){
         if (id == null){
             id = sportData.getMatchID(this);
         }
         return id;
     }
 
-    public abstract String getID();
+
+    public abstract boolean isVerified();
 
 
-    public abstract void refreshData();
+    public abstract boolean verify();
 
 
-    public void set_id(String id){
+    public abstract void refreshIDs();
 
-    }
 
     public abstract String key();
 
 
-    public abstract Boolean same_match(Match match, boolean attempt_verify);
+    public abstract Boolean same_match(Match match);
+
 }
 
 

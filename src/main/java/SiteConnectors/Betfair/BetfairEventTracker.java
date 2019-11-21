@@ -64,7 +64,6 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     public Betfair betfair;
-
     public String event_id;
 
 
@@ -78,7 +77,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     public BetfairEventTracker(Betfair betfair, EventTrader eventTrader){
-        super(eventTrader);
+        super(betfair, eventTrader);
         this.betfair = betfair;
 
         match = null;
@@ -100,48 +99,14 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     @Override
-    public boolean setupMatch(FootballMatch setup_match) throws IOException,
-            URISyntaxException {
+    public boolean siteSpecificSetup() throws IOException, URISyntaxException {
 
-        Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
-        Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
-
-        ArrayList<FootballMatch> potential_matches = betfair.getFootballMatches(start, end);
-
-        // Check each event returned to find matching events
-        match = null;
-        for (FootballMatch potential_match: potential_matches){
-            // Check same match
-            if (Boolean.TRUE.equals(potential_match.same_match(setup_match, false))) {
-                match = potential_match;
-                event_id = potential_match.metadata.get("betfair_id");
-                break;
-            }
-        }
-
-        // Try again but verify if nothing found this time
-        if (match == null){
-            for (FootballMatch potential_match: potential_matches){
-                // Check same match
-                if (Boolean.TRUE.equals(potential_match.same_match(setup_match, true))) {
-                    match = potential_match;
-                    event_id = potential_match.metadata.get("betfair_id");
-                    break;
-                }
-            }
-        }
-
-        // Error if not found
-        if (match == null) {
-            String fails = "";
-            for (FootballMatch m: potential_matches){
-                fails = fails + " " + m.toString();
-            }
-            log.warning(String.format("No matches found for %s in betfair. Checked %d: %s",
-                    setup_match.toString(), potential_matches.size(), fails));
+        event_id = match.metadata.get(Betfair.BETFAIR_EVENT_ID);
+        if (event_id == null){
+            log.severe(String.format("Could not find betfair event id in match metadata. %s md:%s",
+                    match.toString(), match.metadata.toString()));
             return false;
         }
-
 
         // Build params for market catalogue request
         JSONObject params = new JSONObject();
@@ -158,16 +123,9 @@ public class BetfairEventTracker extends SiteEventTracker {
         eventIds.add(event_id);
         filters.put("eventIds", eventIds);
 
-
         // Get market catalogue for this event
         JSONArray markets = null;
-        try {
-            markets = (JSONArray) betfair.getMarketCatalogue(params);
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-            throw e;
-        }
-
+        markets = (JSONArray) betfair.getMarketCatalogue(params);
 
         // Get initial data from markets of this event
         for (Object market_obj: markets){
@@ -489,6 +447,7 @@ public class BetfairEventTracker extends SiteEventTracker {
     private JSONObject extractRunnerHANDICAP(FootballBet BET, JSONArray market_odds) {
 
         FootballHandicapBet bet = (FootballHandicapBet) BET;
+        FootballMatch footballMatch = (FootballMatch) this.match;
 
         // Check if handicap is integer or 0.5 interval
         boolean integer_handicap = bet.a_handicap.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0;
@@ -566,15 +525,14 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
         else if (half_handicap) {
 
-
             Integer correct_selectionId = null;
             BigDecimal correct_handicap = null;
             if (bet.winnerA()){
-                correct_selectionId = handicap_runnerName_selectionId_map.get(match.team_a.normal_name());
+                correct_selectionId = handicap_runnerName_selectionId_map.get(footballMatch.team_a.normal_name());
                 correct_handicap = bet.a_handicap;
             }
             else if (bet.winnerB()){
-                correct_selectionId = handicap_runnerName_selectionId_map.get(match.team_b.normal_name());
+                correct_selectionId = handicap_runnerName_selectionId_map.get(footballMatch.team_b.normal_name());
                 correct_handicap = bet.a_handicap.multiply(new BigDecimal(-1));
             }
             else{

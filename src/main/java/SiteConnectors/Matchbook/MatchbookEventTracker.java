@@ -40,7 +40,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
 
     public MatchbookEventTracker(Matchbook matchbook, EventTrader eventTrader) {
-        super(eventTrader);
+        super(matchbook, eventTrader);
         this.matchbook = matchbook;
         market_name_id_map = new HashMap<>();
     }
@@ -52,40 +52,9 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
 
     @Override
-    public boolean setupMatch(FootballMatch setup_match) throws IOException, URISyntaxException, InterruptedException {
+    public boolean siteSpecificSetup() {
 
-        ArrayList<FootballMatch> events = matchbook
-                .getFootballMatches(setup_match.start_time.minus(1, ChronoUnit.SECONDS),
-                                    setup_match.start_time.plus(1, ChronoUnit.SECONDS));
-
-        match = null;
-        // Verify each match in flashscores and see if it matches
-        for (FootballMatch fm: events){
-            if (Boolean.TRUE.equals(fm.same_match(setup_match, false))){
-                match = fm;
-                event_id = fm.metadata.get("matchbook_event_id");
-                break;
-            }
-        }
-        if (match == null){
-            for (FootballMatch fm: events){
-                if (Boolean.TRUE.equals(fm.same_match(setup_match, true))){
-                    match = fm;
-                    event_id = fm.metadata.get("matchbook_event_id");
-                    break;
-                }
-            }
-        }
-
-        // Check for no match
-        if (match == null){
-            log.warning(String.format("%s No match found in matchbook. Searched %d events %s.",
-                    setup_match, events.size(), Match.listtostring(events)));
-            return false;
-        }
-
-
-        this.match = setup_match;
+        // Nothing to do.
         return true;
     }
 

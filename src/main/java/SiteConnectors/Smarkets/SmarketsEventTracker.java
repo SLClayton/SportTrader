@@ -59,7 +59,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
 
     public SmarketsEventTracker(Smarkets smarkets, EventTrader eventTrader){
-        super(eventTrader);
+        super(smarkets, eventTrader);
         this.smarkets = smarkets;
         id_market_map = new HashMap<>();
         fullname_contract_map = new HashMap<>();
@@ -74,45 +74,12 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
 
     @Override
-    public boolean setupMatch(FootballMatch setup_match) throws IOException, URISyntaxException, InterruptedException {
+    public boolean siteSpecificSetup() throws IOException, URISyntaxException, InterruptedException {
 
-        // Get events from smarkets that match the sport and time
-        ArrayList<FootballMatch> footballMatches = smarkets.getFootballMatches(
-                setup_match.start_time.minus(1, ChronoUnit.SECONDS),
-                setup_match.start_time.plus(1, ChronoUnit.SECONDS));
-
-        match = null;
-        for (FootballMatch fm: footballMatches){
-            if (Boolean.TRUE.equals(setup_match.same_match(fm, false))){
-                match = fm;
-                event_id = fm.metadata.get("smarkets_event_id");
-                break;
-            }
-        }
-        if (match == null){
-            for (FootballMatch fm: footballMatches){
-                if (Boolean.TRUE.equals(setup_match.same_match(fm, true))){
-                    match = fm;
-                    event_id = fm.metadata.get("smarkets_event_id");
-                    break;
-                }
-            }
-        }
-
-        // Check for no match
-        if (match == null){
-            log.warning(String.format("%s No match found in smarkets. Searched %d events %s.",
-                    setup_match, footballMatches.size(), Match.listtostring(footballMatches)));
-            return false;
-        }
-
-        // Assign values to object
-        event_id = match.metadata.get("smarkets_event_id");
-        this.match = setup_match;
-
+        event_id = match.metadata.get(Smarkets.SMARKETS_EVENT_ID);
 
         // Setup market data for this match
-        market_ids = new ArrayList<String>();
+        market_ids = new ArrayList<>();
         JSONArray markets = smarkets.getMarkets(event_id);
         for (Object market_obj: markets) {
 

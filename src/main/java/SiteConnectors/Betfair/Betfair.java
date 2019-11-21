@@ -53,6 +53,7 @@ public class Betfair extends BettingSite {
     public static final int FOOTBALL_ID = 1;
     public final static String name = "betfair";
     public final static String id = "BF";
+    public final static String BETFAIR_EVENT_ID = "BETFAIR_EVENT_ID";
 
     public String hostname = "https://api.betfair.com/";
     public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
@@ -502,7 +503,7 @@ public class Betfair extends BettingSite {
             try {
                 fm = FootballMatch.parse((String) event.get("openDate"),
                                          (String) event.get("name"));
-                fm.metadata.put("betfair_id", (String) event.get("id"));
+                fm.metadata.put(BETFAIR_EVENT_ID, (String) event.get("id"));
             }
             catch (ParseException e){
                 continue;

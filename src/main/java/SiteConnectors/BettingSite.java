@@ -6,6 +6,7 @@ import Bet.BetOrder;
 import Bet.PlacedBet;
 import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
+import Sport.Match;
 import Trader.EventTrader;
 import Trader.SportsTrader;
 import tools.MyLogHandler;
@@ -143,6 +144,7 @@ public abstract class BettingSite {
 
     public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until)
             throws IOException, URISyntaxException, InterruptedException;
+
 
 
     public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
