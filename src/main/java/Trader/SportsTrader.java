@@ -10,6 +10,7 @@ import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 import com.google.gson.JsonSyntaxException;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import tools.MyLogHandler;
 
 import java.awt.*;
@@ -83,7 +84,7 @@ public class SportsTrader {
     public boolean exit_flag;
 
 
-    public SportsTrader() throws IOException, ConfigException {
+    public SportsTrader() throws IOException, ConfigException, org.json.simple.parser.ParseException {
         Thread.currentThread().setName("Main");
         exit_flag = false;
         log.setUseParentHandlers(false);
@@ -133,10 +134,11 @@ public class SportsTrader {
 
 
     private void setupConfig(String config_filename) throws JsonSyntaxException, FileNotFoundException,
-            ConfigException {
+            ConfigException, org.json.simple.parser.ParseException {
 
-        Map config = null;
-        config = getJSONResourceMap(config_filename);
+        JSONObject config = null;
+        String config_string = getResourceFileString(config_filename);
+        config = (JSONObject) new JSONParser().parse(config_string);
 
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
@@ -154,26 +156,26 @@ public class SportsTrader {
             throw new ConfigException(missingFields);
         }
 
-        MAX_MATCHES = ((Double) config.get("MAX_MATCHES")).intValue();
-        MIN_SITES_PER_MATCH = ((Double) config.get("MIN_SITES_PER_MATCH")).intValue();
+        MAX_MATCHES = ((Long) config.get("MAX_MATCHES")).intValue();
+        MIN_SITES_PER_MATCH = ((Long) config.get("MIN_SITES_PER_MATCH")).intValue();
         IN_PLAY = (boolean) config.get("IN_PLAY");
-        HOURS_AHEAD = ((Double) config.get("HOURS_AHEAD")).intValue();
+        HOURS_AHEAD = ((Long) config.get("HOURS_AHEAD")).intValue();
         CHECK_MARKETS = (boolean) config.get("CHECK_MARKETS");
         PLACE_BETS = (boolean) config.get("PLACE_BETS");
         ACTIVE_SITES = (Map<String, Boolean>) config.get("ACTIVE_SITES");
-        RATE_LIMIT = (long) ((Double) config.get("RATE_LIMIT")).intValue();
+        RATE_LIMIT = ((Long) config.get("RATE_LIMIT"));
         MIN_ODDS_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_ODDS_RATIO")));
         EVENT_SOURCE = (String) config.get("EVENT_SOURCE");
         MAX_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("MAX_INVESTMENT")));
         MIN_PROFIT_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_PROFIT_RATIO")));
         END_ON_BET = (boolean) config.get("END_ON_BET");
         TARGET_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("TARGET_INVESTMENT")));
-        REQUEST_TIMEOUT = (long) ((Double) config.get("REQUEST_TIMEOUT")).intValue();
+        REQUEST_TIMEOUT = ((Long) config.get("REQUEST_TIMEOUT"));
         RUN_STATS = (boolean) config.get("RUN_STATS");
         SINGLE_MATCH_TEST = (boolean) config.get("SINGLE_MATCH_TEST");
         SM_NAME = (String) config.get("SM_NAME");
         SM_TIME = (String) config.get("SM_TIME");
-        RATE_LOCKSTEP_INTERVAL = (long) ((Double) config.get("RATE_LOCKSTEP_INTERVAL")).intValue();
+        RATE_LOCKSTEP_INTERVAL = ((Long) config.get("RATE_LOCKSTEP_INTERVAL"));
         LOG_LEVEL = ((String) config.get("LOG_LEVEL")).toUpperCase();
 
 
@@ -199,9 +201,8 @@ public class SportsTrader {
             throw new ConfigException(msg);
         }
 
-
-        JSONObject config_json = new JSONObject(config);
-        log.info(String.format("Configuration\n%s", jstring(config_json)));
+        // Log the config of this execution
+        log.info(String.format("Configuration\n%s", config_string));
     }
 
 
@@ -567,7 +568,7 @@ public class SportsTrader {
                         log.info(String.format("Successfully refreshed session for %s", site_name));
                     } catch (CertificateException | UnrecoverableKeyException | NoSuchAlgorithmException |
                             KeyStoreException | KeyManagementException | IOException | URISyntaxException |
-                            InterruptedException e) {
+                            org.json.simple.parser.ParseException | InterruptedException e) {
 
                         e.printStackTrace();
 

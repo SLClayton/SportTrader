@@ -80,7 +80,7 @@ public class Betfair extends BettingSite {
 
     public Betfair() throws IOException, CertificateException, UnrecoverableKeyException,
             NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException,
-            InterruptedException {
+            InterruptedException, org.json.simple.parser.ParseException {
 
         super();
         log.info("Creating new Betfair Connector");
@@ -288,7 +288,8 @@ public class Betfair extends BettingSite {
 
     @Override
     public void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException {
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException,
+            org.json.simple.parser.ParseException {
 
         token = getSessionToken();
         requester.setHeader("X-Authentication", token);
@@ -300,7 +301,7 @@ public class Betfair extends BettingSite {
 
     @Override
     public String getSessionToken() throws CertificateException, NoSuchAlgorithmException, KeyStoreException,
-            IOException, UnrecoverableKeyException, KeyManagementException {
+            IOException, UnrecoverableKeyException, KeyManagementException, org.json.simple.parser.ParseException {
 
         String loginurl = "https://identitysso-cert.betfair.com/api/certlogin";
 

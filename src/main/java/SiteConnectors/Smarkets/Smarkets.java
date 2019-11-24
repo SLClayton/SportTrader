@@ -20,6 +20,7 @@ import org.hamcrest.core.Is;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import tools.Requester;
 
 import java.awt.*;
@@ -76,8 +77,7 @@ public class Smarkets extends BettingSite {
 
 
 
-    public Smarkets() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, URISyntaxException, IOException, InterruptedException {
+    public Smarkets() throws URISyntaxException, IOException, InterruptedException, ParseException {
 
         RATE_LIMITED_JSON = new JSONObject();
         RATE_LIMITED_JSON.put(RATE_LIMITED, RATE_LIMITED);
@@ -298,8 +298,7 @@ public class Smarkets extends BettingSite {
 
 
     @Override
-    public void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException {
+    public void login() throws IOException, URISyntaxException, InterruptedException, ParseException {
 
         requester.setHeader("Authorization", getSessionToken());
         updateAccountInfo();
@@ -319,8 +318,7 @@ public class Smarkets extends BettingSite {
 
 
     @Override
-    public String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException {
+    public String getSessionToken() throws IOException, URISyntaxException, ParseException {
 
         Map<String, String> credentials = getJSON(ssldir + "/smarkets-login.json");
 
@@ -985,38 +983,6 @@ public class Smarkets extends BettingSite {
 
 
     public static void main(String[] args){
-
-        try {
-            Smarkets s = new Smarkets();
-
-
-
-            toFile(s.getEvents(Instant.now(), Instant.now().plusSeconds(60*60*24), FOOTBALL));
-
-
-
-
-
-
-
-
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
 
     }

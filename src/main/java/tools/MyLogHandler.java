@@ -1,5 +1,6 @@
 package tools;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,9 +14,13 @@ public class MyLogHandler extends Handler {
 
     String pwd = FileSystems.getDefault().getPath(".").toString();
 
+    File info_log_file;
+    FileWriter info_fr;
+
     File warning_log_file;
-    File severe_log_file;
     FileWriter warning_fr;
+
+    File severe_log_file;
     FileWriter severe_fr;
 
 
@@ -29,10 +34,14 @@ public class MyLogHandler extends Handler {
             log_dir.mkdir();
         }
 
+        info_log_file = new File(pwd + "/logs/info.log");
         warning_log_file = new File(pwd + "/logs/warning.log");
         severe_log_file = new File(pwd + "/logs/severe.log");
 
         // Delete previous log files if they exist
+        if (info_log_file.exists()){
+            info_log_file.delete();
+        }
         if (warning_log_file.exists()){
             warning_log_file.delete();
         }
@@ -41,9 +50,11 @@ public class MyLogHandler extends Handler {
         }
 
         // Create new files and filewriters
+        info_log_file.createNewFile();
         warning_log_file.createNewFile();
         severe_log_file.createNewFile();
 
+        info_fr = new FileWriter(info_log_file);
         warning_fr = new FileWriter(warning_log_file);
         severe_fr = new FileWriter(severe_log_file);
     }
@@ -73,26 +84,37 @@ public class MyLogHandler extends Handler {
                 .append(record.getMessage());
 
         String log_msg = sb.toString();
+
+
         if (record.getLevel().equals(Level.SEVERE)){
             System.err.println("\n" + log_msg + "\n");
             try {
+                info_fr.write("\n" + log_msg + "\n");
+                info_fr.flush();
                 severe_fr.write(log_msg + "\n");
                 severe_fr.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        else if (record.getLevel().equals(Level.WARNING)){
-            System.out.println(log_msg);
-            try {
-                warning_fr.write(log_msg + "\n");
-                warning_fr.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         else {
             System.out.println(log_msg);
+            try {
+                info_fr.write(log_msg + "\n");
+                info_fr.flush();
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+            if (record.getLevel().equals(Level.WARNING)){
+                try {
+                    warning_fr.write(log_msg + "\n");
+                    warning_fr.flush();
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

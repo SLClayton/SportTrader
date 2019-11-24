@@ -63,7 +63,8 @@ public class Matchbook extends BettingSite {
 
 
     public Matchbook() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            IOException, KeyManagementException, KeyStoreException, URISyntaxException, InterruptedException {
+            IOException, KeyManagementException, KeyStoreException, URISyntaxException, InterruptedException,
+            org.json.simple.parser.ParseException {
 
         if (log == null){
             log = Logger.getLogger(Matchbook.class.getName());
@@ -225,7 +226,8 @@ public class Matchbook extends BettingSite {
 
     @Override
     public void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException {
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException,
+            org.json.simple.parser.ParseException {
 
         requester.setHeader("session-token", getSessionToken());
         updateAccountInfo();
@@ -253,7 +255,7 @@ public class Matchbook extends BettingSite {
     @Override
     public String getSessionToken() throws IOException, CertificateException,
             NoSuchAlgorithmException, KeyStoreException, KeyManagementException,
-            UnrecoverableKeyException, URISyntaxException {
+            UnrecoverableKeyException, URISyntaxException, org.json.simple.parser.ParseException {
 
         String path = ssldir + "/matchbook-login.json";
         Map creds = printer.getJSON(path);

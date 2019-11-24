@@ -65,11 +65,6 @@ public abstract class printer {
     }
 
 
-    public static void print(int output){
-        System.out.println(output);
-    }
-
-
     public static void toFile(JSONObject j, String filename){
         toFile(jstring(j), filename);
     }
@@ -115,15 +110,6 @@ public abstract class printer {
     }
 
 
-    public static Map getJSONResourceMap(String filename) throws FileNotFoundException {
-        filename = resource_path + filename;
-        String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
-        Gson gson = new Gson();
-        Map map = gson.fromJson(jsonString, HashMap.class);
-        return map;
-    }
-
-
     public static void renameResourceFile(String original, String new_name){
         File fileold = new File(original);
 
@@ -140,37 +126,31 @@ public abstract class printer {
 
 
     public static JSONObject getJSONResource(String filename) throws FileNotFoundException, ParseException {
-        filename = "src/main/resources/" + filename;
-        String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
-        JSONParser parser = new JSONParser();
-        JSONObject json = (JSONObject) parser.parse(jsonString);
-        return json;
+        return getJSON(resource_path + filename);
+    }
+
+
+    public static JSONObject getJSON(String filename) throws FileNotFoundException, ParseException {
+        return (JSONObject) new JSONParser().parse(getFileString(filename));
+    }
+
+
+    public static String getFileString(String filename) throws FileNotFoundException {
+        return new Scanner(new File(filename)).useDelimiter("\\Z").next();
+    }
+
+    public static String getResourceFileString(String filename) throws FileNotFoundException {
+        return getFileString(resource_path + filename);
     }
 
 
     public static void saveJSONResource(JSONObject json, String filename){
-        filename = resource_path + filename;
-        toFile(json, filename);
+        toFile(json, resource_path + filename);
     }
 
 
     public static void saveJSONResource(JSONArray json, String filename){
-        filename = resource_path + filename;
-        toFile(json, filename);
-    }
-
-
-    public static Map getJSON(String filename) throws FileNotFoundException {
-        String jsonString = new Scanner(new File(filename)).useDelimiter("\\Z").next();
-        Gson gson = new Gson();
-        Map map = gson.fromJson(jsonString, Map.class);
-        return map;
-    }
-
-
-    public static String fromFile(String filename) throws FileNotFoundException {
-        String s = new Scanner(new File(filename)).useDelimiter("\\Z").next();
-        return s;
+        toFile(json, resource_path + filename);
     }
 
 
@@ -223,6 +203,9 @@ public abstract class printer {
     public static void sleepUntil(Instant sleep_until) throws InterruptedException {
         sleepUntil(sleep_until, null);
     }
+
+
+
 
 
     public static void makeDirIfNotExists(String dir_name){

@@ -9,6 +9,7 @@ import Sport.FootballMatch;
 import Sport.Match;
 import Trader.EventTrader;
 import Trader.SportsTrader;
+import org.json.simple.parser.ParseException;
 import tools.MyLogHandler;
 import tools.Requester;
 
@@ -62,11 +63,11 @@ public abstract class BettingSite {
 
 
     public abstract void login() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException;
+            KeyStoreException, KeyManagementException, IOException, URISyntaxException, InterruptedException, ParseException;
 
 
     public abstract String getSessionToken() throws IOException, CertificateException, NoSuchAlgorithmException,
-            KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException;
+            KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException, ParseException;
 
 
     public abstract BigDecimal commission();
@@ -234,31 +235,6 @@ public abstract class BettingSite {
 
 
     public static void main(String[] args) {
-
-        try {
-            Smarkets s = new Smarkets();
-
-            print(s.useBalance(new BigDecimal(70)));
-
-
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
 
     }
 }
