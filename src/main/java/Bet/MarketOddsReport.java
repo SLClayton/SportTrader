@@ -39,7 +39,7 @@ public class MarketOddsReport {
     public String errorMessage;
 
 
-    public enum ErrorType {NONE, TIMED_OUT, RATE_LIMITED, UNIDENTIFIED}
+    public enum ErrorType {NONE, TIMED_OUT, RATE_LIMITED, GENERIC}
 
 
     public MarketOddsReport(){
@@ -62,8 +62,9 @@ public class MarketOddsReport {
 
 
     public boolean unknown_error(){
-        return errorType.equals(ErrorType.UNIDENTIFIED);
+        return errorType.equals(ErrorType.GENERIC);
     }
+
 
     public boolean rate_limited(){
         return errorType.equals(ErrorType.RATE_LIMITED);
@@ -76,15 +77,15 @@ public class MarketOddsReport {
     }
 
 
-    public static MarketOddsReport UNKNOWN_ERROR(String msg){
-        MarketOddsReport mor = new MarketOddsReport(ErrorType.UNIDENTIFIED);
+    public static MarketOddsReport ERROR(String msg){
+        MarketOddsReport mor = new MarketOddsReport(ErrorType.GENERIC);
         mor.errorMessage = msg;
         return mor;
     }
 
 
     public String getErrorMessage(){
-        if (errorType.equals(ErrorType.UNIDENTIFIED)){
+        if (errorType.equals(ErrorType.GENERIC)){
             return String.format("%s: %s", errorType.toString(), String.valueOf(errorMessage));
         }
         return errorType.toString();

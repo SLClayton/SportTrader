@@ -224,6 +224,11 @@ public abstract class BettingSite {
         return ((o instanceof BettingSite) && getName().equals(((BettingSite) o).getName()));
     }
 
+    @Override
+    public String toString(){
+        return getName();
+    }
+
 
 
 

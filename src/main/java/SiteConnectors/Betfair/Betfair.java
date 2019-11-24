@@ -380,17 +380,14 @@ public class Betfair extends BettingSite {
     }
 
 
-
-
-
-    public JSONArray getMarketOdds(String[] market_ids) throws InterruptedException {
+    public JSONArray getMarketOdds(Collection<String> market_ids) throws InterruptedException {
         log.fine(String.format("Getting market odds for market ids: %s", market_ids.toString()));
 
-        ArrayList<ArrayList<String>> market_id_chunks = shard(market_ids, markets_per_req);
+        List<List<String>> market_id_chunks = shard(market_ids, markets_per_req);
 
         // Build rpc request from market id chunks
         JSONArray rpc_requests = new JSONArray();
-        for (ArrayList<String> market_ids_chunk: market_id_chunks){
+        for (List<String> market_ids_chunk: market_id_chunks){
 
             JSONArray priceData = new JSONArray();
             priceData.add("EX_ALL_OFFERS");
@@ -430,18 +427,6 @@ public class Betfair extends BettingSite {
         }
 
         return results;
-    }
-
-
-    public JSONArray getMarketOdds(Collection<String> market_ids) throws InterruptedException {
-        String[] market_id_array = new String[market_ids.size()];
-
-        int i = 0;
-        for (String s: market_ids){
-            market_id_array[i] = s;
-            i++;
-        }
-        return getMarketOdds(market_id_array);
     }
 
 
@@ -851,9 +836,7 @@ public class Betfair extends BettingSite {
 
         // Send off request to place bets on betfair exchange
         JSONArray response = (JSONArray) requester.post(betting_endpoint, RPCs);
-
-        toFile(response);
-
+        pp(response);
     }
 
 

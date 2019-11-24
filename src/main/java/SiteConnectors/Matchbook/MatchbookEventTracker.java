@@ -35,7 +35,6 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
     public Matchbook matchbook;
     public String event_id;
-    public FootballMatch match;
     public Map<String, String> market_name_id_map;
 
 
@@ -53,8 +52,10 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
     @Override
     public boolean siteSpecificSetup() {
-
-        // Nothing to do.
+        event_id = match.metadata.get(Matchbook.MATCHBOOK_EVENT_ID);
+        if (event_id == null){
+            log.severe(String.format("No event id found in metadata for match %s md:%s", match, match.metadata));
+        }
         return true;
     }
 
@@ -66,11 +67,11 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
-        lastMarketOddsReport = null;
+        lastMarketOddsReport = new MarketOddsReport();
         lastMarketOddsReport_start_time = Instant.now();
 
         if (event_id == null){
-            return null;
+            return MarketOddsReport.ERROR("No event id for matchbook event tracker");
         }
 
         // Update the raw odds for this event
@@ -109,7 +110,6 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
             // Check runner is valid
             if (runner == null){
-                log.fine(String.format("No matchbook runner found for %s in %s", bet.id(), match));
                 continue;
             }
             if ((!runner.containsKey("status")) || (!runner.get("status").equals("open"))){

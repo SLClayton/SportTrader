@@ -19,6 +19,7 @@ import Trader.EventTrader;
 import org.hamcrest.core.Is;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import tools.Requester;
 
 import java.awt.*;
@@ -56,6 +57,8 @@ public class Smarkets extends BettingSite {
     public static String MARKET_ID = "MARKET_ID";
     public static String SMARKETS_PRICE = "SMARKETS_PRICE";
     public static String SMARKETS_EVENT_ID = "SMARKETS_EVENT_ID";
+    public final static String RATE_LIMITED = "RATE_LIMITED";
+    public JSONObject RATE_LIMITED_JSON;
 
     public static int[] prices_enum = new int[] {1, 10, 20, 33, 34, 36, 37, 38, 40, 42, 43, 45, 48, 50, 53, 56, 59, 62, 67, 71, 77, 83, 91, 100, 105, 111, 118, 125, 133, 143, 154, 167, 182, 200, 208, 217, 227, 238, 250, 263, 278, 294, 312, 333, 345, 357, 370, 385, 400, 417, 435, 455, 476, 500, 513, 526, 541, 556, 571, 588, 606, 625, 645, 667, 690, 714, 741, 769, 800, 833, 870, 909, 952, 1000, 1020, 1042, 1064, 1087, 1111, 1136, 1163, 1190, 1220, 1250, 1282, 1316, 1351, 1389, 1429, 1471, 1515, 1562, 1613, 1667, 1695, 1724, 1754, 1786, 1818, 1852, 1887, 1923, 1961, 2000, 2041, 2083, 2128, 2174, 2222, 2273, 2326, 2381, 2439, 2500, 2532, 2564, 2597, 2632, 2667, 2703, 2740, 2778, 2817, 2857, 2899, 2941, 2985, 3030, 3077, 3125, 3175, 3226, 3279, 3333, 3356, 3378, 3401, 3425, 3448, 3472, 3497, 3521, 3546, 3571, 3597, 3623, 3650, 3676, 3704, 3731, 3759, 3788, 3817, 3846, 3876, 3906, 3937, 3968, 4000, 4032, 4065, 4098, 4132, 4167, 4202, 4237, 4274, 4310, 4348, 4386, 4425, 4464, 4505, 4545, 4587, 4630, 4673, 4717, 4762, 4808, 4854, 4902, 4950, 5000, 5025, 5051, 5076, 5102, 5128, 5155, 5181, 5208, 5236, 5263, 5291, 5319, 5348, 5376, 5405, 5435, 5464, 5495, 5525, 5556, 5587, 5618, 5650, 5682, 5714, 5747, 5780, 5814, 5848, 5882, 5917, 5952, 5988, 6024, 6061, 6098, 6135, 6173, 6211, 6250, 6289, 6329, 6369, 6410, 6452, 6494, 6536, 6579, 6623, 6667, 6711, 6757, 6803, 6849, 6897, 6944, 6993, 7042, 7092, 7143, 7194, 7246, 7299, 7353, 7407, 7463, 7519, 7576, 7634, 7692, 7752, 7812, 7874, 7937, 8000, 8065, 8130, 8197, 8264, 8333, 8403, 8475, 8547, 8621, 8696, 8772, 8850, 8929, 9009, 9091, 9174, 9259, 9346, 9434, 9524, 9615, 9709, 9804, 9901, 9999};
 
@@ -75,6 +78,9 @@ public class Smarkets extends BettingSite {
 
     public Smarkets() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, URISyntaxException, IOException, InterruptedException {
+
+        RATE_LIMITED_JSON = new JSONObject();
+        RATE_LIMITED_JSON.put(RATE_LIMITED, RATE_LIMITED);
 
         requester = new Requester();
         commission_rate = new BigDecimal("0.01");
@@ -223,7 +229,7 @@ public class Smarkets extends BettingSite {
                     if (expiry_time != null && Instant.now().isBefore(expiry_time)){
                         // Fail all these handlers
                         for (RequestHandler rh: requestHandlers){
-                            rh.setResponse(MarketOddsReport.RATE_LIMITED());
+                            rh.setResponse(RATE_LIMITED_JSON);
                         }
                     }
                     else{
@@ -268,7 +274,7 @@ public class Smarkets extends BettingSite {
 
                             // Fail all these handlers
                             for (RequestHandler rh: requestHandlers){
-                                rh.setResponse(MarketOddsReport.RATE_LIMITED());
+                                rh.setResponse(RATE_LIMITED_JSON);
                             }
                         }
                         else{
@@ -346,6 +352,7 @@ public class Smarkets extends BettingSite {
         return name;
     }
 
+
     @Override
     public String getID() {
         return id;
@@ -397,7 +404,7 @@ public class Smarkets extends BettingSite {
 
             Instant time = Instant.parse(((String) event.get("start_datetime")));
             String name = (String) event.get("name");
-            String[] teams = name.split(" vs. ");
+            String[] teams = name.split(" vs.? ");
             if (teams.length != 2){
                 log.warning(String.format("Cannot parse football match name '%s' in smarkets.", name));
                 continue;
@@ -837,7 +844,6 @@ public class Smarkets extends BettingSite {
         }
 
         pp(response);
-        toFile(response);
     }
 
 

@@ -26,7 +26,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -62,10 +65,10 @@ public class EventTrader implements Runnable {
     public FootballBetGenerator footballBetGenerator;
     public ArrayList<BetGroup> tautologies;
 
-    public Set<String> ok_site_oddsReports;
-    public Set<String> timout_site_oddsReports;
-    public Set<String> rateLimited_site_oddsReports;
-    public Set<String> error_site_oddsReports;
+    public ArrayList<String> ok_site_oddsReports;
+    public ArrayList<String> timout_site_oddsReports;
+    public ArrayList<String> rateLimited_site_oddsReports;
+    public ArrayList<String> error_site_oddsReports;
     public BigDecimal best_profit_last;
 
     public EventTrader(SportsTrader sportsTrader, FootballMatch match, Map<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
@@ -88,10 +91,10 @@ public class EventTrader implements Runnable {
 
         stats = sportsTrader.stats;
 
-        ok_site_oddsReports = new HashSet<>();
-        timout_site_oddsReports = new HashSet<>();
-        rateLimited_site_oddsReports = new HashSet<>();
-        error_site_oddsReports = new HashSet<>();
+        ok_site_oddsReports = new ArrayList<>();
+        timout_site_oddsReports = new ArrayList<>();
+        rateLimited_site_oddsReports = new ArrayList<>();
+        error_site_oddsReports = new ArrayList<>();
     }
 
 
@@ -99,7 +102,7 @@ public class EventTrader implements Runnable {
 
         // Create lists for sites which fail and succeed setting up
         int total_sites = sites.size();
-        ArrayList<String> failed_sites = new ArrayList<String>();
+        ArrayList<String> failed_sites = new ArrayList<>();
         HashMap<String, BettingSite> accepted_sites = new HashMap<>();
 
         //Connect each site to event tracker
@@ -157,7 +160,6 @@ public class EventTrader implements Runnable {
         // Check for Arbs
         Instant wait_until = null;
         ArrayList<Long> loop_times = new ArrayList<>();
-        ArrayList<String> sites_used_during_check = new ArrayList<>();
         Set<String> site_ids = BettingSite.getIDs(sites.values());
         BigDecimal best_profit = null;
         int loops_per_check = 100;
@@ -181,23 +183,20 @@ public class EventTrader implements Runnable {
                     best_profit = best_profit_last;
                 }
 
-                // Update sites used during check interval
-                sites_used_during_check.addAll(ok_site_oddsReports);
-
                 // Calculate the timing metrics over past timings
                 if (loop_times.size() >= loops_per_check){
                     String best = String.valueOf(best_profit);
                     if (best.length() > 8){ best = best.substring(0, 8);}
                     log.info(String.format("%s Arb Checks: avg=%dms OK%s TIMEOUT%s LIMIT%s NA%s best: %s",
                             loops_per_check, avg(loop_times),
-                            count(site_ids, sites_used_during_check).toString(),
+                            count(site_ids, ok_site_oddsReports),
                             count(new HashSet<>(timout_site_oddsReports), timout_site_oddsReports),
                             count(new HashSet<>(rateLimited_site_oddsReports), rateLimited_site_oddsReports),
                             count(new HashSet<>(error_site_oddsReports), error_site_oddsReports),
                             best));
 
                     loop_times.clear();
-                    sites_used_during_check.clear();
+                    ok_site_oddsReports.clear();
                     timout_site_oddsReports.clear();
                     rateLimited_site_oddsReports.clear();
                     error_site_oddsReports.clear();
@@ -209,7 +208,6 @@ public class EventTrader implements Runnable {
             }
         }
     }
-
 
 
     public long avg(Collection<Long> list){
@@ -272,6 +270,9 @@ public class EventTrader implements Runnable {
                 // Update odds report and deal with errors if they happen during.
                 try {
                     MarketOddsReport mor = set.getMarketOddsReport(footballBetGenerator.getAllBets());
+                    if (mor == null){
+                        mor = MarketOddsReport.ERROR("Market Odds Report returned null object");
+                    }
                     requestHandler.setResponse(mor);
                 }
                 catch (InterruptedException e){
@@ -281,7 +282,7 @@ public class EventTrader implements Runnable {
                     e.printStackTrace();
                     log.severe(String.format("Unexpected error when getting MarketOddsReport for %s.\n%s\n%s",
                             site_name, e.toString(), e.getStackTrace().toString()));
-                    requestHandler.setResponse(MarketOddsReport.UNKNOWN_ERROR(e.toString()));
+                    requestHandler.setResponse(MarketOddsReport.ERROR(e.toString()));
                 }
             }
             log.info("Exiting Event Trader Odds Report updater.");
@@ -303,10 +304,6 @@ public class EventTrader implements Runnable {
         // Wait for results to be generated in each thread and collect them all
         // Use null if time-out occurs for any site
         ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
-        ok_site_oddsReports.clear();
-        timout_site_oddsReports.clear();
-        rateLimited_site_oddsReports.clear();
-        error_site_oddsReports.clear();
         Instant timeout = Instant.now().plus(REQUEST_TIMEOUT, ChronoUnit.MILLIS);
         for (RequestHandler rh: requestHandlers){
             BettingSite site = sites.get((String) rh.request);
@@ -315,12 +312,12 @@ public class EventTrader implements Runnable {
             if (Instant.now().isBefore(timeout)) {
                 long millis_until_timeout = timeout.toEpochMilli() - Instant.now().toEpochMilli();
                 mor = (MarketOddsReport) rh.pollReponse(millis_until_timeout, TimeUnit.MILLISECONDS);
-            } else {
+            }
+            else {
                 mor = (MarketOddsReport) rh.pollReponse();
             }
             if (mor == null){
                 mor = MarketOddsReport.TIMED_OUT();
-
             }
 
 
@@ -328,12 +325,12 @@ public class EventTrader implements Runnable {
                 marketOddsReports.add(mor);
                 ok_site_oddsReports.add(site.getID());
             }
+            else if (mor.rate_limited()){ rateLimited_site_oddsReports.add(site.getID()); }
+            else if (mor.timed_out()){ timout_site_oddsReports.add(site.getID()); }
             else{
                 log.warning(String.format("Failed to get MarkerOddsReport from %s - %s",
                     site.getName(), mor.getErrorMessage()));
-                if (mor.timed_out()){ timout_site_oddsReports.add(site.getID()); }
-                else if (mor.unknown_error()){ error_site_oddsReports.add(site.getID());}
-                else if (mor.rate_limited()){ rateLimited_site_oddsReports.add(site.getID());}
+                error_site_oddsReports.add(site.getID());
             }
         }
 
@@ -371,17 +368,13 @@ public class EventTrader implements Runnable {
         log.info(String.format("%s profit reports found to be over %s PROFIT RATIO.",
                 in_profit.size(), MIN_PROFIT_RATIO.toString()));
 
-
         // Create profit folder if it does not exist
-        File profit_dir = new File(FileSystems.getDefault().getPath(".") + "/profit");
-        if (!profit_dir.exists()) {
-            profit_dir.mkdir();
-        }
+        String profit_dir = "profit";
+        makeDirIfNotExists(profit_dir);
 
         // Get the best (first in list) profit report
         ProfitReport ratioProfitReport = in_profit.get(0);
         String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
-
 
         // Find profit reports for the lowest and highest possible through min bet size and max volume available
         ProfitReport min_profit_report = ratioProfitReport.newProfitReportReturn(
@@ -446,16 +439,25 @@ public class EventTrader implements Runnable {
 
         // Check config allows bets
         if (sportsTrader.PLACE_BETS) {
+            // Placed bets and generate profit report
             ArrayList<PlacedBet> placeBets = placeBets(profitReport.betOrders);
             PlacedProfitReport placedProfitReport = new PlacedProfitReport(placeBets, profitReport);
-            toFile(placedProfitReport.toJSON(true));
+
+            // Create dir name and filename for this profit report to save to
+            String placed_bets_dir = "placed_bets";
+            String placedBetsFilename = String.format("%s %s %s.json",
+                    Instant.now().truncatedTo(ChronoUnit.MILLIS), match, placedProfitReport.min_profit);
+
+            // Make directory and save profit report
+            makeDirIfNotExists(placed_bets_dir);
+            toFile(placedProfitReport.toJSON(true), placed_bets_dir + "/" + placedBetsFilename);
         }
 
 
         // Save profit report as json file
         String profitString = profitReport.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
         String filename = timeString + " -  " + match.name + " " + profitString + ".json";
-        toFile(profitReport.toJSON(true), profit_dir.toString() + "/" + filename);
+        toFile(profitReport.toJSON(true), profit_dir + "/" + filename);
 
 
         if (END_ON_BET){

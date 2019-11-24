@@ -66,6 +66,7 @@ public abstract class SiteEventTracker {
 
     public boolean setupMatch(Match setup_match) throws InterruptedException, IOException, URISyntaxException {
 
+        log.fine(String.format("Setting up match for %s in %s", setup_match, site));
         Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
         Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
 
@@ -83,13 +84,15 @@ public abstract class SiteEventTracker {
         match = null;
         for (Match potential_match: possible_matches){
             if (Boolean.TRUE.equals(setup_match.same_match(potential_match))){
+                log.fine(String.format("Matched %s with %s from %s with local data.", setup_match, potential_match, site));
                 match = potential_match;
                 break;
             }
         }
         // If no match found, ensure matches are verified with IDs and check again
         if (match == null){
-            if (!setup_match.isVerified()){
+            if (setup_match.notVerified()){
+                log.fine(String.format("Trying to verify setup match %s.", setup_match));
                 if (!setup_match.verify()){
                     log.warning(String.format("Unable to verify setup match for %s", setup_match.toString()));
                     return false;
@@ -98,10 +101,13 @@ public abstract class SiteEventTracker {
 
             // Check again
             for (Match potential_match: possible_matches){
-                if (!potential_match.isVerified()){
+                if (potential_match.notVerified()){
+                    log.fine(String.format("Trying to verify potential match %s.", potential_match));
                     potential_match.verify();
                 }
                 if (Boolean.TRUE.equals(setup_match.same_match(potential_match))){
+                    log.fine(String.format("Matched %s with %s from %s after verifying matches.",
+                            setup_match, potential_match, site));
                     match = potential_match;
                     break;
                 }

@@ -7,10 +7,7 @@ import Trader.SportsTrader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public abstract class Match {
@@ -21,12 +18,12 @@ public abstract class Match {
 
     public Instant start_time;
     public String name;
-    protected String id;
+    public String id;
     public Map<String, String> metadata;
 
     public Match(){
         this.sportData = SportsTrader.getSportData();
-        metadata = new HashMap<String, String>();
+        metadata = new HashMap<>();
     }
 
     public static String listtostring(ArrayList<FootballMatch> matches){
@@ -53,6 +50,9 @@ public abstract class Match {
     public abstract boolean isVerified();
 
 
+    public abstract boolean notVerified();
+
+
     public abstract boolean verify();
 
 
@@ -63,6 +63,8 @@ public abstract class Match {
 
 
     public abstract Boolean same_match(Match match);
+
+
 
 }
 

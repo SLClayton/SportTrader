@@ -177,8 +177,6 @@ public class BetfairEventTracker extends SiteEventTracker {
         JSONArray market_odds = betfair.getMarketOdds(eventMarketData.keySet());
 
 
-
-
         // Update the runners in the existing market data
         for (Object new_md_obj: market_odds){
             JSONObject new_md = (JSONObject) new_md_obj;
@@ -233,12 +231,12 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
-        lastMarketOddsReport = null;
+        lastMarketOddsReport = new MarketOddsReport();
         lastMarketOddsReport_start_time = Instant.now();
 
         if (match == null){
             log.severe("Trying to get market odds report on null event.");
-            return null;
+            return MarketOddsReport.ERROR("NULL event in betfair event tracker");
         }
         // get the raw data market odds
         JSONArray market_odds = betfair.getMarketOdds(marketType_id_map.values());
@@ -278,12 +276,11 @@ public class BetfairEventTracker extends SiteEventTracker {
             // Ensure runner is valid
             if (runner == null){
                 bet_blacklist.add(bet.id());
-                log.fine(String.format("No %s bet found in betfair for %s", bet.id(), match));
+                log.fine(String.format("No %s bet found in betfair.", bet.id()));
                 continue;
             }
             else if (!(runner.containsKey("ex")) || !(runner.containsKey("status"))){
-                log.warning(String.format("No 'ex' or 'status' fields found in runner for bet %s for %s in betfair.",
-                        bet, match));
+                log.warning(String.format("No 'ex' or 'status' fields found in runner for bet %s in betfair.", bet));
                 continue;
             }
             String runner_status = runner.get("status").toString();

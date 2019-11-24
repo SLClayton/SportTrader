@@ -1,5 +1,5 @@
 {
-    "MAX_MATCHES": 1,
+    "MAX_MATCHES": 30,
     "IN_PLAY": false,
     "HOURS_AHEAD": 96,
 
@@ -10,7 +10,7 @@
     "CHECK_MARKETS": true,
     "RATE_LIMIT": 300,
     "RATE_LOCKSTEP_INTERVAL": 0,
-    "REQUEST_TIMEOUT": 500,
+    "REQUEST_TIMEOUT": 150,
 
     "PLACE_BETS": false,
     "END_ON_BET": true,
@@ -24,8 +24,9 @@
     	"matchbook": true,
         "smarkets": true
     },
-    "EVENT_SOURCE": "betfair",
-    "MIN_SITES_PER_MATCH": 3,
+    "EVENT_SOURCE": "matchbook",
+    "MIN_SITES_PER_MATCH": 1,
 
-    "RUN_STATS": true
+    "RUN_STATS": true,
+    "LOG_LEVEL": "INFO"
 }

@@ -1,5 +1,6 @@
 package Sport;
 
+import Bet.FootballBet.FootballBet;
 import SiteConnectors.BettingSite;
 import SiteConnectors.SportData;
 import org.json.simple.JSONArray;
@@ -61,6 +62,13 @@ public class FootballMatch extends Match{
         return (team_a.getID() != null && team_b.getID() != null);
     }
 
+
+    @Override
+    public boolean notVerified() {
+        return !isVerified();
+    }
+
+
     @Override
     public boolean verify() {
         boolean verification_success = sportData.verifyFootballMatch(this);
@@ -92,7 +100,6 @@ public class FootballMatch extends Match{
     public String toString(){
         return String.format("[%s @ %s]", name, start_time.toString());
     }
-
 
 
     public static JSONArray list2JSON(Collection<FootballMatch> footballMatches){
@@ -139,26 +146,21 @@ public class FootballMatch extends Match{
                 return true;
             }
             else{
-                log.severe(String.format("Matches %s and %s found sameAteam but not sameBteam"));
+                log.severe(String.format("Matches %s and %s have same time, same A team but different B team.",
+                        this.toString(), match.toString()));
                 return false;
             }
-
         }
         else if (Boolean.FALSE.equals(sameAteam)){
-            if (sameBteam != null){
-                return sameBteam.booleanValue();
+            if (Boolean.TRUE.equals(sameBteam)){
+                log.severe(String.format("Matches %s and %s have same time, same B team but different A team.",
+                        this.toString(), match.toString()));
             }
+            return false;
         }
-        else {
-            if (Boolean.FALSE.equals(sameBteam) || sameBteam == null){
-                return false;
-            }
-            else {
-                log.severe(String.format("Matches %s and %s found not sameAteam but sameBteam"));
-                return false;
-            }
+        else if (sameAteam == null && sameBteam != null){
+            return sameBteam.booleanValue();
         }
-
 
         // Unable to say for sure
         return null;
@@ -233,4 +235,32 @@ public class FootballMatch extends Match{
         return false;
     }
 
+
+    public boolean inList(Collection<FootballMatch> matches){
+        return appearsInList(this, matches);
+    }
+
+
+    public static boolean appearsInList(FootballMatch match, Collection<FootballMatch> matches){
+        for (Object item: matches){
+            Match m = (Match) item;
+            if (match.same_match(m)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<FootballMatch> listOverlap(
+            Collection<FootballMatch> matches1, Collection<FootballMatch> matches2){
+
+        // Return list of matches that appear in both lists
+        List<FootballMatch> in_both_lists = new ArrayList<>();
+        for (FootballMatch m: matches1){
+            if (m.inList(matches2)){
+                in_both_lists.add(m);
+            }
+        }
+        return in_both_lists;
+    }
 }

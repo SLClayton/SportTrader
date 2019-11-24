@@ -43,6 +43,7 @@ public class Matchbook extends BettingSite {
 
     public final static String name = "matchbook";
     public final static String id = "MB";
+    public final static String MATCHBOOK_EVENT_ID = "MATCHBOOK_EVENT_ID";
 
     public static String baseurl = "https://api.matchbook.com/edge/rest";
     public static String[] marketTypes = new String[]{
@@ -288,7 +289,6 @@ public class Matchbook extends BettingSite {
         return name;
     }
 
-
     @Override
     public BigDecimal minBackersStake() {
         return min_back_stake;
@@ -317,7 +317,7 @@ public class Matchbook extends BettingSite {
 
             try {
                 FootballMatch new_fm = FootballMatch.parse(start, name);
-                new_fm.metadata.put("matchbook_event_id", String.valueOf(json_event.get("id")));
+                new_fm.metadata.put(MATCHBOOK_EVENT_ID, String.valueOf(json_event.get("id")));
                 events.add(new_fm);
             } catch (ParseException e) {
                 String msg = String.format("Could not parse match '%s' starting at '%s'.", name, start);

@@ -215,8 +215,6 @@ public class FlashScores implements SportData {
                     || team_a_name == null || team_b_name == null
                     || team_a_FSID == null || team_b_FSID == null
                     || team_a_URLNAME == null || team_b_URLNAME == null) {
-                log.severe(String.format("Could not find all necessary values in raw return from flashscores" +
-                        "for fixtures for %s.\n%s", team.toString(), row.toString()));
                 continue;
             }
 
@@ -424,14 +422,12 @@ public class FlashScores implements SportData {
         // Tries to find match in flashscores and updates match ID and team IDs in local maps
         // Objects need to be refreshed after this to get their newly found IDs
 
-
         if (unverifiable_matches.contains(match.name)){
+            log.fine(String.format("Tried to verify match %s but its already failed previously.", match));
             return false;
         }
+        log.fine(String.format("Attempting to verify %s in flashscores", match));
 
-        // Get normal names
-        String team_a = match.team_a.normal_name();
-        String team_b = match.team_b.normal_name();
         FootballTeam[] teams = new FootballTeam[] {match.team_a, match.team_b};
 
         // Begin to create lists of all possible teams for team A and B
@@ -443,22 +439,26 @@ public class FlashScores implements SportData {
         // Otherwise, fill possibility list with the results from a search of its name.
         for (int i=0; i<2; i++){
             if (teams[i].getID() != null){
+                log.fine(String.format("Team %s already in local mem with id %s.", teams[i], teams[i].getID()));
                 possible_teams[i].add(teams[i]);
             }
             else{
-                possible_teams[i].addAll(queryFootballTeam(team_a));
+                possible_teams[i].addAll(queryFootballTeam(teams[i].normal_name()));
+                log.fine(String.format("Queried flashscores for team name '%s' and found %s",
+                        teams[i].normal_name(), possible_teams[i]));
             }
         }
+        if (possible_teams_a.size() == 0 || possible_teams_b.size() == 0){
+            return false;
+        }
 
-
-        ArrayList<FootballMatch> all_matches_a = null;
-        ArrayList<FootballMatch> all_matches_b = null;
+        ArrayList<FootballMatch> all_matches_a = new ArrayList<>();
+        ArrayList<FootballMatch> all_matches_b = new ArrayList<>();
         ArrayList<FootballMatch>[] all_matches = new ArrayList[] {all_matches_a, all_matches_b};
         int max_size = Integer.max(possible_teams_a.size(), possible_teams_b.size());
         FootballMatch verifiedMatch = null;
 
         for (int i=0; i<max_size; i++){
-
 
             // Compile all fixtures for all possible teams for A and B teams
             for (int j=0; j<2; j++) {
@@ -473,18 +473,16 @@ public class FlashScores implements SportData {
                     }
                 }
             }
+            log.fine(String.format("all_matches from both lists on this loop = %s and %s",
+                    all_matches_a, all_matches_b));
 
             // Check any matches appear in both lists
-            ArrayList<FootballMatch> in_both_lists = new ArrayList<>();
-            for (FootballMatch m: all_matches_a){
-                if (m.inList(all_matches_b)){
-                    in_both_lists.add(m);
-                }
-            }
+            List<FootballMatch> in_both_lists = FootballMatch.listOverlap(all_matches_a, all_matches_b);
 
             // Break if match found
             if (in_both_lists.size() == 1){
                 verifiedMatch = in_both_lists.get(0);
+                log.fine(String.format("Single match found in verification %s.", verifiedMatch));
                 break;
             }
 
@@ -504,7 +502,6 @@ public class FlashScores implements SportData {
             unverifiable_matches.add(match.name);
             return false;
         }
-
 
         // Fill in Flashscores related data to match and return it
         update_football_team_id_map(verifiedMatch.team_a);

@@ -36,9 +36,9 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
     public Smarkets smarkets;
     public String event_id;
-    public FootballMatch match;
     public Integer correct_score_max_goals;
     public Integer half_time_correct_score_max_goals;
+
 
     public static String[] market_type_names = new String[] {
             "OVER_UNDER",
@@ -214,20 +214,25 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
     @Override
     public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
-        lastMarketOddsReport = null;
+        lastMarketOddsReport = new MarketOddsReport();
         lastMarketOddsReport_start_time = Instant.now();
 
         if (event_id == null){
-            return null;
+            return MarketOddsReport.ERROR(String.format("No event id for smarkets match %s metadata %s",
+                    match, match.metadata));
         }
         log.fine(String.format("%s Updating market odds report for smarkets.", match));
 
         JSONObject lastPrices = getPrices();
         if (lastPrices == null){
-            return null;
+            return MarketOddsReport.ERROR("Smarkets last prices returned null.");
+        }
+        else if (lastPrices.containsKey(Smarkets.RATE_LIMITED)){
+            return MarketOddsReport.RATE_LIMITED();
         }
 
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
+
         for (FootballBet bet: bets){
             if (bet_blacklist.contains(bet.id())){
                 continue;
@@ -354,8 +359,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
-
-        toFile(new_marketOddsReport.toJSON());
 
         lastMarketOddsReport_end_time = Instant.now();
         lastMarketOddsReport = new_marketOddsReport;

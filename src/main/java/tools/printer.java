@@ -174,20 +174,23 @@ public abstract class printer {
     }
 
 
-    public static ArrayList<ArrayList<String>> shard(String[] unchunked_list, int shard_size){
+    public static List<List<String>> shard(Collection<String> unchunked, int shard_size){
 
-        ArrayList<ArrayList<String>> chunked_list = new ArrayList<ArrayList<String>>();
-        ArrayList<String> this_chunk = new ArrayList<String>();
+        List<List<String>> chunked_list = new ArrayList();
+        List<String> this_chunk = new ArrayList();
 
-        for (int i=0; i<unchunked_list.length; i++){
+        for (String item: unchunked){
+            this_chunk.add(item);
 
-            this_chunk.add(unchunked_list[i]);
-
-            if (this_chunk.size() >= shard_size || i == (unchunked_list.length - 1)){
+            if (this_chunk.size() >= shard_size){
                 chunked_list.add(this_chunk);
-                this_chunk = new ArrayList<String>();
+                this_chunk = new ArrayList();
             }
         }
+        if (this_chunk.size() > 0){
+            chunked_list.add(this_chunk);
+        }
+
         return chunked_list;
     }
 
@@ -222,8 +225,29 @@ public abstract class printer {
     }
 
 
-    public static void main(String[] args) {
+    public static void makeDirIfNotExists(String dir_name){
+        File dir = new File(FileSystems.getDefault().getPath(".") + "/" + dir_name);
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+    }
 
+
+    public static void main(String[] args) {
+        ArrayList<String> ints = new ArrayList<>();
+        ints.add("1");
+        ints.add("2");
+        ints.add("3");
+        ints.add("4");
+        ints.add("5");
+        ints.add("6");
+        ints.add("7");
+        ints.add("8");
+        ints.add("9");
+        ints.add("10");
+        ints.add("11");
+        ints.add("12");
+        print(shard(ints, 2));
     }
 
 

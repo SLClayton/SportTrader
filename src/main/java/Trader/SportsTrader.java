@@ -63,6 +63,7 @@ public class SportsTrader {
     public String SM_NAME;
     public String SM_TIME;
     public long RATE_LOCKSTEP_INTERVAL;
+    public String LOG_LEVEL;
 
     public Lock betlock = new ReentrantLock();
 
@@ -98,6 +99,7 @@ public class SportsTrader {
         }
 
         setupConfig("config.json");
+        log.setLevel(Level.parse(LOG_LEVEL));
 
         siteClasses = new ArrayList<Class>();
         siteClasses.add(Betfair.class);
@@ -139,7 +141,8 @@ public class SportsTrader {
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
                 "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
-                "REQUEST_TIMEOUT", "RUN_STATS", "SINGLE_MATCH_TEST", "SM_NAME", "SM_TIME", "RATE_LOCKSTEP_INTERVAL"};
+                "REQUEST_TIMEOUT", "RUN_STATS", "SINGLE_MATCH_TEST", "SM_NAME", "SM_TIME", "RATE_LOCKSTEP_INTERVAL",
+                "LOG_LEVEL"};
 
         List<String> missingFields = new ArrayList<>();
         for (String field: required){
@@ -171,6 +174,7 @@ public class SportsTrader {
         SM_NAME = (String) config.get("SM_NAME");
         SM_TIME = (String) config.get("SM_TIME");
         RATE_LOCKSTEP_INTERVAL = (long) ((Double) config.get("RATE_LOCKSTEP_INTERVAL")).intValue();
+        LOG_LEVEL = ((String) config.get("LOG_LEVEL")).toUpperCase();
 
 
         // Check target inv per bet is lower than max investment per bet
@@ -316,7 +320,7 @@ public class SportsTrader {
         eventTraderSpawns = new ArrayList<>();
         for (int i=0; i<MAX_MATCHES; i++){
             EventTraderSpawn eventTraderSpawn = new EventTraderSpawn(this, match_queue);
-            eventTraderSpawn.thread.setName("EvntTderStp" + String.valueOf(i+1));
+            eventTraderSpawn.thread.setName("EvntTdrSpwnr" + String.valueOf(i+1));
             eventTraderSpawn.start();
             eventTraderSpawns.add(eventTraderSpawn);
         }
