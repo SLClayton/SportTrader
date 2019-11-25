@@ -4,64 +4,49 @@
       "jagiellonia"
     ],
     [
+      "wigan"
+    ],
+    [
+      "luton"
+    ],
+    [
       "r union"
+    ],
+    [
+      "charlton"
+    ],
+    [
+      "maidenhead"
+    ],
+    [
+      "barrow"
     ],
     [
       "fiorentina"
     ],
     [
-      "tabor sezana"
-    ],
-    [
-      "sp subotica"
-    ],
-    [
       "la guaira"
-    ],
-    [
-      "mirandes"
-    ],
-    [
-      "malaga"
-    ],
-    [
-      "albacete"
-    ],
-    [
-      "pisa"
     ],
     [
       "ofi crete"
     ],
     [
-      "arka"
-    ],
-    [
       "arsenal w"
-    ],
-    [
-      "sion"
     ],
     [
       "zeljeznicar"
     ],
     [
+      "cardiff"
+    ],
+    [
       "monaco"
     ],
     [
-      "sassuolo"
-    ],
-    [
-      "pedras salgadas"
-    ],
-    [
-      "ferreira"
+      "fc halifax"
     ],
     [
       "berliner ak 07"
-    ],
-    [
-      "lazio"
     ],
     [
       "stuttgart"
@@ -76,79 +61,52 @@
       "lugano"
     ],
     [
-      "fabril do barreiro"
-    ],
-    [
-      "alaves"
-    ],
-    [
-      "canelas 2010"
+      "burton"
     ],
     [
       "mura"
     ],
     [
-      "virton"
-    ],
-    [
-      "fontinhas"
-    ],
-    [
       "elche"
+    ],
+    [
+      "forest green"
     ],
     [
       "liverpool w"
     ],
     [
-      "oleiros"
+      "ipswich"
     ],
     [
-      "fc copenhagen"
+      "swansea"
     ],
     [
       "ksv roeselare"
     ],
     [
-      "cittadella"
-    ],
-    [
       "siroki brijeg"
     ],
     [
-      "bristol city w"
+      "wycombe"
     ],
     [
-      "grasshoppers"
+      "notts co"
     ],
     [
       "atk"
     ],
     [
-      "atromitos"
-    ],
-    [
       "mariupol"
     ],
     [
-      "aberdeen"
-    ],
-    [
-      "thun"
-    ],
-    [
-      "young boys"
+      "harrogate"
     ],
     [
       "brescia"
     ],
     [
-      "radnik"
-    ],
-    [
-      "blackburn w"
-    ],
-    [
-      "bradford pa"
+      "stoke"
     ],
     [
       "coruxo"
@@ -160,22 +118,226 @@
       "tottenham w"
     ],
     [
-      "agueda"
-    ],
-    [
       "charlton w"
     ],
     [
       "condeixa"
     ],
     [
+      "crewe"
+    ],
+    [
       "melilla"
     ],
     [
-      "st gallen"
+      "pinhalnovense"
     ],
     [
-      "pinhalnovense"
+      "portsmouth"
+    ],
+    [
+      "fulham"
+    ],
+    [
+      "as roma"
+    ],
+    [
+      "solihull moors"
+    ],
+    [
+      "prostejov"
+    ],
+    [
+      "torquay"
+    ],
+    [
+      "winterthur"
+    ],
+    [
+      "dep tachira"
+    ],
+    [
+      "odisha"
+    ],
+    [
+      "vlasim"
+    ],
+    [
+      "woking"
+    ],
+    [
+      "man city w"
+    ],
+    [
+      "afc fylde"
+    ],
+    [
+      "hobro"
+    ],
+    [
+      "bordeaux"
+    ],
+    [
+      "derby"
+    ],
+    [
+      "cheltenham"
+    ],
+    [
+      "sanjoanense"
+    ],
+    [
+      "dyn kyiv"
+    ],
+    [
+      "stockport"
+    ],
+    [
+      "chesterfield"
+    ],
+    [
+      "lok moscow"
+    ],
+    [
+      "mafra"
+    ],
+    [
+      "gijon b"
+    ],
+    [
+      "eastleigh"
+    ],
+    [
+      "tabor sezana"
+    ],
+    [
+      "sp subotica"
+    ],
+    [
+      "mirandes"
+    ],
+    [
+      "malaga"
+    ],
+    [
+      "leverkusen"
+    ],
+    [
+      "albacete"
+    ],
+    [
+      "pisa"
+    ],
+    [
+      "arka"
+    ],
+    [
+      "chorley"
+    ],
+    [
+      "rotherham"
+    ],
+    [
+      "club brugge"
+    ],
+    [
+      "bromley"
+    ],
+    [
+      "hartlepool"
+    ],
+    [
+      "sion"
+    ],
+    [
+      "sassuolo"
+    ],
+    [
+      "pedras salgadas"
+    ],
+    [
+      "ferreira"
+    ],
+    [
+      "lazio"
+    ],
+    [
+      "aldershot"
+    ],
+    [
+      "galatasaray"
+    ],
+    [
+      "yeovil"
+    ],
+    [
+      "fabril do barreiro"
+    ],
+    [
+      "alaves"
+    ],
+    [
+      "canelas 2010"
+    ],
+    [
+      "virton"
+    ],
+    [
+      "fontinhas"
+    ],
+    [
+      "oleiros"
+    ],
+    [
+      "boreham wood"
+    ],
+    [
+      "fc copenhagen"
+    ],
+    [
+      "cittadella"
+    ],
+    [
+      "bristol city w"
+    ],
+    [
+      "grasshoppers"
+    ],
+    [
+      "wrexham"
+    ],
+    [
+      "sunderland"
+    ],
+    [
+      "atromitos"
+    ],
+    [
+      "aberdeen"
+    ],
+    [
+      "thun"
+    ],
+    [
+      "young boys"
+    ],
+    [
+      "radnik"
+    ],
+    [
+      "bradford pa"
+    ],
+    [
+      "agueda"
+    ],
+    [
+      "blackburn w"
+    ],
+    [
+      "millwall"
+    ],
+    [
+      "st gallen"
     ],
     [
       "marino de luanco"
@@ -193,43 +355,25 @@
       "chemie leipzig"
     ],
     [
-      "as roma"
-    ],
-    [
       "moreirense"
     ],
     [
-      "prostejov"
+      "grimsby"
     ],
     [
       "furth"
     ],
     [
-      "winterthur"
+      "huddersfield"
     ],
     [
-      "dep tachira"
-    ],
-    [
-      "odisha"
-    ],
-    [
-      "vlasim"
+      "dover"
     ],
     [
       "london bees w"
     ],
     [
-      "man city w"
-    ],
-    [
       "st johnstone"
-    ],
-    [
-      "bordeaux"
-    ],
-    [
-      "hobro"
     ],
     [
       "hussein dey"
@@ -238,16 +382,13 @@
       "cosenza"
     ],
     [
-      "sanjoanense"
+      "sutton"
     ],
     [
       "izarra"
     ],
     [
       "gloucester"
-    ],
-    [
-      "dyn kyiv"
     ],
     [
       "dugopolje"
@@ -265,16 +406,13 @@
       "oran"
     ],
     [
-      "aarau"
+      "dag  red"
     ],
     [
       "eibar"
     ],
     [
-      "mafra"
-    ],
-    [
-      "gijon b"
+      "aarau"
     ]
   ]
 }

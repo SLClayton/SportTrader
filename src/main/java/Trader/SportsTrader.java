@@ -140,6 +140,9 @@ public class SportsTrader {
         String config_string = getResourceFileString(config_filename);
         config = (JSONObject) new JSONParser().parse(config_string);
 
+        // Log the config of this execution
+        log.info(String.format("Loading config file:\n%s", config_string));
+
         String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
                 "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
@@ -200,9 +203,6 @@ public class SportsTrader {
             log.severe(msg);
             throw new ConfigException(msg);
         }
-
-        // Log the config of this execution
-        log.info(String.format("Configuration\n%s", config_string));
     }
 
 
