@@ -376,8 +376,8 @@ public class Betfair extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker(EventTrader eventTrader){
-        return new BetfairEventTracker(this, eventTrader);
+    public SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets){
+        return new BetfairEventTracker(this, eventTrader, bets);
     }
 
 

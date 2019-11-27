@@ -5,10 +5,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static tools.printer.pp;
 import static tools.printer.print;
@@ -77,7 +74,7 @@ public class ProfitReportSet {
     }
 
 
-    public static ProfitReportSet getTautologyProfitReports(ArrayList<BetGroup> tautologies, MarketOddsReport marketOddsReport){
+    public static ProfitReportSet getTautologyProfitReports(Collection<BetGroup> tautologies, MarketOddsReport marketOddsReport){
         /*
         // Using a list of tautologies and the market odds report, generate a profit report
         // for each tautology which

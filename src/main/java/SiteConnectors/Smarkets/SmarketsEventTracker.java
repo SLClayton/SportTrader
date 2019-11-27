@@ -1,5 +1,6 @@
 package SiteConnectors.Smarkets;
 
+import Bet.Bet;
 import Bet.BetOffer;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
@@ -22,10 +23,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -58,8 +56,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public JSONObject lastPrices;
 
 
-    public SmarketsEventTracker(Smarkets smarkets, EventTrader eventTrader){
-        super(smarkets, eventTrader);
+    public SmarketsEventTracker(Smarkets smarkets, EventTrader eventTrader, Collection<Bet> bets){
+        super(smarkets, eventTrader, bets);
         this.smarkets = smarkets;
         id_market_map = new HashMap<>();
         fullname_contract_map = new HashMap<>();
@@ -213,7 +211,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
     }
 
     @Override
-    public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
+    public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
         lastMarketOddsReport = new MarketOddsReport();
         lastMarketOddsReport_start_time = Instant.now();
 
@@ -233,7 +231,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
 
-        for (FootballBet bet: bets){
+        for (Bet bet: bets){
             if (bet_blacklist.contains(bet.id())){
                 continue;
             }

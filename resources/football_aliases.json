@@ -4,6 +4,9 @@
       "jagiellonia"
     ],
     [
+      "met police"
+    ],
+    [
       "wigan"
     ],
     [
@@ -19,6 +22,9 @@
       "maidenhead"
     ],
     [
+      "st mirren"
+    ],
+    [
       "barrow"
     ],
     [
@@ -29,6 +35,9 @@
     ],
     [
       "ofi crete"
+    ],
+    [
+      "concord"
     ],
     [
       "arsenal w"
@@ -50,6 +59,9 @@
     ],
     [
       "stuttgart"
+    ],
+    [
+      "potters bar"
     ],
     [
       "verona"
@@ -76,7 +88,16 @@
       "liverpool w"
     ],
     [
+      "ballymena"
+    ],
+    [
+      "east fife"
+    ],
+    [
       "ipswich"
+    ],
+    [
+      "dulwich hamlet"
     ],
     [
       "swansea"
@@ -100,10 +121,16 @@
       "mariupol"
     ],
     [
+      "stratford"
+    ],
+    [
       "harrogate"
     ],
     [
       "brescia"
+    ],
+    [
+      "alloa"
     ],
     [
       "stoke"
@@ -116,6 +143,9 @@
     ],
     [
       "tottenham w"
+    ],
+    [
+      "hull"
     ],
     [
       "charlton w"
@@ -148,7 +178,16 @@
       "prostejov"
     ],
     [
+      "forfar"
+    ],
+    [
       "torquay"
+    ],
+    [
+      "haringey"
+    ],
+    [
+      "clyde"
     ],
     [
       "winterthur"
@@ -172,6 +211,9 @@
       "afc fylde"
     ],
     [
+      "stourbridge"
+    ],
+    [
       "hobro"
     ],
     [
@@ -182,6 +224,9 @@
     ],
     [
       "cheltenham"
+    ],
+    [
+      "wimborne"
     ],
     [
       "sanjoanense"
@@ -235,6 +280,9 @@
       "chorley"
     ],
     [
+      "coalville"
+    ],
+    [
       "rotherham"
     ],
     [
@@ -247,7 +295,13 @@
       "hartlepool"
     ],
     [
+      "preston"
+    ],
+    [
       "sion"
+    ],
+    [
+      "everton u21"
     ],
     [
       "sassuolo"
@@ -262,6 +316,15 @@
       "lazio"
     ],
     [
+      "institute"
+    ],
+    [
+      "partick thistle"
+    ],
+    [
+      "bowers  pitsea"
+    ],
+    [
       "aldershot"
     ],
     [
@@ -272,6 +335,9 @@
     ],
     [
       "fabril do barreiro"
+    ],
+    [
+      "glenavon"
     ],
     [
       "alaves"
@@ -290,6 +356,9 @@
     ],
     [
       "boreham wood"
+    ],
+    [
+      "chippenham"
     ],
     [
       "fc copenhagen"
@@ -334,10 +403,25 @@
       "blackburn w"
     ],
     [
+      "royston"
+    ],
+    [
+      "south shields"
+    ],
+    [
+      "linfield"
+    ],
+    [
       "millwall"
     ],
     [
       "st gallen"
+    ],
+    [
+      "hibernian"
+    ],
+    [
+      "fleetwood"
     ],
     [
       "marino de luanco"
@@ -349,6 +433,9 @@
       "xamax"
     ],
     [
+      "blyth"
+    ],
+    [
       "ascoli"
     ],
     [
@@ -358,6 +445,12 @@
       "moreirense"
     ],
     [
+      "kings langley"
+    ],
+    [
+      "slough"
+    ],
+    [
       "grimsby"
     ],
     [
@@ -365,6 +458,9 @@
     ],
     [
       "huddersfield"
+    ],
+    [
+      "alfreton"
     ],
     [
       "dover"
@@ -409,10 +505,16 @@
       "dag  red"
     ],
     [
+      "corinthiancasuals"
+    ],
+    [
       "eibar"
     ],
     [
       "aarau"
+    ],
+    [
+      "raith"
     ]
   ]
 }

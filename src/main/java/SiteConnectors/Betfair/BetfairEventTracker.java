@@ -1,13 +1,11 @@
 package SiteConnectors.Betfair;
 
+import Bet.Bet;
 import Bet.BetOffer;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
-import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
-import SiteConnectors.SportData;
 import Sport.FootballMatch;
-import Sport.FootballTeam;
 import Sport.Team;
 import Trader.EventTrader;
 import org.json.simple.JSONArray;
@@ -17,11 +15,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
-import java.text.Normalizer;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static tools.printer.*;
@@ -76,8 +71,8 @@ public class BetfairEventTracker extends SiteEventTracker {
     public Map<String, Integer> overunder_runnerName_selectionId_map;
 
 
-    public BetfairEventTracker(Betfair betfair, EventTrader eventTrader){
-        super(betfair, eventTrader);
+    public BetfairEventTracker(Betfair betfair, EventTrader eventTrader, Collection<Bet> bets){
+        super(betfair, eventTrader, bets);
         this.betfair = betfair;
 
         match = null;
@@ -229,8 +224,8 @@ public class BetfairEventTracker extends SiteEventTracker {
     }
 
 
-    @Override
-    public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
+    public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
+
         lastMarketOddsReport = new MarketOddsReport();
         lastMarketOddsReport_start_time = Instant.now();
 
@@ -243,10 +238,14 @@ public class BetfairEventTracker extends SiteEventTracker {
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
 
 
-        for (FootballBet bet: bets){
-            if (bet_blacklist.contains(bet.id())){
+        for (Bet abstract_bet: bets){
+            if (bet_blacklist.contains(abstract_bet.id())){
                 continue;
             }
+
+
+            FootballBet bet = (FootballBet) abstract_bet;
+
 
             // Extract runner from market data depending on category.
             JSONObject runner = null;

@@ -1,5 +1,6 @@
 package SiteConnectors.Betdaq;
 
+import Bet.Bet;
 import Bet.BetOrder;
 import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
@@ -17,6 +18,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import static tools.printer.print;
 
@@ -70,9 +72,10 @@ public class Betdaq extends BettingSite {
     }
 
     @Override
-    public SiteEventTracker getEventTracker(EventTrader eventTrader) {
+    public SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets) {
         return null;
     }
+
 
     @Override
     public ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException {

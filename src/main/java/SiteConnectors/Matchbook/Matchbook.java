@@ -298,8 +298,8 @@ public class Matchbook extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker(EventTrader eventTrader) {
-        return new MatchbookEventTracker(this, eventTrader);
+    public SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets) {
+        return new MatchbookEventTracker(this, eventTrader, bets);
     }
 
 

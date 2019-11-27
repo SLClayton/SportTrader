@@ -140,7 +140,7 @@ public abstract class BettingSite {
     }
 
 
-    public abstract SiteEventTracker getEventTracker(EventTrader eventTrader);
+    public abstract SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets);
 
 
     public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until)
@@ -151,35 +151,6 @@ public abstract class BettingSite {
     public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException;
 
-
-    public BigDecimal ROI_old(BetOffer bet_offer, BigDecimal investment, boolean real) {
-        // Default ROI, commission on profits only
-
-        BigDecimal stake = investment;
-        BigDecimal ret;
-        BigDecimal profit;
-        BigDecimal commission;
-        BigDecimal roi;
-
-        if (bet_offer.isBack()) {
-            ret = stake.multiply(bet_offer.odds);
-            profit = ret.subtract(stake);
-            commission = profit.multiply(commission());
-            roi = ret.subtract(commission);
-        } else { // Lay Bet
-            BigDecimal lay = BetOffer.backStake2LayStake(investment, bet_offer.odds);
-            profit = lay;
-            commission = profit.multiply(commission());
-            ret = stake.add(profit);
-            roi = ret.subtract(commission);
-        }
-
-        if (real) {
-            roi = roi.setScale(2, RoundingMode.DOWN);
-        }
-
-        return roi;
-    }
 
 
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real) {

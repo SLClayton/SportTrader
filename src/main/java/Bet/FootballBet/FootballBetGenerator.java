@@ -3,7 +3,9 @@ package Bet.FootballBet;
 import java.math.BigDecimal;
 import java.util.*;
 
-import Bet.*;
+
+import Bet.Bet;
+import Bet.BetGroup;
 import Trader.SportsTrader;
 import org.json.simple.JSONObject;
 
@@ -58,7 +60,7 @@ public class FootballBetGenerator {
         save();
     }
 
-    public ArrayList<FootballBet> getAllBetsList(){
+    public List<FootballBet> getAllBets(){
         ArrayList<FootballBet> all_bets = new ArrayList<FootballBet>();
         all_bets.addAll(score_bets);
         all_bets.addAll(score_bets_ht);
@@ -72,21 +74,11 @@ public class FootballBetGenerator {
     }
 
 
-    public FootballBet[] getAllBets(){
-        ArrayList<FootballBet> betlist = getAllBetsList();
-        FootballBet[] bets = new FootballBet[betlist.size()];
-        for (int i=0; i<bets.length; i++){
-            bets[i] = betlist.get(i);
-        }
-        return bets;
-    }
-
-
 
     public void save(){
         log.info("Saving football bets to file in resources.");
         JSONObject bet_cat = new JSONObject();
-        for (FootballBet fb: getAllBetsList()){
+        for (FootballBet fb: getAllBets()){
             BetGroup current = (BetGroup) bet_cat.get(fb.category);
             if (current == null){
                 current = new BetGroup();
@@ -279,7 +271,7 @@ public class FootballBetGenerator {
 
     public ArrayList<Bet[]> tautsBackWithLay(){
         ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();
-        ArrayList<FootballBet> all_bets = getAllBetsList();
+        List<FootballBet> all_bets = getAllBets();
 
         for (int i=0; i<all_bets.size(); i++){
             Bet bet = all_bets.get(i);

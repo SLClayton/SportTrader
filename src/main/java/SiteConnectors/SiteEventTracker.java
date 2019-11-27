@@ -1,5 +1,6 @@
 package SiteConnectors;
 
+import Bet.Bet;
 import Bet.FootballBet.FootballBet;
 import Bet.MarketOddsReport;
 import Sport.FootballMatch;
@@ -14,11 +15,10 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -35,22 +35,36 @@ public abstract class SiteEventTracker {
     public SportData sportData;
 
     public Match match;
+    public Collection<Bet> bets;
     public Set<String> bet_blacklist;
 
     public MarketOddsReport lastMarketOddsReport;
     public Instant lastMarketOddsReport_start_time;
     public Instant lastMarketOddsReport_end_time;
 
+    public MarketOddsReportWorker marketOddsReportWorker;
+    public BlockingQueue<RequestHandler> marketOddsReportRequestQueue;
 
-    public SiteEventTracker(BettingSite site, EventTrader eventTrader){
+
+    public SiteEventTracker(BettingSite site, EventTrader eventTrader, Collection<Bet> bets){
         this.site = site;
         this.eventTrader = eventTrader;
+        this.bets = bets;
         sportData = SportsTrader.getSportData();
         bet_blacklist = new HashSet<>();
+
+        marketOddsReportRequestQueue = new ArrayBlockingQueue<>(1);
+        marketOddsReportWorker = new MarketOddsReportWorker(this, marketOddsReportRequestQueue);
+        marketOddsReportWorker.start();
     }
 
 
     public abstract String name();
+
+
+    public void safe_exit(){
+        marketOddsReportWorker.safe_exit();
+    }
 
 
     public Long lastMarketOddsTime(){
@@ -61,7 +75,105 @@ public abstract class SiteEventTracker {
     }
 
 
-    public abstract MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception;
+    public RequestHandler requestMarketOddsReport(Collection<Bet> bets){
+        RequestHandler rh = new RequestHandler(bets);
+        try{
+            marketOddsReportRequestQueue.add(rh);
+        } catch (IllegalStateException e){
+            log.severe(String.format("Trying to add job to marketOddsReport worker queue for %s %s " +
+                    "but it already has a job in it.", site, match));
+            return null;
+        }
+        return rh;
+    }
+
+
+    public class MarketOddsReportWorker implements Runnable {
+
+        public SiteEventTracker siteEventTracker;
+        public Thread thread;
+        public BlockingQueue<RequestHandler> queue;
+
+        private boolean exit_flag;
+
+
+        public MarketOddsReportWorker(SiteEventTracker siteEventTracker, BlockingQueue<RequestHandler> queue){
+
+            exit_flag = false;
+            this.siteEventTracker = siteEventTracker;
+            this.queue = queue;
+            thread = new Thread(this);
+        }
+
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
+
+        public void start(){
+            thread.start();
+        }
+
+
+        @Override
+        public void run() {
+
+            while (!exit_flag){
+
+                RequestHandler requestHandler = null;
+
+                // Wait for an item appears in the job queue.
+                try {
+                    requestHandler = queue.take();
+                } catch (InterruptedException e) {
+                    log.fine(String.format("Site event tracker for %s %s interuppted.",
+                            siteEventTracker.site, siteEventTracker.match));
+                    continue;
+                }
+
+                // Restart if exit flag triggered or request handler not found.
+                if (requestHandler == null || exit_flag) {
+                    continue;
+                }
+
+                // Collect bets to use in report, from request handler
+                Collection<Bet> bets = (Collection<Bet>) requestHandler.request;
+                if (bets == null){
+                    String error = String.format("Bets passed into marketoddsreportworker is null.");
+                    log.severe(error);
+                    requestHandler.setResponse(MarketOddsReport.ERROR(error));
+                }
+
+                // Get the market odds report for this event tracker
+                MarketOddsReport mor;
+                try {
+                    mor = siteEventTracker.getMarketOddsReport(bets);
+                } catch (InterruptedException e) {
+                    log.warning(String.format("%s mor worker was interrupted."));
+                    continue;
+                } catch (Exception e){
+                    log.severe(String.format("Exception '%s' when getting MarketOddsReport for %s ",
+                            e.toString(), siteEventTracker.match));
+                    mor = MarketOddsReport.ERROR(e.toString());
+                }
+                if (mor == null){
+                    mor = MarketOddsReport.ERROR("getMarketOddsReport returned null");
+                }
+
+                // Apply mor to request handler
+                requestHandler.setResponse(mor);
+            }
+
+            log.info(String.format("Ending MarketOddsReport worker for %s %s",
+                    siteEventTracker.site, siteEventTracker.match));
+
+        }
+    }
+
+
+    public abstract MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException;
 
 
     public boolean setupMatch(Match setup_match) throws InterruptedException, IOException, URISyntaxException {

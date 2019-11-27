@@ -52,6 +52,7 @@ public class EventTrader implements Runnable {
     public boolean RUN_STATS;
     public long RATE_LOCKSTEP_INTERVAL;
 
+    boolean exit_flag;
     public Thread thread;
     public SportsTrader sportsTrader;
     public SportsTraderStats stats;
@@ -59,11 +60,10 @@ public class EventTrader implements Runnable {
     public FootballMatch match;
     public Map<String, BettingSite> sites;
     public Map<String, SiteEventTracker> siteEventTrackers;
-    public BlockingQueue<RequestHandler> siteMarketOddsToGetQueue;
-    public ArrayList<MarketOddsReportWorker> marketOddsReportWorkers;
 
     public FootballBetGenerator footballBetGenerator;
-    public ArrayList<BetGroup> tautologies;
+    public Collection<Bet> bets;
+    public Collection<BetGroup> tautologies;
 
     public ArrayList<String> ok_site_oddsReports;
     public ArrayList<String> timout_site_oddsReports;
@@ -71,14 +71,17 @@ public class EventTrader implements Runnable {
     public ArrayList<String> error_site_oddsReports;
     public BigDecimal best_profit_last;
 
+
+
     public EventTrader(SportsTrader sportsTrader, FootballMatch match, Map<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
+        exit_flag = false;
         this.sportsTrader = sportsTrader;
         this.match = match;
         this.sites = sites;
         this.footballBetGenerator = footballBetGenerator;
+        bets = (Collection<Bet>) (Object) footballBetGenerator.getAllBets();
         tautologies = (ArrayList<BetGroup>) this.footballBetGenerator.getAllTautologies().clone();
-        siteEventTrackers = new HashMap<String, SiteEventTracker>();
-        siteMarketOddsToGetQueue = new LinkedBlockingQueue<>();
+        siteEventTrackers = new HashMap<>();
 
         MIN_ODDS_RATIO = sportsTrader.MIN_ODDS_RATIO;
         MIN_PROFIT_RATIO = sportsTrader.MIN_PROFIT_RATIO;
@@ -111,7 +114,8 @@ public class EventTrader implements Runnable {
             BettingSite site = entry.getValue();
 
             // Spawn an empty event tracker from the site object
-            SiteEventTracker eventTracker = site.getEventTracker(this);
+            SiteEventTracker eventTracker = site.getEventTracker(
+                    this, (Collection<Bet>) (Object) footballBetGenerator.getAllBets());
 
             // Try to setup match ion site event tracker, remove site if fail
             boolean setup_success = false;
@@ -147,6 +151,7 @@ public class EventTrader implements Runnable {
     public void run() {
         log.info(String.format("Running Event Trader."));
 
+        /*
         // Start MarketOddsReportWorker threads, 1 for each site
         // This is a thread for each site to go off and collect new odds report asynchronously
         marketOddsReportWorkers = new ArrayList<>();
@@ -156,6 +161,8 @@ public class EventTrader implements Runnable {
             morw.start();
             marketOddsReportWorkers.add(morw);
         }
+        */
+
         
         // Check for Arbs
         Instant wait_until = null;
@@ -163,7 +170,7 @@ public class EventTrader implements Runnable {
         Set<String> site_ids = BettingSite.getIDs(sites.values());
         BigDecimal best_profit = null;
         int loops_per_check = 100;
-        for (long i=0; !sportsTrader.exit_flag; i++){
+        for (long i=0; !exit_flag; i++){
             try {
 
                 // RATE LIMITER: Sleeps until minimum wait period between calls is done.
@@ -224,13 +231,21 @@ public class EventTrader implements Runnable {
     }
 
 
-    public class MarketOddsReportWorker implements Runnable{
+    public void safe_exit(){
+        exit_flag = true;
+        for (SiteEventTracker siteEventTracker: siteEventTrackers.values()){
+            siteEventTracker.safe_exit();
+        }
+    }
+
+
+    public class MarketOddsReportWorker_old implements Runnable{
 
         BlockingQueue<RequestHandler> job_queue;
         Map<String, SiteEventTracker> siteEventTrackers;
         Thread thread;
 
-        public MarketOddsReportWorker(BlockingQueue<RequestHandler> job_queue,
+        public MarketOddsReportWorker_old(BlockingQueue<RequestHandler> job_queue,
                                       Map<String, SiteEventTracker> siteEventTrackers){
 
             this.job_queue = job_queue;
@@ -247,21 +262,31 @@ public class EventTrader implements Runnable {
         @Override
         public void run() {
 
-            while (!sportsTrader.exit_flag){
+            mainloop:
+            while (!exit_flag){
 
                 RequestHandler requestHandler = null;
-                try {
-                    // Wait for request handler to arrive telling us which market odds to update
-                    while (!sportsTrader.exit_flag && requestHandler == null){
+
+                // Wait for an item appears in the job queue, checking every 1 second that
+                // the exit flag hasn't beem triggered.
+                while (!exit_flag && requestHandler == null){
+                    try {
                         requestHandler = job_queue.poll(1, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                }
+
+
+                // Restart if exit flag triggered or request handler not found.
+                if (requestHandler == null || exit_flag) {
                     continue;
                 }
-                if (requestHandler == null) {
-                    continue;
-                }
+
+
+                // TODO: remake bit that in parallel goes to collect market odds report, this should be
+                // in the site event tracker and you pass it in a request handler.
+
 
                 // Find the object from its name
                 String site_name = (String) requestHandler.request;
@@ -269,7 +294,11 @@ public class EventTrader implements Runnable {
 
                 // Update odds report and deal with errors if they happen during.
                 try {
-                    MarketOddsReport mor = set.getMarketOddsReport(footballBetGenerator.getAllBets());
+                    Instant a = Instant.now();
+                    MarketOddsReport mor = set.getMarketOddsReport(
+                            (Collection<Bet>)(Object) footballBetGenerator.getAllBets());
+                    Instant b = Instant.now();
+                    log.info(String.format("%s mor time = %sms", site_name, b.toEpochMilli()-a.toEpochMilli()));
                     if (mor == null){
                         mor = MarketOddsReport.ERROR("Market Odds Report returned null object");
                     }
@@ -292,24 +321,27 @@ public class EventTrader implements Runnable {
 
     private void checkArbs() throws InterruptedException {
 
-        // Create request handler and add to queue to get market odds for each site
-        ArrayList<RequestHandler> requestHandlers = new ArrayList<>();
-        for (Map.Entry<String, SiteEventTracker> entry : siteEventTrackers.entrySet()){
-            String site_name = entry.getKey();
-            RequestHandler rh = new RequestHandler(site_name);
-            siteMarketOddsToGetQueue.add(rh);
-            requestHandlers.add(rh);
+        // Send off requests to get marketOddsReports for each site event tracker
+        Map<SiteEventTracker, RequestHandler> requestHandlers = new HashMap<>();
+        for (SiteEventTracker siteEventTracker: siteEventTrackers.values()){
+            requestHandlers.put(siteEventTracker, siteEventTracker.requestMarketOddsReport(bets));
         }
 
         // Wait for results to be generated in each thread and collect them all
         // Use null if time-out occurs for any site
         ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
         Instant timeout = Instant.now().plus(REQUEST_TIMEOUT, ChronoUnit.MILLIS);
-        for (RequestHandler rh: requestHandlers){
-            BettingSite site = sites.get((String) rh.request);
+        for (Map.Entry<SiteEventTracker, RequestHandler> entry: requestHandlers.entrySet()){
+            BettingSite site = entry.getKey().site;
+            RequestHandler rh = entry.getValue();
 
+
+            // Wait for each marketOddsReport of timout
             MarketOddsReport mor;
-            if (Instant.now().isBefore(timeout)) {
+            if (rh == null){
+                mor = MarketOddsReport.ERROR("Request handler is null");
+            }
+            else if (Instant.now().isBefore(timeout)) {
                 long millis_until_timeout = timeout.toEpochMilli() - Instant.now().toEpochMilli();
                 mor = (MarketOddsReport) rh.pollReponse(millis_until_timeout, TimeUnit.MILLISECONDS);
             }
@@ -320,7 +352,7 @@ public class EventTrader implements Runnable {
                 mor = MarketOddsReport.TIMED_OUT();
             }
 
-
+            // Sort each marketOddsReport once received.
             if (mor.noError()) {
                 marketOddsReports.add(mor);
                 ok_site_oddsReports.add(site.getID());
@@ -550,7 +582,38 @@ public class EventTrader implements Runnable {
     }
 
 
+
+    public static class Worker implements Runnable{
+
+        @Override
+        public void run() {
+
+            try{
+                for (int i=0; i<100; i++){
+                    print(i);
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                print("Thread has been interrupted.");
+            }
+        }
+    }
+
+
     public static void main(String[] args){
+
+        Worker worker = new Worker();
+        Thread t = new Thread(worker);
+        t.start();
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        t.interrupt();
 
     }
 }

@@ -1,5 +1,6 @@
 package SiteConnectors.Matchbook;
 
+import Bet.Bet;
 import Bet.BetOffer;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
@@ -25,6 +26,7 @@ import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -38,8 +40,8 @@ public class MatchbookEventTracker extends SiteEventTracker {
     public Map<String, String> market_name_id_map;
 
 
-    public MatchbookEventTracker(Matchbook matchbook, EventTrader eventTrader) {
-        super(matchbook, eventTrader);
+    public MatchbookEventTracker(Matchbook matchbook, EventTrader eventTrader, Collection<Bet> bets) {
+        super(matchbook, eventTrader, bets);
         this.matchbook = matchbook;
         market_name_id_map = new HashMap<>();
     }
@@ -66,7 +68,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
 
     @Override
-    public MarketOddsReport getMarketOddsReport(FootballBet[] bets) throws Exception {
+    public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
         lastMarketOddsReport = new MarketOddsReport();
         lastMarketOddsReport_start_time = Instant.now();
 
@@ -79,7 +81,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
 
 
-        for (FootballBet bet: bets){
+        for (Bet bet: bets){
             if (bet_blacklist.contains(bet.id())){
                 continue;
             }

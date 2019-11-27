@@ -364,8 +364,8 @@ public class Smarkets extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker(EventTrader eventTrader) {
-        return new SmarketsEventTracker(this, eventTrader);
+    public SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets) {
+        return new SmarketsEventTracker(this, eventTrader, bets);
     }
 
 
