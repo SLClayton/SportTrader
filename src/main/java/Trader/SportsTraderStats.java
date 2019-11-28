@@ -110,6 +110,12 @@ public class SportsTraderStats implements Runnable {
 
     public JSONObject toJSON(boolean full_sites, Integer n_tauts){
 
+        // Shallow copy the map
+        Map<String, EventTraderStats> eventTraderStatsMap = new HashMap<>();
+        for (Map.Entry<String, EventTraderStats> entry: this.eventTraderStatsMap.entrySet()){
+            eventTraderStatsMap.put(entry.getKey(), entry.getValue());
+        }
+
 
         JSONObject eventTraders_obj = new JSONObject();
         for (Map.Entry<String, EventTraderStats> entry: eventTraderStatsMap.entrySet()){

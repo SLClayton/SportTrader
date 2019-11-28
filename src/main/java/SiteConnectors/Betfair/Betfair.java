@@ -62,6 +62,8 @@ public class Betfair extends BettingSite {
     public String app_id_dev = "DfgkZAnb0qi6Wmk1";
     public String token;
 
+    public long MAX_WAIT_TIME;
+
     public RPCRequestHandler rpcRequestHandler;
     public BlockingQueue<RequestHandler> rpcRequestHandlerQueue;
 
@@ -88,6 +90,8 @@ public class Betfair extends BettingSite {
         commission_rate = new BigDecimal("0.02");
         min_back_stake = new BigDecimal("2.00");
 
+
+
         requester = new Requester();
         requester.setHeader("X-Application", app_id);
         login();
@@ -99,6 +103,11 @@ public class Betfair extends BettingSite {
         rpcRequestHandlerThread.setDaemon(true);
         rpcRequestHandlerThread.setName("BF ReqHandler");
         rpcRequestHandlerThread.start();
+    }
+
+    private void setupConfig(String config_filename) throws FileNotFoundException, org.json.simple.parser.ParseException {
+        JSONObject config = getJSONResource(config_filename);
+        MAX_WAIT_TIME = ((Long) config.get("BETFAIR_RH_WAIT"));
     }
 
 
@@ -153,7 +162,6 @@ public class Betfair extends BettingSite {
 
         public int MAX_BATCH_SIZE = 10;
         public int REQUEST_THREADS = 8;
-        public long WAIT_MILLISECONDS = 5;
 
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
@@ -188,7 +196,7 @@ public class Betfair extends BettingSite {
                         while (!exit_flag && new_handler == null) {
                             new_handler = requestQueue.poll(1, TimeUnit.SECONDS);
                         }
-                        wait_until = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
+                        wait_until = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
                     }
                     else {
                         milliseconds_to_wait = wait_until.toEpochMilli() - Instant.now().toEpochMilli();

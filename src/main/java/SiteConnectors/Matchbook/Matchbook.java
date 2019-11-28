@@ -1,5 +1,6 @@
 package SiteConnectors.Matchbook;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -58,6 +59,8 @@ public class Matchbook extends BettingSite {
     public final static int[] valid_american_odds = new int[] {-99900, -94900, -89900, -84900, -79900, -74900, -69900, -64900, -59900, -54900, -49900, -48900, -47900, -46900, -45900, -44900, -43900, -42900, -41900, -40900, -39900, -38900, -37900, -36900, -35900, -34900, -33900, -32900, -31900, -30900, -29900, -28900, -27900, -26900, -25900, -24900, -23900, -22900, -21900, -20900, -19900, -18900, -17900, -16900, -15900, -14900, -13900, -12900, -11900, -10900, -9900, -9400, -8900, -8400, -7900, -7400, -6900, -6400, -5900, -5400, -4900, -4700, -4500, -4300, -4100, -3900, -3700, -3500, -3300, -3100, -2900, -2800, -2700, -2600, -2500, -2400, -2300, -2200, -2100, -2000, -1900, -1850, -1800, -1750, -1700, -1650, -1600, -1550, -1500, -1450, -1400, -1350, -1300, -1250, -1200, -1150, -1100, -1050, -1000, -950, -900, -880, -860, -840, -820, -800, -780, -760, -740, -720, -700, -680, -660, -640, -620, -600, -580, -560, -540, -520, -500, -490, -480, -470, -460, -450, -440, -430, -420, -410, -400, -390, -380, -370, -360, -350, -340, -330, -320, -310, -300, -295, -290, -285, -280, -275, -270, -265, -260, -255, -250, -245, -240, -235, -230, -225, -220, -215, -210, -205, -200, -198, -196, -194, -192, -190, -188, -186, -184, -182, -180, -178, -176, -174, -172, -170, -168, -166, -164, -162, -160, -158, -156, -154, -152, -150, -148, -146, -144, -142, -140, -138, -136, -134, -132, -130, -128, -126, -124, -122, -120, -118, -116, -114, -112, -110, -108, -106, -104, -102, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148, 150, 152, 154, 156, 158, 160, 162, 164, 166, 168, 170, 172, 174, 176, 178, 180, 182, 184, 186, 188, 190, 192, 194, 196, 198, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 520, 540, 560, 580, 600, 620, 640, 660, 680, 700, 720, 740, 760, 780, 800, 820, 840, 860, 880, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 1850, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3100, 3300, 3500, 3700, 3900, 4100, 4300, 4500, 4700, 4900, 5400, 5900, 6400, 6900, 7400, 7900, 8400, 8900, 9400, 9900, 10900, 11900, 12900, 13900, 14900, 15900, 16900, 17900, 18900, 19900, 20900, 21900, 22900, 23900, 24900, 25900, 26900, 27900, 28900, 29900, 30900, 31900, 32900, 33900, 34900, 35900, 36900, 37900, 38900, 39900, 40900, 41900, 42900, 43900, 44900, 45900, 46900, 47900, 48900, 49900, 54900, 59900, 64900, 69900, 74900, 79900, 84900, 89900, 94900, 99900};
     public BigDecimal[] valid_decimal_odds;
 
+    public long MAX_WAIT_TIME;
+
     public marketDataRequestHandler marketDataRequestHandler;
     public BlockingQueue<RequestHandler> marketDataRequestHandlerQueue;
 
@@ -76,6 +79,8 @@ public class Matchbook extends BettingSite {
 
         min_back_stake = new BigDecimal("0.10");
         commission_rate = new BigDecimal("0.02");
+
+        setupConfig("config.json");
 
         // Set up a requester to handle HTTP requests
         requester = new Requester();
@@ -100,13 +105,16 @@ public class Matchbook extends BettingSite {
     }
 
 
+    private void setupConfig(String config_filename) throws FileNotFoundException, org.json.simple.parser.ParseException {
+        JSONObject config = getJSONResource(config_filename);
+        MAX_WAIT_TIME = ((Long) config.get("MATCHBOOK_RH_WAIT"));
+    }
 
 
     public class marketDataRequestHandler implements Runnable{
 
         public int MAX_BATCH_SIZE = 10;
         public int REQUEST_THREADS = 8;
-        public long WAIT_MILLISECONDS = 5;
 
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
@@ -139,7 +147,7 @@ public class Matchbook extends BettingSite {
                         while (!exit_flag && new_handler == null){
                             new_handler = requestQueue.poll(1, TimeUnit.SECONDS);
                         }
-                        wait_until = Instant.now().plus(WAIT_MILLISECONDS, ChronoUnit.MILLIS);
+                        wait_until = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
                     }
                     else {
                         milliseconds_to_wait = wait_until.toEpochMilli() - Instant.now().toEpochMilli();

@@ -25,6 +25,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
+import static net.dongliu.commons.Prints.print;
+
 public abstract class SiteEventTracker {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
@@ -38,7 +40,6 @@ public abstract class SiteEventTracker {
     public Collection<Bet> bets;
     public Set<String> bet_blacklist;
 
-    public MarketOddsReport lastMarketOddsReport;
     public Instant lastMarketOddsReport_start_time;
     public Instant lastMarketOddsReport_end_time;
 
@@ -68,7 +69,7 @@ public abstract class SiteEventTracker {
 
 
     public Long lastMarketOddsTime(){
-        if (lastMarketOddsReport == null){
+        if (lastMarketOddsReport_end_time == null || lastMarketOddsReport_end_time == null){
             return null;
         }
         return lastMarketOddsReport_end_time.toEpochMilli() - lastMarketOddsReport_start_time.toEpochMilli();
@@ -103,6 +104,16 @@ public abstract class SiteEventTracker {
             this.siteEventTracker = siteEventTracker;
             this.queue = queue;
             thread = new Thread(this);
+            assignThreadName();
+        }
+
+
+        public void assignThreadName(){
+            String match_name = "NO_EVENT_YET";
+            if (siteEventTracker.match != null){
+                match_name = siteEventTracker.match.name;
+            }
+            thread.setName(String.format("%s-%s-MORW", match_name, siteEventTracker.site));
         }
 
 
@@ -114,6 +125,11 @@ public abstract class SiteEventTracker {
 
         public void start(){
             thread.start();
+        }
+
+
+        public void interrupt(){
+            thread.interrupt();
         }
 
 
@@ -140,24 +156,26 @@ public abstract class SiteEventTracker {
 
                 // Collect bets to use in report, from request handler
                 Collection<Bet> bets = (Collection<Bet>) requestHandler.request;
+                MarketOddsReport mor;
                 if (bets == null){
                     String error = String.format("Bets passed into marketoddsreportworker is null.");
                     log.severe(error);
-                    requestHandler.setResponse(MarketOddsReport.ERROR(error));
+                    mor = MarketOddsReport.ERROR(error);
+                }
+                else{
+                    // Get the market odds report for this event tracker
+                    try {
+                        mor = siteEventTracker.getMarketOddsReport(bets);
+                    } catch (InterruptedException e) {
+                        log.fine(String.format("%s %s mor worker was interrupted.", site, match));
+                        continue;
+                    } catch (Exception e){
+                        log.severe(String.format("Exception '%s' when getting MarketOddsReport for %s ",
+                                e.toString(), siteEventTracker.match));
+                        mor = MarketOddsReport.ERROR(e.toString());
+                    }
                 }
 
-                // Get the market odds report for this event tracker
-                MarketOddsReport mor;
-                try {
-                    mor = siteEventTracker.getMarketOddsReport(bets);
-                } catch (InterruptedException e) {
-                    log.warning(String.format("%s mor worker was interrupted."));
-                    continue;
-                } catch (Exception e){
-                    log.severe(String.format("Exception '%s' when getting MarketOddsReport for %s ",
-                            e.toString(), siteEventTracker.match));
-                    mor = MarketOddsReport.ERROR(e.toString());
-                }
                 if (mor == null){
                     mor = MarketOddsReport.ERROR("getMarketOddsReport returned null");
                 }
@@ -173,7 +191,18 @@ public abstract class SiteEventTracker {
     }
 
 
-    public abstract MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException;
+    public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException{
+        // Its important that
+        MarketOddsReport mor = _getMarketOddsReport(bets);
+        if (mor == null){
+            log.severe(String.format("getMarketOdds report for %s %s has retuned null when it should never do so.",
+                    site, match));
+        }
+        return mor;
+    }
+
+
+    public abstract MarketOddsReport _getMarketOddsReport(Collection<Bet> bets) throws InterruptedException;
 
 
     public boolean setupMatch(Match setup_match) throws InterruptedException, IOException, URISyntaxException {
@@ -234,6 +263,7 @@ public abstract class SiteEventTracker {
         }
 
         // If gotten this far then a match will have been assigned to the match variable.
+        marketOddsReportWorker.assignThreadName();
         return siteSpecificSetup();
     }
 

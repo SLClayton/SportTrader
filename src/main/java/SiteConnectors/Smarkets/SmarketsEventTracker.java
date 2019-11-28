@@ -211,8 +211,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
     }
 
     @Override
-    public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
-        lastMarketOddsReport = new MarketOddsReport();
+    public MarketOddsReport _getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
         lastMarketOddsReport_start_time = Instant.now();
 
         if (event_id == null){
@@ -359,7 +358,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
         }
 
         lastMarketOddsReport_end_time = Instant.now();
-        lastMarketOddsReport = new_marketOddsReport;
         return new_marketOddsReport;
     }
 

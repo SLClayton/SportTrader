@@ -66,6 +66,11 @@ public class SportsTrader {
     public long RATE_LOCKSTEP_INTERVAL;
     public String LOG_LEVEL;
 
+    public int SMARKETS_REQ_SIZE;
+    public long SMARKETS_RH_WAIT;
+    public long BETFAIR_RH_WAIT;
+    public long MATCHBOOK_RH_WAIT;
+
     public Lock betlock = new ReentrantLock();
 
     public ArrayList<Class> siteClasses;
@@ -147,7 +152,7 @@ public class SportsTrader {
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
                 "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
                 "REQUEST_TIMEOUT", "RUN_STATS", "SINGLE_MATCH_TEST", "SM_NAME", "SM_TIME", "RATE_LOCKSTEP_INTERVAL",
-                "LOG_LEVEL"};
+                "LOG_LEVEL", "SMARKETS_REQ_SIZE", "SMARKETS_RH_WAIT", "BETFAIR_RH_WAIT", "MATCHBOOK_RH_WAIT"};
 
         List<String> missingFields = new ArrayList<>();
         for (String field: required){
@@ -388,7 +393,7 @@ public class SportsTrader {
 
 
     public void safe_exit(){
-        log.info("Safe exit triggered. Closing down program.");
+        log.info("Master safe exit triggered. Closing down program.");
 
         exit_flag = true;
         sessionsUpdater.exit_flag = true;
@@ -401,6 +406,9 @@ public class SportsTrader {
         }
         for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
             entry.getValue().exit_flag = true;
+        }
+        for (EventTrader eventTrader: eventTraders){
+            eventTrader.safe_exit();
         }
 
     }

@@ -7,13 +7,14 @@ import org.json.simple.JSONObject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class PlacedProfitReport {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public ArrayList<PlacedBet> placedBets;
+    public List<PlacedBet> placedBets;
 
     public BigDecimal total_investment;
     public BigDecimal min_return;
@@ -28,7 +29,7 @@ public class PlacedProfitReport {
     public enum State {ALL_SUCCESS, ALL_FAILURES, MIX_STATES}
 
 
-    public PlacedProfitReport(ArrayList<PlacedBet> placedBets, ProfitReport blueprint) {
+    public PlacedProfitReport(List<PlacedBet> placedBets, ProfitReport blueprint) {
 
         this.placedBets = placedBets;
         this.blueprint = blueprint;

@@ -5,7 +5,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.sql.Time;
 import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -69,38 +73,45 @@ public class MyLogHandler extends Handler {
 
 
 
-        StringBuilder sb = new StringBuilder();
-        Instant time = Instant.ofEpochMilli(record.getMillis());
-        String timestring = time.toString()
+
+        Instant datetime = Instant.ofEpochMilli(record.getMillis());
+        String timestring = datetime.truncatedTo(ChronoUnit.MILLIS).toString()
                 .replace("T", " ");
-        if (timestring.length() > 23){
-            timestring = timestring.substring(0, 23);
-        }
-        sb.append(timestring)
+        LocalTime time = datetime.atZone(ZoneOffset.UTC).toLocalTime();
+
+        String log_no_datetime = new StringBuilder()
                 .append(String.format(" [%s] ", threadname))
                 .append(String.format("[%s] ", record.getLevel().toString()))
                 //.append(record.getSourceMethodName())
-                .append("")
-                .append(record.getMessage());
+                .append(record.getMessage())
+                .toString();
 
-        String log_msg = sb.toString();
+        String save_log = new StringBuilder()
+                .append(timestring)
+                .append(log_no_datetime)
+                .toString();
+
+        String print_log = new StringBuilder()
+                .append(time.toString())
+                .append(log_no_datetime)
+                .toString();
 
 
         if (record.getLevel().equals(Level.SEVERE)){
-            System.err.println("\n" + log_msg + "\n");
+            System.err.println("\n" + print_log + "\n");
             try {
-                info_fr.write("\n" + log_msg + "\n");
+                info_fr.write("\n" + save_log + "\n");
                 info_fr.flush();
-                severe_fr.write(log_msg + "\n");
+                severe_fr.write(save_log + "\n");
                 severe_fr.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         else {
-            System.out.println(log_msg);
+            System.out.println(print_log);
             try {
-                info_fr.write(log_msg + "\n");
+                info_fr.write(save_log + "\n");
                 info_fr.flush();
             }
             catch (IOException e){
@@ -108,7 +119,7 @@ public class MyLogHandler extends Handler {
             }
             if (record.getLevel().equals(Level.WARNING)){
                 try {
-                    warning_fr.write(log_msg + "\n");
+                    warning_fr.write(save_log + "\n");
                     warning_fr.flush();
                 }
                 catch (IOException e){

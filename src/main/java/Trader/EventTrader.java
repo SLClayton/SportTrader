@@ -6,6 +6,7 @@ import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.Betfair.BetfairEventTracker;
 import SiteConnectors.BettingSite;
 import SiteConnectors.FlashScores;
+import SiteConnectors.Matchbook.Matchbook;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
@@ -51,6 +52,7 @@ public class EventTrader implements Runnable {
     public long REQUEST_TIMEOUT;
     public boolean RUN_STATS;
     public long RATE_LOCKSTEP_INTERVAL;
+    public boolean PLACE_BETS;
 
     boolean exit_flag;
     public Thread thread;
@@ -91,6 +93,7 @@ public class EventTrader implements Runnable {
         REQUEST_TIMEOUT = sportsTrader.REQUEST_TIMEOUT;
         RUN_STATS = sportsTrader.RUN_STATS;
         RATE_LOCKSTEP_INTERVAL = sportsTrader.RATE_LOCKSTEP_INTERVAL;
+        PLACE_BETS = sportsTrader.PLACE_BETS;
 
         stats = sportsTrader.stats;
 
@@ -239,86 +242,6 @@ public class EventTrader implements Runnable {
     }
 
 
-    public class MarketOddsReportWorker_old implements Runnable{
-
-        BlockingQueue<RequestHandler> job_queue;
-        Map<String, SiteEventTracker> siteEventTrackers;
-        Thread thread;
-
-        public MarketOddsReportWorker_old(BlockingQueue<RequestHandler> job_queue,
-                                      Map<String, SiteEventTracker> siteEventTrackers){
-
-            this.job_queue = job_queue;
-            this.siteEventTrackers = siteEventTrackers;
-            thread = new Thread(this);
-        }
-
-
-        public void start(){
-            thread.start();
-        }
-
-
-        @Override
-        public void run() {
-
-            mainloop:
-            while (!exit_flag){
-
-                RequestHandler requestHandler = null;
-
-                // Wait for an item appears in the job queue, checking every 1 second that
-                // the exit flag hasn't beem triggered.
-                while (!exit_flag && requestHandler == null){
-                    try {
-                        requestHandler = job_queue.poll(1, TimeUnit.SECONDS);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                // Restart if exit flag triggered or request handler not found.
-                if (requestHandler == null || exit_flag) {
-                    continue;
-                }
-
-
-                // TODO: remake bit that in parallel goes to collect market odds report, this should be
-                // in the site event tracker and you pass it in a request handler.
-
-
-                // Find the object from its name
-                String site_name = (String) requestHandler.request;
-                SiteEventTracker set = siteEventTrackers.get(site_name);
-
-                // Update odds report and deal with errors if they happen during.
-                try {
-                    Instant a = Instant.now();
-                    MarketOddsReport mor = set.getMarketOddsReport(
-                            (Collection<Bet>)(Object) footballBetGenerator.getAllBets());
-                    Instant b = Instant.now();
-                    log.info(String.format("%s mor time = %sms", site_name, b.toEpochMilli()-a.toEpochMilli()));
-                    if (mor == null){
-                        mor = MarketOddsReport.ERROR("Market Odds Report returned null object");
-                    }
-                    requestHandler.setResponse(mor);
-                }
-                catch (InterruptedException e){
-                    continue;
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    log.severe(String.format("Unexpected error when getting MarketOddsReport for %s.\n%s\n%s",
-                            site_name, e.toString(), e.getStackTrace().toString()));
-                    requestHandler.setResponse(MarketOddsReport.ERROR(e.toString()));
-                }
-            }
-            log.info("Exiting Event Trader Odds Report updater.");
-        }
-    }
-
-
     private void checkArbs() throws InterruptedException {
 
         // Send off requests to get marketOddsReports for each site event tracker
@@ -333,6 +256,7 @@ public class EventTrader implements Runnable {
         Instant timeout = Instant.now().plus(REQUEST_TIMEOUT, ChronoUnit.MILLIS);
         for (Map.Entry<SiteEventTracker, RequestHandler> entry: requestHandlers.entrySet()){
             BettingSite site = entry.getKey().site;
+            SiteEventTracker.MarketOddsReportWorker reportWorker = entry.getKey().marketOddsReportWorker;
             RequestHandler rh = entry.getValue();
 
 
@@ -348,8 +272,11 @@ public class EventTrader implements Runnable {
             else {
                 mor = (MarketOddsReport) rh.pollReponse();
             }
+
             if (mor == null){
+                // Use timout MOR and cancel report worker.
                 mor = MarketOddsReport.TIMED_OUT();
+                reportWorker.interrupt();
             }
 
             // Sort each marketOddsReport once received.
@@ -400,12 +327,17 @@ public class EventTrader implements Runnable {
         log.info(String.format("%s profit reports found to be over %s PROFIT RATIO.",
                 in_profit.size(), MIN_PROFIT_RATIO.toString()));
 
+
         // Create profit folder if it does not exist
         String profit_dir = "profit";
         makeDirIfNotExists(profit_dir);
 
+
         // Get the best (first in list) profit report
         ProfitReport ratioProfitReport = in_profit.get(0);
+
+
+
         String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
 
         // Find profit reports for the lowest and highest possible through min bet size and max volume available
@@ -415,7 +347,7 @@ public class EventTrader implements Runnable {
                 ratioProfitReport.ret_from_max_stake.subtract(new BigDecimal("0.01")));
         ProfitReport target_profit_report = ratioProfitReport.newProfitReportInvestment(TARGET_INVESTMENT);
 
-        log.info(String.format("Profit reports generated. Min=%s  Target=%s  Max=%s",
+        log.info(String.format("Profit reports generated. Investment( Min=%s  Target=%s  Max=%s )",
                 min_profit_report.total_investment.toString(),
                 target_profit_report.total_investment.toString(),
                 max_profit_report.total_investment.toString()));
@@ -435,15 +367,16 @@ public class EventTrader implements Runnable {
         else if ((target_profit_report == null || target_profit_report.smallerInvestment(min_profit_report))
                 && min_profit_report.smallerInvestment(max_profit_report)) {
 
-            log.info(String.format("Target profit report has total investment below minimum %s needed. Using minimum.",
-                    min_profit_report.total_investment.toString()));
+            log.info(String.format("Target profit report has total investment (%s) below minimum needed (%s). Using minimum.",
+                    target_profit_report.total_investment, min_profit_report.total_investment));
             profitReport = min_profit_report;
-        } else if (max_profit_report.biggerInvestment(min_profit_report)) {
-
+        }
+        else if (max_profit_report.biggerInvestment(min_profit_report)) {
             log.info(String.format("Target profit report has total investment above max of %s available volume. Using max.",
                     max_profit_report.total_investment.toString()));
             profitReport = min_profit_report;
-        } else {
+        }
+        else {
             log.warning(String.format("Bet not possible with current offers. No bets placed."));
             return;
         }
@@ -463,26 +396,34 @@ public class EventTrader implements Runnable {
         }
 
 
+        log.info(String.format("Chosen profit report of inv %s is below max inv %s.",
+                profitReport.total_investment, MAX_INVESTMENT));
+
+
         // If ending after bet, lock out all other threads.
         if (END_ON_BET) {
             sportsTrader.betlock.lock();
         }
 
 
-        // Check config allows bets
-        if (sportsTrader.PLACE_BETS) {
+        // Place bets if config allows it
+        if (PLACE_BETS) {
+            log.info("Attempting to place bets.");
+
             // Placed bets and generate profit report
-            ArrayList<PlacedBet> placeBets = placeBets(profitReport.betOrders);
+            List<PlacedBet> placeBets = placeBets(profitReport.betOrders);
             PlacedProfitReport placedProfitReport = new PlacedProfitReport(placeBets, profitReport);
 
-            // Create dir name and filename for this profit report to save to
-            String placed_bets_dir = "placed_bets";
+            // Construct file paths for saved PlacedBetReport
+            String placedBetsDir = "placed_bets";
             String placedBetsFilename = String.format("%s %s %s.json",
                     Instant.now().truncatedTo(ChronoUnit.MILLIS), match, placedProfitReport.min_profit);
+            String placedBetsPath = placedBetsDir + "/" + placedBetsFilename;
 
             // Make directory and save profit report
-            makeDirIfNotExists(placed_bets_dir);
-            toFile(placedProfitReport.toJSON(true), placed_bets_dir + "/" + placedBetsFilename);
+            log.info(String.format("Saving PlacedProfitReport to %s", placedBetsPath));
+            makeDirIfNotExists(placedBetsDir);
+            toFile(placedProfitReport.toJSON(true), placedBetsPath);
         }
 
 
@@ -493,13 +434,13 @@ public class EventTrader implements Runnable {
 
 
         if (END_ON_BET){
-            log.info("Bets Placed, END_ON_BET=true so exiting program.");
+            log.info("END_ON_BET=true so exiting program.");
             sportsTrader.safe_exit();
         }
     }
 
 
-    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders){
+    public List<PlacedBet> placeBets(ArrayList<BetOrder> betOrders){
 
         //Sort placed bets into seperate lists depending on their size
         Map<String, ArrayList<BetOrder>> site_bets = new HashMap<>();
@@ -520,7 +461,7 @@ public class EventTrader implements Runnable {
             PlaceBetsRunnable placeBetsRunnable = new PlaceBetsRunnable(site_betOrders);
             placeBetsRunnable.thread = new Thread(placeBetsRunnable);
             placeBetsRunnable.thread.setName(String.format("%s-BtchBtPlcr", site_name));
-            placeBetsRunnable.thread.start();
+            placeBetsRunnable.start();
             placeBetsRunnables.add(placeBetsRunnable);
         }
 
@@ -538,9 +479,9 @@ public class EventTrader implements Runnable {
                 while (failedbets.size() < placeBetsRunnable.betOrders.size()){
                     BetOrder betOrder = placeBetsRunnable.betOrders.get(failedbets.size());
 
-                    PlacedBet generic_failbet = new PlacedBet(PlacedBet.FAILED_STATE,
-                            betOrder,
-                            String.format("Error with all bets sent in this batch to %s.", placeBetsRunnable.site.getName()));
+                    PlacedBet generic_failbet = new PlacedBet(PlacedBet.FAILED_STATE, betOrder,
+                            String.format("Error with all bets sent in this batch to %s.",
+                                    placeBetsRunnable.site.getName()));
 
                     failedbets.add(generic_failbet);
                 }
@@ -562,6 +503,10 @@ public class EventTrader implements Runnable {
         public PlaceBetsRunnable(ArrayList<BetOrder> betOrders){
             this.betOrders = betOrders;
             site = this.betOrders.get(0).bet_offer.site;
+        }
+
+        public void start(){
+            thread.start();
         }
 
         @Override

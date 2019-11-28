@@ -224,17 +224,19 @@ public class BetfairEventTracker extends SiteEventTracker {
     }
 
 
-    public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
-
-        lastMarketOddsReport = new MarketOddsReport();
+    public MarketOddsReport _getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
         lastMarketOddsReport_start_time = Instant.now();
 
         if (match == null){
             log.severe("Trying to get market odds report on null event.");
             return MarketOddsReport.ERROR("NULL event in betfair event tracker");
         }
+
         // get the raw data market odds
         JSONArray market_odds = betfair.getMarketOdds(marketType_id_map.values());
+        if (market_odds == null){
+            return MarketOddsReport.ERROR("Betfair market odds returned null.");
+        }
         MarketOddsReport new_marketOddsReport = new MarketOddsReport();
 
 
@@ -243,9 +245,7 @@ public class BetfairEventTracker extends SiteEventTracker {
                 continue;
             }
 
-
             FootballBet bet = (FootballBet) abstract_bet;
-
 
             // Extract runner from market data depending on category.
             JSONObject runner = null;
@@ -321,7 +321,6 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
 
         lastMarketOddsReport_end_time = Instant.now();
-        lastMarketOddsReport = new_marketOddsReport;
         return new_marketOddsReport;
     }
 

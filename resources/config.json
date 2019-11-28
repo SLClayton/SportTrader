@@ -1,5 +1,8 @@
 {
-    "MAX_MATCHES": 25,
+    "RUN_STATS": true,
+    "LOG_LEVEL": "INFO",
+
+    "MAX_MATCHES": 30,
     "IN_PLAY": false,
     "HOURS_AHEAD": 96,
 
@@ -12,7 +15,7 @@
     "RATE_LOCKSTEP_INTERVAL": 0,
     "REQUEST_TIMEOUT": 1000,
 
-    "PLACE_BETS": false,
+    "PLACE_BETS": true,
     "END_ON_BET": true,
     "MIN_PROFIT_RATIO": 0.005,
     "MIN_ODDS_RATIO": 0.9,
@@ -27,6 +30,11 @@
     "EVENT_SOURCE": "matchbook",
     "MIN_SITES_PER_MATCH": 2,
 
-    "RUN_STATS": true,
-    "LOG_LEVEL": "INFO"
+    "SMARKETS_REQ_SIZE": 200,
+    "SMARKETS_RH_WAIT": 40,
+
+    "BETFAIR_RH_WAIT": 10,
+
+    "MATCHBOOK_RH_WAIT": 10
+
 }
