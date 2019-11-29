@@ -7,11 +7,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/football_aliases.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_aliases.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/football_ids_flashscores.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_ids_flashscores.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/stats.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/stats.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -40,13 +38,15 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="258">
-                    <caret line="140" column="37" lean-forward="true" selection-start-line="140" selection-start-column="37" selection-end-line="140" selection-end-column="37" />
+                  <state relative-caret-position="773">
+                    <caret line="81" column="49" lean-forward="true" selection-start-line="81" selection-start-column="49" selection-end-line="81" selection-end-column="49" />
                     <folding>
                       <element signature="imports" expanded="true" />
                       <element signature="method#lastMarketOddsTime#0;class#SiteEventTracker#0" />
+                      <element signature="class#MarketOddsReportWorker#0;class#SiteEventTracker#0" />
                       <element signature="method#assignThreadName#0;class#MarketOddsReportWorker#0;class#SiteEventTracker#0" />
                       <element signature="method#safe_exit#0;class#MarketOddsReportWorker#0;class#SiteEventTracker#0" />
+                      <element signature="method#getMarketOddsReport#0;class#SiteEventTracker#0" />
                       <element signature="method#setupMatch#0;class#SiteEventTracker#0" />
                     </folding>
                   </state>
@@ -56,8 +56,8 @@
             <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/resources/stats.json">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="9424">
-                    <caret line="589" column="13" selection-start-line="589" selection-start-column="13" selection-end-line="589" selection-end-column="13" />
+                  <state relative-caret-position="8960">
+                    <caret line="560" column="13" selection-start-line="560" selection-start-column="13" selection-end-line="560" selection-end-column="13" />
                   </state>
                 </provider>
               </entry>
@@ -84,8 +84,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="762">
-              <caret line="568" column="81" selection-start-line="568" selection-start-column="81" selection-end-line="568" selection-end-column="81" />
+            <state relative-caret-position="779">
+              <caret line="292" column="13" selection-start-line="292" selection-start-column="13" selection-end-line="292" selection-end-column="13" />
               <folding>
                 <element signature="method#setupMatch#0;class#EventTrader#0" />
                 <element signature="method#run#0;class#EventTrader#0" />
@@ -93,6 +93,8 @@
                 <element signature="method#profitFound#0;class#EventTrader#0" />
                 <element signature="method#placeBets#0;class#EventTrader#0" />
                 <element signature="class#PlaceBetsRunnable#0;class#EventTrader#0" />
+                <element signature="class#Worker#0;class#EventTrader#0" />
+                <element signature="method#main#0;class#EventTrader#0" />
               </folding>
             </state>
           </provider>
@@ -342,7 +344,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.EventTrader">
+  <component name="RunManager" selected="Application.SportsTrader">
     <configuration name="EventTrader" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Trader.EventTrader" />
       <module name="SportTrader" />
@@ -380,8 +382,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.EventTrader" />
         <item itemvalue="Application.SportsTrader" />
+        <item itemvalue="Application.EventTrader" />
         <item itemvalue="Application.printer" />
         <item itemvalue="Application.Smarkets" />
         <item itemvalue="Application.FootballHandicapBet" />
@@ -418,6 +420,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="0" width="1394" height="1407" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26161918" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -635,8 +638,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/stats.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9424">
-          <caret line="589" column="13" selection-start-line="589" selection-start-column="13" selection-end-line="589" selection-end-column="13" />
+        <state relative-caret-position="8960">
+          <caret line="560" column="13" selection-start-line="560" selection-start-column="13" selection-end-line="560" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -649,13 +652,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="140" column="37" lean-forward="true" selection-start-line="140" selection-start-column="37" selection-end-line="140" selection-end-column="37" />
+        <state relative-caret-position="773">
+          <caret line="81" column="49" lean-forward="true" selection-start-line="81" selection-start-column="49" selection-end-line="81" selection-end-column="49" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#lastMarketOddsTime#0;class#SiteEventTracker#0" />
+            <element signature="class#MarketOddsReportWorker#0;class#SiteEventTracker#0" />
             <element signature="method#assignThreadName#0;class#MarketOddsReportWorker#0;class#SiteEventTracker#0" />
             <element signature="method#safe_exit#0;class#MarketOddsReportWorker#0;class#SiteEventTracker#0" />
+            <element signature="method#getMarketOddsReport#0;class#SiteEventTracker#0" />
             <element signature="method#setupMatch#0;class#SiteEventTracker#0" />
           </folding>
         </state>
@@ -663,8 +668,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="762">
-          <caret line="568" column="81" selection-start-line="568" selection-start-column="81" selection-end-line="568" selection-end-column="81" />
+        <state relative-caret-position="779">
+          <caret line="292" column="13" selection-start-line="292" selection-start-column="13" selection-end-line="292" selection-end-column="13" />
           <folding>
             <element signature="method#setupMatch#0;class#EventTrader#0" />
             <element signature="method#run#0;class#EventTrader#0" />
@@ -672,6 +677,8 @@
             <element signature="method#profitFound#0;class#EventTrader#0" />
             <element signature="method#placeBets#0;class#EventTrader#0" />
             <element signature="class#PlaceBetsRunnable#0;class#EventTrader#0" />
+            <element signature="class#Worker#0;class#EventTrader#0" />
+            <element signature="method#main#0;class#EventTrader#0" />
           </folding>
         </state>
       </provider>

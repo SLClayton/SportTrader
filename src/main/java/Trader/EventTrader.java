@@ -277,8 +277,8 @@ public class EventTrader implements Runnable {
             if (mor == null){
                 // Use timeout MOR and cancel report worker.
                 mor = MarketOddsReport.TIMED_OUT();
-                reportWorker.interrupt();
             }
+            reportWorker.interrupt();
 
             // Sort each marketOddsReport once received.
             if (mor.noError()) {
