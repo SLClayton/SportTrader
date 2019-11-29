@@ -247,7 +247,8 @@ public class EventTrader implements Runnable {
         // Send off requests to get marketOddsReports for each site event tracker
         Map<SiteEventTracker, RequestHandler> requestHandlers = new HashMap<>();
         for (SiteEventTracker siteEventTracker: siteEventTrackers.values()){
-            requestHandlers.put(siteEventTracker, siteEventTracker.requestMarketOddsReport(bets));
+            RequestHandler rh = siteEventTracker.requestMarketOddsReport(bets);
+            requestHandlers.put(siteEventTracker, rh);
         }
 
         // Wait for results to be generated in each thread and collect them all
@@ -274,7 +275,7 @@ public class EventTrader implements Runnable {
             }
 
             if (mor == null){
-                // Use timout MOR and cancel report worker.
+                // Use timeout MOR and cancel report worker.
                 mor = MarketOddsReport.TIMED_OUT();
                 reportWorker.interrupt();
             }
@@ -324,6 +325,7 @@ public class EventTrader implements Runnable {
 
     public void profitFound(ProfitReportSet in_profit) {
 
+        String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
         log.info(String.format("%s profit reports found to be over %s PROFIT RATIO.",
                 in_profit.size(), MIN_PROFIT_RATIO.toString()));
 
@@ -336,9 +338,6 @@ public class EventTrader implements Runnable {
         // Get the best (first in list) profit report
         ProfitReport ratioProfitReport = in_profit.get(0);
 
-
-
-        String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
 
         // Find profit reports for the lowest and highest possible through min bet size and max volume available
         ProfitReport min_profit_report = ratioProfitReport.newProfitReportReturn(
@@ -530,17 +529,32 @@ public class EventTrader implements Runnable {
 
     public static class Worker implements Runnable{
 
+        public Thread t;
+
         @Override
         public void run() {
 
-            try{
-                for (int i=0; i<100; i++){
-                    print(i);
-                    Thread.sleep(1000);
+            BlockingQueue<Boolean> q = new ArrayBlockingQueue<>(1);
+            q.add(true);
+
+            print("Starting hard bit");
+            long x = 0;
+            for (int i=0; i<99999; i++){
+                for (int j=0; j<99999; j++){
+                    x = x + x* new BigDecimal(x).intValue();
                 }
+            }
+            print("Done hard bit");
+
+
+            try{
+                q.take();
             } catch (InterruptedException e) {
                 print("Thread has been interrupted.");
             }
+
+
+            print("Worker interupted?: " + String.valueOf(t.isInterrupted()));
         }
     }
 
@@ -548,17 +562,11 @@ public class EventTrader implements Runnable {
     public static void main(String[] args){
 
         Worker worker = new Worker();
-        Thread t = new Thread(worker);
-        t.start();
+        worker.t = new Thread(worker);
+        worker.t.start();
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        t.interrupt();
+        worker.t.interrupt();
+        print("Worker interuppted: " + String.valueOf(worker.t.isInterrupted()));
 
     }
 }

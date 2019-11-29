@@ -138,6 +138,7 @@ public abstract class SiteEventTracker {
 
             while (!exit_flag){
 
+                thread.interrupted();
                 RequestHandler requestHandler = null;
 
                 // Wait for an item appears in the job queue.
@@ -150,7 +151,7 @@ public abstract class SiteEventTracker {
                 }
 
                 // Restart if exit flag triggered or request handler not found.
-                if (requestHandler == null || exit_flag) {
+                if (requestHandler == null || exit_flag || thread.interrupted()) {
                     continue;
                 }
 
@@ -192,11 +193,13 @@ public abstract class SiteEventTracker {
 
 
     public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException{
-        // Its important that
+        // Its important that he MarketOddsReport isn't null when pass back so ensure this with wrapper
         MarketOddsReport mor = _getMarketOddsReport(bets);
         if (mor == null){
-            log.severe(String.format("getMarketOdds report for %s %s has retuned null when it should never do so.",
-                    site, match));
+            String msg = String.format("getMarketOdds report for %s %s has retuned null when it should never do so.",
+                    site, match);
+            log.severe(msg);
+            mor = MarketOddsReport.ERROR(msg);
         }
         return mor;
     }
