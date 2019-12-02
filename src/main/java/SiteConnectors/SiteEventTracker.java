@@ -6,6 +6,7 @@ import Bet.MarketOddsReport;
 import Sport.FootballMatch;
 import Sport.Match;
 import Trader.EventTrader;
+import Trader.MarketOddsReportWorker;
 import Trader.SportsTrader;
 
 import java.awt.image.AreaAveragingScaleFilter;
@@ -44,7 +45,7 @@ public abstract class SiteEventTracker {
     public Instant lastMarketOddsReport_end_time;
 
     public MarketOddsReportWorker marketOddsReportWorker;
-    public BlockingQueue<RequestHandler> marketOddsReportRequestQueue;
+
 
 
     public SiteEventTracker(BettingSite site, EventTrader eventTrader, Collection<Bet> bets){
@@ -53,10 +54,6 @@ public abstract class SiteEventTracker {
         this.bets = bets;
         sportData = SportsTrader.getSportData();
         bet_blacklist = new HashSet<>();
-
-        marketOddsReportRequestQueue = new ArrayBlockingQueue<>(1);
-        marketOddsReportWorker = new MarketOddsReportWorker(this, marketOddsReportRequestQueue);
-        marketOddsReportWorker.start();
     }
 
 
@@ -77,119 +74,21 @@ public abstract class SiteEventTracker {
 
 
     public RequestHandler requestMarketOddsReport(Collection<Bet> bets){
-        RequestHandler rh = new RequestHandler(bets);
-        try{
-            marketOddsReportRequestQueue.add(rh);
-        } catch (IllegalStateException e){
-            log.severe(String.format("Trying to add job to marketOddsReport worker queue for %s %s " +
-                    "but it already has a job in it.", site, match));
-            return null;
+        // Pack up args
+        Object[] args = new Object[]{this, bets};
+        RequestHandler rh = new RequestHandler(args);
+
+        // Pass into queue and return the handler
+        eventTrader.sportsTrader.marketOddsReportRequestQueue.add(rh);
+
+        // Add more workers if not enough are waiting
+        if (eventTrader.sportsTrader.MORWwaiting() <= 1){
+            eventTrader.sportsTrader.newMarketOddsReportWorker();
         }
+
         return rh;
     }
 
-
-    public class MarketOddsReportWorker implements Runnable {
-
-        public SiteEventTracker siteEventTracker;
-        public Thread thread;
-        public BlockingQueue<RequestHandler> queue;
-
-        private boolean exit_flag;
-
-
-        public MarketOddsReportWorker(SiteEventTracker siteEventTracker, BlockingQueue<RequestHandler> queue){
-
-            exit_flag = false;
-            this.siteEventTracker = siteEventTracker;
-            this.queue = queue;
-            thread = new Thread(this);
-            assignThreadName();
-        }
-
-
-        public void assignThreadName(){
-            String match_name = "NO_EVENT_YET";
-            if (siteEventTracker.match != null){
-                match_name = siteEventTracker.match.name;
-            }
-            thread.setName(String.format("%s-%s-MORW", match_name, siteEventTracker.site));
-        }
-
-
-        public void safe_exit(){
-            exit_flag = true;
-            thread.interrupt();
-        }
-
-
-        public void start(){
-            thread.start();
-        }
-
-
-        public void interrupt(){
-            thread.interrupt();
-        }
-
-
-        @Override
-        public void run() {
-
-            while (!exit_flag){
-
-                thread.interrupted();
-                RequestHandler requestHandler = null;
-
-                // Wait for an item appears in the job queue.
-                try {
-                    requestHandler = queue.take();
-                } catch (InterruptedException e) {
-                    log.fine(String.format("Site event tracker for %s %s interuppted.",
-                            siteEventTracker.site, siteEventTracker.match));
-                    continue;
-                }
-
-                // Restart if exit flag triggered or request handler not found.
-                if (requestHandler == null || exit_flag || thread.interrupted()) {
-                    continue;
-                }
-
-                // Collect bets to use in report, from request handler
-                Collection<Bet> bets = (Collection<Bet>) requestHandler.request;
-                MarketOddsReport mor;
-                if (bets == null){
-                    String error = String.format("Bets passed into marketoddsreportworker is null.");
-                    log.severe(error);
-                    mor = MarketOddsReport.ERROR(error);
-                }
-                else{
-                    // Get the market odds report for this event tracker
-                    try {
-                        mor = siteEventTracker.getMarketOddsReport(bets);
-                    } catch (InterruptedException e) {
-                        log.fine(String.format("%s %s mor worker was interrupted.", site, match));
-                        continue;
-                    } catch (Exception e){
-                        log.severe(String.format("Exception '%s' when getting MarketOddsReport for %s ",
-                                e.toString(), siteEventTracker.match));
-                        mor = MarketOddsReport.ERROR(e.toString());
-                    }
-                }
-
-                if (mor == null){
-                    mor = MarketOddsReport.ERROR("getMarketOddsReport returned null");
-                }
-
-                // Apply mor to request handler
-                requestHandler.setResponse(mor);
-            }
-
-            log.info(String.format("Ending MarketOddsReport worker for %s %s",
-                    siteEventTracker.site, siteEventTracker.match));
-
-        }
-    }
 
 
     public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException{
@@ -266,7 +165,6 @@ public abstract class SiteEventTracker {
         }
 
         // If gotten this far then a match will have been assigned to the match variable.
-        marketOddsReportWorker.assignThreadName();
         return siteSpecificSetup();
     }
 

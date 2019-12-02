@@ -2,7 +2,7 @@
     "RUN_STATS": true,
     "LOG_LEVEL": "INFO",
 
-    "MAX_MATCHES": 30,
+    "MAX_MATCHES": 5,
     "IN_PLAY": false,
     "HOURS_AHEAD": 96,
 
@@ -11,7 +11,7 @@
     "SM_TIME": "2019-11-09T12:30:00.000Z",
 
     "CHECK_MARKETS": true,
-    "RATE_LIMIT": 300,
+    "RATE_LIMIT": 0,
     "RATE_LOCKSTEP_INTERVAL": 20,
     "REQUEST_TIMEOUT": 250,
 
@@ -28,7 +28,7 @@
         "smarkets": true
     },
     "EVENT_SOURCE": "matchbook",
-    "MIN_SITES_PER_MATCH": 2,
+    "MIN_SITES_PER_MATCH": 3,
 
     "SMARKETS_REQ_SIZE": 200,
     "SMARKETS_RH_WAIT": 40,

@@ -12,9 +12,11 @@ public class RequestHandler {
     public Object request;
     public Object response;
     public BlockingQueue<Boolean> responseQueue;
+    public boolean cancelled;
 
 
     public RequestHandler(){
+        cancelled = false;
         responseQueue = new ArrayBlockingQueue<>(1);
     }
 
@@ -22,6 +24,16 @@ public class RequestHandler {
     public RequestHandler(Object request){
         this();
         this.request = request;
+    }
+
+
+    public boolean isCancelled(){
+        return cancelled == true;
+    }
+
+
+    public void cancel(){
+        cancelled = true;
     }
 
 

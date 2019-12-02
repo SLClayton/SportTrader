@@ -86,6 +86,9 @@ public class SportsTrader {
     public SiteAccountInfoUpdater siteAccountInfoUpdater;
     public SportsTraderStats stats;
 
+    public Collection<MarketOddsReportWorker> marketOddsReportWorkers;
+    public BlockingQueue<RequestHandler> marketOddsReportRequestQueue;
+
     public boolean exit_flag;
 
 
@@ -115,6 +118,29 @@ public class SportsTrader {
 
         siteObjects = new HashMap<>();
         eventTraders = new ArrayList<>();
+
+        marketOddsReportWorkers = new ArrayList<>();
+        marketOddsReportRequestQueue = new LinkedBlockingQueue<>();
+    }
+
+
+    public void newMarketOddsReportWorker(){
+        MarketOddsReportWorker morw = new MarketOddsReportWorker(marketOddsReportRequestQueue);
+        marketOddsReportWorkers.add(morw);
+        morw.thread.setName("MORW-" + marketOddsReportWorkers.size());
+        morw.start();
+        log.info(String.format("Created new MORW '%s'", morw.thread.getName()));
+    }
+
+
+    public int MORWwaiting(){
+        int n = 0;
+        for (MarketOddsReportWorker morw: marketOddsReportWorkers){
+            if (morw.isWaiting()){
+                n++;
+            }
+        }
+        return n;
     }
 
 

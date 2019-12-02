@@ -75,6 +75,8 @@ public class EventTrader implements Runnable {
 
 
 
+
+
     public EventTrader(SportsTrader sportsTrader, FootballMatch match, Map<String, BettingSite> sites, FootballBetGenerator footballBetGenerator){
         exit_flag = false;
         this.sportsTrader = sportsTrader;
@@ -101,6 +103,8 @@ public class EventTrader implements Runnable {
         timout_site_oddsReports = new ArrayList<>();
         rateLimited_site_oddsReports = new ArrayList<>();
         error_site_oddsReports = new ArrayList<>();
+
+
     }
 
 
@@ -150,22 +154,16 @@ public class EventTrader implements Runnable {
     }
 
 
+
+
+
     @Override
     public void run() {
         log.info(String.format("Running Event Trader."));
 
-        /*
-        // Start MarketOddsReportWorker threads, 1 for each site
-        // This is a thread for each site to go off and collect new odds report asynchronously
-        marketOddsReportWorkers = new ArrayList<>();
-        for (int i=0; i<sites.size()*3; i++){
-            MarketOddsReportWorker morw = new MarketOddsReportWorker(siteMarketOddsToGetQueue, siteEventTrackers);
-            morw.thread.setName(Thread.currentThread().getName() + " OR-" + i);
-            morw.start();
-            marketOddsReportWorkers.add(morw);
+        for (int i=0; i<siteEventTrackers.size(); i++){
+            sportsTrader.newMarketOddsReportWorker();
         }
-        */
-
         
         // Check for Arbs
         Instant wait_until = null;
@@ -257,9 +255,7 @@ public class EventTrader implements Runnable {
         Instant timeout = Instant.now().plus(REQUEST_TIMEOUT, ChronoUnit.MILLIS);
         for (Map.Entry<SiteEventTracker, RequestHandler> entry: requestHandlers.entrySet()){
             BettingSite site = entry.getKey().site;
-            SiteEventTracker.MarketOddsReportWorker reportWorker = entry.getKey().marketOddsReportWorker;
             RequestHandler rh = entry.getValue();
-
 
             // Wait for each marketOddsReport of timout
             MarketOddsReport mor;
@@ -278,7 +274,7 @@ public class EventTrader implements Runnable {
                 // Use timeout MOR and cancel report worker.
                 mor = MarketOddsReport.TIMED_OUT();
             }
-            reportWorker.interrupt();
+            rh.cancel();
 
             // Sort each marketOddsReport once received.
             if (mor.noError()) {
@@ -533,40 +529,36 @@ public class EventTrader implements Runnable {
 
         @Override
         public void run() {
+            try {
 
-            BlockingQueue<Boolean> q = new ArrayBlockingQueue<>(1);
-            q.add(true);
-
-            print("Starting hard bit");
-            long x = 0;
-            for (int i=0; i<99999; i++){
-                for (int j=0; j<99999; j++){
-                    x = x + x* new BigDecimal(x).intValue();
+                for (int i = 0; i < 999; i++) {
+                    for (int j = 0; j < 5999; j++) {
+                        BigDecimal a = new BigDecimal("2313.3123")
+                                .divide(new BigDecimal("213123423423.12312"), 90, RoundingMode.HALF_UP);
+                    }
                 }
             }
-            print("Done hard bit");
-
-
-            try{
-                q.take();
-            } catch (InterruptedException e) {
-                print("Thread has been interrupted.");
+            catch (Exception e){
             }
-
-
-            print("Worker interupted?: " + String.valueOf(t.isInterrupted()));
         }
     }
 
 
     public static void main(String[] args){
 
-        Worker worker = new Worker();
-        worker.t = new Thread(worker);
-        worker.t.start();
+        Instant a = Instant.now();
 
-        worker.t.interrupt();
-        print("Worker interuppted: " + String.valueOf(worker.t.isInterrupted()));
+        for (int i=0; i<1000; i++){
+            Worker worker = new Worker();
+            worker.t = new Thread(worker);
+            worker.t.start();
+
+        }
+
+        Instant b = Instant.now();
+        print(b.toEpochMilli() - a.toEpochMilli());
+
+
 
     }
 }
