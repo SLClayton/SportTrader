@@ -46,6 +46,23 @@ public abstract class SiteEventTracker {
 
     public MarketOddsReportWorker marketOddsReportWorker;
 
+    public String status = "new_set";
+    public Instant time = Instant.now();
+
+
+    public String getStatus(){
+        return status;
+    }
+
+    public void setStatus(String s){
+        status = s;
+        time = Instant.now();
+    }
+
+    public long getTime(){
+        return Instant.now().getEpochSecond() - time.getEpochSecond();
+    }
+
 
 
     public SiteEventTracker(BettingSite site, EventTrader eventTrader, Collection<Bet> bets){

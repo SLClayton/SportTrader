@@ -264,7 +264,7 @@ public class EventTrader implements Runnable {
             }
             else if (Instant.now().isBefore(timeout)) {
                 long millis_until_timeout = timeout.toEpochMilli() - Instant.now().toEpochMilli();
-                mor = (MarketOddsReport) rh.pollReponse(millis_until_timeout, TimeUnit.MILLISECONDS);
+                mor = (MarketOddsReport) rh.pollReponse(millis_until_timeout);
             }
             else {
                 mor = (MarketOddsReport) rh.pollReponse();
@@ -274,7 +274,7 @@ public class EventTrader implements Runnable {
                 // Use timeout MOR and cancel report worker.
                 mor = MarketOddsReport.TIMED_OUT();
             }
-            rh.cancel();
+            rh.finish();
 
             // Sort each marketOddsReport once received.
             if (mor.noError()) {

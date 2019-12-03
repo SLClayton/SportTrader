@@ -62,7 +62,8 @@ public class Betfair extends BettingSite {
     public String app_id_dev = "DfgkZAnb0qi6Wmk1";
     public String token;
 
-    public long MAX_WAIT_TIME;
+    public Long MAX_WAIT_TIME;
+    public Long REQUEST_TIMEOUT;
 
     public RPCRequestHandler rpcRequestHandler;
     public BlockingQueue<RequestHandler> rpcRequestHandlerQueue;
@@ -90,6 +91,7 @@ public class Betfair extends BettingSite {
         commission_rate = new BigDecimal("0.02");
         min_back_stake = new BigDecimal("2.00");
 
+        setupConfig("config.json");
 
 
         requester = new Requester();
@@ -108,6 +110,7 @@ public class Betfair extends BettingSite {
     private void setupConfig(String config_filename) throws FileNotFoundException, org.json.simple.parser.ParseException {
         JSONObject config = getJSONResource(config_filename);
         MAX_WAIT_TIME = ((Long) config.get("BETFAIR_RH_WAIT"));
+        REQUEST_TIMEOUT = ((Long) config.get("REQUEST_TIMEOUT"));
     }
 
 
@@ -426,6 +429,7 @@ public class Betfair extends BettingSite {
 
         // Put all responses together in one jsonarray
         JSONArray response = (JSONArray) rh.getResponse();
+
         JSONArray results = new JSONArray();
         for (Object rpc_return_obj: response){
             JSONObject rpc_return = (JSONObject) rpc_return_obj;

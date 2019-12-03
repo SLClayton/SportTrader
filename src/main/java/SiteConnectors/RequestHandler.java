@@ -1,5 +1,6 @@
 package SiteConnectors;
 
+import Trader.MarketOddsReportWorker;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -12,11 +13,13 @@ public class RequestHandler {
     public Object request;
     public Object response;
     public BlockingQueue<Boolean> responseQueue;
-    public boolean cancelled;
+    public boolean active;
+
+    public MarketOddsReportWorker marketOddsReportWorker;
 
 
     public RequestHandler(){
-        cancelled = false;
+        active = true;
         responseQueue = new ArrayBlockingQueue<>(1);
     }
 
@@ -27,13 +30,21 @@ public class RequestHandler {
     }
 
 
-    public boolean isCancelled(){
-        return cancelled == true;
+
+    public boolean isActive(){
+        return active == true;
+    }
+
+    public boolean notActive() {
+        return active == false;
     }
 
 
-    public void cancel(){
-        cancelled = true;
+    public void finish(){
+        active = false;
+        if (marketOddsReportWorker != null){
+            marketOddsReportWorker.interrupt();
+        }
     }
 
 
@@ -48,8 +59,8 @@ public class RequestHandler {
         return response;
     }
 
-    public Object pollReponse(long timeout, TimeUnit timeUnit) throws InterruptedException {
-        responseQueue.poll(timeout, timeUnit);
+    public Object pollReponse(long timeout) throws InterruptedException {
+        responseQueue.poll(timeout, TimeUnit.MILLISECONDS);
         return response;
     }
 

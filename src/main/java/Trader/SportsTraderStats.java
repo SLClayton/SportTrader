@@ -2,6 +2,7 @@ package Trader;
 
 import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
+import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -407,7 +408,15 @@ public class SportsTraderStats implements Runnable {
 
             // Update each siteTrackerStats with its corresponding odds report
             for (MarketOddsReport oddsReport: oddsReports) {
-                String site_name = oddsReport.site().getName();
+                BettingSite site = oddsReport.site();
+                String site_name;
+                if (site == null){
+                    site_name = "null_name";
+                }
+                else{
+                    site_name = oddsReport.site().getName();
+                }
+
 
                 SiteTrackerStats siteTrackerStats = siteTrackerStatsMap.get(site_name);
                 if (siteTrackerStats == null) {

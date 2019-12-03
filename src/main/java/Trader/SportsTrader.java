@@ -86,7 +86,7 @@ public class SportsTrader {
     public SiteAccountInfoUpdater siteAccountInfoUpdater;
     public SportsTraderStats stats;
 
-    public Collection<MarketOddsReportWorker> marketOddsReportWorkers;
+    public List<MarketOddsReportWorker> marketOddsReportWorkers;
     public BlockingQueue<RequestHandler> marketOddsReportRequestQueue;
 
     public boolean exit_flag;
@@ -135,13 +135,14 @@ public class SportsTrader {
 
     public int MORWwaiting(){
         int n = 0;
-        for (MarketOddsReportWorker morw: marketOddsReportWorkers){
-            if (morw.isWaiting()){
+        for (int i=0; i< marketOddsReportWorkers.size(); i++){
+            if (marketOddsReportWorkers.get(i).isWaiting()){
                 n++;
             }
         }
         return n;
     }
+
 
 
     public static SportData getSportData(){

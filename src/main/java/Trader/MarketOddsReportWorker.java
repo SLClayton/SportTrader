@@ -5,6 +5,7 @@ import Bet.MarketOddsReport;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
@@ -16,6 +17,10 @@ public class MarketOddsReportWorker implements Runnable {
     public Thread thread;
     public BlockingQueue<RequestHandler> queue;
     public boolean waiting;
+
+    public String status = "new";
+    public Instant time = Instant.now();
+    public SiteEventTracker set;
 
     private boolean exit_flag;
 
@@ -49,6 +54,7 @@ public class MarketOddsReportWorker implements Runnable {
     }
 
 
+
     @Override
     public void run() {
 
@@ -56,17 +62,22 @@ public class MarketOddsReportWorker implements Runnable {
 
         while (!exit_flag){
             try{
+                set = null;
+                requestHandler = null;
 
                 // Wait for a job from the queue
                 waiting = true;
-                requestHandler = null;
                 requestHandler = queue.take();
                 waiting = false;
+
+                requestHandler.marketOddsReportWorker = this;
 
                 // Unpack Site Event Tracker and bets from request.
                 Object[] arguments = (Object[]) requestHandler.request;
                 SiteEventTracker siteEventTracker = (SiteEventTracker) arguments[0];
                 Collection<Bet> bets = (Collection<Bet>) arguments[1];
+
+                set = siteEventTracker;
 
 
                 // If bets null, return error mor and finish loop
@@ -76,22 +87,19 @@ public class MarketOddsReportWorker implements Runnable {
                     requestHandler.setResponse(MarketOddsReport.ERROR(error));
                     continue;
                 }
-                if (requestHandler.isCancelled()){
-                    continue;
-                }
 
                 MarketOddsReport mor = siteEventTracker.getMarketOddsReport(bets);
 
                 // Apply mor to request handler
                 requestHandler.setResponse(mor);
 
+
             }
             catch (InterruptedException e){
                 waiting = false;
                 log.fine(String.format("MOR worker interuppted"));
                 if (requestHandler != null){
-                    requestHandler.setResponse(MarketOddsReport.ERROR(
-                            String.format("Interuppted Exception occured in MOR worker loop.")));
+                    requestHandler.setResponse(MarketOddsReport.TIMED_OUT());
                 }
             }
             catch (Exception e){

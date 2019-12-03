@@ -2,7 +2,7 @@
     "RUN_STATS": true,
     "LOG_LEVEL": "INFO",
 
-    "MAX_MATCHES": 5,
+    "MAX_MATCHES": 35,
     "IN_PLAY": false,
     "HOURS_AHEAD": 96,
 
@@ -11,9 +11,9 @@
     "SM_TIME": "2019-11-09T12:30:00.000Z",
 
     "CHECK_MARKETS": true,
-    "RATE_LIMIT": 0,
+    "RATE_LIMIT": 300,
     "RATE_LOCKSTEP_INTERVAL": 20,
-    "REQUEST_TIMEOUT": 250,
+    "REQUEST_TIMEOUT": 2000,
 
     "PLACE_BETS": true,
     "END_ON_BET": true,
