@@ -56,8 +56,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public JSONObject lastPrices;
 
 
-    public SmarketsEventTracker(Smarkets smarkets, EventTrader eventTrader, Collection<Bet> bets){
-        super(smarkets, eventTrader, bets);
+    public SmarketsEventTracker(Smarkets smarkets){
+        super(smarkets);
         this.smarkets = smarkets;
         id_market_map = new HashMap<>();
         fullname_contract_map = new HashMap<>();

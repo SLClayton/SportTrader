@@ -130,6 +130,10 @@ public abstract class BettingSite {
     }
 
 
+    public abstract SiteEventTracker getEventTracker();
+
+
+
     public BigDecimal investment2Stake(BigDecimal investment) {
         return investment;
     }
@@ -140,15 +144,24 @@ public abstract class BettingSite {
     }
 
 
-    public abstract SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets);
 
-
-    public abstract ArrayList<FootballMatch> getFootballMatches(Instant from, Instant until)
+    public abstract List<FootballMatch> getFootballMatches(Instant from, Instant until)
             throws IOException, URISyntaxException, InterruptedException;
 
 
 
-    public abstract ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+    public PlacedBet placeBet(BetOrder betOrder, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException {
+        List<BetOrder> betOrders = new ArrayList<>();
+        betOrders.add(betOrder);
+        List<PlacedBet> placedBets = placeBets(betOrders, MIN_ODDS_RATIO);
+        if (placedBets.size() != 1){
+            log.severe(String.format("SENT 1 BETORDER BUT GOT BACK %s PLACED BETS", placedBets.size()));
+        }
+        return placedBets.get(0);
+    }
+
+
+    public abstract List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException;
 
 

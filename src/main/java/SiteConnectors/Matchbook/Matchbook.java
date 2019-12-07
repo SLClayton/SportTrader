@@ -114,7 +114,7 @@ public class Matchbook extends BettingSite {
     public class marketDataRequestHandler implements Runnable{
 
         public int MAX_BATCH_SIZE = 10;
-        public int REQUEST_THREADS = 8;
+        public int REQUEST_THREADS = 10;
 
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
@@ -253,6 +253,7 @@ public class Matchbook extends BettingSite {
     @Override
     public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
 
+        print(requester.headers);
         JSONObject response = (JSONObject) requester.get(baseurl + "/account");
 
         setBalance(new BigDecimal(String.valueOf((double) response.get("free-funds"))));
@@ -261,9 +262,7 @@ public class Matchbook extends BettingSite {
 
 
     @Override
-    public String getSessionToken() throws IOException, CertificateException,
-            NoSuchAlgorithmException, KeyStoreException, KeyManagementException,
-            UnrecoverableKeyException, URISyntaxException, org.json.simple.parser.ParseException {
+    public String getSessionToken() throws IOException, URISyntaxException, org.json.simple.parser.ParseException {
 
         String path = ssldir + "/matchbook-login.json";
         Map creds = printer.getJSON(path);
@@ -276,10 +275,10 @@ public class Matchbook extends BettingSite {
         requester.setHeader("Content-Type", "application/json");
 
         JSONObject r = (JSONObject) requester.post(url, data);
+        pp(r);
 
         if (!r.containsKey("session-token")){
-            String msg = String.format("No session token found in matchbook login response.\n%s",
-                    jstring(r));
+            String msg = String.format("No session token found in matchbook login response.\n%s", jstring(r));
             log.severe(msg);
             throw new IOException(msg);
         }
@@ -306,8 +305,8 @@ public class Matchbook extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets) {
-        return new MatchbookEventTracker(this, eventTrader, bets);
+    public SiteEventTracker getEventTracker() {
+        return new MatchbookEventTracker(this);
     }
 
 
@@ -449,7 +448,7 @@ public class Matchbook extends BettingSite {
 
 
     @Override
-    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
 
         // Create a map to keep track of runners to which betOrder they come from

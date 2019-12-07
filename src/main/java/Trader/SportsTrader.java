@@ -66,10 +66,6 @@ public class SportsTrader {
     public long RATE_LOCKSTEP_INTERVAL;
     public String LOG_LEVEL;
 
-    public int SMARKETS_REQ_SIZE;
-    public long SMARKETS_RH_WAIT;
-    public long BETFAIR_RH_WAIT;
-    public long MATCHBOOK_RH_WAIT;
 
     public Lock betlock = new ReentrantLock();
 
@@ -141,6 +137,24 @@ public class SportsTrader {
             }
         }
         return n;
+    }
+
+
+
+    public RequestHandler requestMarketOddsReport(SiteEventTracker siteEventTracker, Collection<Bet> bets){
+        // Pack up args
+        Object[] args = new Object[]{siteEventTracker, bets};
+        RequestHandler rh = new RequestHandler(args);
+
+        // Pass into queue and return the handler
+        marketOddsReportRequestQueue.add(rh);
+
+        // Add more workers if not enough are waiting
+        if (MORWwaiting() <= 1){
+            newMarketOddsReportWorker();
+        }
+
+        return rh;
     }
 
 
@@ -319,7 +333,7 @@ public class SportsTrader {
 
 
 
-        ArrayList<FootballMatch> footballMatches = null;
+        List<FootballMatch> footballMatches = null;
         try {
             if (SINGLE_MATCH_TEST) {
                 footballMatches = new ArrayList<>();
@@ -672,8 +686,7 @@ public class SportsTrader {
     }
 
 
-    private ArrayList<FootballMatch> getFootballMatches() throws IOException, URISyntaxException,
-            InterruptedException {
+    private List<FootballMatch> getFootballMatches() throws IOException, URISyntaxException, InterruptedException {
 
         String site_name = EVENT_SOURCE;
         BettingSite site = siteObjects.get(site_name);
@@ -700,7 +713,7 @@ public class SportsTrader {
         until = now.plus(HOURS_AHEAD, ChronoUnit.HOURS);
 
         // Get all football matches found in time frame.
-        ArrayList<FootballMatch> fms = site.getFootballMatches(from, until);
+        List<FootballMatch> fms = site.getFootballMatches(from, until);
 
         return fms;
      }

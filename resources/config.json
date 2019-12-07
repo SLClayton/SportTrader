@@ -2,7 +2,7 @@
     "RUN_STATS": true,
     "LOG_LEVEL": "INFO",
 
-    "MAX_MATCHES": 35,
+    "MAX_MATCHES": 50,
     "IN_PLAY": false,
     "HOURS_AHEAD": 96,
 
@@ -10,25 +10,25 @@
     "SM_NAME": "chelsea vs crystal palace",
     "SM_TIME": "2019-11-09T12:30:00.000Z",
 
-    "CHECK_MARKETS": true,
+    "CHECK_MARKETS": false,
     "RATE_LIMIT": 300,
     "RATE_LOCKSTEP_INTERVAL": 20,
-    "REQUEST_TIMEOUT": 2000,
+    "REQUEST_TIMEOUT": 250,
 
     "PLACE_BETS": true,
     "END_ON_BET": true,
-    "MIN_PROFIT_RATIO": 0.005,
+    "MIN_PROFIT_RATIO": -5.00,
     "MIN_ODDS_RATIO": 0.9,
     "TARGET_INVESTMENT": 10.00,
     "MAX_INVESTMENT": 50.00,
 
     "ACTIVE_SITES": {
-        "betfair": true,
+        "betfair": false,
     	"matchbook": true,
-        "smarkets": true
+        "smarkets": false
     },
     "EVENT_SOURCE": "matchbook",
-    "MIN_SITES_PER_MATCH": 3,
+    "MIN_SITES_PER_MATCH": 1,
 
     "SMARKETS_REQ_SIZE": 200,
     "SMARKETS_RH_WAIT": 40,

@@ -73,8 +73,8 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
 
-    public BetfairEventTracker(Betfair betfair, EventTrader eventTrader, Collection<Bet> bets){
-        super(betfair, eventTrader, bets);
+    public BetfairEventTracker(Betfair betfair){
+        super(betfair);
         this.betfair = betfair;
 
         match = null;

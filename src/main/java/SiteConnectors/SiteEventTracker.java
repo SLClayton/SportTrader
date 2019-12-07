@@ -54,6 +54,7 @@ public abstract class SiteEventTracker {
         return status;
     }
 
+
     public void setStatus(String s){
         status = s;
         time = Instant.now();
@@ -65,10 +66,8 @@ public abstract class SiteEventTracker {
 
 
 
-    public SiteEventTracker(BettingSite site, EventTrader eventTrader, Collection<Bet> bets){
+    public SiteEventTracker(BettingSite site){
         this.site = site;
-        this.eventTrader = eventTrader;
-        this.bets = bets;
         sportData = SportsTrader.getSportData();
         bet_blacklist = new HashSet<>();
     }
@@ -78,7 +77,9 @@ public abstract class SiteEventTracker {
 
 
     public void safe_exit(){
-        marketOddsReportWorker.safe_exit();
+        if (marketOddsReportWorker != null) {
+            marketOddsReportWorker.safe_exit();
+        }
     }
 
 
@@ -90,21 +91,7 @@ public abstract class SiteEventTracker {
     }
 
 
-    public RequestHandler requestMarketOddsReport(Collection<Bet> bets){
-        // Pack up args
-        Object[] args = new Object[]{this, bets};
-        RequestHandler rh = new RequestHandler(args);
 
-        // Pass into queue and return the handler
-        eventTrader.sportsTrader.marketOddsReportRequestQueue.add(rh);
-
-        // Add more workers if not enough are waiting
-        if (eventTrader.sportsTrader.MORWwaiting() <= 1){
-            eventTrader.sportsTrader.newMarketOddsReportWorker();
-        }
-
-        return rh;
-    }
 
 
 

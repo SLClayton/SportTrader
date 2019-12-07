@@ -41,7 +41,7 @@ public class Requester {
     private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     HttpClient httpClient;
-    HashMap<String, String> headers;
+    public HashMap<String, String> headers;
     ReentrantLock headerLock = new ReentrantLock();
 
 
@@ -212,7 +212,7 @@ public class Requester {
                     status_code,
                     response.toString(),
                     url,
-                    params.toString(),
+                    String.valueOf(params),
                     httpGet.getURI().toString(),
                     response_body,
                     response.getStatusLine().toString());
@@ -226,9 +226,9 @@ public class Requester {
 
 
     public String getRaw(String url) throws IOException, URISyntaxException {
-
         return getRaw(url, null);
     }
+
 
     public Object delete(String url) throws URISyntaxException, IOException {
 

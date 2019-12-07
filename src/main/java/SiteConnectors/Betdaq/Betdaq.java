@@ -19,6 +19,7 @@ import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static tools.printer.print;
 
@@ -72,7 +73,7 @@ public class Betdaq extends BettingSite {
     }
 
     @Override
-    public SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets) {
+    public SiteEventTracker getEventTracker() {
         return null;
     }
 
@@ -83,8 +84,9 @@ public class Betdaq extends BettingSite {
     }
 
 
+
     @Override
-    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
 
         return null;

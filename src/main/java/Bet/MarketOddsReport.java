@@ -197,7 +197,7 @@ public class MarketOddsReport {
     }
 
 
-    public static MarketOddsReport combine(ArrayList<MarketOddsReport> marketOddsReports){
+    public static MarketOddsReport combine(Collection<MarketOddsReport> marketOddsReports){
         /*
         Combine all market odds reports into one.
          */

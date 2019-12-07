@@ -164,7 +164,7 @@ public class Betfair extends BettingSite {
     public class RPCRequestHandler implements Runnable{
 
         public int MAX_BATCH_SIZE = 10;
-        public int REQUEST_THREADS = 8;
+        public int REQUEST_THREADS = 10;
 
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
@@ -387,8 +387,8 @@ public class Betfair extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets){
-        return new BetfairEventTracker(this, eventTrader, bets);
+    public SiteEventTracker getEventTracker(){
+        return new BetfairEventTracker(this);
     }
 
 
@@ -641,7 +641,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
 
         // Sort bets into groups depending on their market ID
@@ -736,7 +736,11 @@ public class Betfair extends BettingSite {
                 JSONObject bet_report = (JSONObject) report_obj;
 
 
-                Instant time_placed = Instant.parse((String) bet_report.get("placedDate"));
+                Instant time_placed = null;
+                if (bet_report.containsKey("placedDate")){
+                    time_placed = Instant.parse((String) bet_report.get("placedDate"));
+                }
+
                 String orderStatus = (String) bet_report.get("orderStatus");
                 String status = (String) bet_report.get("status");
                 int bet_order_id = Integer.valueOf((String) ((JSONObject) bet_report.get("instruction")).get("customerOrderRef"));

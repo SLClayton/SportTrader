@@ -6,7 +6,6 @@ import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.Betfair.BetfairEventTracker;
 import SiteConnectors.BettingSite;
 import SiteConnectors.FlashScores;
-import SiteConnectors.Matchbook.Matchbook;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
@@ -121,8 +120,7 @@ public class EventTrader implements Runnable {
             BettingSite site = entry.getValue();
 
             // Spawn an empty event tracker from the site object
-            SiteEventTracker eventTracker = site.getEventTracker(
-                    this, (Collection<Bet>) (Object) footballBetGenerator.getAllBets());
+            SiteEventTracker eventTracker = site.getEventTracker();
 
             // Try to setup match ion site event tracker, remove site if fail
             boolean setup_success = false;
@@ -240,12 +238,17 @@ public class EventTrader implements Runnable {
     }
 
 
+    public RequestHandler requestMarketOddsReport(SiteEventTracker siteEventTracker, Collection<Bet> bets){
+        return sportsTrader.requestMarketOddsReport(siteEventTracker, bets);
+    }
+
+
     private void checkArbs() throws InterruptedException {
 
         // Send off requests to get marketOddsReports for each site event tracker
         Map<SiteEventTracker, RequestHandler> requestHandlers = new HashMap<>();
         for (SiteEventTracker siteEventTracker: siteEventTrackers.values()){
-            RequestHandler rh = siteEventTracker.requestMarketOddsReport(bets);
+            RequestHandler rh = requestMarketOddsReport(siteEventTracker, bets);
             requestHandlers.put(siteEventTracker, rh);
         }
 
@@ -321,7 +324,8 @@ public class EventTrader implements Runnable {
 
     public void profitFound(ProfitReportSet in_profit) {
 
-        String timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
+        String profit_timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
+        String report_timeString = Instant.now().truncatedTo(ChronoUnit.MILLIS).toString().replace(":", "-");
         log.info(String.format("%s profit reports found to be over %s PROFIT RATIO.",
                 in_profit.size(), MIN_PROFIT_RATIO.toString()));
 
@@ -412,7 +416,7 @@ public class EventTrader implements Runnable {
             // Construct file paths for saved PlacedBetReport
             String placedBetsDir = "placed_bets";
             String placedBetsFilename = String.format("%s %s %s.json",
-                    Instant.now().truncatedTo(ChronoUnit.MILLIS), match, placedProfitReport.min_profit);
+                    report_timeString, match, placedProfitReport.min_profit);
             String placedBetsPath = placedBetsDir + "/" + placedBetsFilename;
 
             // Make directory and save profit report
@@ -424,7 +428,7 @@ public class EventTrader implements Runnable {
 
         // Save profit report as json file
         String profitString = profitReport.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
-        String filename = timeString + " -  " + match.name + " " + profitString + ".json";
+        String filename = profit_timeString + " -  " + match.name + " " + profitString + ".json";
         toFile(profitReport.toJSON(true), profit_dir + "/" + filename);
 
 
@@ -435,7 +439,7 @@ public class EventTrader implements Runnable {
     }
 
 
-    public List<PlacedBet> placeBets(ArrayList<BetOrder> betOrders){
+    public List<PlacedBet> placeBets(List<BetOrder> betOrders){
 
         //Sort placed bets into seperate lists depending on their size
         Map<String, ArrayList<BetOrder>> site_bets = new HashMap<>();
@@ -490,8 +494,8 @@ public class EventTrader implements Runnable {
 
     public class PlaceBetsRunnable implements Runnable{
 
-        public ArrayList<BetOrder> betOrders;
-        public ArrayList<PlacedBet> placedBets;
+        public List<BetOrder> betOrders;
+        public List<PlacedBet> placedBets;
         public BettingSite site;
         public Thread thread;
 

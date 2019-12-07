@@ -40,8 +40,8 @@ public class MatchbookEventTracker extends SiteEventTracker {
     public Map<String, String> market_name_id_map;
 
 
-    public MatchbookEventTracker(Matchbook matchbook, EventTrader eventTrader, Collection<Bet> bets) {
-        super(matchbook, eventTrader, bets);
+    public MatchbookEventTracker(Matchbook matchbook) {
+        super(matchbook);
         this.matchbook = matchbook;
         market_name_id_map = new HashMap<>();
     }

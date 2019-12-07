@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static tools.printer.print;
 
@@ -182,7 +183,7 @@ public class BetOrder {
         return m;
     }
 
-    public static JSONArray list2JSON(ArrayList<BetOrder> betOrders){
+    public static JSONArray list2JSON(List<BetOrder> betOrders){
         JSONArray j = new JSONArray();
         for (BetOrder betOrder: betOrders){
             j.add(betOrder.toJSON());

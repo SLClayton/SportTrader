@@ -13,7 +13,6 @@ import static tools.printer.print;
 public class ProfitReportSet {
     // A set of profit reports. Usually to show every tautology.
 
-    public MarketOddsReport marketOddsReport;
     public ArrayList<ProfitReport> profitReports;
 
 
@@ -46,6 +45,7 @@ public class ProfitReportSet {
     public void sort_by_profit(){
         Collections.sort(profitReports, Collections.reverseOrder());
     }
+
 
 
     public int size(){

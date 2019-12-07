@@ -44,6 +44,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -70,7 +71,7 @@ public class Smarkets extends BettingSite {
     Instant expiry_time = null;
     public int REQ_BATCH_SIZE;
     public long MAX_WAIT_TIME;
-    public int REQUEST_THREADS = 5;
+    public int REQUEST_THREADS = 10;
 
 
     int rh_total = 0;
@@ -379,8 +380,8 @@ public class Smarkets extends BettingSite {
 
 
     @Override
-    public SiteEventTracker getEventTracker(EventTrader eventTrader, Collection<Bet> bets) {
-        return new SmarketsEventTracker(this, eventTrader, bets);
+    public SiteEventTracker getEventTracker() {
+        return new SmarketsEventTracker(this);
     }
 
 
@@ -860,7 +861,7 @@ public class Smarkets extends BettingSite {
     }
 
 
-    public ArrayList<PlacedBet> placeBets(ArrayList<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
 
         ArrayList<PlaceBetRunnable> placeBetRunnables = new ArrayList<>();

@@ -1,6 +1,8 @@
 package Bet;
 
+import SiteConnectors.BettingSite;
 import Trader.SportsTrader;
+import org.apache.axis2.util.ArrayStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -8,8 +10,7 @@ import javax.naming.directory.InvalidAttributesException;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.BitSet;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static tools.printer.*;
@@ -22,7 +23,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public ArrayList<BetOrder> betOrders;
+    public List<BetOrder> betOrders;
     public String type;
 
     public BigDecimal total_investment;
@@ -132,6 +133,15 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
     public boolean isValid(){
         return profit_ratio != null;
+    }
+
+
+    public Set<BettingSite> sitesUsed(){
+        Set<BettingSite> sites_used = new HashSet<>();
+        for (BetOrder bo: betOrders){
+            sites_used.add(bo.site());
+        }
+        return sites_used;
     }
 
 
