@@ -66,6 +66,11 @@ public class Betdaq extends BettingSite {
         return null;
     }
 
+    @Override
+    public void safe_exit() {
+
+    }
+
 
     @Override
     public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {

@@ -99,9 +99,9 @@ public class Matchbook extends BettingSite {
         // market data requests to one concurrently.
         marketDataRequestHandlerQueue = new LinkedBlockingQueue<>();
         marketDataRequestHandler = new marketDataRequestHandler(marketDataRequestHandlerQueue);
-        Thread marketDataRequestHandlerThread = new Thread(marketDataRequestHandler);
-        marketDataRequestHandlerThread.setDaemon(true);
-        marketDataRequestHandlerThread.start();
+        marketDataRequestHandler.thread.setDaemon(true);
+        marketDataRequestHandler.thread.setName("MB-RH");
+        marketDataRequestHandler.start();
     }
 
 
@@ -118,35 +118,54 @@ public class Matchbook extends BettingSite {
 
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
+        public Thread thread;
+        public List<MarketDataRequestSender> marketDataRequestSenders;
+        public boolean exit_flag;
 
         public marketDataRequestHandler(BlockingQueue requestQueue){
+            exit_flag = false;
             this.requestQueue = requestQueue;
+            thread = new Thread(this);
         }
+
+
+        public void start(){
+            thread.start();
+        }
+
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+            for (MarketDataRequestSender marketDataRequestSender: marketDataRequestSenders){
+                marketDataRequestSender.safe_exit();
+            }
+        }
+
 
         @Override
         public void run() {
             Instant wait_until = null;
             ArrayList<RequestHandler> requestHandlers = new ArrayList<>();
-            RequestHandler new_handler = null;
+            RequestHandler new_handler;
             long milliseconds_to_wait;
 
             // Start workers
             workerQueue = new LinkedBlockingQueue<>();
-            marketDataRequestSender requestSender = new marketDataRequestSender(workerQueue);
+            marketDataRequestSenders = new ArrayList<>();
             for (int i=0; i<REQUEST_THREADS; i++){
-                Thread t = new Thread(requestSender);
-                t.setName("mb RS-" + String.valueOf(i+1));
-                t.start();
+                MarketDataRequestSender requestSender = new MarketDataRequestSender(workerQueue);
+                requestSender.thread.setName("MB-RS-" + String.valueOf(i+1));
+                requestSender.start();
+                marketDataRequestSenders.add(requestSender);
             }
 
             while (!exit_flag) {
 
                 try {
+                    new_handler = null;
                     if (wait_until == null){
-                        new_handler = null;
-                        while (!exit_flag && new_handler == null){
-                            new_handler = requestQueue.poll(1, TimeUnit.SECONDS);
-                        }
+                        new_handler = requestQueue.take();
                         wait_until = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
                     }
                     else {
@@ -165,20 +184,36 @@ public class Matchbook extends BettingSite {
                     }
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    continue;
                 }
             }
             log.info("Ending matchbook request handler.");
         }
     }
 
-    public class marketDataRequestSender implements Runnable{
+    public class MarketDataRequestSender implements Runnable{
 
         public BlockingQueue<ArrayList<RequestHandler>> jobQueue;
+        public Thread thread;
+        public boolean exit_flag;
 
-        public marketDataRequestSender(BlockingQueue jobQueue){
+        public MarketDataRequestSender(BlockingQueue jobQueue){
+            exit_flag = false;
             this.jobQueue = jobQueue;
+            thread = new Thread(this);
         }
+
+
+        public void start(){
+            thread.start();
+        }
+
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
 
         @Override
         public void run() {
@@ -189,12 +224,7 @@ public class Matchbook extends BettingSite {
             while (!exit_flag){
                 try {
                     requestHandlers = null;
-                    while (!exit_flag && requestHandlers == null){
-                        requestHandlers = jobQueue.poll(1, TimeUnit.SECONDS);
-                    }
-                    if (exit_flag){
-                        break mainloop;
-                    }
+                    requestHandlers = jobQueue.take();
 
                     // list event ids from handlers to get data from.
                     String[] event_ids = new String[requestHandlers.size()];
@@ -223,7 +253,9 @@ public class Matchbook extends BettingSite {
                     }
 
 
-                } catch (InterruptedException | IOException | URISyntaxException e) {
+                } catch (InterruptedException e) {
+                    continue;
+                } catch (IOException | URISyntaxException e){
                     e.printStackTrace();
                 }
             }
@@ -253,7 +285,6 @@ public class Matchbook extends BettingSite {
     @Override
     public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
 
-        print(requester.headers);
         JSONObject response = (JSONObject) requester.get(baseurl + "/account");
 
         setBalance(new BigDecimal(String.valueOf((double) response.get("free-funds"))));
@@ -301,6 +332,13 @@ public class Matchbook extends BettingSite {
     @Override
     public BigDecimal minBackersStake() {
         return min_back_stake;
+    }
+
+
+    @Override
+    public void safe_exit() {
+        exit_flag = true;
+        marketDataRequestHandler.safe_exit();
     }
 
 

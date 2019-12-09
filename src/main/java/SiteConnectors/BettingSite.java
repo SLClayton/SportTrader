@@ -106,6 +106,9 @@ public abstract class BettingSite {
     }
 
 
+    public abstract void safe_exit();
+
+
     public abstract void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException;
 
 

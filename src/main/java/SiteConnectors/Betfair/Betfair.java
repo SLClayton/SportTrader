@@ -79,8 +79,6 @@ public class Betfair extends BettingSite {
 
 
 
-
-
     public Betfair() throws IOException, CertificateException, UnrecoverableKeyException,
             NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException,
             InterruptedException, org.json.simple.parser.ParseException {
@@ -101,10 +99,9 @@ public class Betfair extends BettingSite {
 
         rpcRequestHandlerQueue = new LinkedBlockingQueue<>();
         rpcRequestHandler = new RPCRequestHandler(rpcRequestHandlerQueue);
-        Thread rpcRequestHandlerThread = new Thread(rpcRequestHandler);
-        rpcRequestHandlerThread.setDaemon(true);
-        rpcRequestHandlerThread.setName("BF ReqHandler");
-        rpcRequestHandlerThread.start();
+        rpcRequestHandler.thread.setDaemon(true);
+        rpcRequestHandler.thread.setName("BF ReqHandler");
+        rpcRequestHandler.start();
     }
 
     private void setupConfig(String config_filename) throws FileNotFoundException, org.json.simple.parser.ParseException {
@@ -114,52 +111,6 @@ public class Betfair extends BettingSite {
     }
 
 
-    public class EventSearchHandler implements Runnable{
-
-        long time_interval = 300;
-
-        Betfair betfair;
-        BlockingQueue<Object[]> jobQueue;
-
-        public EventSearchHandler(Betfair BETFAIR, BlockingQueue<Object[]> queue){
-            betfair = BETFAIR;
-            jobQueue = queue;
-        }
-
-        @Override
-        public void run() {
-            log.info("Betfair event search handler started");
-            Instant last_request = Instant.now().minus(10, ChronoUnit.DAYS);
-
-            while (true){
-
-                try {
-                    // Get job and split up query and where to put response
-                    Object[] job = jobQueue.take();
-                    String query = (String) job[0];
-                    BlockingQueue responseQueue = (BlockingQueue) job[1];
-
-                    // If last request was in the time interval in the past, wait.
-                    long mill_difference = Instant.now().toEpochMilli() - last_request.toEpochMilli();
-                    if (mill_difference < time_interval){
-                        long wait_time = time_interval - mill_difference;
-                        Thread.sleep(wait_time);
-                    }
-
-                    // Put response into response queue
-                    String response = _getEventFromSearch(query, betfair);
-                    responseQueue.put(response);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-
-        }
-    }
-
 
     public class RPCRequestHandler implements Runnable{
 
@@ -168,10 +119,32 @@ public class Betfair extends BettingSite {
 
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
+        public Thread thread;
+        public List<RPCRequestSender> rpcRequestSenders;
+        public boolean exit_flag;
 
         public RPCRequestHandler(BlockingQueue requestQueue){
+            exit_flag = false;
             this.requestQueue = requestQueue;
+            workerQueue = new LinkedBlockingQueue<>();
+            thread = new Thread(this);
         }
+
+
+        public void start(){
+            thread.start();
+        }
+
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+            for (RPCRequestSender rpcRequestSender: rpcRequestSenders){
+                rpcRequestSender.safe_exit();
+            }
+        }
+
+
 
         @Override
         public void run() {
@@ -183,12 +156,12 @@ public class Betfair extends BettingSite {
             long milliseconds_to_wait;
 
             // Start workers
-            workerQueue = new LinkedBlockingQueue<>();
-            RPCRequestSender rs = new RPCRequestSender(workerQueue);
+            rpcRequestSenders = new ArrayList<>();
             for (int i=0; i<REQUEST_THREADS; i++){
-                Thread t = new Thread(rs);
-                t.setName("Bf RS-" + String.valueOf(i+1));
-                t.start();
+                RPCRequestSender rpcRequestSender = new RPCRequestSender(workerQueue);
+                rpcRequestSender.thread.setName("Bf RS-" + String.valueOf(i+1));
+                rpcRequestSender.start();
+                rpcRequestSenders.add(rpcRequestSender);
             }
 
             while (!exit_flag) {
@@ -230,10 +203,26 @@ public class Betfair extends BettingSite {
     public class RPCRequestSender implements Runnable{
 
         public BlockingQueue<ArrayList<RequestHandler>> jobQueue;
+        public Thread thread;
+        public boolean exit_flag;
 
         public RPCRequestSender(BlockingQueue jobQueue){
+            exit_flag = false;
             this.jobQueue = jobQueue;
+            thread = new Thread(this);
         }
+
+
+        public void start(){
+            thread.start();
+        }
+
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
 
         @Override
         public void run() {
@@ -242,14 +231,9 @@ public class Betfair extends BettingSite {
             mainloop:
             while (!exit_flag){
                 JSONArray final_request = new JSONArray();
+                jsonHandlers = null;
                 try {
-                    jsonHandlers = null;
-                    while (!exit_flag && jsonHandlers == null){
-                        jsonHandlers = jobQueue.poll(1, TimeUnit.SECONDS);
-                    }
-                    if (jsonHandlers == null){
-                        continue;
-                    }
+                    jsonHandlers = jobQueue.take();
 
                     // Build final rpc request, give each rpc request the index of the jsonhandler as its id
                     // This can mean multiple rpc requests have the same id
@@ -288,7 +272,9 @@ public class Betfair extends BettingSite {
                     }
 
 
-                } catch (InterruptedException | IOException | URISyntaxException e) {
+                } catch (InterruptedException e) {
+                    continue;
+                } catch (IOException | URISyntaxException e){
                     e.printStackTrace();
                 }
             }
@@ -383,6 +369,12 @@ public class Betfair extends BettingSite {
     @Override
     public BigDecimal minBackersStake() {
         return min_back_stake;
+    }
+
+    @Override
+    public void safe_exit() {
+        exit_flag = true;
+        rpcRequestHandler.safe_exit();
     }
 
 

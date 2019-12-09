@@ -84,7 +84,6 @@ public class Smarkets extends BettingSite {
     public  PriceQuotesRequestHandler priceQuotesRequestHandler;
 
 
-
     public Smarkets() throws URISyntaxException, IOException,
             InterruptedException, ParseException {
 
@@ -102,10 +101,9 @@ public class Smarkets extends BettingSite {
         // Setup price quotes handler
         priceQuotesRequestHandlerQueue = new LinkedBlockingQueue<>();
         priceQuotesRequestHandler = new PriceQuotesRequestHandler(priceQuotesRequestHandlerQueue);
-        Thread priceQuotesRequestHandlerThread = new Thread(priceQuotesRequestHandler);
-        priceQuotesRequestHandlerThread.setName("Smarkets RH");
-        priceQuotesRequestHandlerThread.setDaemon(true);
-        priceQuotesRequestHandlerThread.start();
+        priceQuotesRequestHandler.thread.setName("Smarkets RH");
+        priceQuotesRequestHandler.thread.setDaemon(true);
+        priceQuotesRequestHandler.start();
     }
 
 
@@ -119,14 +117,33 @@ public class Smarkets extends BettingSite {
 
     public class PriceQuotesRequestHandler implements Runnable{
 
-
-
         public BlockingQueue<RequestHandler> requestQueue;
         public BlockingQueue<ArrayList<RequestHandler>> workerQueue;
+        public Thread thread;
+        public List<PriceQuoteRequestSender> priceQuoteRequestSenders;
+        public boolean exit_flag;
+
 
         public PriceQuotesRequestHandler(BlockingQueue requestQueue){
+            exit_flag = false;
             this.requestQueue = requestQueue;
+            thread = new Thread(this);
         }
+
+
+        public void start(){
+            thread.start();
+        }
+
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+            for (PriceQuoteRequestSender priceQuoteRequestSender: priceQuoteRequestSenders){
+                priceQuoteRequestSender.safe_exit();
+            }
+        }
+
 
         @Override
         public void run() {
@@ -137,43 +154,49 @@ public class Smarkets extends BettingSite {
             int markets_in_queue = 0;
 
             // Start workers
+            priceQuoteRequestSenders = new ArrayList<>();
             workerQueue = new LinkedBlockingQueue<>();
             for (int i=0; i<REQUEST_THREADS; i++){
                 PriceQuoteRequestSender requestSender = new PriceQuoteRequestSender(workerQueue);
-                Thread t = new Thread(requestSender);
-                t.setName("smkts RS-" + String.valueOf(i+1));
-                t.start();
+                requestSender.thread.setName("smkts RS-" + String.valueOf(i+1));
+                requestSender.start();
+                priceQuoteRequestSenders.add(requestSender);
             }
 
 
             RequestHandler new_handler;
-            Instant next_request_time = null;
+            Instant next_request_time;
 
             while (!exit_flag) {
                 try {
+                    // Reset variables
+                    requestHandlers = new ArrayList<>();
+                    markets_in_queue = 0;
+                    next_request_time = null;
 
-                    while (!exit_flag &&
-                            (next_request_time == null || Instant.now().isBefore(next_request_time))){
+
+                    // Gather up requests from queue
+                    while (!exit_flag && (next_request_time == null || Instant.now().isBefore(next_request_time))){
 
                         new_handler = null;
 
                         // Wait as long as required for first handler to arrive, set request time when it does.
                         if (next_request_time == null){
-                            while (!exit_flag && new_handler == null){
-                                new_handler = requestQueue.poll(1, TimeUnit.SECONDS);
-                            }
-                            next_request_time = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
+                            new_handler = requestQueue.take();
+                            next_request_time = Instant.now().plusMillis(MAX_WAIT_TIME);
                         }
-                        // Subsequent handlers, wait or break at certain time
+                        // Subsequent handlers, wait for more until request time comes around.
                         else if (Instant.now().isBefore(next_request_time)) {
                             long milliseconds_to_wait = next_request_time.toEpochMilli() - Instant.now().toEpochMilli();
                             new_handler = requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
                         }
 
+
                         // If a new handler is passed in, decide what to do with it.
                         if (new_handler != null){
                             int num_new_markets = ((ArrayList<String>) new_handler.request).size();
 
+                            // Check the new request handler will not overflow the current batch.
                             if (markets_in_queue + num_new_markets <= REQ_BATCH_SIZE) {
                                 requestHandlers.add(new_handler);
                                 markets_in_queue += num_new_markets;
@@ -184,21 +207,25 @@ public class Smarkets extends BettingSite {
                             }
                         }
                     }
+                    if (exit_flag){
+                        break;
+                    }
 
-                    // Send off request
+                    // Send off request if any are in list
                     if (requestHandlers.size() > 0){
                         workerQueue.put(requestHandlers);
                     }
-                    requestHandlers = new ArrayList<>();
-                    markets_in_queue = 0;
-                    next_request_time = null;
 
 
                 } catch (InterruptedException e) {
+                    continue;
+                } catch (Exception e){
                     e.printStackTrace();
+                    log.severe("Exception found in Smarkets request handler.");
+                    continue;
                 }
             }
-            log.info("Ending smarkets request handler.");
+            log.info("Ending Smarkets request handler.");
         }
     }
 
@@ -206,9 +233,24 @@ public class Smarkets extends BettingSite {
     public class PriceQuoteRequestSender implements Runnable{
 
         public BlockingQueue<ArrayList<RequestHandler>> jobQueue;
+        public Thread thread;
+        public boolean exit_flag;
 
         public PriceQuoteRequestSender(BlockingQueue jobQueue){
+            exit_flag = false;
             this.jobQueue = jobQueue;
+            thread = new Thread(this);
+        }
+
+
+        public void start(){
+            thread.start();
+        }
+
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
         }
 
         @Override
@@ -222,12 +264,7 @@ public class Smarkets extends BettingSite {
 
                     // Wait for next requestHandler or command to exit
                     requestHandlers = null;
-                    while (!exit_flag && requestHandlers == null){
-                        requestHandlers = jobQueue.poll(1, TimeUnit.SECONDS);
-                    }
-                    if (exit_flag){
-                        break mainloop;
-                    }
+                    requestHandlers = jobQueue.take();
 
                     if (start_time == null){
                         start_time = Instant.now();
@@ -273,14 +310,6 @@ public class Smarkets extends BettingSite {
                                     expiry_time.toString(), market_prices.toString()));
 
 
-                            /*
-                            double minutes = (Instant.now().toEpochMilli() - start_time.toEpochMilli()) / 60000.0;
-                            log.info(String.format("--------------SMARKETS RATE STATS\nRH: %s/%s\nMK: %s/%s\nAVG\nRH avg: %s/%s\nMK avg: %s/%s\n---------------",
-                                    rh_success, rh_total, markets_success, markets_total,
-                                    Math.round(rh_success/minutes), Math.round(rh_total/minutes),
-                                    Math.round(markets_success/minutes), Math.round(markets_total/minutes)));
-                             */
-
 
                             // Sanity check expiry time
                             if (expiry_time.isAfter(Instant.now().plus(2, ChronoUnit.MINUTES))){
@@ -302,11 +331,13 @@ public class Smarkets extends BettingSite {
                             }
                         }
                     }
-                } catch (InterruptedException | IOException | URISyntaxException e) {
+                } catch (InterruptedException e) {
+                    continue;
+                } catch (IOException | URISyntaxException e){
                     e.printStackTrace();
                 }
             }
-            log.info("Ending smarkets request sender.");
+            log.info("Ending Smarkets request sender.");
         }
     }
 
@@ -380,6 +411,13 @@ public class Smarkets extends BettingSite {
 
 
     @Override
+    public void safe_exit() {
+        exit_flag = true;
+        priceQuotesRequestHandler.safe_exit();
+    }
+
+
+    @Override
     public SiteEventTracker getEventTracker() {
         return new SmarketsEventTracker(this);
     }
@@ -441,65 +479,6 @@ public class Smarkets extends BettingSite {
         return investment.multiply(ratio).setScale(2, RoundingMode.HALF_UP);
     }
 
-
-
-    public BigDecimal ROI_old(BetOffer bet_offer, BigDecimal investment, boolean real){
-        // (From smarkets support email on commission)
-        // For back bets that is the back stake if the bet loses or the profit if the bet wins.
-        // For lay bets it's the liability if the bet loses or the lay stake if the bet wins
-        //
-        // Pro Tier commission band where 1% commission is charged on winnings or losses per
-        // each individual bet that settles, and order rate is limited to 1 bet/s
-
-        BigDecimal stake;
-        BigDecimal ret;
-        BigDecimal profit;
-        BigDecimal lose_commission;
-        BigDecimal win_commission;
-        BigDecimal roi;
-
-        if (bet_offer.isBack()){
-
-            //print("-------------------------------");
-            BigDecimal ratio = (commission_rate.divide(commission_rate.add(BigDecimal.ONE), 20, RoundingMode.HALF_UP));
-            //print("ratio: " + ratio.toString());
-
-            lose_commission = ratio.multiply(investment);
-            //print("lose_commission: " + lose_commission.toString());
-
-            stake = investment.subtract(lose_commission);
-            //print("stake: " + stake.toString());
-
-            ret = stake.multiply(bet_offer.odds);
-            //print("ret: " + ret.toString());
-
-            profit = ret.subtract(stake);
-            //print("profit: " + profit.toString());
-
-            win_commission = profit.multiply(commission_rate);
-            //print("win_commission: " + win_commission.toString());
-
-            roi = ret.add(lose_commission).subtract(win_commission);
-            //print("roi: " + roi.toString());
-        }
-        else{ // Lay Bet
-
-            lose_commission = (commission_rate.divide(BigDecimal.ONE.add(commission_rate), 20, RoundingMode.HALF_UP))
-                    .multiply(investment);
-            stake = investment.subtract(lose_commission);
-            BigDecimal lay = BetOffer.backStake2LayStake(stake, bet_offer.odds);
-            profit = lay;
-            win_commission = profit.multiply(commission());
-            ret = stake.add(profit);
-            roi = ret.add(lose_commission).subtract(win_commission);
-        }
-
-        if (real){
-            roi = roi.setScale(2, RoundingMode.DOWN);
-        }
-
-        return roi;
-    }
 
 
     @Override
