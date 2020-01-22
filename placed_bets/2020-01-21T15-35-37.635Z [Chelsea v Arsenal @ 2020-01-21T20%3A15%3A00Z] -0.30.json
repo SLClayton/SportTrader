@@ -1,0 +1,553 @@
+{
+  "betOrder_profit_report": {
+    "min_profit": "0.8300",
+    "total_investment": "200.00",
+    "max_return": "200.9400",
+    "max_profit": "0.9400",
+    "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+    "min_return": "200.8300",
+    "profit_ratio": "0.00415000000000000000"
+  },
+  "placed_profit_report": {
+    "min_profit": "-0.30",
+    "total_investment": "200.00",
+    "max_return": "200.94",
+    "max_profit": "0.94",
+    "min_return": "199.70",
+    "profit_ratio": "-0.00150000000000000000"
+  },
+  "placed_bets": [
+    {
+      "betOrder": {
+        "site": "betfair",
+        "actual_return": "200.90980",
+        "target_return": "200.9031284491356093373300000000000000000000",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "investment": "110.39",
+        "bet_offer": {
+          "bet": "OVER_2.5_BACK",
+          "volume": "1881.47",
+          "site": "betfair",
+          "roi_ratio": "1.820",
+          "metadata": "{selectionId=47973, marketId=1.167426775}",
+          "created": "2020-01-21T15:35:37.608Z",
+          "odds": "1.82",
+          "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]"
+        },
+        "commission": "0.00000",
+        "real": "true",
+        "profit": "90.5198",
+        "backers_stake": "110.39"
+      },
+      "site_response": {
+        "sizeMatched": 110.39,
+        "instruction": {
+          "orderType": "LIMIT",
+          "side": "BACK",
+          "selectionId": 47973,
+          "customerOrderRef": "6",
+          "handicap": 0.0,
+          "limitOrder": {
+            "size": 110.39,
+            "price": 1.73,
+            "timeInForce": "FILL_OR_KILL"
+          }
+        },
+        "betId": "192212427803",
+        "orderStatus": "EXECUTION_COMPLETE",
+        "placedDate": "2020-01-21T15:35:37.000Z",
+        "status": "SUCCESS",
+        "averagePriceMatched": 1.809008062324486
+      },
+      "site_request": {
+        "orderType": "LIMIT",
+        "side": "BACK",
+        "selectionId": "47973",
+        "customerOrderRef": "6",
+        "handicap": "0",
+        "limitOrder": {
+          "size": "110.39",
+          "persistenceType": "PERSIST",
+          "price": "1.73",
+          "timeInForce": "FILL_OR_KILL"
+        }
+      },
+      "timings": {
+        "oddsReqst-placed": "-569ms",
+        "offerGot-sent": "37ms",
+        "offerGot-placed": "-608ms",
+        "sent-placed": "-645ms"
+      },
+      "placed_bet": {
+        "site": "betfair",
+        "avg_odds": "1.809008062324486",
+        "back_stake": "110.39",
+        "lay_stake": "89.30640000000000954",
+        "prof_com": "0E-18",
+        "time_placed": "2020-01-21T15:35:37Z",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "bet_id": "192212427803",
+        "returns": "199.70",
+        "state": "SUCCESS",
+        "profit": "89.30640000000000954",
+        "invested": "110.39"
+      }
+    },
+    {
+      "betOrder": {
+        "site": "betfair",
+        "actual_return": "200.9100",
+        "target_return": "200.9031284491356093373300000000000000000000",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "investment": "10.86",
+        "bet_offer": {
+          "bet": "UNDER_0.5_BACK",
+          "volume": "59.53",
+          "site": "betfair",
+          "roi_ratio": "18.50",
+          "metadata": "{selectionId=5851482, marketId=1.167426866}",
+          "created": "2020-01-21T15:35:37.608Z",
+          "odds": "18.5",
+          "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]"
+        },
+        "commission": "0.0000",
+        "real": "true",
+        "profit": "190.050",
+        "backers_stake": "10.86"
+      },
+      "site_response": {
+        "sizeMatched": 10.86,
+        "instruction": {
+          "orderType": "LIMIT",
+          "side": "BACK",
+          "selectionId": 5851482,
+          "customerOrderRef": "0",
+          "handicap": 0.0,
+          "limitOrder": {
+            "size": 10.86,
+            "price": 16.5,
+            "timeInForce": "FILL_OR_KILL"
+          }
+        },
+        "betId": "192212427799",
+        "orderStatus": "EXECUTION_COMPLETE",
+        "placedDate": "2020-01-21T15:35:37.000Z",
+        "status": "SUCCESS",
+        "averagePriceMatched": 18.5
+      },
+      "site_request": {
+        "orderType": "LIMIT",
+        "side": "BACK",
+        "selectionId": "5851482",
+        "customerOrderRef": "0",
+        "handicap": "0",
+        "limitOrder": {
+          "size": "10.86",
+          "persistenceType": "PERSIST",
+          "price": "16.5",
+          "timeInForce": "FILL_OR_KILL"
+        }
+      },
+      "timings": {
+        "oddsReqst-placed": "-569ms",
+        "offerGot-sent": "37ms",
+        "offerGot-placed": "-608ms",
+        "sent-placed": "-645ms"
+      },
+      "placed_bet": {
+        "site": "betfair",
+        "avg_odds": "18.5",
+        "back_stake": "10.86",
+        "lay_stake": "190.050",
+        "prof_com": "0.0000",
+        "time_placed": "2020-01-21T15:35:37Z",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "bet_id": "192212427799",
+        "returns": "200.91",
+        "state": "SUCCESS",
+        "profit": "190.050",
+        "invested": "10.86"
+      }
+    },
+    {
+      "betOrder": {
+        "site": "betfair",
+        "actual_return": "200.8300",
+        "target_return": "200.9031284491356093373300000000000000000000",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "investment": "10.57",
+        "bet_offer": {
+          "bet": "CORRECT-SCORE_0-1_BACK",
+          "volume": "182.06",
+          "site": "betfair",
+          "roi_ratio": "19.00",
+          "metadata": "{selectionId=4, marketId=1.167426872}",
+          "created": "2020-01-21T15:35:37.606Z",
+          "odds": "19.0",
+          "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]"
+        },
+        "commission": "0.0000",
+        "real": "true",
+        "profit": "190.260",
+        "backers_stake": "10.57"
+      },
+      "site_response": {
+        "sizeMatched": 10.57,
+        "instruction": {
+          "orderType": "LIMIT",
+          "side": "BACK",
+          "selectionId": 4,
+          "customerOrderRef": "1",
+          "handicap": 0.0,
+          "limitOrder": {
+            "size": 10.57,
+            "price": 17.0,
+            "timeInForce": "FILL_OR_KILL"
+          }
+        },
+        "betId": "192212427821",
+        "orderStatus": "EXECUTION_COMPLETE",
+        "placedDate": "2020-01-21T15:35:37.000Z",
+        "status": "SUCCESS",
+        "averagePriceMatched": 19.0
+      },
+      "site_request": {
+        "orderType": "LIMIT",
+        "side": "BACK",
+        "selectionId": "4",
+        "customerOrderRef": "1",
+        "handicap": "0",
+        "limitOrder": {
+          "size": "10.57",
+          "persistenceType": "PERSIST",
+          "price": "17.0",
+          "timeInForce": "FILL_OR_KILL"
+        }
+      },
+      "timings": {
+        "oddsReqst-placed": "-569ms",
+        "offerGot-sent": "39ms",
+        "offerGot-placed": "-606ms",
+        "sent-placed": "-645ms"
+      },
+      "placed_bet": {
+        "site": "betfair",
+        "avg_odds": "19.0",
+        "back_stake": "10.57",
+        "lay_stake": "190.260",
+        "prof_com": "0.0000",
+        "time_placed": "2020-01-21T15:35:37Z",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "bet_id": "192212427821",
+        "returns": "200.83",
+        "state": "SUCCESS",
+        "profit": "190.260",
+        "invested": "10.57"
+      }
+    },
+    {
+      "betOrder": {
+        "site": "betfair",
+        "actual_return": "200.9400",
+        "target_return": "200.9031284491356093373300000000000000000000",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "investment": "5.91",
+        "bet_offer": {
+          "bet": "CORRECT-SCORE_0-2_BACK",
+          "volume": "126.99",
+          "site": "betfair",
+          "roi_ratio": "34.00",
+          "metadata": "{selectionId=9, marketId=1.167426872}",
+          "created": "2020-01-21T15:35:37.606Z",
+          "odds": "34.0",
+          "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]"
+        },
+        "commission": "0.0000",
+        "real": "true",
+        "profit": "195.030",
+        "backers_stake": "5.91"
+      },
+      "site_response": {
+        "sizeMatched": 5.91,
+        "instruction": {
+          "orderType": "LIMIT",
+          "side": "BACK",
+          "selectionId": 9,
+          "customerOrderRef": "2",
+          "handicap": 0.0,
+          "limitOrder": {
+            "size": 5.91,
+            "price": 30.0,
+            "timeInForce": "FILL_OR_KILL"
+          }
+        },
+        "betId": "192212427822",
+        "orderStatus": "EXECUTION_COMPLETE",
+        "placedDate": "2020-01-21T15:35:37.000Z",
+        "status": "SUCCESS",
+        "averagePriceMatched": 34.0
+      },
+      "site_request": {
+        "orderType": "LIMIT",
+        "side": "BACK",
+        "selectionId": "9",
+        "customerOrderRef": "2",
+        "handicap": "0",
+        "limitOrder": {
+          "size": "5.91",
+          "persistenceType": "PERSIST",
+          "price": "30",
+          "timeInForce": "FILL_OR_KILL"
+        }
+      },
+      "timings": {
+        "oddsReqst-placed": "-569ms",
+        "offerGot-sent": "39ms",
+        "offerGot-placed": "-606ms",
+        "sent-placed": "-645ms"
+      },
+      "placed_bet": {
+        "site": "betfair",
+        "avg_odds": "34.0",
+        "back_stake": "5.91",
+        "lay_stake": "195.030",
+        "prof_com": "0.0000",
+        "time_placed": "2020-01-21T15:35:37Z",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "bet_id": "192212427822",
+        "returns": "200.94",
+        "state": "SUCCESS",
+        "profit": "195.030",
+        "invested": "5.91"
+      }
+    },
+    {
+      "betOrder": {
+        "site": "betfair",
+        "actual_return": "200.9000",
+        "target_return": "200.9031284491356093373300000000000000000000",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "investment": "20.09",
+        "bet_offer": {
+          "bet": "CORRECT-SCORE_1-0_BACK",
+          "volume": "1269.85",
+          "site": "betfair",
+          "roi_ratio": "10.00",
+          "metadata": "{selectionId=2, marketId=1.167426872}",
+          "created": "2020-01-21T15:35:37.606Z",
+          "odds": "10.0",
+          "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]"
+        },
+        "commission": "0.0000",
+        "real": "true",
+        "profit": "180.810",
+        "backers_stake": "20.09"
+      },
+      "site_response": {
+        "sizeMatched": 20.09,
+        "instruction": {
+          "orderType": "LIMIT",
+          "side": "BACK",
+          "selectionId": 2,
+          "customerOrderRef": "3",
+          "handicap": 0.0,
+          "limitOrder": {
+            "size": 20.09,
+            "price": 9.0,
+            "timeInForce": "FILL_OR_KILL"
+          }
+        },
+        "betId": "192212427823",
+        "orderStatus": "EXECUTION_COMPLETE",
+        "placedDate": "2020-01-21T15:35:37.000Z",
+        "status": "SUCCESS",
+        "averagePriceMatched": 10.0
+      },
+      "site_request": {
+        "orderType": "LIMIT",
+        "side": "BACK",
+        "selectionId": "2",
+        "customerOrderRef": "3",
+        "handicap": "0",
+        "limitOrder": {
+          "size": "20.09",
+          "persistenceType": "PERSIST",
+          "price": "9.0",
+          "timeInForce": "FILL_OR_KILL"
+        }
+      },
+      "timings": {
+        "oddsReqst-placed": "-569ms",
+        "offerGot-sent": "39ms",
+        "offerGot-placed": "-606ms",
+        "sent-placed": "-645ms"
+      },
+      "placed_bet": {
+        "site": "betfair",
+        "avg_odds": "10.0",
+        "back_stake": "20.09",
+        "lay_stake": "180.810",
+        "prof_com": "0.0000",
+        "time_placed": "2020-01-21T15:35:37Z",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "bet_id": "192212427823",
+        "returns": "200.90",
+        "state": "SUCCESS",
+        "profit": "180.810",
+        "invested": "20.09"
+      }
+    },
+    {
+      "betOrder": {
+        "site": "betfair",
+        "actual_return": "200.9280",
+        "target_return": "200.9031284491356093373300000000000000000000",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "investment": "23.92",
+        "bet_offer": {
+          "bet": "CORRECT-SCORE_1-1_BACK",
+          "volume": "1112.65",
+          "site": "betfair",
+          "roi_ratio": "8.40",
+          "metadata": "{selectionId=3, marketId=1.167426872}",
+          "created": "2020-01-21T15:35:37.606Z",
+          "odds": "8.4",
+          "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]"
+        },
+        "commission": "0.0000",
+        "real": "true",
+        "profit": "177.008",
+        "backers_stake": "23.92"
+      },
+      "site_response": {
+        "sizeMatched": 23.92,
+        "instruction": {
+          "orderType": "LIMIT",
+          "side": "BACK",
+          "selectionId": 3,
+          "customerOrderRef": "4",
+          "handicap": 0.0,
+          "limitOrder": {
+            "size": 23.92,
+            "price": 7.6,
+            "timeInForce": "FILL_OR_KILL"
+          }
+        },
+        "betId": "192212427824",
+        "orderStatus": "EXECUTION_COMPLETE",
+        "placedDate": "2020-01-21T15:35:37.000Z",
+        "status": "SUCCESS",
+        "averagePriceMatched": 8.4
+      },
+      "site_request": {
+        "orderType": "LIMIT",
+        "side": "BACK",
+        "selectionId": "3",
+        "customerOrderRef": "4",
+        "handicap": "0",
+        "limitOrder": {
+          "size": "23.92",
+          "persistenceType": "PERSIST",
+          "price": "7.6",
+          "timeInForce": "FILL_OR_KILL"
+        }
+      },
+      "timings": {
+        "oddsReqst-placed": "-569ms",
+        "offerGot-sent": "39ms",
+        "offerGot-placed": "-606ms",
+        "sent-placed": "-645ms"
+      },
+      "placed_bet": {
+        "site": "betfair",
+        "avg_odds": "8.4",
+        "back_stake": "23.92",
+        "lay_stake": "177.008",
+        "prof_com": "0.0000",
+        "time_placed": "2020-01-21T15:35:37Z",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "bet_id": "192212427824",
+        "returns": "200.93",
+        "state": "SUCCESS",
+        "profit": "177.008",
+        "invested": "23.92"
+      }
+    },
+    {
+      "betOrder": {
+        "site": "betfair",
+        "actual_return": "200.8600",
+        "target_return": "200.9031284491356093373300000000000000000000",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "investment": "18.26",
+        "bet_offer": {
+          "bet": "CORRECT-SCORE_2-0_BACK",
+          "volume": "305.7",
+          "site": "betfair",
+          "roi_ratio": "11.00",
+          "metadata": "{selectionId=5, marketId=1.167426872}",
+          "created": "2020-01-21T15:35:37.606Z",
+          "odds": "11.0",
+          "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]"
+        },
+        "commission": "0.0000",
+        "real": "true",
+        "profit": "182.600",
+        "backers_stake": "18.26"
+      },
+      "site_response": {
+        "sizeMatched": 18.26,
+        "instruction": {
+          "orderType": "LIMIT",
+          "side": "BACK",
+          "selectionId": 5,
+          "customerOrderRef": "5",
+          "handicap": 0.0,
+          "limitOrder": {
+            "size": 18.26,
+            "price": 10.0,
+            "timeInForce": "FILL_OR_KILL"
+          }
+        },
+        "betId": "192212427825",
+        "orderStatus": "EXECUTION_COMPLETE",
+        "placedDate": "2020-01-21T15:35:37.000Z",
+        "status": "SUCCESS",
+        "averagePriceMatched": 11.0
+      },
+      "site_request": {
+        "orderType": "LIMIT",
+        "side": "BACK",
+        "selectionId": "5",
+        "customerOrderRef": "5",
+        "handicap": "0",
+        "limitOrder": {
+          "size": "18.26",
+          "persistenceType": "PERSIST",
+          "price": "10.0",
+          "timeInForce": "FILL_OR_KILL"
+        }
+      },
+      "timings": {
+        "oddsReqst-placed": "-569ms",
+        "offerGot-sent": "39ms",
+        "offerGot-placed": "-606ms",
+        "sent-placed": "-645ms"
+      },
+      "placed_bet": {
+        "site": "betfair",
+        "avg_odds": "11.0",
+        "back_stake": "18.26",
+        "lay_stake": "182.600",
+        "prof_com": "0.0000",
+        "time_placed": "2020-01-21T15:35:37Z",
+        "match": "[Chelsea v Arsenal @ 2020-01-21T20:15:00Z]",
+        "bet_id": "192212427825",
+        "returns": "200.86",
+        "state": "SUCCESS",
+        "profit": "182.600",
+        "invested": "18.26"
+      }
+    }
+  ]
+}

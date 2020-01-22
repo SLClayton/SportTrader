@@ -2,39 +2,18 @@ package Trader;
 
 import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
-import SiteConnectors.Betfair.Betfair;
-import SiteConnectors.Betfair.BetfairEventTracker;
 import SiteConnectors.BettingSite;
-import SiteConnectors.FlashScores;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
-import tools.printer.*;
 
-import javax.naming.directory.InvalidAttributesException;
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.PortUnreachableException;
 import java.net.URISyntaxException;
-import java.nio.file.FileSystems;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import static tools.printer.*;
@@ -70,7 +49,7 @@ public class EventTrader implements Runnable {
     public ArrayList<String> timout_site_oddsReports;
     public ArrayList<String> rateLimited_site_oddsReports;
     public ArrayList<String> error_site_oddsReports;
-    public BigDecimal best_profit_last;
+    public BigDecimal last_best_profit;
 
 
 
@@ -159,6 +138,7 @@ public class EventTrader implements Runnable {
     public void run() {
         log.info(String.format("Running Event Trader."));
 
+        // Create new odds report worker for every
         for (int i=0; i<siteEventTrackers.size(); i++){
             sportsTrader.newMarketOddsReportWorker();
         }
@@ -169,6 +149,8 @@ public class EventTrader implements Runnable {
         Set<String> site_ids = BettingSite.getIDs(sites.values());
         BigDecimal best_profit = null;
         int loops_per_check = 100;
+        int secs_per_check = 20;
+        Instant next_check = Instant.now().plusSeconds(secs_per_check);
         for (long i=0; !exit_flag; i++){
             try {
 
@@ -182,19 +164,19 @@ public class EventTrader implements Runnable {
                 loop_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
 
                 // Update best profit found in check interval
-                if (best_profit_last != null && best_profit != null) {
-                    best_profit = best_profit.max(best_profit_last);
+                if (last_best_profit != null && best_profit != null) {
+                    best_profit = best_profit.max(last_best_profit);
                 }
-                else if (best_profit_last != null){
-                    best_profit = best_profit_last;
+                else if (last_best_profit != null){
+                    best_profit = last_best_profit;
                 }
 
-                // Calculate the timing metrics over past timings
-                if (loop_times.size() >= loops_per_check){
+                // Calculate and print stats of last group of arb checks
+                if (Instant.now().isAfter(next_check)){
                     String best = String.valueOf(best_profit);
                     if (best.length() > 8){ best = best.substring(0, 8);}
-                    log.info(String.format("%s Arb Checks: avg=%dms OK%s TIMEOUT%s LIMIT%s NA%s best: %s",
-                            loops_per_check, avg(loop_times),
+                    log.info(String.format("%s ArbsChcks: avg=%dms OK%s TMT%s LMT%s NA%s Bst: %s",
+                            loop_times.size(), avg(loop_times),
                             count(site_ids, ok_site_oddsReports),
                             count(new HashSet<>(timout_site_oddsReports), timout_site_oddsReports),
                             count(new HashSet<>(rateLimited_site_oddsReports), rateLimited_site_oddsReports),
@@ -207,7 +189,30 @@ public class EventTrader implements Runnable {
                     rateLimited_site_oddsReports.clear();
                     error_site_oddsReports.clear();
                     best_profit = null;
+                    next_check = Instant.now().plusSeconds(secs_per_check);
                 }
+
+
+                // Sleep for a time depending on best profit found.
+                try {
+                    if (last_best_profit == null
+                            || last_best_profit.compareTo(new BigDecimal("-0.08")) == -1) {
+                        Thread.sleep(10000);
+                    } else if (last_best_profit.compareTo(new BigDecimal("-0.05")) == -1){
+                        Thread.sleep(6000);
+                    } else if (last_best_profit.compareTo(new BigDecimal("-0.03")) == -1){
+                        Thread.sleep(5000);
+                    } else if (last_best_profit.compareTo(new BigDecimal("-0.02")) == -1){
+                        Thread.sleep(3000);
+                    } else if (last_best_profit.compareTo(new BigDecimal("-0.01")) == -1){
+                        Thread.sleep(2000);
+                    } else if (last_best_profit.compareTo(new BigDecimal("-0.005")) == -1){
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException e){
+                    log.warning("Event trader sleep time interupted.");
+                }
+
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -302,7 +307,7 @@ public class EventTrader implements Runnable {
         // Generate profit report for each tautology and order by profit ratio
         ProfitReportSet tautologyProfitReports = ProfitReportSet.getTautologyProfitReports(tautologies, fullOddsReport);
         tautologyProfitReports.sort_by_profit();
-        best_profit_last = tautologyProfitReports.best_profit();
+        last_best_profit = tautologyProfitReports.best_profit();
 
 
         // Create list of profit reports with profits over min_prof_margin
@@ -336,15 +341,15 @@ public class EventTrader implements Runnable {
 
 
         // Get the best (first in list) profit report
-        ProfitReport ratioProfitReport = in_profit.get(0);
+        BetOrderProfitReport ratioBetOrderProfitReport = in_profit.get(0);
 
 
         // Find profit reports for the lowest and highest possible through min bet size and max volume available
-        ProfitReport min_profit_report = ratioProfitReport.newProfitReportReturn(
-                ratioProfitReport.ret_from_min_stake.add(new BigDecimal("0.01")));
-        ProfitReport max_profit_report = ratioProfitReport.newProfitReportReturn(
-                ratioProfitReport.ret_from_max_stake.subtract(new BigDecimal("0.01")));
-        ProfitReport target_profit_report = ratioProfitReport.newProfitReportInvestment(TARGET_INVESTMENT);
+        BetOrderProfitReport min_profit_report = ratioBetOrderProfitReport.newProfitReportReturn(
+                ratioBetOrderProfitReport.ret_from_min_stake.add(new BigDecimal("0.01")));
+        BetOrderProfitReport max_profit_report = ratioBetOrderProfitReport.newProfitReportReturn(
+                ratioBetOrderProfitReport.ret_from_max_stake.subtract(new BigDecimal("0.01")));
+        BetOrderProfitReport target_profit_report = ratioBetOrderProfitReport.newProfitReportInvestment(TARGET_INVESTMENT);
 
         log.info(String.format("Profit reports generated. Investment( Min=%s  Target=%s  Max=%s )",
                 min_profit_report.total_investment.toString(),
@@ -352,7 +357,7 @@ public class EventTrader implements Runnable {
                 max_profit_report.total_investment.toString()));
 
 
-        ProfitReport profitReport;
+        BetOrderProfitReport betOrderProfitReport;
         // If target profit report between min and max
         if (target_profit_report != null
                 && min_profit_report.smallerInvestment(target_profit_report)
@@ -360,7 +365,7 @@ public class EventTrader implements Runnable {
 
             log.info(String.format("Target profit report used. Target investment of %s.",
                     target_profit_report.total_investment.toString()));
-            profitReport = target_profit_report;
+            betOrderProfitReport = target_profit_report;
         }
         // If target profit report smaller than min and min smaller than max
         else if ((target_profit_report == null || target_profit_report.smallerInvestment(min_profit_report))
@@ -368,12 +373,12 @@ public class EventTrader implements Runnable {
 
             log.info(String.format("Target profit report has total investment (%s) below minimum needed (%s). Using minimum.",
                     target_profit_report.total_investment, min_profit_report.total_investment));
-            profitReport = min_profit_report;
+            betOrderProfitReport = min_profit_report;
         }
         else if (max_profit_report.biggerInvestment(min_profit_report)) {
             log.info(String.format("Target profit report has total investment above max of %s available volume. Using max.",
                     max_profit_report.total_investment.toString()));
-            profitReport = min_profit_report;
+            betOrderProfitReport = min_profit_report;
         }
         else {
             log.warning(String.format("Bet not possible with current offers. No bets placed."));
@@ -382,9 +387,9 @@ public class EventTrader implements Runnable {
 
 
         // Ensure report investment is not over max investment
-        if (profitReport.total_investment.compareTo(MAX_INVESTMENT) == 1) {
+        if (betOrderProfitReport.total_investment.compareTo(MAX_INVESTMENT) == 1) {
             log.warning(String.format("Profit report needs too high investment. Req: %s  MAX: %s.",
-                    profitReport.total_investment, MAX_INVESTMENT.toString()));
+                    betOrderProfitReport.total_investment, MAX_INVESTMENT.toString()));
 
             // Try next best profit report if available
             in_profit.remove(0);
@@ -396,7 +401,7 @@ public class EventTrader implements Runnable {
 
 
         log.info(String.format("Chosen profit report of inv %s is below max inv %s.",
-                profitReport.total_investment, MAX_INVESTMENT));
+                betOrderProfitReport.total_investment, MAX_INVESTMENT));
 
 
         // If ending after bet, lock out all other threads.
@@ -410,26 +415,26 @@ public class EventTrader implements Runnable {
             log.info("Attempting to place bets.");
 
             // Placed bets and generate profit report
-            List<PlacedBet> placeBets = placeBets(profitReport.betOrders);
-            PlacedProfitReport placedProfitReport = new PlacedProfitReport(placeBets, profitReport);
+            List<PlacedBet> placeBets = placeBets(betOrderProfitReport.betOrders);
+            PlacedOrderProfitReport placedOrderProfitReport = new PlacedOrderProfitReport(placeBets, betOrderProfitReport);
 
             // Construct file paths for saved PlacedBetReport
             String placedBetsDir = "placed_bets";
             String placedBetsFilename = String.format("%s %s %s.json",
-                    report_timeString, match, placedProfitReport.min_profit);
+                    report_timeString, match, placedOrderProfitReport.min_profit);
             String placedBetsPath = placedBetsDir + "/" + placedBetsFilename;
 
             // Make directory and save profit report
-            log.info(String.format("Saving PlacedProfitReport to %s", placedBetsPath));
+            log.info(String.format("Saving PlacedOrderProfitReport to %s", placedBetsPath));
             makeDirIfNotExists(placedBetsDir);
-            toFile(placedProfitReport.toJSON(true), placedBetsPath);
+            toFile(placedOrderProfitReport.toJSON(true), placedBetsPath);
         }
 
 
         // Save profit report as json file
-        String profitString = profitReport.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
+        String profitString = betOrderProfitReport.profit_ratio.setScale(5, RoundingMode.HALF_UP).toString();
         String filename = profit_timeString + " -  " + match.name + " " + profitString + ".json";
-        toFile(profitReport.toJSON(true), profit_dir + "/" + filename);
+        toFile(betOrderProfitReport.toJSON(true), profit_dir + "/" + filename);
 
 
         if (END_ON_BET){

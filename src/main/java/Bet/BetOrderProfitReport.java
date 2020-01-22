@@ -2,12 +2,9 @@ package Bet;
 
 import SiteConnectors.BettingSite;
 import Trader.SportsTrader;
-import org.apache.axis2.util.ArrayStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import javax.naming.directory.InvalidAttributesException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -15,7 +12,7 @@ import java.util.logging.Logger;
 
 import static tools.printer.*;
 
-public class ProfitReport implements Comparable<ProfitReport> {
+public class BetOrderProfitReport implements Comparable<BetOrderProfitReport> {
     /*
     // A collection of Bet Orders or placed bets, with attributes calculated such as total stake
     // and profit/loss ratio.
@@ -38,7 +35,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
     public BigDecimal ret_from_max_stake;
 
 
-    public ProfitReport(ArrayList<BetOrder> betOrders) {
+    public BetOrderProfitReport(ArrayList<BetOrder> betOrders) {
 
         this.betOrders = betOrders;
 
@@ -88,7 +85,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public JSONObject toJSON(boolean use_betorders, boolean use_bet_ids){
+    public JSONObject toJSON(boolean use_betorders){
         JSONObject j = new JSONObject();
         j.put("total_investment", total_investment.toString());
         j.put("min_return", min_return.toString());
@@ -115,20 +112,18 @@ public class ProfitReport implements Comparable<ProfitReport> {
                 j.put("match", null);
             }
         }
-        if (use_bet_ids){
-            JSONArray taut = new JSONArray();
-            for (BetOrder bo: betOrders){
-                taut.add(bo.bet().id());
-            }
-            j.put("tautology", taut);
+
+
+        BetGroup tautology = new BetGroup();
+        for (BetOrder bo: betOrders){
+            tautology.add(bo.bet());
         }
+        j.put("tautology_id", tautology.id());
+        j.put("bet_ids", tautology.toJSON(false));
+
         return j;
     }
 
-
-    public JSONObject toJSON(boolean use_betorders){
-        return toJSON(use_betorders, false);
-    }
 
 
     public boolean isValid(){
@@ -145,7 +140,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public ProfitReport newProfitReportReturn(BigDecimal target_return) {
+    public BetOrderProfitReport newProfitReportReturn(BigDecimal target_return) {
         // Create a new profit report thats the same but with a different target return.
 
 
@@ -154,21 +149,21 @@ public class ProfitReport implements Comparable<ProfitReport> {
             new_bet_orders.add(new BetOrder(betOrders.get(i).bet_offer, target_return, true));
         }
 
-        return new ProfitReport(new_bet_orders);
+        return new BetOrderProfitReport(new_bet_orders);
     }
 
 
-    public boolean smallerInvestment(ProfitReport pr){
+    public boolean smallerInvestment(BetOrderProfitReport pr){
         return total_investment.compareTo(pr.total_investment) == -1;
     }
 
 
-    public boolean biggerInvestment(ProfitReport pr){
+    public boolean biggerInvestment(BetOrderProfitReport pr){
         return total_investment.compareTo(pr.total_investment) == 1;
     }
 
 
-    public ProfitReport newProfitReportInvestment(BigDecimal new_target_investment) {
+    public BetOrderProfitReport newProfitReportInvestment(BigDecimal new_target_investment) {
 
         // Find the average target returns of the betOrders
         BigDecimal sum_target_return = BigDecimal.ZERO;
@@ -196,9 +191,9 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public static JSONArray listToJSON(ArrayList<ProfitReport> profitReports, boolean full){
+    public static JSONArray listToJSON(ArrayList<BetOrderProfitReport> betOrderProfitReports, boolean full){
         JSONArray prs = new JSONArray();
-        for (ProfitReport pr: profitReports){
+        for (BetOrderProfitReport pr: betOrderProfitReports){
             prs.add(pr.toJSON(full));
         }
         return prs;
@@ -207,7 +202,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
 
     @Override
-    public int compareTo(ProfitReport profitReport) {
-        return this.profit_ratio.compareTo(profitReport.profit_ratio);
+    public int compareTo(BetOrderProfitReport betOrderProfitReport) {
+        return this.profit_ratio.compareTo(betOrderProfitReport.profit_ratio);
     }
 }

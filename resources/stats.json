@@ -1,633 +1,126 @@
 {
   "event_traders": {
-    "Internazionale v FC Barcelona": {
-      "tauts_n": 106,
+    "Lazio v Cremonese": {
+      "tauts_n": 90,
       "tautologies": [
-        "861223509   : n=1       best: -0.0363  avg: -0.0363   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=1       best: -0.0304  avg: -0.0304   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=539     best: -0.0061  avg: -0.0170   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=539     best: -0.0097  avg: -0.0135   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=539     best: -0.0116  avg: -0.0116   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=1       best: -0.0196  avg: -0.0196   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=1       best: -0.0481  avg: -0.0481   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=539     best: -0.0374  avg: -0.0575   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=1       best: -0.0106  avg: -0.0106   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=539     best: -0.0095  avg: -0.0144   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
+        "861223509   : n=140     best: -0.0203  avg: -0.0219   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
+        "255477433   : n=135     best: -0.0026  avg: -0.0028   [CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-1_LAY]",
+        "626532572   : n=140     best: -0.0096  avg: -0.0096   [OVER_1.5_LAY, UNDER_1.5_LAY]",
+        "544729330   : n=140     best: -0.0123  avg: -0.0225   [OVER_1.5_BACK, UNDER_1.5_BACK]",
+        "74201834    : n=140     best: -0.0204  avg: -0.0287   [UNDER_1.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
+        "59512971    : n=140     best: -0.0314  avg: -0.0314   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
+        "226746507   : n=140     best: -0.0026  avg: -0.0026   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
+        "919719641   : n=140     best: -0.0036  avg: -0.0036   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
+        "1153908943  : n=135     best: -0.0067  avg: -0.0084   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
+        "2020959100  : n=140     best: -0.0258  avg: -0.0258   [OVER_6.5_BACK, UNDER_6.5_BACK]"
       ],
       "sites": {
-        "matchbook": " n=539   bets with offers: 58   total bets: 64",
-        "smarkets": " n=1   bets with offers: 117   total bets: 122"
+        "matchbook": " n=134   bets with offers: 51   total bets: 72",
+        "smarkets": " n=19   bets with offers: 61   total bets: 122",
+        "betfair": " n=140   bets with offers: 115   total bets: 128"
       },
-      "n": 545
-    },
-    "West Ham v Arsenal": {
-      "tauts_n": 123,
-      "tautologies": [
-        "861223509   : n=529     best: -0.0307  avg: -0.0308   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "643342681   : n=1       best: -0.0018  avg: -0.0018   [ANY-OVER_3-3_DRAW_BACK, ANY-OVER_3-3_DRAW_LAY]",
-        "59512971    : n=529     best: -0.0039  avg: -0.0076   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=539     best: -0.0037  avg: -0.0069   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=543     best: -0.0072  avg: -0.0100   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=543     best: -0.0121  avg: -0.0165   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "2020959100  : n=543     best: -0.0148  avg: -0.0152   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=529     best: -0.0326  avg: -0.0328   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=529     best: -0.0264  avg: -0.0265   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=541     best: -0.0105  avg: -0.0109   [OVER_0.5_BACK, OVER_0.5_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=539   bets with offers: 76 (max: 78)   total bets: 80",
-        "smarkets": " n=1   bets with offers: 122   total bets: 122",
-        "betfair": " n=529   bets with offers: 127   total bets: 128"
-      },
-      "n": 544
-    },
-    "Napoli v Racing Genk": {
-      "tauts_n": 114,
-      "tautologies": [
-        "861223509   : n=525     best: -0.0239  avg: -0.0240   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=525     best: -0.0445  avg: -0.0445   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "919719641   : n=541     best: -0.0039  avg: -0.0040   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "1153908943  : n=541     best: -0.0059  avg: -0.0062   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=543     best: -0.0088  avg: -0.0115   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=525     best: -0.0285  avg: -0.0368   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=525     best: -0.0566  avg: -0.0630   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=525     best: -0.0414  avg: -0.0434   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=525     best: -0.0103  avg: -0.0104   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=541     best: -0.0063  avg: -0.0067   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=541   bets with offers: 53   total bets: 68",
-        "smarkets": " n=1   bets with offers: 119   total bets: 122",
-        "betfair": " n=525   bets with offers: 107   total bets: 128"
-      },
-      "n": 545
-    },
-    "Stoke City v Luton Town": {
-      "tauts_n": 92,
-      "tautologies": [
-        "861223509   : n=1       best: -0.0340  avg: -0.0340   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "255477433   : n=543     best: -0.0119  avg: -0.0135   [CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-1_LAY]",
-        "626532572   : n=543     best: -0.0451  avg: -0.0683   [OVER_1.5_LAY, UNDER_1.5_LAY]",
-        "1118706987  : n=1       best: -0.0390  avg: -0.0390   [OVER_5.5_BACK, OVER_5.5_LAY]",
-        "544729330   : n=543     best: -0.0488  avg: -0.0683   [OVER_1.5_BACK, UNDER_1.5_BACK]",
-        "74201834    : n=543     best: -0.0695  avg: -0.0866   [UNDER_1.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
-        "59512971    : n=1       best: -0.0258  avg: -0.0258   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "919719641   : n=543     best: -0.0142  avg: -0.0174   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=543     best: -0.0145  avg: -0.0169   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "1153908943  : n=543     best: -0.0180  avg: -0.0180   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=543   bets with offers: 55   total bets: 76",
-        "smarkets": " n=1   bets with offers: 111   total bets: 122"
-      },
-      "n": 545
-    },
-    "Rio Ave v Gil Vicente": {
-      "tauts_n": 113,
-      "tautologies": [
-        "861223509   : n=531     best: -0.0553  avg: -0.0553   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=531     best: -0.0181  avg: -0.0181   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=529     best: -0.0060  avg: -0.0079   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=544     best: -0.0095  avg: -0.0097   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=544     best: -0.0101  avg: -0.0101   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=1       best: -0.0199  avg: -0.0199   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=531     best: -0.0381  avg: -0.0382   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=531     best: -0.0370  avg: -0.0473   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=531     best: -0.0195  avg: -0.0195   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=531     best: -0.0060  avg: -0.0060   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=542   bets with offers: 52   total bets: 72",
-        "smarkets": " n=1   bets with offers: 116   total bets: 122",
-        "betfair": " n=531   bets with offers: 118   total bets: 128"
-      },
-      "n": 544
-    },
-    "Nottingham Forest v Middlesbrough": {
-      "tauts_n": 93,
-      "tautologies": [
-        "861223509   : n=527     best: -0.0354  avg: -0.0354   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "255477433   : n=542     best: -0.0131  avg: -0.0133   [CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-1_LAY]",
-        "626532572   : n=542     best: -0.0598  avg: -0.0602   [OVER_1.5_LAY, UNDER_1.5_LAY]",
-        "544729330   : n=542     best: -0.0512  avg: -0.0518   [OVER_1.5_BACK, UNDER_1.5_BACK]",
-        "74201834    : n=542     best: -0.0665  avg: -0.0671   [UNDER_1.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
-        "1153908943  : n=541     best: -0.0079  avg: -0.0081   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=542     best: -0.0109  avg: -0.0109   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=542     best: -0.0125  avg: -0.0125   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "1369615531  : n=527     best: -0.0453  avg: -0.0453   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "2129559653  : n=542     best: -0.0088  avg: -0.0090   [RESULT_TEAM-A_BACK, RESULT_TEAM-A_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=541   bets with offers: 53   total bets: 72",
-        "betfair": " n=527   bets with offers: 120   total bets: 128"
-      },
-      "n": 544
-    },
-    "Chelsea v Lille OSC": {
-      "tauts_n": 110,
-      "tautologies": [
-        "861223509   : n=521     best: -0.0437  avg: -0.0438   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=521     best: -0.0365  avg: -0.0366   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=536     best: -0.0029  avg: -0.0033   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=536     best: -0.0035  avg: -0.0035   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=540     best: -0.0079  avg: -0.0110   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=521     best: -0.0201  avg: -0.0201   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=521     best: -0.0408  avg: -0.0426   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=540     best: -0.0307  avg: -0.0412   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=521     best: -0.0105  avg: -0.0105   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=536     best: -0.0034  avg: -0.0067   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=536   bets with offers: 57   total bets: 68",
-        "smarkets": " n=1   bets with offers: 116   total bets: 122",
-        "betfair": " n=521   bets with offers: 112   total bets: 128"
-      },
-      "n": 545
-    },
-    "Preston North End v Fulham": {
-      "tauts_n": 119,
-      "tautologies": [
-        "861223509   : n=521     best: -0.0300  avg: -0.0365   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=1       best: -0.0172  avg: -0.0172   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=540     best: -0.0070  avg: -0.0072   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=540     best: -0.0122  avg: -0.0123   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=540     best: -0.0128  avg: -0.0130   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "2020959100  : n=521     best: -0.0090  avg: -0.0183   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=521     best: -0.0512  avg: -0.0674   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=521     best: -0.0404  avg: -0.0405   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=521     best: -0.0357  avg: -0.0580   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=540     best: -0.0161  avg: -0.0163   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=540   bets with offers: 60   total bets: 76",
-        "smarkets": " n=1   bets with offers: 120   total bets: 122",
-        "betfair": " n=521   bets with offers: 120   total bets: 128"
-      },
-      "n": 545
-    },
-    "Bristol City v Millwall": {
-      "tauts_n": 119,
-      "tautologies": [
-        "861223509   : n=526     best: -0.0255  avg: -0.0256   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=526     best: -0.0183  avg: -0.0183   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=539     best: -0.0055  avg: -0.0057   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=542     best: -0.0126  avg: -0.0128   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=542     best: -0.0150  avg: -0.0152   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "2020959100  : n=526     best: -0.0106  avg: -0.0106   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=526     best: -0.0486  avg: -0.0567   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=526     best: -0.0372  avg: -0.0429   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=526     best: -0.0420  avg: -0.0491   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=542     best: -0.0099  avg: -0.0132   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=539   bets with offers: 59   total bets: 76",
-        "smarkets": " n=1   bets with offers: 119   total bets: 122",
-        "betfair": " n=526   bets with offers: 119   total bets: 128"
-      },
-      "n": 544
-    },
-    "Olympique Lyonnais v RB Leipzig": {
-      "tauts_n": 120,
-      "tautologies": [
-        "861223509   : n=518     best: -0.0251  avg: -0.0316   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=518     best: -0.0146  avg: -0.0160   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=539     best: -0.0046  avg: -0.0071   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=542     best: -0.0114  avg: -0.0117   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=542     best: -0.0113  avg: -0.0117   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=518     best: -0.0121  avg: -0.0121   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=518     best: -0.0286  avg: -0.0286   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=518     best: -0.0312  avg: -0.0313   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=518     best: -0.0195  avg: -0.0196   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=542     best: -0.0093  avg: -0.0097   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=538   bets with offers: 65   total bets: 72",
-        "smarkets": " n=2   bets with offers: 122   total bets: 122",
-        "betfair": " n=517   bets with offers: 116   total bets: 128"
-      },
-      "n": 545
-    },
-    "Borussia Dortmund v SK Slavia Praha": {
-      "tauts_n": 111,
-      "tautologies": [
-        "861223509   : n=1       best: -0.0345  avg: -0.0345   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=1       best: -0.0412  avg: -0.0412   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=540     best: -0.0048  avg: -0.0154   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=540     best: -0.0094  avg: -0.0108   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=540     best: -0.0095  avg: -0.0110   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=1       best: -0.0156  avg: -0.0156   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=1       best: -0.1111  avg: -0.1111   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=540     best: -0.0279  avg: -0.0279   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=1       best: -0.0106  avg: -0.0106   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=540     best: -0.0103  avg: -0.0117   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=540   bets with offers: 55   total bets: 68",
-        "smarkets": " n=1   bets with offers: 117   total bets: 122"
-      },
-      "n": 545
-    },
-    "Chesterfield v Yeovil Town": {
-      "tauts_n": 87,
-      "tautologies": [
-        "861223509   : n=527     best: -0.0416  avg: -0.0546   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "626532572   : n=527     best: -0.0417  avg: -0.0417   [OVER_1.5_LAY, UNDER_1.5_LAY]",
-        "544729330   : n=527     best: -0.0379  avg: -0.0379   [OVER_1.5_BACK, UNDER_1.5_BACK]",
-        "1118706987  : n=1       best: -0.0439  avg: -0.0439   [OVER_5.5_BACK, OVER_5.5_LAY]",
-        "74201834    : n=527     best: -0.0749  avg: -0.0750   [UNDER_1.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
-        "919719641   : n=541     best: -0.0251  avg: -0.0254   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=541     best: -0.0278  avg: -0.0280   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=1       best: -0.0245  avg: -0.0245   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=527     best: -0.0815  avg: -0.0815   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "2129559653  : n=541     best: -0.0258  avg: -0.0261   [RESULT_TEAM-A_BACK, RESULT_TEAM-A_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=538   bets with offers: 10   total bets: 26",
-        "smarkets": " n=1   bets with offers: 89   total bets: 122",
-        "betfair": " n=527   bets with offers: 116   total bets: 128"
-      },
-      "n": 544
-    },
-    "Perugia v Cosenza Calcio": {
-      "tauts_n": 113,
-      "tautologies": [
-        "861223509   : n=525     best: -0.0382  avg: -0.0503   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=525     best: -0.0190  avg: -0.0190   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "226746507   : n=545     best: -0.0119  avg: -0.0122   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=545     best: -0.0125  avg: -0.0128   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "1153908943  : n=1       best: -0.0064  avg: -0.0064   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "1369615531  : n=525     best: -0.0515  avg: -0.0606   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=525     best: -0.0416  avg: -0.0417   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=545     best: -0.0342  avg: -0.0346   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=525     best: -0.0042  avg: -0.0042   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]",
-        "793636953   : n=1       best: -0.0508  avg: -0.0508   [UNDER_4.5_BACK, UNDER_4.5_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=543   bets with offers: 24   total bets: 34",
-        "smarkets": " n=1   bets with offers: 117   total bets: 122",
-        "betfair": " n=525   bets with offers: 114   total bets: 128"
-      },
-      "n": 545
-    },
-    "FC Red Bull Salzburg v Liverpool": {
-      "tauts_n": 121,
-      "tautologies": [
-        "861223509   : n=527     best: -0.0317  avg: -0.0344   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=527     best: -0.0156  avg: -0.0156   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=538     best: -0.0051  avg: -0.0062   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=543     best: -0.0092  avg: -0.0147   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=543     best: -0.0098  avg: -0.0099   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=527     best: -0.0170  avg: -0.0170   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=527     best: -0.0419  avg: -0.0420   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=527     best: -0.0194  avg: -0.0194   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=527     best: -0.0196  avg: -0.0196   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=543     best: -0.0082  avg: -0.0084   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=538   bets with offers: 61   total bets: 72",
-        "smarkets": " n=2   bets with offers: 122   total bets: 122",
-        "betfair": " n=527   bets with offers: 117   total bets: 128"
-      },
-      "n": 545
-    },
-    "AFC Fylde v Sutton United": {
-      "tauts_n": 73,
-      "tautologies": [
-        "861223509   : n=525     best: -0.0526  avg: -0.0526   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "626532572   : n=1       best: -0.0682  avg: -0.0682   [OVER_1.5_LAY, UNDER_1.5_LAY]",
-        "1118706987  : n=1       best: -0.0390  avg: -0.0390   [OVER_5.5_BACK, OVER_5.5_LAY]",
-        "544729330   : n=525     best: -0.0602  avg: -0.0602   [OVER_1.5_BACK, UNDER_1.5_BACK]",
-        "74201834    : n=525     best: -0.1040  avg: -0.1073   [UNDER_1.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
-        "919719641   : n=538     best: -0.0347  avg: -0.0347   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=538     best: -0.0364  avg: -0.0365   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=1       best: -0.0287  avg: -0.0287   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=525     best: -0.0813  avg: -0.1087   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "2129559653  : n=544     best: -0.0349  avg: -0.0351   [RESULT_TEAM-A_BACK, RESULT_TEAM-A_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=538   bets with offers: 10   total bets: 26",
-        "smarkets": " n=1   bets with offers: 87   total bets: 122",
-        "betfair": " n=525   bets with offers: 111   total bets: 128"
-      },
-      "n": 544
-    },
-    "Patronato v Vélez Sársfield": {
-      "tauts_n": 112,
-      "tautologies": [
-        "861223509   : n=530     best: -0.0350  avg: -0.0570   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=2       best: -0.0116  avg: -0.0116   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=2       best: -0.0054  avg: -0.0054   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=545     best: -0.0137  avg: -0.0162   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=545     best: -0.0183  avg: -0.0229   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "1369615531  : n=530     best: -0.0615  avg: -0.0671   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=530     best: -0.0350  avg: -0.0351   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=2       best: -0.0486  avg: -0.0486   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=530     best: -0.0139  avg: -0.0139   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]",
-        "793636953   : n=2       best: -0.0357  avg: -0.0357   [UNDER_4.5_BACK, UNDER_4.5_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=539   bets with offers: 22   total bets: 34",
-        "smarkets": " n=2   bets with offers: 117   total bets: 122",
-        "betfair": " n=530   bets with offers: 110   total bets: 128"
-      },
-      "n": 545
-    },
-    "Kayserispor v Caykur Rizespor": {
-      "tauts_n": 98,
-      "tautologies": [
-        "861223509   : n=523     best: -0.0511  avg: -0.0511   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=523     best: -0.0157  avg: -0.0157   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=520     best: -0.0076  avg: -0.0076   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=545     best: -0.0114  avg: -0.0115   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=545     best: -0.0168  avg: -0.0168   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "2020959100  : n=523     best: -0.0157  avg: -0.0157   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=523     best: -0.0486  avg: -0.0486   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=523     best: -0.0193  avg: -0.0193   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=523     best: -0.0110  avg: -0.0110   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=545     best: -0.0077  avg: -0.0085   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=542   bets with offers: 51 (max: 52)   total bets: 76",
-        "betfair": " n=523   bets with offers: 118   total bets: 128"
-      },
-      "n": 545
-    },
-    "VfB Stuttgart v 1. FC Nürnberg": {
-      "tauts_n": 118,
-      "tautologies": [
-        "861223509   : n=1       best: -0.0396  avg: -0.0396   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=1       best: -0.0243  avg: -0.0243   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=540     best: -0.0071  avg: -0.0917   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=540     best: -0.0089  avg: -0.0089   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=540     best: -0.0108  avg: -0.0156   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "1369615531  : n=539     best: -0.0344  avg: -0.2380   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "2020959100  : n=1       best: -0.3660  avg: -0.3660   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1968805973  : n=1       best: -0.0491  avg: -0.0491   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=1       best: -0.0196  avg: -0.0196   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=540     best: -0.0063  avg: -0.1256   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=540   bets with offers: 58   total bets: 72",
-        "smarkets": " n=1   bets with offers: 120   total bets: 122"
-      },
-      "n": 545
-    },
-    "Argentinos Juniors v Estudiantes de La Plata": {
-      "tauts_n": 109,
-      "tautologies": [
-        "861223509   : n=523     best: -0.0360  avg: -0.0534   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=523     best: -0.0138  avg: -0.0153   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=2       best: -0.0069  avg: -0.0069   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=543     best: -0.0208  avg: -0.0210   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=543     best: -0.0235  avg: -0.0237   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "1369615531  : n=523     best: -0.0534  avg: -0.0790   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=523     best: -0.0389  avg: -0.0569   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=2       best: -0.0404  avg: -0.0404   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=523     best: -0.0091  avg: -0.0091   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]",
-        "793636953   : n=2       best: -0.0278  avg: -0.0278   [UNDER_4.5_BACK, UNDER_4.5_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=539   bets with offers: 21   total bets: 34",
-        "smarkets": " n=2   bets with offers: 111   total bets: 122",
-        "betfair": " n=523   bets with offers: 109   total bets: 128"
-      },
-      "n": 545
-    },
-    "Charlton Athletic v Huddersfield Town": {
-      "tauts_n": 106,
-      "tautologies": [
-        "861223509   : n=1       best: -0.0391  avg: -0.0391   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=1       best: -0.0283  avg: -0.0283   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=538     best: -0.0064  avg: -0.0132   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=538     best: -0.0116  avg: -0.0151   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=538     best: -0.0122  avg: -0.0151   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "2020959100  : n=1       best: -0.0199  avg: -0.0199   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=1       best: -0.0416  avg: -0.0416   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=1       best: -0.0404  avg: -0.0404   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=1       best: -0.0434  avg: -0.0434   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=538     best: -0.0106  avg: -0.0141   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=538   bets with offers: 60   total bets: 76",
-        "smarkets": " n=1   bets with offers: 119   total bets: 122"
-      },
-      "n": 544
-    },
-    "Leeds United v Hull City": {
-      "tauts_n": 101,
-      "tautologies": [
-        "861223509   : n=1       best: -0.0320  avg: -0.0320   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=1       best: -0.0411  avg: -0.0411   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "919719641   : n=541     best: -0.0078  avg: -0.0137   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "1153908943  : n=541     best: -0.0094  avg: -0.0185   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=541     best: -0.0168  avg: -0.0168   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=1       best: -0.0332  avg: -0.0332   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=1       best: -0.0734  avg: -0.0734   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=541     best: -0.0199  avg: -0.0330   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=1       best: -0.0281  avg: -0.0281   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=541     best: -0.0111  avg: -0.0126   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=541   bets with offers: 60   total bets: 80",
-        "smarkets": " n=1   bets with offers: 116   total bets: 122"
-      },
-      "n": 544
-    },
-    "Odense BK v Aalborg BK": {
-      "tauts_n": 120,
-      "tautologies": [
-        "861223509   : n=1       best: -0.0402  avg: -0.0402   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=1       best: -0.0148  avg: -0.0148   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=1       best: -0.0060  avg: -0.0060   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=540     best: -0.0139  avg: -0.0196   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=540     best: -0.0167  avg: -0.0203   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "2020959100  : n=1       best: -0.0287  avg: -0.0287   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=1       best: -0.0448  avg: -0.0448   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=1       best: -0.0386  avg: -0.0386   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=540     best: -0.0196  avg: -0.0428   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=1       best: -0.0100  avg: -0.0100   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=541   bets with offers: 25   total bets: 34",
-        "smarkets": " n=1   bets with offers: 122   total bets: 122"
-      },
-      "n": 545
-    },
-    "Benfica v Zenit Saint-Petersburg": {
-      "tauts_n": 119,
-      "tautologies": [
-        "861223509   : n=527     best: -0.0272  avg: -0.0272   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=527     best: -0.0247  avg: -0.0247   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=540     best: -0.0051  avg: -0.0062   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "919719641   : n=542     best: -0.0146  avg: -0.0146   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "226746507   : n=542     best: -0.0147  avg: -0.0148   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "2020959100  : n=527     best: -0.0183  avg: -0.0183   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=527     best: -0.0383  avg: -0.0429   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=3       best: -0.0362  avg: -0.0362   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=527     best: -0.0112  avg: -0.0195   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=542     best: -0.0053  avg: -0.0059   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=540   bets with offers: 63   total bets: 72",
-        "smarkets": " n=3   bets with offers: 122   total bets: 122",
-        "betfair": " n=527   bets with offers: 117   total bets: 128"
-      },
-      "n": 545
-    },
-    "Ajax v Valencia": {
-      "tauts_n": 120,
-      "tautologies": [
-        "861223509   : n=527     best: -0.0277  avg: -0.0277   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-        "59512971    : n=527     best: -0.0280  avg: -0.0281   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-        "1153908943  : n=541     best: -0.0054  avg: -0.0059   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-        "226746507   : n=545     best: -0.0089  avg: -0.0091   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-        "919719641   : n=545     best: -0.0100  avg: -0.0101   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-        "2020959100  : n=1       best: -0.0293  avg: -0.0293   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-        "1369615531  : n=527     best: -0.0362  avg: -0.0530   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-        "1968805973  : n=545     best: -0.0404  avg: -0.0481   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-        "1274690293  : n=527     best: -0.0196  avg: -0.0196   [OVER_0.5_BACK, OVER_0.5_LAY]",
-        "2007301813  : n=541     best: -0.0075  avg: -0.0079   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]"
-      ],
-      "sites": {
-        "matchbook": " n=541   bets with offers: 64   total bets: 72",
-        "smarkets": " n=1   bets with offers: 121   total bets: 122",
-        "betfair": " n=527   bets with offers: 117   total bets: 128"
-      },
-      "n": 545
+      "n": 140
     }
   },
   "metadata": {
-    "total_updates": 13079,
-    "event_traders": 24,
-    "start_time": "2019-12-09T09:32:32.758545300Z",
-    "elapsed_time": "0:02:44"
+    "total_updates": 140,
+    "event_traders": 1,
+    "start_time": "2020-01-14T15:35:32.153068900Z",
+    "elapsed_time": "0:00:42"
   },
   "summary_tautologies": {
-    "size": 123,
+    "size": 90,
     "tautologies": [
-      "643342681   : n=1       best: -0.0018  avg: -0.0018   avg best: -0.0018   [ANY-OVER_3-3_DRAW_BACK, ANY-OVER_3-3_DRAW_LAY]",
-      "2116446481  : n=5383    best: -0.0018  avg: -0.0051   avg best: -0.0046   [CORRECT-SCORE_3-3_BACK, CORRECT-SCORE_3-3_LAY]",
-      "1669597643  : n=5783    best: -0.0019  avg: -0.0064   avg best: -0.0054   [CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_0-3_LAY]",
-      "535841103   : n=7547    best: -0.0026  avg: -0.0118   avg best: -0.0054   [CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_2-3_LAY]",
-      "83992267    : n=9       best: -0.0032  avg: -0.0085   avg best: -0.0059   [CORRECT-SCORE-HT_2-2_BACK, CORRECT-SCORE-HT_2-2_LAY]",
-      "1153908943  : n=9692    best: -0.0029  avg: -0.0140   avg best: -0.0065   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
-      "1044764275  : n=6501    best: -0.0034  avg: -0.0102   avg best: -0.0073   [CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_1-3_LAY]",
-      "771166133   : n=8582    best: -0.0023  avg: -0.0145   avg best: -0.0077   [CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-0_LAY]",
-      "3971651     : n=5832    best: -0.0026  avg: -0.0083   avg best: -0.0080   [ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_TEAM-B_LAY]",
-      "191371405   : n=9712    best: -0.0013  avg: -0.0115   avg best: -0.0082   [CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-1_LAY]",
-      "707060105   : n=9689    best: -0.0029  avg: -0.0162   avg best: -0.0084   [CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-2_LAY]",
-      "426696435   : n=10265   best: -0.0040  avg: -0.0116   avg best: -0.0085   [CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-2_LAY]",
-      "2007301813  : n=11309   best: -0.0034  avg: -0.0156   avg best: -0.0088   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]",
-      "255477433   : n=11327   best: -0.0019  avg: -0.0156   avg best: -0.0094   [CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-1_LAY]",
-      "1218014971  : n=10744   best: -0.0013  avg: -0.0125   avg best: -0.0097   [CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-0_LAY]",
-      "1978762242  : n=529     best: -0.0107  avg: -0.0107   avg best: -0.0107   [OVER_7.5_BACK, UNDER_7.5_BACK]",
-      "1943195785  : n=11328   best: -0.0026  avg: -0.0129   avg best: -0.0112   [CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-0_LAY]",
-      "362590407   : n=11306   best: -0.0037  avg: -0.0145   avg best: -0.0124   [CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-0_LAY]",
-      "1389233973  : n=11333   best: -0.0056  avg: -0.0145   avg best: -0.0126   [CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-1_LAY]",
-      "919719641   : n=13002   best: -0.0035  avg: -0.0149   avg best: -0.0132   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
-      "690053567   : n=9723    best: -0.0053  avg: -0.0148   avg best: -0.0135   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-A_LAY]",
-      "226746507   : n=13008   best: -0.0072  avg: -0.0150   avg best: -0.0138   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
-      "2129559653  : n=13014   best: -0.0074  avg: -0.0158   avg best: -0.0146   [RESULT_TEAM-A_BACK, RESULT_TEAM-A_LAY]",
-      "1325127945  : n=11333   best: -0.0069  avg: -0.0163   avg best: -0.0148   [CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-1_LAY]",
-      "71752619    : n=1083    best: -0.0051  avg: -0.0054   avg best: -0.0154   [CORRECT-SCORE-HT_2-1_BACK, CORRECT-SCORE-HT_2-1_LAY]",
-      "1206592427  : n=1597    best: -0.0040  avg: -0.0151   avg best: -0.0168   [CORRECT-SCORE-HT_1-2_BACK, CORRECT-SCORE-HT_1-2_LAY]",
-      "1965774709  : n=2127    best: -0.0039  avg: -0.0161   avg best: -0.0174   [CORRECT-SCORE-HT_0-2_BACK, CORRECT-SCORE-HT_0-2_LAY]",
-      "856228663   : n=8975    best: -0.0030  avg: -0.0216   avg best: -0.0176   [OVER_0.5_BACK, CORRECT-SCORE_0-0_BACK]",
-      "1514497781  : n=8028    best: -0.0063  avg: -0.0338   avg best: -0.0180   [HCP-A+0.5_TEAM-B_BACK, HCP-A+0.5_TEAM-B_LAY]",
-      "1986277042  : n=567     best: -0.0030  avg: -0.0081   avg best: -0.0193   [CORRECT-SCORE_0-0_BACK, UNDER_0.5_LAY]",
-      "925346763   : n=3158    best: -0.0124  avg: -0.0216   avg best: -0.0197   [HCP-A+2.5_TEAM-B_BACK, HCP-A+2.5_TEAM-B_LAY]",
-      "1074295723  : n=12385   best: -0.0123  avg: -0.0453   avg best: -0.0206   [HCP-A-0.5_TEAM-A_BACK, HCP-A-0.5_TEAM-A_LAY]",
-      "893403435   : n=3684    best: -0.0119  avg: -0.0239   avg best: -0.0224   [HCP-A+2.5_TEAM-A_BACK, HCP-A+2.5_TEAM-A_LAY]",
-      "59512971    : n=6312    best: -0.0039  avg: -0.0216   avg best: -0.0232   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
-      "1404072235  : n=4760    best: -0.0102  avg: -0.0194   avg best: -0.0236   [UNDER_6.5_BACK, UNDER_6.5_LAY]",
-      "1106239051  : n=12407   best: -0.0155  avg: -0.0514   avg best: -0.0236   [HCP-A-0.5_TEAM-B_BACK, HCP-A-0.5_TEAM-B_LAY]",
-      "294575509   : n=6845    best: -0.0067  avg: -0.0284   avg best: -0.0239   [HCP-A+1.5_TEAM-B_BACK, HCP-A+1.5_TEAM-B_LAY]",
-      "1766864708  : n=565     best: -0.0046  avg: -0.0188   avg best: -0.0239   [OVER_6.5_LAY, UNDER_6.5_LAY]",
-      "1546441109  : n=9094    best: -0.0106  avg: -0.0470   avg best: -0.0242   [HCP-A+0.5_TEAM-A_BACK, HCP-A+0.5_TEAM-A_LAY]",
-      "326518837   : n=7861    best: -0.0102  avg: -0.0323   avg best: -0.0263   [HCP-A+1.5_TEAM-A_BACK, HCP-A+1.5_TEAM-A_LAY]",
-      "780827029   : n=5839    best: -0.0142  avg: -0.0283   avg best: -0.0265   [HCP-A-2.5_TEAM-A_BACK, HCP-A-2.5_TEAM-A_LAY]",
-      "249483376   : n=8971    best: -0.0091  avg: -0.0374   avg best: -0.0267   [OVER_0.5_BACK, UNDER_0.5_BACK]",
-      "1194352779  : n=6841    best: -0.0136  avg: -0.0252   avg best: -0.0268   [CORRECT-SCORE-HT_1-1_BACK, CORRECT-SCORE-HT_1-1_LAY]",
-      "1274690293  : n=7412    best: -0.0103  avg: -0.0273   avg best: -0.0269   [OVER_0.5_BACK, OVER_0.5_LAY]",
-      "894088033   : n=567     best: -0.0050  avg: -0.0085   avg best: -0.0272   [UNDER_0.5_BACK, UNDER_0.5_LAY]",
-      "1105212028  : n=567     best: -0.0065  avg: -0.0098   avg best: -0.0284   [OVER_0.5_LAY, UNDER_0.5_LAY]",
-      "748883701   : n=7417    best: -0.0114  avg: -0.0312   avg best: -0.0298   [HCP-A-2.5_TEAM-B_BACK, HCP-A-2.5_TEAM-B_LAY]",
-      "1037135531  : n=8939    best: -0.0156  avg: -0.0351   avg best: -0.0302   [RESULT-HT_TEAM-B_BACK, RESULT-HT_TEAM-B_LAY]",
-      "1725713146  : n=7922    best: -0.0155  avg: -0.0364   avg best: -0.0312   [OVER_5.5_BACK, UNDER_5.5_BACK]",
-      "305217641   : n=6881    best: -0.0193  avg: -0.0298   avg best: -0.0317   [UNDER_5.5_BACK, UNDER_5.5_LAY]",
-      "839975284   : n=12980   best: -0.0131  avg: -0.0406   avg best: -0.0325   [OVER_2.5_BACK, UNDER_2.5_BACK]",
-      "317331381   : n=12980   best: -0.0132  avg: -0.0435   avg best: -0.0325   [OVER_2.5_BACK, OVER_2.5_LAY]",
-      "1303621155  : n=12980   best: -0.0141  avg: -0.0430   avg best: -0.0333   [UNDER_2.5_BACK, UNDER_2.5_LAY]",
-      "147853116   : n=12980   best: -0.0142  avg: -0.0458   avg best: -0.0333   [OVER_2.5_LAY, UNDER_2.5_LAY]",
-      "1135221238  : n=12960   best: -0.0151  avg: -0.0468   avg best: -0.0335   [OVER_3.5_BACK, UNDER_3.5_BACK]",
-      "385475887   : n=23      best: -0.0100  avg: -0.0332   avg best: -0.0337   [ANY-OVER-HT_2-2_ANY_BACK, ANY-OVER-HT_2-2_ANY_LAY]",
-      "1118706987  : n=1631    best: -0.0187  avg: -0.0322   avg best: -0.0341   [OVER_5.5_BACK, OVER_5.5_LAY]",
-      "1892491547  : n=12434   best: -0.0129  avg: -0.0481   avg best: -0.0343   [UNDER_3.5_BACK, UNDER_3.5_LAY]",
-      "1005192203  : n=8939    best: -0.0177  avg: -0.0388   avg best: -0.0343   [RESULT-HT_TEAM-A_BACK, RESULT-HT_TEAM-A_LAY]",
-      "2000749301  : n=9016    best: -0.0189  avg: -0.0371   avg best: -0.0346   [HCP-A-1.5_TEAM-A_BACK, HCP-A-1.5_TEAM-A_LAY]",
-      "1978014357  : n=7894    best: -0.0101  avg: -0.0363   avg best: -0.0350   [CORRECT-SCORE-HT_0-1_BACK, CORRECT-SCORE-HT_0-1_LAY]",
-      "161348075   : n=12407   best: -0.0146  avg: -0.0474   avg best: -0.0356   [OVER_3.5_BACK, OVER_3.5_LAY]",
-      "1288185252  : n=1631    best: -0.0172  avg: -0.0346   avg best: -0.0361   [OVER_5.5_LAY, UNDER_5.5_LAY]",
-      "861223509   : n=8939    best: -0.0239  avg: -0.0407   avg best: -0.0361   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
-      "330826340   : n=11890   best: -0.0118  avg: -0.0488   avg best: -0.0364   [OVER_3.5_LAY, UNDER_3.5_LAY]",
-      "1968805973  : n=10070   best: -0.0193  avg: -0.0409   avg best: -0.0368   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
-      "796010837   : n=12397   best: -0.0119  avg: -0.0471   avg best: -0.0371   [OVER_1.5_BACK, OVER_1.5_LAY]",
-      "1430467192  : n=10667   best: -0.0125  avg: -0.0468   avg best: -0.0373   [OVER_4.5_BACK, UNDER_4.5_BACK]",
-      "544729330   : n=12928   best: -0.0130  avg: -0.0479   avg best: -0.0374   [OVER_1.5_BACK, UNDER_1.5_BACK]",
-      "2020959100  : n=4742    best: -0.0090  avg: -0.0183   avg best: -0.0377   [OVER_6.5_BACK, UNDER_6.5_BACK]",
-      "626532572   : n=11322   best: -0.0108  avg: -0.0478   avg best: -0.0377   [OVER_1.5_LAY, UNDER_1.5_LAY]",
-      "204766561   : n=11322   best: -0.0118  avg: -0.0484   avg best: -0.0380   [UNDER_1.5_BACK, UNDER_1.5_LAY]",
-      "793636953   : n=7521    best: -0.0130  avg: -0.0408   avg best: -0.0381   [UNDER_4.5_BACK, UNDER_4.5_LAY]",
-      "640027531   : n=6013    best: -0.0220  avg: -0.0415   avg best: -0.0389   [OVER_4.5_BACK, OVER_4.5_LAY]",
-      "1515441838  : n=11793   best: -0.0139  avg: -0.0464   avg best: -0.0391   [OVER_1.5_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK]",
-      "1597386443  : n=565     best: -0.0086  avg: -0.0230   avg best: -0.0395   [OVER_6.5_BACK, OVER_6.5_LAY]",
-      "809505796   : n=5942    best: -0.0186  avg: -0.0401   avg best: -0.0396   [OVER_4.5_LAY, UNDER_4.5_LAY]",
-      "1240700113  : n=10193   best: -0.0127  avg: -0.0480   avg best: -0.0397   [CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK, UNDER_1.5_LAY]",
-      "1792040467  : n=2629    best: -0.0104  avg: -0.0407   avg best: -0.0407   [UNDER_7.5_BACK, UNDER_7.5_LAY]",
-      "1612671819  : n=7897    best: -0.0110  avg: -0.0364   avg best: -0.0411   [RESULT_TEAM-B_LAY, ANY-OVER_3-3_TEAM-B_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-3_BACK]",
-      "296006131   : n=10642   best: -0.0181  avg: -0.0583   avg best: -0.0442   [RESULT_TEAM-A_LAY, ANY-OVER_3-3_TEAM-A_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK]",
-      "1182113131  : n=8412    best: -0.0135  avg: -0.0457   avg best: -0.0457   [CORRECT-SCORE-HT_1-0_BACK, CORRECT-SCORE-HT_1-0_LAY]",
-      "2004993557  : n=8966    best: -0.0139  avg: -0.0570   avg best: -0.0477   [UNDER_0.5_BACK, OVER_1.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK]",
-      "1689920092  : n=6882    best: -0.0153  avg: -0.0471   avg best: -0.0479   [OVER_1.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK, OVER_0.5_LAY]",
-      "275961756   : n=7382    best: -0.0127  avg: -0.0601   avg best: -0.0483   [UNDER_0.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK, UNDER_1.5_LAY]",
-      "1990254005  : n=8939    best: -0.0209  avg: -0.0484   avg best: -0.0485   [CORRECT-SCORE-HT_0-0_BACK, CORRECT-SCORE-HT_0-0_LAY]",
-      "1369615531  : n=9476    best: -0.0286  avg: -0.0667   avg best: -0.0517   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-      "255809308   : n=9476    best: -0.0308  avg: -0.0704   avg best: -0.0518   [OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, OVER_2.5_LAY]",
-      "647653027   : n=11231   best: -0.0120  avg: -0.0691   avg best: -0.0520   [OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, OVER_1.5_LAY]",
-      "74201834    : n=11762   best: -0.0130  avg: -0.0699   avg best: -0.0523   [UNDER_1.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
-      "2143804644  : n=8950    best: -0.0231  avg: -0.0692   avg best: -0.0525   [UNDER_2.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, UNDER_3.5_LAY]",
-      "545709601   : n=11762   best: -0.0141  avg: -0.0724   avg best: -0.0531   [UNDER_1.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, UNDER_2.5_LAY]",
-      "1131410130  : n=11235   best: -0.0139  avg: -0.0638   avg best: -0.0538   [OVER_2.5_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
-      "1711975059  : n=11235   best: -0.0150  avg: -0.0664   avg best: -0.0545   [CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, UNDER_2.5_LAY]",
-      "1663137785  : n=8953    best: -0.0139  avg: -0.0709   avg best: -0.0622   [UNDER_0.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
-      "546986304   : n=6869    best: -0.0154  avg: -0.0554   avg best: -0.0623   [OVER_2.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, OVER_0.5_LAY]",
-      "751589798   : n=8953    best: -0.0150  avg: -0.0742   avg best: -0.0629   [UNDER_0.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, UNDER_2.5_LAY]",
-      "1995482050  : n=8945    best: -0.0316  avg: -0.0905   avg best: -0.0699   [OVER_3.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, OVER_1.5_LAY]",
-      "711194057   : n=9476    best: -0.0326  avg: -0.0913   avg best: -0.0701   [UNDER_1.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-      "1278124704  : n=8950    best: -0.0231  avg: -0.0929   avg best: -0.0708   [UNDER_1.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, UNDER_3.5_LAY]",
-      "168692173   : n=8938    best: -0.0334  avg: -0.0752   avg best: -0.0711   [OVER_3.5_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-      "1433525687  : n=7887    best: -0.0253  avg: -0.0675   avg best: -0.0717   [RESULT_DRAW_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK]",
-      "1267179410  : n=8412    best: -0.0240  avg: -0.0750   avg best: -0.0718   [CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, UNDER_3.5_LAY]",
-      "871676705   : n=6839    best: -0.0348  avg: -0.0702   avg best: -0.0790   [OVER_3.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, OVER_0.5_LAY]",
-      "1040232090  : n=8938    best: -0.0334  avg: -0.0891   avg best: -0.0790   [UNDER_0.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
-      "1498091429  : n=8412    best: -0.0240  avg: -0.0887   avg best: -0.0797   [UNDER_0.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, UNDER_3.5_LAY]",
-      "1618188734  : n=26      best: -0.0601  avg: -0.1024   avg best: -0.1016   [RESULT-HT_TEAM-A_LAY, ANY-OVER-HT_2-2_ANY_BACK, CORRECT-SCORE-HT_1-0_BACK, CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-1_BACK]",
-      "1180270019  : n=26      best: -0.0620  avg: -0.1245   avg best: -0.1315   [RESULT-HT_TEAM-B_LAY, ANY-OVER-HT_2-2_ANY_BACK, CORRECT-SCORE-HT_0-1_BACK, CORRECT-SCORE-HT_0-2_BACK, CORRECT-SCORE-HT_1-2_BACK]",
-      "1025713222  : n=26      best: -0.0567  avg: -0.1305   avg best: -0.1349   [RESULT-HT_DRAW_BACK, ANY-OVER-HT_2-2_ANY_BACK, CORRECT-SCORE-HT_0-1_BACK, CORRECT-SCORE-HT_0-2_BACK, CORRECT-SCORE-HT_1-0_BACK, CORRECT-SCORE-HT_1-2_BACK, CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-1_BACK]",
-      "1804461017  : n=8929    best: -0.0155  avg: -0.2031   avg best: -0.1409   [RESULT_DRAW_LAY, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_3-3_BACK]",
-      "723823497   : n=8410    best: -0.0285  avg: -0.2057   avg best: -0.1462   [RESULT_TEAM-B_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
-      "1776080183  : n=7886    best: -0.0243  avg: -0.1813   avg best: -0.1467   [RESULT_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-3_BACK]",
-      "6127082     : n=26      best: -0.0732  avg: -0.1497   avg best: -0.1512   [RESULT-HT_TEAM-B_BACK, ANY-OVER-HT_2-2_ANY_BACK, CORRECT-SCORE-HT_0-0_BACK, CORRECT-SCORE-HT_1-0_BACK, CORRECT-SCORE-HT_1-1_BACK, CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-1_BACK, CORRECT-SCORE-HT_2-2_BACK]",
-      "697616907   : n=26      best: -0.0944  avg: -0.1476   avg best: -0.1526   [RESULT-HT_DRAW_LAY, ANY-OVER-HT_2-2_ANY_BACK, CORRECT-SCORE-HT_0-0_BACK, CORRECT-SCORE-HT_1-1_BACK, CORRECT-SCORE-HT_2-2_BACK]",
-      "1797528389  : n=7886    best: -0.0327  avg: -0.1868   avg best: -0.1549   [UNDER_2.5_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
-      "198385852   : n=7886    best: -0.0327  avg: -0.1899   avg best: -0.1556   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK, OVER_2.5_LAY]",
-      "1001992986  : n=7879    best: -0.0318  avg: -0.1992   avg best: -0.1662   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK, OVER_1.5_LAY]",
-      "1893520325  : n=7886    best: -0.0337  avg: -0.1988   avg best: -0.1662   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
-      "925078903   : n=7886    best: -0.0327  avg: -0.2029   avg best: -0.1672   [UNDER_1.5_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
-      "1678686967  : n=26      best: -0.0579  avg: -0.1633   avg best: -0.1689   [ANY-OVER-HT_2-2_ANY_BACK, CORRECT-SCORE-HT_0-0_BACK, CORRECT-SCORE-HT_0-1_BACK, CORRECT-SCORE-HT_0-2_BACK, CORRECT-SCORE-HT_1-0_BACK, CORRECT-SCORE-HT_1-1_BACK, CORRECT-SCORE-HT_1-2_BACK, CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-1_BACK, CORRECT-SCORE-HT_2-2_BACK]",
-      "1820275241  : n=6311    best: -0.0350  avg: -0.1767   avg best: -0.1720   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK, OVER_0.5_LAY]",
-      "1895025966  : n=7886    best: -0.0337  avg: -0.2101   avg best: -0.1734   [UNDER_0.5_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
-      "966072695   : n=26      best: -0.0724  avg: -0.1707   avg best: -0.1790   [RESULT-HT_TEAM-A_BACK, ANY-OVER-HT_2-2_ANY_BACK, CORRECT-SCORE-HT_0-0_BACK, CORRECT-SCORE-HT_0-1_BACK, CORRECT-SCORE-HT_0-2_BACK, CORRECT-SCORE-HT_1-1_BACK, CORRECT-SCORE-HT_1-2_BACK, CORRECT-SCORE-HT_2-2_BACK]"
+      "839975284   : n=140     best: -0.0024  avg: -0.0024   avg best: -0.0024   [OVER_2.5_BACK, UNDER_2.5_BACK]",
+      "226746507   : n=140     best: -0.0026  avg: -0.0026   avg best: -0.0026   [RESULT_DRAW_BACK, RESULT_DRAW_LAY]",
+      "255477433   : n=135     best: -0.0026  avg: -0.0028   avg best: -0.0026   [CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-1_LAY]",
+      "2129559653  : n=140     best: -0.0028  avg: -0.0053   avg best: -0.0028   [RESULT_TEAM-A_BACK, RESULT_TEAM-A_LAY]",
+      "1218014971  : n=140     best: -0.0031  avg: -0.0031   avg best: -0.0031   [CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-0_LAY]",
+      "919719641   : n=140     best: -0.0036  avg: -0.0036   avg best: -0.0036   [RESULT_TEAM-B_BACK, RESULT_TEAM-B_LAY]",
+      "362590407   : n=140     best: -0.0039  avg: -0.0039   avg best: -0.0039   [CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-0_LAY]",
+      "317331381   : n=140     best: -0.0046  avg: -0.0051   avg best: -0.0046   [OVER_2.5_BACK, OVER_2.5_LAY]",
+      "1303621155  : n=140     best: -0.0049  avg: -0.0070   avg best: -0.0049   [UNDER_2.5_BACK, UNDER_2.5_LAY]",
+      "690053567   : n=140     best: -0.0051  avg: -0.0051   avg best: -0.0051   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-A_LAY]",
+      "330826340   : n=140     best: -0.0051  avg: -0.0051   avg best: -0.0051   [OVER_3.5_LAY, UNDER_3.5_LAY]",
+      "2007301813  : n=135     best: -0.0051  avg: -0.0059   avg best: -0.0051   [CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-2_LAY]",
+      "191371405   : n=140     best: -0.0055  avg: -0.0055   avg best: -0.0055   [CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-1_LAY]",
+      "1892491547  : n=140     best: -0.0057  avg: -0.0057   avg best: -0.0057   [UNDER_3.5_BACK, UNDER_3.5_LAY]",
+      "1325127945  : n=140     best: -0.0058  avg: -0.0058   avg best: -0.0058   [CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-1_LAY]",
+      "771166133   : n=140     best: -0.0062  avg: -0.0062   avg best: -0.0062   [CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-0_LAY]",
+      "1943195785  : n=140     best: -0.0062  avg: -0.0062   avg best: -0.0062   [CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-0_LAY]",
+      "1689920092  : n=140     best: -0.0062  avg: -0.0093   avg best: -0.0062   [OVER_1.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK, OVER_0.5_LAY]",
+      "2004993557  : n=140     best: -0.0065  avg: -0.0096   avg best: -0.0065   [UNDER_0.5_BACK, OVER_1.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK]",
+      "1515441838  : n=140     best: -0.0065  avg: -0.0096   avg best: -0.0065   [OVER_1.5_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK]",
+      "1153908943  : n=135     best: -0.0067  avg: -0.0084   avg best: -0.0067   [CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-2_LAY]",
+      "1389233973  : n=140     best: -0.0069  avg: -0.0069   avg best: -0.0069   [CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-1_LAY]",
+      "147853116   : n=140     best: -0.0072  avg: -0.0096   avg best: -0.0072   [OVER_2.5_LAY, UNDER_2.5_LAY]",
+      "796010837   : n=140     best: -0.0074  avg: -0.0105   avg best: -0.0074   [OVER_1.5_BACK, OVER_1.5_LAY]",
+      "1978762242  : n=140     best: -0.0081  avg: -0.0081   avg best: -0.0081   [OVER_7.5_BACK, UNDER_7.5_BACK]",
+      "161348075   : n=140     best: -0.0087  avg: -0.0093   avg best: -0.0087   [OVER_3.5_BACK, OVER_3.5_LAY]",
+      "1240700113  : n=140     best: -0.0087  avg: -0.0087   avg best: -0.0087   [CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK, UNDER_1.5_LAY]",
+      "275961756   : n=140     best: -0.0087  avg: -0.0087   avg best: -0.0087   [UNDER_0.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_1-0_BACK, UNDER_1.5_LAY]",
+      "1404072235  : n=140     best: -0.0089  avg: -0.0089   avg best: -0.0089   [UNDER_6.5_BACK, UNDER_6.5_LAY]",
+      "426696435   : n=135     best: -0.0089  avg: -0.0099   avg best: -0.0089   [CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-2_LAY]",
+      "1135221238  : n=140     best: -0.0092  avg: -0.0099   avg best: -0.0092   [OVER_3.5_BACK, UNDER_3.5_BACK]",
+      "1274690293  : n=140     best: -0.0094  avg: -0.0094   avg best: -0.0094   [OVER_0.5_BACK, OVER_0.5_LAY]",
+      "1792040467  : n=140     best: -0.0094  avg: -0.0094   avg best: -0.0094   [UNDER_7.5_BACK, UNDER_7.5_LAY]",
+      "626532572   : n=140     best: -0.0096  avg: -0.0096   avg best: -0.0096   [OVER_1.5_LAY, UNDER_1.5_LAY]",
+      "249483376   : n=140     best: -0.0097  avg: -0.0097   avg best: -0.0097   [OVER_0.5_BACK, UNDER_0.5_BACK]",
+      "856228663   : n=140     best: -0.0097  avg: -0.0097   avg best: -0.0097   [OVER_0.5_BACK, CORRECT-SCORE_0-0_BACK]",
+      "1804461017  : n=140     best: -0.0123  avg: -0.0123   avg best: -0.0123   [RESULT_DRAW_LAY, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_3-3_BACK]",
+      "544729330   : n=140     best: -0.0123  avg: -0.0225   avg best: -0.0123   [OVER_1.5_BACK, UNDER_1.5_BACK]",
+      "1074295723  : n=140     best: -0.0137  avg: -0.0137   avg best: -0.0137   [HCP-A-0.5_TEAM-A_BACK, HCP-A-0.5_TEAM-A_LAY]",
+      "1430467192  : n=140     best: -0.0143  avg: -0.0143   avg best: -0.0143   [OVER_4.5_BACK, UNDER_4.5_BACK]",
+      "204766561   : n=140     best: -0.0144  avg: -0.0217   avg best: -0.0144   [UNDER_1.5_BACK, UNDER_1.5_LAY]",
+      "546986304   : n=140     best: -0.0145  avg: -0.0156   avg best: -0.0145   [OVER_2.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, OVER_0.5_LAY]",
+      "1131410130  : n=140     best: -0.0147  avg: -0.0159   avg best: -0.0147   [OVER_2.5_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
+      "1663137785  : n=140     best: -0.0147  avg: -0.0159   avg best: -0.0147   [UNDER_0.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
+      "793636953   : n=140     best: -0.0152  avg: -0.0152   avg best: -0.0152   [UNDER_4.5_BACK, UNDER_4.5_LAY]",
+      "640027531   : n=140     best: -0.0156  avg: -0.0156   avg best: -0.0156   [OVER_4.5_BACK, OVER_4.5_LAY]",
+      "647653027   : n=140     best: -0.0157  avg: -0.0168   avg best: -0.0157   [OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, OVER_1.5_LAY]",
+      "1037135531  : n=140     best: -0.0161  avg: -0.0161   avg best: -0.0161   [RESULT-HT_TEAM-B_BACK, RESULT-HT_TEAM-B_LAY]",
+      "809505796   : n=140     best: -0.0165  avg: -0.0165   avg best: -0.0165   [OVER_4.5_LAY, UNDER_4.5_LAY]",
+      "1711975059  : n=140     best: -0.0172  avg: -0.0203   avg best: -0.0172   [CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, UNDER_2.5_LAY]",
+      "751589798   : n=140     best: -0.0172  avg: -0.0203   avg best: -0.0172   [UNDER_0.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, UNDER_2.5_LAY]",
+      "1194352779  : n=140     best: -0.0177  avg: -0.0177   avg best: -0.0177   [CORRECT-SCORE-HT_1-1_BACK, CORRECT-SCORE-HT_1-1_LAY]",
+      "861223509   : n=140     best: -0.0203  avg: -0.0219   avg best: -0.0203   [RESULT-HT_DRAW_BACK, RESULT-HT_DRAW_LAY]",
+      "74201834    : n=140     best: -0.0204  avg: -0.0287   avg best: -0.0204   [UNDER_1.5_BACK, OVER_2.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK]",
+      "2143804644  : n=140     best: -0.0205  avg: -0.0205   avg best: -0.0205   [UNDER_2.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, UNDER_3.5_LAY]",
+      "1612671819  : n=140     best: -0.0225  avg: -0.0347   avg best: -0.0225   [RESULT_TEAM-B_LAY, ANY-OVER_3-3_TEAM-B_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-3_BACK]",
+      "545709601   : n=140     best: -0.0229  avg: -0.0330   avg best: -0.0229   [UNDER_1.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, UNDER_2.5_LAY]",
+      "1106239051  : n=140     best: -0.0235  avg: -0.0235   avg best: -0.0235   [HCP-A-0.5_TEAM-B_BACK, HCP-A-0.5_TEAM-B_LAY]",
+      "1990254005  : n=140     best: -0.0235  avg: -0.0277   avg best: -0.0235   [CORRECT-SCORE-HT_0-0_BACK, CORRECT-SCORE-HT_0-0_LAY]",
+      "1369615531  : n=140     best: -0.0239  avg: -0.0245   avg best: -0.0239   [UNDER_2.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
+      "780827029   : n=140     best: -0.0250  avg: -0.0250   avg best: -0.0250   [HCP-A-2.5_TEAM-A_BACK, HCP-A-2.5_TEAM-A_LAY]",
+      "2020959100  : n=140     best: -0.0258  avg: -0.0258   avg best: -0.0258   [OVER_6.5_BACK, UNDER_6.5_BACK]",
+      "255809308   : n=140     best: -0.0261  avg: -0.0271   avg best: -0.0261   [OVER_3.5_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, OVER_2.5_LAY]",
+      "1005192203  : n=140     best: -0.0278  avg: -0.0278   avg best: -0.0278   [RESULT-HT_TEAM-A_BACK, RESULT-HT_TEAM-A_LAY]",
+      "1182113131  : n=140     best: -0.0285  avg: -0.0285   avg best: -0.0285   [CORRECT-SCORE-HT_1-0_BACK, CORRECT-SCORE-HT_1-0_LAY]",
+      "748883701   : n=140     best: -0.0287  avg: -0.0287   avg best: -0.0287   [HCP-A-2.5_TEAM-B_BACK, HCP-A-2.5_TEAM-B_LAY]",
+      "296006131   : n=140     best: -0.0287  avg: -0.0311   avg best: -0.0287   [RESULT_TEAM-A_LAY, ANY-OVER_3-3_TEAM-A_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK]",
+      "1776080183  : n=140     best: -0.0291  avg: -0.0412   avg best: -0.0291   [RESULT_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-3_BACK]",
+      "59512971    : n=140     best: -0.0314  avg: -0.0314   avg best: -0.0314   [CORRECT-SCORE-HT_2-0_BACK, CORRECT-SCORE-HT_2-0_LAY]",
+      "1267179410  : n=140     best: -0.0324  avg: -0.0335   avg best: -0.0324   [CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, UNDER_3.5_LAY]",
+      "1498091429  : n=140     best: -0.0324  avg: -0.0335   avg best: -0.0324   [UNDER_0.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, UNDER_3.5_LAY]",
+      "1968805973  : n=140     best: -0.0342  avg: -0.0342   avg best: -0.0342   [HCP-A-1.5_TEAM-B_BACK, HCP-A-1.5_TEAM-B_LAY]",
+      "1725713146  : n=140     best: -0.0352  avg: -0.0352   avg best: -0.0352   [OVER_5.5_BACK, UNDER_5.5_BACK]",
+      "871676705   : n=140     best: -0.0355  avg: -0.0372   avg best: -0.0355   [OVER_3.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, OVER_0.5_LAY]",
+      "1040232090  : n=140     best: -0.0357  avg: -0.0374   avg best: -0.0357   [UNDER_0.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
+      "168692173   : n=140     best: -0.0357  avg: -0.0374   avg best: -0.0357   [OVER_3.5_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
+      "723823497   : n=140     best: -0.0361  avg: -0.0361   avg best: -0.0361   [RESULT_TEAM-B_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
+      "305217641   : n=140     best: -0.0361  avg: -0.0361   avg best: -0.0361   [UNDER_5.5_BACK, UNDER_5.5_LAY]",
+      "1995482050  : n=140     best: -0.0366  avg: -0.0383   avg best: -0.0366   [OVER_3.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, OVER_1.5_LAY]",
+      "1278124704  : n=140     best: -0.0378  avg: -0.0458   avg best: -0.0378   [UNDER_1.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK, UNDER_3.5_LAY]",
+      "711194057   : n=140     best: -0.0412  avg: -0.0497   avg best: -0.0412   [UNDER_1.5_BACK, OVER_3.5_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_3-0_BACK]",
+      "1797528389  : n=140     best: -0.0423  avg: -0.0531   avg best: -0.0423   [UNDER_2.5_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
+      "198385852   : n=140     best: -0.0444  avg: -0.0555   avg best: -0.0444   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK, OVER_2.5_LAY]",
+      "1433525687  : n=140     best: -0.0449  avg: -0.0566   avg best: -0.0449   [RESULT_DRAW_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK]",
+      "2000749301  : n=140     best: -0.0476  avg: -0.0476   avg best: -0.0476   [HCP-A-1.5_TEAM-A_BACK, HCP-A-1.5_TEAM-A_LAY]",
+      "1820275241  : n=140     best: -0.0534  avg: -0.0650   avg best: -0.0534   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK, OVER_0.5_LAY]",
+      "1893520325  : n=140     best: -0.0537  avg: -0.0652   avg best: -0.0537   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-0_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
+      "1895025966  : n=140     best: -0.0537  avg: -0.0652   avg best: -0.0537   [UNDER_0.5_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-1_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-0_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]",
+      "1001992986  : n=140     best: -0.0545  avg: -0.0660   avg best: -0.0545   [ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK, OVER_1.5_LAY]",
+      "925078903   : n=140     best: -0.0589  avg: -0.0769   avg best: -0.0589   [UNDER_1.5_BACK, ANY-OVER_3-3_TEAM-A_BACK, ANY-OVER_3-3_TEAM-B_BACK, ANY-OVER_3-3_DRAW_BACK, CORRECT-SCORE_0-2_BACK, CORRECT-SCORE_0-3_BACK, CORRECT-SCORE_1-1_BACK, CORRECT-SCORE_1-2_BACK, CORRECT-SCORE_1-3_BACK, CORRECT-SCORE_2-0_BACK, CORRECT-SCORE_2-1_BACK, CORRECT-SCORE_2-2_BACK, CORRECT-SCORE_2-3_BACK, CORRECT-SCORE_3-0_BACK, CORRECT-SCORE_3-1_BACK, CORRECT-SCORE_3-2_BACK, CORRECT-SCORE_3-3_BACK]"
     ]
   },
   "bet_appearances": [
@@ -747,10 +240,10 @@
     "HCP-A-2.0_TEAM-B_LAY        []",
     "HCP-A-2.0_DRAW_BACK         []",
     "HCP-A-2.0_DRAW_LAY          []",
-    "HCP-A-1.5_TEAM-A_BACK       [matchbook, smarkets, betfair]",
-    "HCP-A-1.5_TEAM-A_LAY        [matchbook, smarkets, betfair]",
-    "HCP-A-1.5_TEAM-B_BACK       [matchbook, smarkets, betfair]",
-    "HCP-A-1.5_TEAM-B_LAY        [matchbook, smarkets, betfair]",
+    "HCP-A-1.5_TEAM-A_BACK       [smarkets, betfair]",
+    "HCP-A-1.5_TEAM-A_LAY        [smarkets, betfair]",
+    "HCP-A-1.5_TEAM-B_BACK       [smarkets, betfair]",
+    "HCP-A-1.5_TEAM-B_LAY        [smarkets, betfair]",
     "HCP-A-1.0_TEAM-A_BACK       []",
     "HCP-A-1.0_TEAM-A_LAY        []",
     "HCP-A-1.0_TEAM-B_BACK       []",
@@ -767,20 +260,20 @@
     "HCP-A+0.0_TEAM-B_LAY        []",
     "HCP-A+0.0_DRAW_BACK         []",
     "HCP-A+0.0_DRAW_LAY          []",
-    "HCP-A+0.5_TEAM-A_BACK       [matchbook, smarkets, betfair]",
-    "HCP-A+0.5_TEAM-A_LAY        [matchbook, smarkets, betfair]",
-    "HCP-A+0.5_TEAM-B_BACK       [matchbook, smarkets, betfair]",
-    "HCP-A+0.5_TEAM-B_LAY        [matchbook, smarkets, betfair]",
+    "HCP-A+0.5_TEAM-A_BACK       [smarkets, betfair]",
+    "HCP-A+0.5_TEAM-A_LAY        [smarkets, betfair]",
+    "HCP-A+0.5_TEAM-B_BACK       [smarkets, betfair]",
+    "HCP-A+0.5_TEAM-B_LAY        [smarkets, betfair]",
     "HCP-A+1.0_TEAM-A_BACK       []",
     "HCP-A+1.0_TEAM-A_LAY        []",
     "HCP-A+1.0_TEAM-B_BACK       []",
     "HCP-A+1.0_TEAM-B_LAY        []",
     "HCP-A+1.0_DRAW_BACK         []",
     "HCP-A+1.0_DRAW_LAY          []",
-    "HCP-A+1.5_TEAM-A_BACK       [matchbook, smarkets, betfair]",
-    "HCP-A+1.5_TEAM-A_LAY        [matchbook, smarkets, betfair]",
-    "HCP-A+1.5_TEAM-B_BACK       [matchbook, smarkets, betfair]",
-    "HCP-A+1.5_TEAM-B_LAY        [matchbook, smarkets, betfair]",
+    "HCP-A+1.5_TEAM-A_BACK       [smarkets, betfair]",
+    "HCP-A+1.5_TEAM-A_LAY        [smarkets, betfair]",
+    "HCP-A+1.5_TEAM-B_BACK       [smarkets, betfair]",
+    "HCP-A+1.5_TEAM-B_LAY        [smarkets, betfair]",
     "HCP-A+2.0_TEAM-A_BACK       []",
     "HCP-A+2.0_TEAM-A_LAY        []",
     "HCP-A+2.0_TEAM-B_BACK       []",
@@ -817,14 +310,14 @@
     "OVER_4.5_LAY                [matchbook, smarkets, betfair]",
     "UNDER_4.5_BACK              [matchbook, smarkets, betfair]",
     "UNDER_4.5_LAY               [matchbook, smarkets, betfair]",
-    "OVER_5.5_BACK               [matchbook, smarkets, betfair]",
-    "OVER_5.5_LAY                [matchbook, smarkets, betfair]",
-    "UNDER_5.5_BACK              [matchbook, smarkets, betfair]",
-    "UNDER_5.5_LAY               [matchbook, smarkets, betfair]",
-    "OVER_6.5_BACK               [matchbook, smarkets, betfair]",
-    "OVER_6.5_LAY                [matchbook, smarkets, betfair]",
-    "UNDER_6.5_BACK              [matchbook, smarkets, betfair]",
-    "UNDER_6.5_LAY               [matchbook, smarkets, betfair]",
+    "OVER_5.5_BACK               [smarkets, betfair]",
+    "OVER_5.5_LAY                [smarkets, betfair]",
+    "UNDER_5.5_BACK              [smarkets, betfair]",
+    "UNDER_5.5_LAY               [smarkets, betfair]",
+    "OVER_6.5_BACK               [smarkets, betfair]",
+    "OVER_6.5_LAY                [smarkets, betfair]",
+    "UNDER_6.5_BACK              [smarkets, betfair]",
+    "UNDER_6.5_LAY               [smarkets, betfair]",
     "OVER_7.5_BACK               [betfair]",
     "OVER_7.5_LAY                [betfair]",
     "UNDER_7.5_BACK              [betfair]",

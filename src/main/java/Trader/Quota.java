@@ -1,7 +1,6 @@
 package Trader;
 
 import Bet.Bet;
-import Bet.FootballBet.FootballBet;
 import Bet.FootballBet.FootballBetGenerator;
 import Bet.MarketOddsReport;
 import SiteConnectors.Betfair.Betfair;
@@ -10,7 +9,6 @@ import SiteConnectors.Matchbook.Matchbook;
 import SiteConnectors.SiteEventTracker;
 import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
-import Sport.Match;
 import Bet.*;
 import org.json.simple.parser.ParseException;
 
@@ -24,7 +22,6 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -46,68 +43,95 @@ public class Quota {
         // Create site objects
         Betfair betfair = new Betfair();
         List<BettingSite> sites = new ArrayList<>();
-        sites.add(new Matchbook());
-        sites.add(new Smarkets());
+        Matchbook mb = new Matchbook();
+        Smarkets sm = new Smarkets();
+        sites.add(mb);
+        sites.add(sm);
 
         // Get football matches
-        List<FootballMatch> matches = sites.get(0).getFootballMatches(Instant.now(), Instant.now().plusSeconds(60*60*24*7));
+        List<FootballMatch> matches = mb.getFootballMatches(Instant.now(), Instant.now().plusSeconds(60*60*24*7));
         print(String.format("Found %s matches.", matches.size()));
 
-        // Setup event trackers for sites in list, minimum one is required that isn't betfair.
-        FootballMatch match = null;
-        SiteEventTracker bf_tracker = betfair.getEventTracker();
-        List<SiteEventTracker> siteEventTrackers = new ArrayList<>();
-        while (siteEventTrackers.size() == 0){
 
-            // Check any matches are left
-            if (matches.size() == 0){
-                print("No more matches. All failed to match at least 1.");
-                return;
+        // Try setting up a match from list of matches. Must successfully setup in
+        // betfair and at least 1 other.
+        List<SiteEventTracker> siteEventTrackers = new ArrayList<>();
+        FootballMatch match = null;
+        for (FootballMatch potential_match: matches){
+            print(String.format("Attempting to use match %s", potential_match));
+
+            // Clear event trackers
+            siteEventTrackers.clear();
+
+            // Try setup with betfair
+            SiteEventTracker bf_tracker = betfair.getEventTracker();
+            if (bf_tracker.setupMatch(potential_match)){
+                print("Successfully setup in betfair.");
+                siteEventTrackers.add(bf_tracker);
+            }
+            else{
+                // Restart loop with different match
+                print("Failed setup setup in betfair.");
+                continue;
             }
 
-            // Take match from start of list
-            match = matches.remove(0);
-            print("Trying to use match " + match.toString());
-
-            // Setup match in each event tracker, adding to list if successful.
+            // Try adding all other sites in
             for (BettingSite site: sites){
+                print(String.format("Attempting setup in %s.", site.getName()));
+
                 SiteEventTracker siteEventTracker = site.getEventTracker();
-                if (siteEventTracker.setupMatch(match)){
+                if (siteEventTracker.setupMatch(potential_match)){
+                    print(String.format("Successfully setup in %s.", site.getName()));
                     siteEventTrackers.add(siteEventTracker);
                 }
+                else{
+                    print(String.format("Failed setup in %s.", site.getName()));
+                }
             }
+
+
+            if (siteEventTrackers.size() >= 2){
+                print(String.format("Successfully setup in %s sites inc betfair.",
+                        siteEventTrackers.size()));
+                match = potential_match;
+                break;
+            }
+            print(String.format("Only setup in %s site/s. Trying next match.",
+                    siteEventTrackers.size()));
         }
 
-        bf_tracker.setupMatch(match);
-        print(String.format("Setup match %s in betfair and %s other sites.", match, siteEventTrackers.size()));
+        if (match == null){
+            print(String.format("Tried all %s matches and could not find match", matches.size()));
+            return;
+        }
 
 
+        // Generate football bets
         FootballBetGenerator fbbg = new FootballBetGenerator();
         List<BetGroup> tautologies = fbbg.getAllTautologies();
         List<Bet> bets = (List<Bet>) (Object) fbbg.getAllBets();
         print("Generated bets.");
 
 
-        List<MarketOddsReport> other_mors = new ArrayList<>();
+        List<MarketOddsReport> mors = new ArrayList<>();
         for (SiteEventTracker siteEventTracker: siteEventTrackers){
             MarketOddsReport mor = siteEventTracker.getMarketOddsReport(bets);
             if (mor.noError()){
-                other_mors.add(mor);
+                mors.add(mor);
             }
             else{
                 print("Error getting mor for " + siteEventTracker.site.getName());
             }
         }
 
-        if (other_mors.size() == 0){
+        if (mors.size() == 0){
             print("No other MOR generated");
             return;
         }
 
 
         // Get MOR for all
-        other_mors.add(bf_tracker.getMarketOddsReport(bets));
-        MarketOddsReport MOR = MarketOddsReport.combine(other_mors);
+        MarketOddsReport MOR = MarketOddsReport.combine(mors);
 
 
         // Generate profit reports for each tautology.
@@ -116,48 +140,47 @@ public class Quota {
 
 
         // Filter all reports that contains betfair and has >1 site
-        List<ProfitReport> valid_profitReports = new ArrayList<>();
-        for (ProfitReport pr: tautologyProfitReports.profitReports){
+        List<BetOrderProfitReport> valid_BetOrder_profitReports = new ArrayList<>();
+        for (BetOrderProfitReport pr: tautologyProfitReports.betOrderProfitReports){
             Set<BettingSite> sites_used = pr.sitesUsed();
             if (sites_used.contains(betfair) && sites_used.size() > 1){
-                valid_profitReports.add(pr);
+                valid_BetOrder_profitReports.add(pr);
             }
         }
-
-        if (valid_profitReports.size() == 0){
+        if (valid_BetOrder_profitReports.size() == 0){
             print("No matching profit report found that has bf bet and >1 other site bet.");
             return;
         }
 
 
-        ProfitReport profitReport = null;
-        for (ProfitReport ratio_pr: valid_profitReports){
-            ProfitReport min_pr = ratio_pr.newProfitReportReturn(ratio_pr.ret_from_min_stake);
-            ProfitReport max_pr = ratio_pr.newProfitReportReturn(ratio_pr.ret_from_max_stake);
+        BetOrderProfitReport betOrderProfitReport = null;
+        for (BetOrderProfitReport ratio_pr: valid_BetOrder_profitReports){
+            BetOrderProfitReport min_pr = ratio_pr.newProfitReportReturn(ratio_pr.ret_from_min_stake);
+            BetOrderProfitReport max_pr = ratio_pr.newProfitReportReturn(ratio_pr.ret_from_max_stake);
 
             if ((min_pr.compareTo(max_pr) == -1) &&
                     (min_pr.total_investment.compareTo(new BigDecimal("10.00")) == -1)){
-                profitReport = min_pr;
+                betOrderProfitReport = min_pr;
                 break;
             }
         }
-        if (valid_profitReports.size() == 0){
+        if (valid_BetOrder_profitReports.size() == 0){
             print("No matching profit report found that has min_pr under max_pr and 10.00");
             return;
         }
 
-        pp(profitReport.toJSON(true));
+        pp(betOrderProfitReport.toJSON(true));
 
 
         List<PlacedBet> placedBets = new ArrayList<>();
-        for (BetOrder bo: profitReport.betOrders){
+        for (BetOrder bo: betOrderProfitReport.betOrders){
             PlacedBet placedBet = bo.site().placeBet(bo, new BigDecimal("0.9"));
             placedBets.add(placedBet);
         }
 
-        PlacedProfitReport placedProfitReport = new PlacedProfitReport(placedBets, profitReport);
+        PlacedOrderProfitReport placedOrderProfitReport = new PlacedOrderProfitReport(placedBets, betOrderProfitReport);
 
-        pp(placedProfitReport.toJSON(true));
+        pp(placedOrderProfitReport.toJSON(true));
     }
 
 
@@ -170,6 +193,8 @@ public class Quota {
             SportsTrader sportsTrader = new SportsTrader();
 
             betfairBet();
+
+            sportsTrader.safe_exit();
 
 
         } catch (Exception e) {

@@ -155,24 +155,14 @@ public class BetOrder {
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
 
-        JSONObject bo = new JSONObject();
-        bo.put("created", String.valueOf(bet_offer.time_betOffer_creation));
-        bo.put("roi_ratio", String.valueOf(bet_offer.roi_ratio));
-        bo.put("volume", String.valueOf(bet_offer.volume));
-        bo.put("metadata", String.valueOf(bet_offer.metadata));
-        bo.put("odds", String.valueOf(bet_offer.odds));
-        bo.put("bet", String.valueOf(bet_offer.bet.id()));
-        bo.put("min_stake", String.valueOf(bet_offer.minStake()));
-        bo.put("max_stake", String.valueOf(bet_offer.maxStake()));
+        m.put("bet_offer", bet_offer.toJSON());
 
-
-        m.put("bet_offer", bo);
         m.put("match", String.valueOf(bet_offer.match));
         m.put("site", String.valueOf(bet_offer.site.getName()));
         m.put("target_return", String.valueOf(target_return));
         m.put("investment", String.valueOf(investment));
         m.put("real", String.valueOf(real));
-        if (bet_offer.isLay()){
+        if (isLay()){
             m.put("layers_stake", String.valueOf(backersProfit_layersStake));
         }
         m.put("backers_stake", String.valueOf(backersStake_layersProfit));

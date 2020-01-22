@@ -55,11 +55,12 @@ public class PlacedBet {
         this.time_placed = time_placed;
         this.time_sent = time_sent;
 
-
+        // BACK
         if (isBack()){
             investment = site().stake2Investment(backersStake_layersProfit).setScale(2, RoundingMode.HALF_UP);
             profit = backersProfit_layersStake;
         }
+        // LAY
         else{
             investment = site().stake2Investment(backersProfit_layersStake).setScale(2, RoundingMode.HALF_UP);
             profit = backersStake_layersProfit;
@@ -70,7 +71,8 @@ public class PlacedBet {
 
     public PlacedBet(String state, String bet_id, BetOrder betOrder, BigDecimal back_stake,
                      BigDecimal avg_odds, BigDecimal returns, Instant time_placed, Instant time_sent){
-        // Constructor without given lay stake, so calculated and put into main constructor
+        // Constructor without given lay stake, this is calculated using back stake and odds
+        // to get the lay stake (backers profit) and then put through the main constructor
 
         this(state, bet_id, betOrder, back_stake, BetOffer.backStake2LayStake(back_stake, avg_odds),
                 avg_odds, returns, time_placed, time_sent);
@@ -78,16 +80,18 @@ public class PlacedBet {
 
 
     public PlacedBet(String state, BetOrder betOrder, String error, Instant time_placed, Instant time_sent){
+        // For errors in placed bet
+
         this.state = state;
         this.betOrder = betOrder;
         this.error = error;
         this.time_placed = time_placed;
         this.time_sent = time_sent;
 
-        backersProfit_layersStake = BigDecimal.ZERO;
-        backersStake_layersProfit = BigDecimal.ZERO;
-        returns = BigDecimal.ZERO;
-        investment = BigDecimal.ZERO;
+        backersProfit_layersStake = null;
+        backersStake_layersProfit = null;
+        returns = null;
+        investment = null;
     }
 
     public PlacedBet(String state, BetOrder betOrder, String error){
@@ -129,58 +133,51 @@ public class PlacedBet {
     }
 
 
-    public Duration time_oddsRequest_to_placedBet(){
-        return Duration.between(getBetOffer().time_start_getMarketOddsReport, time_placed);
-    }
-
-    public Duration time_offerResponse_to_placedBet(){
-        return Duration.between(getBetOffer().time_betOffer_creation, time_placed);
-    }
-
-    public Duration time_sent_to_placed(){
-        return Duration.between(time_sent, time_placed);
-    }
-
-    public Duration time_offerResponse_to_sent(){
-        return Duration.between(getBetOffer().time_betOffer_creation, time_sent);
-    }
-
-
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
 
-        m.put("state", String.valueOf(state));
-        m.put("betOrder", betOrder.toJSON());
-        m.put("time_placed", String.valueOf(time_placed));
-
+        // Add timings information
         JSONObject timings = new JSONObject();
-        timings.put("time_oddsReq-placed", (time_oddsRequest_to_placedBet().getNano()/1000) + "ms");
-        timings.put("time_offerGot-placed", (time_offerResponse_to_placedBet().getNano()/1000) + "ms");
-        timings.put("time_sent-placed", (time_sent_to_placed().getNano()/1000) + "ms");
-        timings.put("time_offerGot-sent", (time_offerResponse_to_sent().getNano()/1000) + "ms");
+        timings.put("bet_placed", time_placed.toString());
+        timings.put("betoffercreated", getBetOffer().time_betOffer_creation.toString());
+        timings.put("bet_sent", time_sent.toString());
+        timings.put("placedbet_created", time_created.toString());
         m.put("timings", timings);
 
-
-        if (successful()){
-            m.put("bet_id", String.valueOf(bet_id));
-            m.put("back_stake", String.valueOf(backersStake_layersProfit));
-            m.put("lay_stake", String.valueOf(backersProfit_layersStake));
-            m.put("invested", String.valueOf(investment));
-            m.put("avg_odds", String.valueOf(avg_odds));
-            m.put("returns", String.valueOf(returns));
-            m.put("profit", String.valueOf(profit));
-            m.put("prof_com", String.valueOf(profit_commission));
-        }
-        else{
-            m.put("error", String.valueOf(error));
-        }
-
+        // Add in raw betting site requests and responses
         if (site_json_response != null){
             m.put("site_response", site_json_response);
         }
         if (betOrder.site_json_request != null){
             m.put("site_request", betOrder.site_json_request);
         }
+
+        // Put betOrder this placed bet was based on in json
+        JSONObject boj = betOrder.toJSON();
+        boj.remove("site");
+        boj.remove("match");
+        m.put("betOrder", betOrder.toJSON());
+
+        // Put placed bet information in json
+        JSONObject pb = new JSONObject();
+        pb.put("state", String.valueOf(state));
+        pb.put("time_placed", String.valueOf(time_placed));
+        pb.put("site", String.valueOf(site().getName()));
+        pb.put("match", String.valueOf(betOrder.match()));
+        if (successful()){
+            pb.put("bet_id", String.valueOf(bet_id));
+            pb.put("back_stake", String.valueOf(backersStake_layersProfit));
+            pb.put("lay_stake", String.valueOf(backersProfit_layersStake));
+            pb.put("invested", String.valueOf(investment));
+            pb.put("avg_odds", String.valueOf(avg_odds));
+            pb.put("returns", String.valueOf(returns));
+            pb.put("profit", String.valueOf(profit));
+            pb.put("prof_com", String.valueOf(profit_commission));
+        }
+        else{
+            pb.put("error", String.valueOf(error));
+        }
+        m.put("placed_bet", pb);
 
         return m;
     }

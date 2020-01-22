@@ -7,18 +7,245 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/FastInoset.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/gmbal-api-only.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/ha-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/javax.annotation.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxb-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxb-impl.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxb-xjc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxws-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxws-rt.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxws-tools.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jsr181-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/mail.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/management-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/mimepull.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/policy.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/saaj-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/saaj-impl.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/stax-ex.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/stax2-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/streambuffer.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/woodstox-core-asl.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/API.wsdl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ApiTimes.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ArrayOfInt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ArrayOfOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/AuditLogItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/BaseResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarket.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePassword.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CommissionInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/EventClassifierType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ExternalApiHeader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalances.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumber.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelections.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelections.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPrices.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsById.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSince.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTrades.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSince.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValues.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesRequestEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponseInnerTaggedValue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponseTaggedValue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEvents.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MarketType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MarketTypeWithPrices.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MatchedOrderInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ObjectFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Offer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Order.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/OrderCommissionInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/OrderSettlementInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceipt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceipt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptRequestItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PolarityEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PricesType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Pulse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReadOnlyService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReadOnlyService_Service.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReturnStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SecureService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SecureService_Service.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionTradesRequestItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionTypeWithPrices.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SettlementInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SimpleOrderRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarket.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTrading.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/TradeItemType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTrading.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceipt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptRequestItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/placed_bets/2020-01-21T15-06-43.372Z [Chelsea v Arsenal @ 2020-01-21T20%3A15%3A00Z] 0.00.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/placed_bets/2020-01-21T15-15-48.269Z [Chelsea v Arsenal @ 2020-01-21T20%3A15%3A00Z] 0.00.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/placed_bets/2020-01-21T15-26-00.302Z [Chelsea v Arsenal @ 2020-01-21T20%3A15%3A00Z] 0.00.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/placed_bets/2020-01-21T15-35-37.635Z [Chelsea v Arsenal @ 2020-01-21T20%3A15%3A00Z] -0.30.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/stats.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SportTrader.jar" beforeDir="false" afterPath="$PROJECT_DIR$/SportTrader.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/football_aliases.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_aliases.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/football_ids_flashscores.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_ids_flashscores.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/stats.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/stats.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedOrderProfitReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOrderProfitReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/MarketOddsReportWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/MarketOddsReportWorker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/Quota.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/Quota.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,208 +254,8 @@
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/resources/config.json">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="352">
-                    <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/main/java/tools/Requester.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="432">
-                    <caret line="60" column="5" selection-start-line="60" selection-start-column="5" selection-end-line="60" selection-end-column="5" />
-                    <folding>
-                      <element signature="method#getRaw#0;class#Requester#0" />
-                      <element signature="method#getRaw#1;class#Requester#0" />
-                      <element signature="method#delete#0;class#Requester#0" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="224">
-                    <caret line="24" column="38" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
-                    <folding>
-                      <element signature="method#filter_reports#0;class#ProfitReportSet#0" />
-                      <element signature="method#getTautologyProfitReports#0;class#ProfitReportSet#0" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="896">
-                    <caret line="69" column="34" selection-start-line="69" selection-start-column="16" selection-end-line="69" selection-end-column="34" />
-                    <folding>
-                      <element signature="method#toJSON#0;class#ProfitReport#0" />
-                      <element signature="method#newProfitReportInvestment#0;class#ProfitReport#0" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="5520">
-                    <caret line="509" selection-start-line="509" selection-end-line="509" />
-                    <folding>
-                      <element signature="imports" expanded="true" />
-                      <element signature="method#setupMatch#0;class#EventTrader#0" />
-                      <element signature="method#run#0;class#EventTrader#0" />
-                      <element signature="method#avg#0;class#EventTrader#0" />
-                      <element signature="method#safe_exit#0;class#EventTrader#0" />
-                      <element signature="method#placeBets#0;class#EventTrader#0" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="32">
-                    <caret line="31" column="34" lean-forward="true" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
-                    <folding>
-                      <element signature="method#ROI#1;class#BettingSite#0" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="624">
-                    <caret line="47" column="13" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FavoritesManager">
     <favorites_list name="SportTrader" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="402">
-              <caret line="347" column="9" lean-forward="true" selection-start-line="347" selection-start-column="9" selection-end-line="347" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="546">
-              <caret line="336" selection-start-line="336" selection-end-line="336" />
-              <folding>
-                <element signature="method#Matchbook#0;class#Matchbook#0" />
-                <element signature="method#setupConfig#0;class#Matchbook#0" />
-                <element signature="class#marketDataRequestHandler#0;class#Matchbook#0" />
-                <element signature="e#7282#7283#0" expanded="true" />
-                <element signature="e#7320#7321#0" expanded="true" />
-                <element signature="method#safe_exit#0;class#marketDataRequestHandler#0;class#Matchbook#0" />
-                <element signature="class#marketDataRequestSender#0;class#Matchbook#0" />
-                <element signature="e#9420#9421#0" expanded="true" />
-                <element signature="e#9453#9454#0" expanded="true" />
-                <element signature="method#updateAccountInfo#0;class#Matchbook#0" />
-                <element signature="method#getSessionToken#0;class#Matchbook#0" />
-                <element signature="method#safe_exit#0;class#Matchbook#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2160">
-              <caret line="103" column="34" lean-forward="true" selection-start-line="103" selection-start-column="34" selection-end-line="103" selection-end-column="34" />
-              <folding>
-                <element signature="e#4660#4661#0" expanded="true" />
-                <element signature="e#4689#4690#0" expanded="true" />
-                <element signature="e#6799#6800#0" expanded="true" />
-                <element signature="e#6835#6836#0" expanded="true" />
-                <element signature="e#11199#13384#0" />
-                <element signature="e#13804#13805#0" expanded="true" />
-                <element signature="e#13856#13857#0" expanded="true" />
-                <element signature="e#13864#15717#0" />
-                <element signature="e#15724#16641#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="624">
-              <caret line="70" selection-start-line="70" selection-end-line="70" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="921">
-              <caret line="411" selection-start-line="411" selection-end-line="411" />
-              <folding>
-                <element signature="e#4314#5192#0" />
-                <element signature="e#5513#9182#0" />
-                <element signature="e#5952#5953#0" expanded="true" />
-                <element signature="e#5990#5991#0" expanded="true" />
-                <element signature="e#6101#9176#0" />
-                <element signature="e#8930#13758#0" />
-                <element signature="e#9243#9244#0" expanded="true" />
-                <element signature="e#9281#9282#0" expanded="true" />
-                <element signature="e#9194#9275#0" />
-                <element signature="e#9177#13752#0" />
-                <element signature="e#13767#14134#0" />
-                <element signature="e#14141#14581#0" />
-                <element signature="e#14588#15310#0" />
-                <element signature="e#16030#16110#0" />
-                <element signature="e#15762#16122#0" />
-                <element signature="e#16129#16440#0" />
-                <element signature="e#16447#17546#0" />
-                <element signature="e#17553#17962#0" />
-                <element signature="e#20515#23358#0" />
-                <element signature="e#23366#24301#0" />
-                <element signature="e#26592#27183#0" />
-                <element signature="e#28761#29625#0" />
-                <element signature="e#30078#30958#0" />
-                <element signature="e#30965#32164#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -238,60 +265,8 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>Cardiff City v Stoke City</find>
-      <find>Exiting Event Trader</find>
-      <find>OR-</find>
-      <find>exit_flag</find>
-      <find>return</find>
-      <find>thread.start</find>
-      <find>already has a</find>
-      <find>eventTrader</find>
-      <find>getEven</find>
-      <find>bets</find>
-      <find>placeBet</find>
-      <find>footballBetGenerator</find>
-    </findStrings>
-    <dirStrings>
-      <dir>E:\GoogleDrive\Work\Programming\SportTrader</dir>
-    </dirStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/src/main/java/Bet/BET_TYPES.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" />
-        <option value="$PROJECT_DIR$/src/main/java/tools/MyLogHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/RequestHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/MarketOddsReportWorker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/Usage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/quota.java" />
-        <option value="$PROJECT_DIR$/src/main/java/tools/Requester.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Trader/Quota.java" />
-        <option value="$PROJECT_DIR$/resources/config.json" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" />
-        <option value="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" />
-      </list>
-    </option>
   </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
@@ -300,125 +275,14 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-7" />
-    <option name="width" value="1392" />
-    <option name="height" value="1407" />
-  </component>
   <component name="ProjectId" id="1OaYuNHPzsaDFnulTZLzJck6p7J" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="Bet" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="SiteConnectors" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="SiteConnectors" type="462c0819:PsiDirectoryNode" />
-              <item name="Betdaq" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="SiteConnectors" type="462c0819:PsiDirectoryNode" />
-              <item name="Betfair" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="SiteConnectors" type="462c0819:PsiDirectoryNode" />
-              <item name="Matchbook" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="SiteConnectors" type="462c0819:PsiDirectoryNode" />
-              <item name="Smarkets" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="tools" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SportTrader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SportTrader" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="Trader" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
-    </panes>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
@@ -426,6 +290,7 @@
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="sporttrader" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -458,19 +323,7 @@
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Application.SportsTrader">
+  <component name="RunManager" selected="Application.Quota">
     <configuration name="EventTrader" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Trader.EventTrader" />
       <module name="SportTrader" />
@@ -508,13 +361,25 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SportsTrader" />
         <item itemvalue="Application.Quota" />
+        <item itemvalue="Application.SportsTrader" />
         <item itemvalue="Application.EventTrader" />
         <item itemvalue="Application.printer" />
         <item itemvalue="Application.Smarkets" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -532,6 +397,8 @@
       <workItem from="1568972402366" duration="808000" />
       <workItem from="1569005058590" duration="1542000" />
       <workItem from="1569504363004" duration="1155000" />
+      <workItem from="1579706898497" duration="212000" />
+      <workItem from="1579707123685" duration="3181000" />
     </task>
     <servers />
   </component>
@@ -544,34 +411,6 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1392" height="1407" extended-state="0" />
-    <editor active="true" />
-    <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20495495" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Designer" order="2" />
-      <window_info id="UI Designer" order="3" />
-      <window_info id="Favorites" order="4" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.25039247" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32967034" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32967034" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.1923077" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.32967034" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Maven" order="4" />
-      <window_info anchor="right" id="Palette&#9;" order="5" />
-    </layout>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
@@ -581,12 +420,6 @@
         <entry key="MAIN">
           <value>
             <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
               <option name="COLUMN_ORDER" />
             </State>
           </value>
@@ -613,377 +446,72 @@
     <MESSAGE value="started matchbook site and tracker" />
     <option name="LAST_COMMIT_MESSAGE" value="started matchbook site and tracker" />
   </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BET_TYPES.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="6" column="10" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/tools/MyLogHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="822">
-          <caret line="121" column="45" selection-start-line="121" selection-start-column="45" selection-end-line="121" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/stats.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9408">
-          <caret line="588" column="13" selection-start-line="588" selection-start-column="13" selection-end-line="588" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4560">
-          <caret line="411" column="33" selection-start-line="411" selection-start-column="33" selection-end-line="411" selection-end-column="33" />
-          <folding>
-            <element signature="method#SportsTraderStats#0;class#SportsTraderStats#0" />
-            <element signature="method#start#0;class#SportsTraderStats#0" />
-            <element signature="method#run#0;class#SportsTraderStats#0" />
-            <element signature="method#_update#0;class#SportsTraderStats#0" />
-            <element signature="method#toJSON#0;class#SportsTraderStats#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/Usage.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="896">
-          <caret line="75" column="46" selection-start-line="75" selection-start-column="46" selection-end-line="75" selection-end-column="46" />
-          <folding>
-            <element signature="method#siteSpecificSetup#0;class#BetfairEventTracker#0" />
-            <element signature="method#extractRunnerANYOVERSCORE#0;class#BetfairEventTracker#0" />
-            <element signature="method#getMarketFromArray#0;class#BetfairEventTracker#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="42" column="52" selection-start-line="42" selection-start-column="52" selection-end-line="42" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="58" column="49" selection-start-line="58" selection-start-column="49" selection-end-line="58" selection-end-column="49" />
-          <folding>
-            <element signature="method#siteSpecificSetup#0;class#SmarketsEventTracker#0" />
-            <element signature="method#max_correct_score_goals#0;class#SmarketsEventTracker#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="81" column="9" selection-start-line="81" selection-start-column="9" selection-end-line="81" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#lastMarketOddsTime#0;class#SiteEventTracker#0" />
-            <element signature="method#setupMatch#0;class#SiteEventTracker#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/RequestHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="41" selection-start-line="41" selection-end-line="41" />
-          <folding>
-            <element signature="method#RequestHandler#0;class#RequestHandler#0" />
-            <element signature="method#RequestHandler#1;class#RequestHandler#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/MarketOddsReportWorker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="933">
-          <caret line="101" column="77" selection-start-line="101" selection-start-column="77" selection-end-line="101" selection-end-column="77" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#safe_exit#0;class#MarketOddsReportWorker#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="383">
-          <caret line="199" column="53" selection-start-line="199" selection-start-column="53" selection-end-line="199" selection-end-column="53" />
-          <folding>
-            <element signature="method#bets_with_offers#0;class#MarketOddsReport#0" />
-            <element signature="method#combine#0;class#MarketOddsReport#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/BetOrder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="185" column="38" selection-start-line="185" selection-start-column="38" selection-end-line="185" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="132" column="24" selection-start-line="132" selection-start-column="24" selection-end-line="132" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/Quota.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2419">
-          <caret line="159" column="44" selection-start-line="159" selection-start-column="44" selection-end-line="159" selection-end-column="44" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/tools/Requester.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="60" column="5" selection-start-line="60" selection-start-column="5" selection-end-line="60" selection-end-column="5" />
-          <folding>
-            <element signature="method#getRaw#0;class#Requester#0" />
-            <element signature="method#getRaw#1;class#Requester#0" />
-            <element signature="method#delete#0;class#Requester#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="24" column="38" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
-          <folding>
-            <element signature="method#filter_reports#0;class#ProfitReportSet#0" />
-            <element signature="method#getTautologyProfitReports#0;class#ProfitReportSet#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="896">
-          <caret line="69" column="34" selection-start-line="69" selection-start-column="16" selection-end-line="69" selection-end-column="34" />
-          <folding>
-            <element signature="method#toJSON#0;class#ProfitReport#0" />
-            <element signature="method#newProfitReportInvestment#0;class#ProfitReport#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/EventTrader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5520">
-          <caret line="509" selection-start-line="509" selection-end-line="509" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#setupMatch#0;class#EventTrader#0" />
-            <element signature="method#run#0;class#EventTrader#0" />
-            <element signature="method#avg#0;class#EventTrader#0" />
-            <element signature="method#safe_exit#0;class#EventTrader#0" />
-            <element signature="method#placeBets#0;class#EventTrader#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="624">
-          <caret line="47" column="13" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="402">
-          <caret line="347" column="9" lean-forward="true" selection-start-line="347" selection-start-column="9" selection-end-line="347" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="921">
-          <caret line="411" selection-start-line="411" selection-end-line="411" />
-          <folding>
-            <element signature="e#4314#5192#0" />
-            <element signature="e#5513#9182#0" />
-            <element signature="e#5952#5953#0" expanded="true" />
-            <element signature="e#5990#5991#0" expanded="true" />
-            <element signature="e#6101#9176#0" />
-            <element signature="e#8930#13758#0" />
-            <element signature="e#9243#9244#0" expanded="true" />
-            <element signature="e#9281#9282#0" expanded="true" />
-            <element signature="e#9194#9275#0" />
-            <element signature="e#9177#13752#0" />
-            <element signature="e#13767#14134#0" />
-            <element signature="e#14141#14581#0" />
-            <element signature="e#14588#15310#0" />
-            <element signature="e#16030#16110#0" />
-            <element signature="e#15762#16122#0" />
-            <element signature="e#16129#16440#0" />
-            <element signature="e#16447#17546#0" />
-            <element signature="e#17553#17962#0" />
-            <element signature="e#20515#23358#0" />
-            <element signature="e#23366#24301#0" />
-            <element signature="e#26592#27183#0" />
-            <element signature="e#28761#29625#0" />
-            <element signature="e#30078#30958#0" />
-            <element signature="e#30965#32164#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="336" selection-start-line="336" selection-end-line="336" />
-          <folding>
-            <element signature="method#Matchbook#0;class#Matchbook#0" />
-            <element signature="method#setupConfig#0;class#Matchbook#0" />
-            <element signature="class#marketDataRequestHandler#0;class#Matchbook#0" />
-            <element signature="e#7282#7283#0" expanded="true" />
-            <element signature="e#7320#7321#0" expanded="true" />
-            <element signature="method#safe_exit#0;class#marketDataRequestHandler#0;class#Matchbook#0" />
-            <element signature="class#marketDataRequestSender#0;class#Matchbook#0" />
-            <element signature="e#9420#9421#0" expanded="true" />
-            <element signature="e#9453#9454#0" expanded="true" />
-            <element signature="method#updateAccountInfo#0;class#Matchbook#0" />
-            <element signature="method#getSessionToken#0;class#Matchbook#0" />
-            <element signature="method#safe_exit#0;class#Matchbook#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2160">
-          <caret line="103" column="34" lean-forward="true" selection-start-line="103" selection-start-column="34" selection-end-line="103" selection-end-column="34" />
-          <folding>
-            <element signature="e#4660#4661#0" expanded="true" />
-            <element signature="e#4689#4690#0" expanded="true" />
-            <element signature="e#6799#6800#0" expanded="true" />
-            <element signature="e#6835#6836#0" expanded="true" />
-            <element signature="e#11199#13384#0" />
-            <element signature="e#13804#13805#0" expanded="true" />
-            <element signature="e#13856#13857#0" expanded="true" />
-            <element signature="e#13864#15717#0" />
-            <element signature="e#15724#16641#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="624">
-          <caret line="70" selection-start-line="70" selection-end-line="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="32">
-          <caret line="31" column="34" lean-forward="true" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
-          <folding>
-            <element signature="method#ROI#1;class#BettingSite#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <last-edited>SportTrader:jar</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.5" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
+  <component name="WindowStateProjectService">
+    <state x="446" y="234" key="#com.intellij.ide.util.MemberChooser" timestamp="1579105824900">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="446" y="234" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1579105824900" />
+    <state x="191" y="308" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1579023145949">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="191" y="308" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579023145949" />
+    <state x="203" y="213" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1579707053891">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="203" y="213" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707053891" />
+    <state x="328" y="413" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1579013357114">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="328" y="413" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579013357114" />
+    <state x="210" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1579127231091">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="210" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579127231091" />
+    <state x="231" y="417" key="#com.intellij.ws.actions.GenerateJavaFromWsdlAction$1" timestamp="1579708070232">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="231" y="417" key="#com.intellij.ws.actions.GenerateJavaFromWsdlAction$1/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579708070232" />
+    <state x="256" y="409" key="#com.intellij.ws.actions.GenerateJavaFromWsdlDialog" timestamp="1579707351935">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="256" y="409" key="#com.intellij.ws.actions.GenerateJavaFromWsdlDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707351935" />
+    <state width="1018" height="170" key="GridCell.Tab.0.bottom" timestamp="1579649338075">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="39" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1579138823556" />
+    <state width="1018" height="170" key="GridCell.Tab.0.bottom/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579649338075" />
+    <state width="1018" height="170" key="GridCell.Tab.0.center" timestamp="1579649338075">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="39" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1579138823556" />
+    <state width="1018" height="170" key="GridCell.Tab.0.center/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579649338075" />
+    <state width="1018" height="170" key="GridCell.Tab.0.left" timestamp="1579649338074">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="39" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1579138823552" />
+    <state width="1018" height="170" key="GridCell.Tab.0.left/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579649338074" />
+    <state width="1018" height="170" key="GridCell.Tab.0.right" timestamp="1579649338075">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="39" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1579138823556" />
+    <state width="1018" height="170" key="GridCell.Tab.0.right/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579649338075" />
+    <state x="0" y="99" width="922" height="849" key="SettingsEditor" timestamp="1579023406735">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="0" y="99" width="922" height="849" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1579023406735" />
+    <state x="176" y="348" key="com.intellij.ide.util.TipDialog" timestamp="1579707168252">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="176" y="348" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579013328617" />
+    <state x="176" y="348" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707168252" />
+    <state x="342" y="255" width="607" height="536" key="find.popup" timestamp="1579293842866">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="342" y="255" width="607" height="536" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1579035041725" />
+    <state x="342" y="255" width="607" height="536" key="find.popup/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579293842866" />
+    <state x="0" y="145" width="928" height="757" key="new project wizard" timestamp="1579707332298">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="0" y="145" width="928" height="757" key="new project wizard/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707332298" />
   </component>
 </project>

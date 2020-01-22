@@ -306,7 +306,6 @@ public class Matchbook extends BettingSite {
         requester.setHeader("Content-Type", "application/json");
 
         JSONObject r = (JSONObject) requester.post(url, data);
-        pp(r);
 
         if (!r.containsKey("session-token")){
             String msg = String.format("No session token found in matchbook login response.\n%s", jstring(r));

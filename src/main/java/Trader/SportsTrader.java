@@ -117,26 +117,92 @@ public class SportsTrader {
 
         marketOddsReportWorkers = new ArrayList<>();
         marketOddsReportRequestQueue = new LinkedBlockingQueue<>();
+
+        psr p = new psr();
+        new Thread(p).start();
+
+    }
+
+    public class psr implements Runnable {
+        @Override
+        public void run() {
+            while (true){
+                try {
+                    sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (exit_flag) {
+                    break;
+                }
+
+                Map<String, Map<String, Integer>> ss =
+                        MarketOddsReportWorker.site_sums(marketOddsReportWorkers);
+
+                if (ss.size() > 0){
+                    print(ss);
+                }
+            }
+        }
     }
 
 
     public void newMarketOddsReportWorker(){
         MarketOddsReportWorker morw = new MarketOddsReportWorker(marketOddsReportRequestQueue);
+
+        if (morw == null){
+            log.severe("Adding null MORW to list of MORWs???");
+        }
+
         marketOddsReportWorkers.add(morw);
         morw.thread.setName("MORW-" + marketOddsReportWorkers.size());
         morw.start();
         log.info(String.format("Created new MORW '%s'", morw.thread.getName()));
     }
 
+    public void removeMarketOddsReportWorker(){
+        MarketOddsReportWorker morw = marketOddsReportWorkers.remove(marketOddsReportWorkers.size() - 1);
+        if (morw != null){
+            morw.safe_exit(false);
+        }
+    }
+
 
     public int MORWwaiting(){
-        int n = 0;
+        int n_waiting = 0;
+        int n_null = 0;
         for (int i=0; i< marketOddsReportWorkers.size(); i++){
-            if (marketOddsReportWorkers.get(i).isWaiting()){
-                n++;
+
+            MarketOddsReportWorker mor = marketOddsReportWorkers.get(i);
+            if (mor == null){
+                n_waiting++;
+                n_null++;
+            }
+            else if (mor.isWaiting()){
+                n_waiting++;
             }
         }
-        return n;
+
+        if (n_null > 0){
+            log.severe(String.format("%s/%s MarketOddsReportWorkers found to be null.",
+                    n_null, marketOddsReportWorkers.size()));
+
+            safe_exit();
+
+            List<String> workernames = new ArrayList<>();
+            for (MarketOddsReportWorker morw: marketOddsReportWorkers){
+                if (morw == null){
+                    workernames.add("null");
+                }
+                else{
+                    workernames.add(morw.thread.getName());
+                }
+            }
+            print(workernames);
+        }
+
+
+        return n_waiting;
     }
 
 
@@ -150,13 +216,16 @@ public class SportsTrader {
         marketOddsReportRequestQueue.add(rh);
 
         // Add more workers if not enough are waiting
-        if (MORWwaiting() <= 1){
+        int waiting_workers = MORWwaiting();
+        if (waiting_workers <= 1){
             newMarketOddsReportWorker();
+        }
+        else if (waiting_workers > 2 * eventTraders.size() * siteObjects.size()){
+            removeMarketOddsReportWorker();
         }
 
         return rh;
     }
-
 
 
     public static SportData getSportData(){
@@ -304,10 +373,24 @@ public class SportsTrader {
     public void run(){
         log.info("Running SportsTrader.");
 
+        // Setup safe exit on shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            public void run() {
+                safe_exit();
+                try {
+                    sleep(6000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         // Run bet/taut generator and generate the tautologies.
         footballBetGenerator = new FootballBetGenerator();
         footballBetGenerator.getAllTautologies();
 
+
+        // Run stats keeper
         if (RUN_STATS){
             stats = new SportsTraderStats("stats.json", footballBetGenerator);
         }
@@ -437,19 +520,27 @@ public class SportsTrader {
         log.info("Master safe exit triggered. Closing down program.");
 
         exit_flag = true;
-        sessionsUpdater.exit_flag = true;
-        sportDataFileSaver.exit_flag = true;
-        siteAccountInfoUpdater.exit_flag = true;
-        stats.exit_flag = true;
+        if (sessionsUpdater != null){ sessionsUpdater.exit_flag = true;}
+        if (sportDataFileSaver != null){ sportDataFileSaver.exit_flag = true;}
+        if (siteAccountInfoUpdater != null){ siteAccountInfoUpdater.exit_flag = true;}
+        if (stats != null){ stats.exit_flag = true;}
 
-        for (EventTraderSpawn ets: eventTraderSpawns){
-            ets.exit_flag = true;
+        if (eventTraderSpawns != null) {
+            for (EventTraderSpawn ets : eventTraderSpawns) {
+                ets.exit_flag = true;
+            }
         }
-        for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
-            entry.getValue().exit_flag = true;
+
+        if (siteObjects != null) {
+            for (Map.Entry<String, BettingSite> entry : siteObjects.entrySet()) {
+                entry.getValue().exit_flag = true;
+            }
         }
-        for (EventTrader eventTrader: eventTraders){
-            eventTrader.safe_exit();
+
+        if (eventTraders != null){
+            for (EventTrader eventTrader: eventTraders){
+                eventTrader.safe_exit();
+            }
         }
 
     }
@@ -721,6 +812,9 @@ public class SportsTrader {
 
 
     public static void main(String[] args){
+
+
+
         SportsTrader st = null;
         try {
             st = new SportsTrader();
@@ -729,8 +823,9 @@ public class SportsTrader {
             e.printStackTrace();
             return;
         }
+
+
         st.run();
-        st.safe_exit();
     }
 
 }

@@ -6,11 +6,10 @@ import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class PlacedProfitReport {
+public class PlacedOrderProfitReport {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
@@ -22,17 +21,17 @@ public class PlacedProfitReport {
     public BigDecimal min_profit;
     public BigDecimal max_profit;
     public BigDecimal profit_ratio;
-    public ProfitReport blueprint;
+    public BetOrderProfitReport betOrderProfitReport;
 
     public State state;
 
     public enum State {ALL_SUCCESS, ALL_FAILURES, MIX_STATES}
 
 
-    public PlacedProfitReport(List<PlacedBet> placedBets, ProfitReport blueprint) {
+    public PlacedOrderProfitReport(List<PlacedBet> placedBets, BetOrderProfitReport betOrderProfitReport) {
 
         this.placedBets = placedBets;
-        this.blueprint = blueprint;
+        this.betOrderProfitReport = betOrderProfitReport;
 
         // Sum up all investments
         // Find minimum return of all placed bets
@@ -76,13 +75,17 @@ public class PlacedProfitReport {
 
     public JSONObject toJSON(boolean full){
         JSONObject j = new JSONObject();
-        j.put("total_investment", total_investment.toString());
-        j.put("min_return", min_return.toString());
-        j.put("max_return", max_return.toString());
-        j.put("min_profit", min_profit.toString());
-        j.put("max_profit", max_profit.toString());
-        j.put("profit_ratio", profit_ratio.toString());
-        j.put("pre_profit_report", blueprint.toJSON(false));
+
+        JSONObject ppr = new JSONObject();
+        ppr.put("total_investment", total_investment.toString());
+        ppr.put("min_return", min_return.toString());
+        ppr.put("max_return", max_return.toString());
+        ppr.put("min_profit", min_profit.toString());
+        ppr.put("max_profit", max_profit.toString());
+        ppr.put("profit_ratio", profit_ratio.toString());
+
+        j.put("placed_profit_report", ppr);
+        j.put("betOrder_profit_report", betOrderProfitReport.toJSON(false));
         if (full){
             JSONArray orders = new JSONArray();
             for (PlacedBet pb: placedBets){

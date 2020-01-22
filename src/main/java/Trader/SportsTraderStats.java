@@ -3,26 +3,17 @@ package Trader;
 import Bet.*;
 import Bet.FootballBet.FootballBetGenerator;
 import SiteConnectors.BettingSite;
-import SiteConnectors.SiteEventTracker;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import tools.printer;
 
-import java.lang.management.LockInfo;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static tools.printer.*;
 
@@ -39,6 +30,8 @@ public class SportsTraderStats implements Runnable {
     public BlockingQueue<Object[]> queue;
     public Instant start_time;
     public long total_updates;
+
+    public Queue<Object> eventTraderStatsQueue;
 
 
     public SportsTraderStats(String filename, FootballBetGenerator footballBetGenerator){
@@ -173,8 +166,11 @@ public class SportsTraderStats implements Runnable {
 
         Map<Integer, Taut> summary_tauts = new HashMap<>();
         for (EventTraderStats eventTraderStats: eventTraderStatsMap.values()){
-            for (Taut taut: eventTraderStats.tautologies.values()){
 
+            List<Taut> taut_list = new ArrayList<>(eventTraderStats.tautologies.values());
+            for (int i=0; i<taut_list.size(); i++){
+
+                Taut taut = taut_list.get(i);
                 int taut_id = taut.getId();
 
                 // Establish taut exists in summary or create summary taut
@@ -426,14 +422,14 @@ public class SportsTraderStats implements Runnable {
                 siteTrackerStats.update(oddsReport);
             }
 
-            for (ProfitReport profitReport: profitReportSet.profitReports){
-                int taut_id = profitReport.getTautology().id();
-                BigDecimal profit_ratio = profitReport.profit_ratio;
+            for (BetOrderProfitReport betOrderProfitReport : profitReportSet.betOrderProfitReports){
+                int taut_id = betOrderProfitReport.getTautology().id();
+                BigDecimal profit_ratio = betOrderProfitReport.profit_ratio;
 
                 // update best profit if this beats it for this tautology.
                 Taut current_taut = tautologies.get(taut_id);
                 if (current_taut == null){
-                    current_taut = new Taut(profitReport.getTautology());
+                    current_taut = new Taut(betOrderProfitReport.getTautology());
                     tautologies.put(taut_id,  current_taut);
                 }
                 current_taut.update(profit_ratio);

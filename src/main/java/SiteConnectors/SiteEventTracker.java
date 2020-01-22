@@ -78,7 +78,7 @@ public abstract class SiteEventTracker {
 
     public void safe_exit(){
         if (marketOddsReportWorker != null) {
-            marketOddsReportWorker.safe_exit();
+            marketOddsReportWorker.safe_exit(true);
         }
     }
 
@@ -99,7 +99,7 @@ public abstract class SiteEventTracker {
         // Its important that he MarketOddsReport isn't null when pass back so ensure this with wrapper
         MarketOddsReport mor = _getMarketOddsReport(bets);
         if (mor == null){
-            String msg = String.format("getMarketOdds report for %s %s has retuned null when it should never do so.",
+            String msg = String.format("getMarketOdds report for %s %s has returned null when it should never do so.",
                     site, match);
             log.severe(msg);
             mor = MarketOddsReport.ERROR(msg);

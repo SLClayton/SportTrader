@@ -1,6 +1,5 @@
 package Bet;
 
-import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -8,21 +7,20 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static tools.printer.pp;
-import static tools.printer.print;
 
 public class ProfitReportSet {
     // A set of profit reports. Usually to show every tautology.
 
-    public ArrayList<ProfitReport> profitReports;
+    public ArrayList<BetOrderProfitReport> betOrderProfitReports;
 
 
     public ProfitReportSet(){
-        profitReports = new ArrayList<>();
+        betOrderProfitReports = new ArrayList<>();
     }
 
 
-    public boolean add(ProfitReport profitReport){
-        boolean added = profitReports.add(profitReport);
+    public boolean add(BetOrderProfitReport betOrderProfitReport){
+        boolean added = betOrderProfitReports.add(betOrderProfitReport);
         return added;
     }
 
@@ -30,7 +28,7 @@ public class ProfitReportSet {
 
     public BigDecimal best_profit(){
         BigDecimal best_profit = null;
-        for (ProfitReport pr: profitReports){
+        for (BetOrderProfitReport pr: betOrderProfitReports){
             if (best_profit == null){
                 best_profit = pr.profit_ratio;
             }
@@ -43,29 +41,29 @@ public class ProfitReportSet {
 
 
     public void sort_by_profit(){
-        Collections.sort(profitReports, Collections.reverseOrder());
+        Collections.sort(betOrderProfitReports, Collections.reverseOrder());
     }
 
 
 
     public int size(){
-        return profitReports.size();
+        return betOrderProfitReports.size();
     }
 
 
-    public ProfitReport get(int index){
-        return profitReports.get(index);
+    public BetOrderProfitReport get(int index){
+        return betOrderProfitReports.get(index);
     }
 
 
-    public ProfitReport remove(int index){
-        return profitReports.remove(index);
+    public BetOrderProfitReport remove(int index){
+        return betOrderProfitReports.remove(index);
     }
 
 
     public ProfitReportSet filter_reports(BigDecimal min_profit_ratio){
         ProfitReportSet filtered = new ProfitReportSet();
-        for (ProfitReport pr: profitReports){
+        for (BetOrderProfitReport pr: betOrderProfitReports){
             if (pr.profit_ratio.compareTo(min_profit_ratio) != -1){
                 filtered.add(pr);
             }
@@ -119,7 +117,7 @@ public class ProfitReportSet {
 
 
 
-            ProfitReport pr = new ProfitReport(betOrders);
+            BetOrderProfitReport pr = new BetOrderProfitReport(betOrders);
             if (pr.isValid()){
                 tautologyProfitReports.add(pr);
             }
@@ -131,8 +129,8 @@ public class ProfitReportSet {
     public JSONObject toJSON(){
         JSONObject j = new JSONObject();
         JSONArray ja = new JSONArray();
-        for (ProfitReport pr: profitReports){
-            ja.add(pr.toJSON(false, true));
+        for (BetOrderProfitReport pr: betOrderProfitReports){
+            ja.add(pr.toJSON(false));
         }
 
         j.put("profit_reports", ja);
