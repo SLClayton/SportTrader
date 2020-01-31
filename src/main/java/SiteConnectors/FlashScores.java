@@ -36,7 +36,7 @@ public class FlashScores implements SportData {
     Requester requester;
 
     public FlashScores(){
-        requester = new Requester();
+        requester = Requester.JSONRequester();
         loadFootballAliases();
         invalid_team_ids = new HashSet<>();
     }
@@ -46,7 +46,7 @@ public class FlashScores implements SportData {
     public ArrayList<FootballTeam> queryFootballTeam(String query) {
 
         // Get raw response from flashscores
-        Requester requester = new Requester();
+        Requester requester = Requester.JSONRequester();
         Map<String, Object> params = new HashMap<>();
         params.put("q", query);
         params.put("l", "5");
@@ -151,7 +151,7 @@ public class FlashScores implements SportData {
 
         // Create url and get raw response
         String url = String.format("https://www.flashscore.co.uk/team/%s/%s/fixtures/", FS_URLNAME, FS_ID);
-        Requester requester = new Requester();
+        Requester requester = Requester.JSONRequester();
 
         String raw = null;
         try {

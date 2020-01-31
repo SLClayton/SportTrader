@@ -83,7 +83,7 @@ public class Matchbook extends BettingSite {
         setupConfig("config.json");
 
         // Set up a requester to handle HTTP requests
-        requester = new Requester();
+        requester = Requester.JSONRequester();
         login();
 
 
@@ -302,7 +302,7 @@ public class Matchbook extends BettingSite {
         data.put("password", creds.get("p"));
 
         String url = "https://api.matchbook.com/bpapi/rest/security/session";
-        Requester requester = new Requester();
+        Requester requester = Requester.JSONRequester();
         requester.setHeader("Content-Type", "application/json");
 
         JSONObject r = (JSONObject) requester.post(url, data);

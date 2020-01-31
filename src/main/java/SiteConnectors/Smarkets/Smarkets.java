@@ -92,7 +92,7 @@ public class Smarkets extends BettingSite {
 
         setupConfig("config.json");
 
-        requester = new Requester();
+        requester = Requester.JSONRequester();
         commission_rate = new BigDecimal("0.01");
         min_back_stake = new BigDecimal("0.05");
 

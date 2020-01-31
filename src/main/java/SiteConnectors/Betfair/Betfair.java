@@ -92,7 +92,7 @@ public class Betfair extends BettingSite {
         setupConfig("config.json");
 
 
-        requester = new Requester();
+        requester = Requester.JSONRequester();
         requester.setHeader("X-Application", app_id);
         login();
 
@@ -548,7 +548,7 @@ public class Betfair extends BettingSite {
         Map<String, Object> params = new HashMap<>();
         params.put("query", query);
         String html;
-        Requester requester = new Requester();
+        Requester requester = Requester.JSONRequester();
         try {
             html = requester.getRaw("https://www.betfair.com/exchange/search", params);
         } catch (IOException | URISyntaxException e) {

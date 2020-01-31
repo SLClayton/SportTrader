@@ -56,9 +56,24 @@ public class Requester {
                 .build();
 
         headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
-        headers.put("Accept", "application/json");
     }
+
+
+
+    public static Requester JSONRequester(){
+        Requester requester = new Requester();
+        requester.setHeader("Content-Type", "application/json");
+        requester.setHeader("Accept", "application/json");
+        return requester;
+    }
+
+    public static Requester SOAPRequester(){
+        Requester requester = new Requester();
+        requester.setHeader("Content-Type", "text/xml");
+        return requester;
+    }
+
+
 
     public void setHeader(String key, String value){
         headerLock.lock();
@@ -66,6 +81,41 @@ public class Requester {
         headerLock.unlock();
     }
 
+
+    public String SOAPrequest(String url, String xml) throws IOException, URISyntaxException {
+
+        // Create new http POST object
+        HttpPost httpPost = new HttpPost(new URI(url));
+
+        // Set default headers from requester object
+        headerLock.lock();
+        for (Entry<String, String> header: this.headers.entrySet()){
+            httpPost.setHeader(header.getKey(), header.getValue());
+        }
+        headerLock.unlock();
+
+        // Pass in JSON as string to body entity then send request
+        httpPost.setEntity(new StringEntity(xml));
+        HttpResponse response = httpClient.execute(httpPost);
+
+        // Check response code is valid
+        int status_code = response.getStatusLine().getStatusCode();
+        if (status_code < 200 || status_code >= 300) {
+            String response_body = EntityUtils.toString(response.getEntity());
+            String msg = String.format("ERROR %d in HTTP SOAP request - %s\n%s\n%s\n%s",
+                    status_code,
+                    response.toString(),
+                    response_body,
+                    response.getStatusLine().toString(),
+                    xml);
+            log.severe(msg);
+            throw new IOException(msg);
+        }
+
+        // Convert body to json and return
+        String response_body = EntityUtils.toString(response.getEntity());
+        return response_body;
+    }
 
 
     public Object post(String url, String json, Map<String, String> headers, boolean return400) throws IOException, URISyntaxException {

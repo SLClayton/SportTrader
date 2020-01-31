@@ -1,6 +1,5 @@
 <component name="libraryTable">
-  <library name="JAX-WS-Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2 (3)" type="JAX-WS">
-    <properties version="Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2" />
+  <library name="JAX-WS-Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2 (3)">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/BETDAQ_SOAP/lib/javax.annotation.jar!/" />
       <root url="jar://$PROJECT_DIR$/BETDAQ_SOAP/lib/gmbal-api-only.jar!/" />

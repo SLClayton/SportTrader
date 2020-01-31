@@ -7,244 +7,401 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/FastInoset.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/gmbal-api-only.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/ha-api.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/javax.annotation.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxb-api.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxb-impl.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxb-xjc.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxws-api.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxws-rt.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jaxws-tools.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/jsr181-api.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/mail.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/management-api.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/mimepull.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/policy.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/saaj-api.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/saaj-impl.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/stax-ex.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/stax2-api.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/streambuffer.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/lib/woodstox-core-asl.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/API.wsdl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ApiTimes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ArrayOfInt.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ArrayOfOrder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/AuditLogItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/BaseResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrders.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarket.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrders.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePassword.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CommissionInformationType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/EventClassifierType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ExternalApiHeader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalances.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumber.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelections.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelections.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetails.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPrices.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostings.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsById.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrders.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSince.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTrades.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSince.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValues.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesRequestEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponseInnerTaggedValue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponseTaggedValue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEvents.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MarketType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MarketTypeWithPrices.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MatchedOrderInformationType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ObjectFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Offer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Order.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/OrderCommissionInformationType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/OrderSettlementInformationType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceipt.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceipt.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptRequestItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PolarityEnum.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PricesType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Pulse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReadOnlyService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReadOnlyService_Service.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReturnStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SecureService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SecureService_Service.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionTradesRequestItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionTypeWithPrices.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SettlementInformationType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SimpleOrderRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrders.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarket.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTrading.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrders.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/TradeItemType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTrading.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrders.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceipt.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptRequestItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponse2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponseItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/placed_bets/2020-01-21T15-06-43.372Z [Chelsea v Arsenal @ 2020-01-21T20%3A15%3A00Z] 0.00.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/placed_bets/2020-01-21T15-15-48.269Z [Chelsea v Arsenal @ 2020-01-21T20%3A15%3A00Z] 0.00.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/placed_bets/2020-01-21T15-26-00.302Z [Chelsea v Arsenal @ 2020-01-21T20%3A15%3A00Z] 0.00.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/placed_bets/2020-01-21T15-35-37.635Z [Chelsea v Arsenal @ 2020-01-21T20%3A15%3A00Z] -0.30.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/stats.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/API.wsdl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ApiTimes.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ArrayOfInt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ArrayOfOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/AuditLogItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/BaseResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarket.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelAllOrdersResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CancelOrdersResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ChangePassword.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ChangePasswordRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ChangePasswordResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ChangePasswordResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/CommissionInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/DeregisterHeartbeat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/DeregisterHeartbeatRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/DeregisterHeartbeatResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/DeregisterHeartbeatResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/EventClassifierType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ExternalApiHeader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetAccountBalances.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetAccountBalancesRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetAccountBalancesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetAccountBalancesResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumber.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelections.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelections.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetMarketInformation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetMarketInformationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetMarketInformationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetMarketInformationResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOddsLadder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOddsLadderRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOddsLadderResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOddsLadderResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOddsLadderResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOrderDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOrderDetailsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOrderDetailsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetOrderDetailsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetPrices.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetPricesRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetPricesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetPricesResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsById.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsByIdRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListAccountPostingsResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListBlacklistInformation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListBlacklistInformationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListBlacklistInformationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListBlacklistInformationResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListBootstrapOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListBootstrapOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListBootstrapOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListBootstrapOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListOrdersChangedSince.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListOrdersChangedSinceRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListOrdersChangedSinceResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListOrdersChangedSinceResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionTrades.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionTradesRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionTradesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionTradesResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionTradesResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionsChangedSince.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTaggedValues.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTaggedValuesRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTaggedValuesRequestEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTaggedValuesResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTaggedValuesResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTaggedValuesResponseInnerTaggedValue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTaggedValuesResponseTaggedValue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTopLevelEvents.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTopLevelEventsRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTopLevelEventsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ListTopLevelEventsResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/MarketType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/MarketTypeWithPrices.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/MatchedOrderInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ObjectFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/Offer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/Order.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/OrderCommissionInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/OrderSettlementInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersNoReceipt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersWithReceipt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptRequestItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PolarityEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PricesType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/Pulse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PulseRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PulseResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/PulseResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ReadOnlyService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ReadOnlyService_Service.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/RegisterHeartbeat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/RegisterHeartbeatRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/RegisterHeartbeatResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/RegisterHeartbeatResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/ReturnStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SecureService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SecureService_Service.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SelectionTradesRequestItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SelectionType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SelectionTypeWithPrices.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SettlementInformationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SimpleOrderRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendAllOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarket.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendAllOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendAllOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendAllOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendFromTrading.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendFromTradingRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendFromTradingResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendFromTradingResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/SuspendOrdersResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/TradeItemType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UnsuspendFromTrading.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UnsuspendFromTradingRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UnsuspendFromTradingResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UnsuspendFromTradingResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UnsuspendOrders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UnsuspendOrdersRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UnsuspendOrdersResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UnsuspendOrdersResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UpdateOrdersNoReceipt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptRequestItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponse2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponseItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BETDAQ_SOAP/src/com/globalbettingexchange/externalapi/package-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/JAX_WS_Glassfish___JAX_WS_2_2_RI___Metro_1_X___JWSDP_2_2__3_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/JAX_WS_Glassfish___JAX_WS_2_2_RI___Metro_1_X___JWSDP_2_2__3_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SportTrader.jar" beforeDir="false" afterPath="$PROJECT_DIR$/SportTrader.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/stats.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/stats.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedOrderProfitReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOrderProfitReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/API.wsdl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ApiTimes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ArrayOfInt.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ArrayOfOrder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/AuditLogItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/BaseResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarket.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersOnMarketResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelAllOrdersResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CancelOrdersResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangeHeartbeatRegistrationResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePassword.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ChangePasswordResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/CommissionInformationType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeat.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/DeregisterHeartbeatResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/EventClassifierType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ExternalApiHeader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalances.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetAccountBalancesResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumber.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetCurrentSelectionSequenceNumberResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelections.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeNoSelectionsResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelections.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetEventSubTreeWithSelectionsResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetMarketInformationResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOddsLadderResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetails.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetOrderDetailsResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPrices.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetPricesResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/GetSPEnabledMarketsInformationResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostings.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsById.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsByIdResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListAccountPostingsResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBlacklistInformationResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListBootstrapOrdersResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListMarketWithdrawalHistoryResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSince.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListOrdersChangedSinceResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTrades.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionTradesResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSince.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListSelectionsChangedSinceResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValues.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesRequestEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponseInnerTaggedValue.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTaggedValuesResponseTaggedValue.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEvents.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ListTopLevelEventsResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MarketType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MarketTypeWithPrices.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/MatchedOrderInformationType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ObjectFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Offer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Order.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/OrderCommissionInformationType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/OrderSettlementInformationType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceipt.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersNoReceiptResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceipt.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptRequestItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PlaceOrdersWithReceiptResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PolarityEnum.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PricesType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/Pulse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/PulseResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReadOnlyService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReadOnlyService_Service.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeat.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/RegisterHeartbeatResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/ReturnStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SecureService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SecureService_Service.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionTradesRequestItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SelectionTypeWithPrices.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SettlementInformationType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SimpleOrderRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarket.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersOnMarketResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendAllOrdersResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTrading.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendFromTradingResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/SuspendOrdersResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/TradeItemType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTrading.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendFromTradingResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UnsuspendOrdersResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceipt.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptRequestItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponse2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/UpdateOrdersNoReceiptResponseItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BETDAQ_SOAP/src/betdaqsoap/com/globalbettingexchange/externalapi/package-info.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BETDAQ_SOAP/betdaqsoap/API.wsdl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/FlashScores.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/FlashScores.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/SiteEventTracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/MarketOddsReportWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/MarketOddsReportWorker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/Quota.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/Quota.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTraderStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/Requester.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/Requester.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -308,22 +465,35 @@
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main" />
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src" />
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java\SiteConnectors\Betdaq" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
       <recent name="Bet" />
       <recent name="SiteConnectors" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\BETDAQ_SOAP\src\betdaqsoap\com\globalbettingexchange\externalapi" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main" />
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src" />
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Quota">
+  <component name="RunManager" selected="Application.Betdaq">
+    <configuration name="Betdaq" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="SiteConnectors.Betdaq.Betdaq" />
+      <module name="SportTrader" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="SiteConnectors.Betdaq.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="EventTrader" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Trader.EventTrader" />
       <module name="SportTrader" />
@@ -333,13 +503,6 @@
     </configuration>
     <configuration name="Quota" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Trader.Quota" />
-      <module name="SportTrader" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Smarkets" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="SiteConnectors.Smarkets.Smarkets" />
       <module name="SportTrader" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -361,11 +524,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Betdaq" />
         <item itemvalue="Application.Quota" />
         <item itemvalue="Application.SportsTrader" />
         <item itemvalue="Application.EventTrader" />
         <item itemvalue="Application.printer" />
-        <item itemvalue="Application.Smarkets" />
       </list>
     </recent_temporary>
   </component>
@@ -398,7 +561,7 @@
       <workItem from="1569005058590" duration="1542000" />
       <workItem from="1569504363004" duration="1155000" />
       <workItem from="1579706898497" duration="212000" />
-      <workItem from="1579707123685" duration="3181000" />
+      <workItem from="1579707123685" duration="3707000" />
     </task>
     <servers />
   </component>
@@ -463,6 +626,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="328" y="413" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579013357114" />
+    <state x="11" y="450" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1579729784454">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="11" y="450" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579729784454" />
     <state x="210" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1579127231091">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -475,26 +642,30 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="256" y="409" key="#com.intellij.ws.actions.GenerateJavaFromWsdlDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707351935" />
-    <state width="1018" height="170" key="GridCell.Tab.0.bottom" timestamp="1579649338075">
+    <state width="1039" height="281" key="GridCell.Tab.0.bottom" timestamp="1580432635964">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="39" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1579138823556" />
-    <state width="1018" height="170" key="GridCell.Tab.0.bottom/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579649338075" />
-    <state width="1018" height="170" key="GridCell.Tab.0.center" timestamp="1579649338075">
+    <state width="914" height="164" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1579791588520" />
+    <state width="1039" height="281" key="GridCell.Tab.0.bottom/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580432635964" />
+    <state width="1039" height="281" key="GridCell.Tab.0.center" timestamp="1580432635964">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="39" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1579138823556" />
-    <state width="1018" height="170" key="GridCell.Tab.0.center/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579649338075" />
-    <state width="1018" height="170" key="GridCell.Tab.0.left" timestamp="1579649338074">
+    <state width="914" height="164" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1579791588519" />
+    <state width="1039" height="281" key="GridCell.Tab.0.center/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580432635964" />
+    <state width="1039" height="281" key="GridCell.Tab.0.left" timestamp="1580432635964">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="39" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1579138823552" />
-    <state width="1018" height="170" key="GridCell.Tab.0.left/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579649338074" />
-    <state width="1018" height="170" key="GridCell.Tab.0.right" timestamp="1579649338075">
+    <state width="914" height="164" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1579791588519" />
+    <state width="1039" height="281" key="GridCell.Tab.0.left/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580432635964" />
+    <state width="1039" height="281" key="GridCell.Tab.0.right" timestamp="1580432635964">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="39" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1579138823556" />
-    <state width="1018" height="170" key="GridCell.Tab.0.right/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579649338075" />
+    <state width="914" height="164" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1579791588519" />
+    <state width="1039" height="281" key="GridCell.Tab.0.right/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580432635964" />
+    <state x="35" y="179" key="Maven.ArtifactSearchDialog" timestamp="1580139790177">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="35" y="179" key="Maven.ArtifactSearchDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580139790177" />
     <state x="0" y="99" width="922" height="849" key="SettingsEditor" timestamp="1579023406735">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -504,11 +675,16 @@
     </state>
     <state x="176" y="348" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579013328617" />
     <state x="176" y="348" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707168252" />
-    <state x="342" y="255" width="607" height="536" key="find.popup" timestamp="1579293842866">
+    <state x="953" y="0" width="974" height="1047" key="dock-window-1" timestamp="1579791588933">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="953" y="0" width="974" height="1047" key="dock-window-1/0.0.1920.1040@0.0.1920.1040" timestamp="1579791588933" />
+    <state x="1072" y="0" width="855" height="1047" key="dock-window-1/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579735067104" />
+    <state x="886" y="173" width="615" height="536" key="find.popup" timestamp="1580431915158">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="342" y="255" width="607" height="536" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1579035041725" />
-    <state x="342" y="255" width="607" height="536" key="find.popup/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579293842866" />
+    <state x="886" y="173" width="615" height="536" key="find.popup/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580431915158" />
     <state x="0" y="145" width="928" height="757" key="new project wizard" timestamp="1579707332298">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
