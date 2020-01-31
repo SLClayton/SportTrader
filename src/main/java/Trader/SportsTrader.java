@@ -8,7 +8,6 @@ import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.Matchbook.Matchbook;
 import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
-import com.google.gson.JsonSyntaxException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import tools.MyLogHandler;
@@ -248,7 +247,7 @@ public class SportsTrader {
     }
 
 
-    private void setupConfig(String config_filename) throws JsonSyntaxException, FileNotFoundException,
+    private void setupConfig(String config_filename) throws FileNotFoundException,
             ConfigException, org.json.simple.parser.ParseException {
 
         JSONObject config = null;

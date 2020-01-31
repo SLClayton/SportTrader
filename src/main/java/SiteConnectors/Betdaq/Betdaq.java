@@ -7,14 +7,31 @@ import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Trader.EventTrader;
+import com.ctc.wstx.exc.WstxParsingException;
+import com.globalbettingexchange.externalapi.*;
 import org.json.simple.parser.ParseException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 import tools.Requester;
 import tools.printer;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 import javax.xml.soap.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -56,6 +73,7 @@ public class Betdaq extends BettingSite {
 
     public Betdaq() throws IOException, ParseException, InterruptedException, URISyntaxException {
 
+        // Read login info from file
         Map login_details = getJSON(ssldir + "betdaq-login.json");
         username = login_details.get("u").toString();
         password = login_details.get("p").toString();
@@ -84,6 +102,8 @@ public class Betdaq extends BettingSite {
     public void login() throws IOException, URISyntaxException, InterruptedException {
 
         updateAccountInfo();
+        log.info(String.format("Successfully logged into Betdaq. Balance: %s  Exposure: %s",
+                balance.toString(), exposure.toString()));
 
     }
 
@@ -124,20 +144,17 @@ public class Betdaq extends BettingSite {
     @Override
     public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
 
-        String envolope = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ext=\"http://www.GlobalBettingExchange.com/ExternalAPI/\">" +
-                getHeader() +
-                "<soapenv:Body>" +
+        String soap_body =
                 "<ext:GetAccountBalances>" +
                 "<ext:getAccountBalancesRequest/>" +
-                "</ext:GetAccountBalances>" +
-                "</soapenv:Body>" +
-                "</soapenv:Envelope>";
+                "</ext:GetAccountBalances>";
 
-        String reply = requester.SOAPrequest(secureServiceUrl, envolope);
+        GetAccountBalancesResponse b = (GetAccountBalancesResponse)
+                requester.SOAPrequest(secureServiceUrl, getHeader(), soap_body, GetAccountBalancesResponse.class);
 
-        print(reply);
+        balance = b.getGetAccountBalancesResult().getAvailableFunds();
+        exposure = b.getGetAccountBalancesResult().getExposure();
 
-        //TODO: here
 
     }
 

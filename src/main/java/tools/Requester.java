@@ -2,6 +2,7 @@ package tools;
 
 
 import Trader.SportsTrader;
+import com.globalbettingexchange.externalapi.GetAccountBalancesResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -19,7 +20,15 @@ import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.jsoup.select.Evaluator;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,6 +51,7 @@ public class Requester {
 
     HttpClient httpClient;
     public HashMap<String, String> headers;
+    XMLInputFactory xmlInputFactory;
     ReentrantLock headerLock = new ReentrantLock();
 
 
@@ -70,6 +80,7 @@ public class Requester {
     public static Requester SOAPRequester(){
         Requester requester = new Requester();
         requester.setHeader("Content-Type", "text/xml");
+        requester.xmlInputFactory = XMLInputFactory.newFactory();
         return requester;
     }
 
@@ -82,7 +93,18 @@ public class Requester {
     }
 
 
-    public String SOAPrequest(String url, String xml) throws IOException, URISyntaxException {
+    public Object SOAPrequest(String url, String soap_header, String soap_body, Class<?> return_class)
+            throws IOException, URISyntaxException {
+
+        // Build soap xml
+        String soap_xml =
+                "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ext=\"http://www.GlobalBettingExchange.com/ExternalAPI/\">" +
+                soap_header +
+                "<soapenv:Body>" +
+                soap_body +
+                "</soapenv:Body>" +
+                "</soapenv:Envelope>";
+
 
         // Create new http POST object
         HttpPost httpPost = new HttpPost(new URI(url));
@@ -95,7 +117,7 @@ public class Requester {
         headerLock.unlock();
 
         // Pass in JSON as string to body entity then send request
-        httpPost.setEntity(new StringEntity(xml));
+        httpPost.setEntity(new StringEntity(soap_xml));
         HttpResponse response = httpClient.execute(httpPost);
 
         // Check response code is valid
@@ -107,14 +129,36 @@ public class Requester {
                     response.toString(),
                     response_body,
                     response.getStatusLine().toString(),
-                    xml);
+                    soap_xml);
             log.severe(msg);
             throw new IOException(msg);
         }
 
         // Convert body to json and return
         String response_body = EntityUtils.toString(response.getEntity());
-        return response_body;
+
+        try {
+
+            // Find corresponding object in xml response
+            XMLStreamReader xml_reader = xmlInputFactory.createXMLStreamReader(
+                    new ByteArrayInputStream(response_body.getBytes()));
+            xml_reader.nextTag();
+            while (!xml_reader.getLocalName().equals(return_class.getSimpleName())) {
+                xml_reader.nextTag();
+            }
+
+            // Turn that xml object into java object
+            JAXBContext jaxbContext = JAXBContext.newInstance(return_class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Object return_object = jaxbUnmarshaller.unmarshal(xml_reader);
+            return return_object;
+        }
+        catch (XMLStreamException | JAXBException e) {
+            e.printStackTrace();
+            log.severe(String.format("Could not turn SOAP response into object of type %s\n%s",
+                    return_class.getSimpleName(), response_body));
+            return null;
+        }
     }
 
 
