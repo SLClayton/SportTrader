@@ -45,6 +45,11 @@ public abstract class printer {
     }
 
 
+    public static void ppx(String xml){
+        print(xml.replaceAll("><", ">\n<"));
+    }
+
+
     public static void pp(JSONArray j){
         print(jstring(j));
     }

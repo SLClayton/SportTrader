@@ -37,14 +37,16 @@ public class FootballMatch extends Match{
 
 
     public static FootballMatch parse(String start, String name) throws ParseException {
-        Instant start_time = Instant.parse(start);
+        return FootballMatch.parse(Instant.parse(start), name);
+    }
 
+    public static FootballMatch parse(Instant start, String name) throws ParseException {
         String[] teams = name.trim().split("\\sv\\s|\\sV\\s|\\svs\\s|\\sVS\\s|\\sVs\\s");
         if (teams.length != 2){
             String msg = String.format("Cannot parse Match name '%s'", name);
             throw new ParseException(msg, 1);
         }
-        return new FootballMatch(start_time, new FootballTeam(teams[0]), new FootballTeam(teams[1]));
+        return new FootballMatch(start, new FootballTeam(teams[0]), new FootballTeam(teams[1]));
     }
 
 

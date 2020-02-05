@@ -43,7 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import static net.dongliu.commons.Prints.print;
-import static tools.printer.nully;
+import static tools.printer.*;
 
 public class Requester {
 
@@ -93,7 +93,12 @@ public class Requester {
     }
 
 
-    public Object SOAPrequest(String url, String soap_header, String soap_body, Class<?> return_class)
+    public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class)
+            throws IOException, URISyntaxException {
+        return SOAPRequest(url, soap_header, soap_body, return_class, false);
+    }
+
+    public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class, boolean print)
             throws IOException, URISyntaxException {
 
         // Build soap xml
@@ -104,6 +109,11 @@ public class Requester {
                 soap_body +
                 "</soapenv:Body>" +
                 "</soapenv:Envelope>";
+
+        if (print){
+            print("\nvv Request vv");
+            ppx (soap_xml);
+        }
 
 
         // Create new http POST object
@@ -136,6 +146,11 @@ public class Requester {
 
         // Convert body to json and return
         String response_body = EntityUtils.toString(response.getEntity());
+
+        if (print){
+            print("\nvv Response vv");
+            ppx(response_body);
+        }
 
         try {
 

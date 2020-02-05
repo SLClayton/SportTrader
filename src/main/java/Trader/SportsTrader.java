@@ -110,16 +110,14 @@ public class SportsTrader {
         siteClasses.add(Matchbook.class);
         siteClasses.add(Smarkets.class);
 
-
         siteObjects = new HashMap<>();
         eventTraders = new ArrayList<>();
 
         marketOddsReportWorkers = new ArrayList<>();
         marketOddsReportRequestQueue = new LinkedBlockingQueue<>();
 
-        psr p = new psr();
-        new Thread(p).start();
-
+        //psr p = new psr();
+        //new Thread(p).start();
     }
 
     public class psr implements Runnable {
