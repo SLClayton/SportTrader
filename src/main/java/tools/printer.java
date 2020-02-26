@@ -46,7 +46,11 @@ public abstract class printer {
 
 
     public static void ppx(String xml){
-        print(xml.replaceAll("><", ">\n<"));
+        print(xmlstring(xml));
+    }
+
+    public static String xmlstring(String xml){
+        return xml.replaceAll("><", ">\n<");
     }
 
 

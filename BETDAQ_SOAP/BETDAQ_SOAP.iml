@@ -13,5 +13,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="JAX-WS-Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2 (3)" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.4.0-b180830.0359" level="project" />
+    <orderEntry type="library" name="Maven: jakarta.jws:jakarta.jws-api:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.ws:jaxws-api:2.3.1" level="project" />
   </component>
 </module>

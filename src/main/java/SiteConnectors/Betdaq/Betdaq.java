@@ -7,7 +7,6 @@ import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Trader.EventTrader;
-import com.ctc.wstx.exc.WstxParsingException;
 import com.globalbettingexchange.externalapi.*;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
@@ -23,7 +22,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.soap.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -61,6 +59,9 @@ public class Betdaq extends BettingSite {
     public static final long CRICKET_ID = 100007;
 
     public static final Short MATCH_ODDS_TYPE = 3;
+    public static final Short ASIAN_HANSICAP_TYPE = 10;
+
+    public static final String BETDAQ_EVENT_ID = "betdaq_id";
 
     public static final String WSDL = "http://api.betdaq.com/v2.0/API.wsdl";
     public static final String readOnlyUrl = "https://api.betdaq.com/v2.0/ReadOnlyService.asmx";
@@ -85,7 +86,7 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public String getHeader(){
+    public String getSOAPHeader(){
         String header = String.format(
                 "<soapenv:Header>" +
                 "<ext:ExternalApiHeader " +
@@ -152,7 +153,7 @@ public class Betdaq extends BettingSite {
                 "</ext:GetAccountBalances>";
 
         GetAccountBalancesResponse b = (GetAccountBalancesResponse)
-                requester.SOAPRequest(secureServiceUrl, getHeader(), soap_body, GetAccountBalancesResponse.class);
+                requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), soap_body, GetAccountBalancesResponse.class);
 
         balance = b.getGetAccountBalancesResult().getAvailableFunds();
         exposure = b.getGetAccountBalancesResult().getExposure();
@@ -165,32 +166,55 @@ public class Betdaq extends BettingSite {
     }
 
 
+    public List<EventClassifierType> getEventTree(long event_id) throws IOException, URISyntaxException {
+        // Add single id into a list and call other function
+        Collection<Long> ids = new ArrayList<>(1);
+        ids.add(event_id);
+        return getEventTree(ids);
+    }
+
+
+    public List<EventClassifierType> getEventTree(Collection<Long> event_ids) throws IOException, URISyntaxException {
+
+        // Create argument xml tags for each id
+        String xml_id_args = "";
+        for (Long id: event_ids){
+            xml_id_args += String.format("<ext:EventClassifierIds>%s</ext:EventClassifierIds>", id);
+        }
+
+        // Construct xml request
+        String body = "<ext:GetEventSubTreeNoSelections>" +
+                      "<ext:getEventSubTreeNoSelectionsRequest WantDirectDescendentsOnly=\"false\" WantPlayMarkets=\"false\">" +
+                      xml_id_args +
+                      "</ext:getEventSubTreeNoSelectionsRequest>" +
+                      "</ext:GetEventSubTreeNoSelections>";
+
+        // Send request and get back response object
+        GetEventSubTreeNoSelectionsResponse r = (GetEventSubTreeNoSelectionsResponse)
+                requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), body,
+                        GetEventSubTreeNoSelectionsResponse.class, false);
+
+        // Check response is successfull
+        ReturnStatus rs = r.getGetEventSubTreeNoSelectionsResult().getReturnStatus();
+        if (rs.getCode() != 0){
+            log.severe(String.format("Could not get event tree from betdaq for ids %s. Error %s - '%s'",
+                    event_ids.toString(), rs.getCode(), rs.getDescription()));
+            return null;
+        }
+
+        return r.getGetEventSubTreeNoSelectionsResult().getEventClassifiers();
+    }
+
     @Override
     public List<FootballMatch> getFootballMatches(Instant from, Instant until)
             throws IOException, URISyntaxException, InterruptedException {
 
-        String body = String.format("<ext:GetEventSubTreeNoSelections>" +
-                "<ext:getEventSubTreeNoSelectionsRequest WantDirectDescendentsOnly=\"false\" WantPlayMarkets=\"false\">" +
-                "<ext:EventClassifierIds>%s</ext:EventClassifierIds>" +
-                "</ext:getEventSubTreeNoSelectionsRequest>" +
-                "</ext:GetEventSubTreeNoSelections>",
-                FOOTBALL_ID);
-
-        GetEventSubTreeNoSelectionsResponse r = (GetEventSubTreeNoSelectionsResponse)
-                requester.SOAPRequest(readOnlyUrl, getHeader(), body,
-                                      GetEventSubTreeNoSelectionsResponse.class, false);
-
-        ReturnStatus rs = r.getGetEventSubTreeNoSelectionsResult().getReturnStatus();
-        if (rs.getCode() != 0){
-            log.severe(String.format("Could not get football matches from betdaq. Error %s - '%s'",
-                    rs.getCode(), rs.getDescription()));
-            return null;
-        }
+        // Get event tree of all football events
+        List<EventClassifierType> eventTree = getEventTree(FOOTBALL_ID);
 
         // From all event types returned, find the lowest level events which should be singular matches
         // by checking all nested events for ones with markets.
-        List<EventClassifierType> events =
-                getNestedEventsWithMarkets(r.getGetEventSubTreeNoSelectionsResult().getEventClassifiers());
+        List<EventClassifierType> events = getNestedEventsWithMarkets(eventTree);
 
         // Compile string regex for parts of name to remove
         String time_regex = "\\d\\d:\\d\\d";
@@ -220,17 +244,18 @@ public class Betdaq extends BettingSite {
             }
 
             // Find first and last words in name and remove if illegal add-ons
-            String[] words = event.getName().toLowerCase().split("\\s");
-            if (illegal_front_words.matcher(words[0]).matches()){
+            String[] words = event.getName().split("\\s");
+            if (illegal_front_words.matcher(words[0].toLowerCase()).matches()){
                 words[0] = "";
             }
-            if (words[words.length-1].equals("(live)")){
+            if (words[words.length-1].toLowerCase().equals("(live)")){
                 words[words.length-1] = "";
             }
             String name = String.join(" ", words).trim();
 
             try {
                 FootballMatch fm = FootballMatch.parse(starttime, name);
+                fm.metadata.put(BETDAQ_EVENT_ID, String.valueOf(event.getId()));
                 footballMatches.add(fm);
             }
             catch (java.text.ParseException e){
@@ -265,6 +290,38 @@ public class Betdaq extends BettingSite {
     }
 
 
+
+    public List<MarketTypeWithPrices> _getPrices(Collection<Long> marketIds) throws IOException, URISyntaxException {
+
+        // Create xml tags for each market id
+        String market_ids_xml = "";
+        for (Long market_id: marketIds){
+            market_ids_xml += String.format("<ext:MarketIds>%s</ext:MarketIds>", String.valueOf(market_id));
+        }
+
+        // Create SOAP xml body
+        String body = "<ext:GetPrices><ext:getPricesRequest ThresholdAmount=\"0\" NumberForPricesRequired=\"3\" " +
+                          "NumberAgainstPricesRequired=\"3\" WantMarketMatchedAmount=\"true\" " +
+                          "WantSelectionsMatchedAmounts=\"true\" WantSelectionMatchedDetails=\"true\">" +
+                      market_ids_xml +
+                      "</ext:getPricesRequest></ext:GetPrices>";
+
+        // Send SOAP request and return object response
+        GetPricesResponse r = (GetPricesResponse)
+                requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), body, GetPricesResponse.class);
+
+        // Check return status of request
+        ReturnStatus rs = r.getGetPricesResult().getReturnStatus();
+        if (rs.getCode() != 0){
+            log.severe(String.format("Could not get prices from betdaq for ids %s. Error %s - '%s'",
+                    marketIds.toString(), rs.getCode(), rs.getDescription()));
+            return null;
+        }
+
+        return r.getGetPricesResult().getMarketPrices();
+    }
+
+
     @Override
     public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
@@ -278,12 +335,15 @@ public class Betdaq extends BettingSite {
         try {
             Betdaq b = new Betdaq();
 
-            List<FootballMatch> fms = b.getFootballMatches(Instant.now(),
-                    Instant.now().plusSeconds(60*60*24));
+            List<Long> ids = new ArrayList<>();
+            ids.add(new Long(17761870));
+            ids.add(new Long(18464108));
+            ids.add(new Long(17761870));
 
-            for (FootballMatch fm: fms){
-                print(fm.toString());
-            }
+            GetPricesResponse2 r = b._getPrices(ids);
+
+            r.getMarketPrices().get(0).getSelections();
+
 
 
 

@@ -139,7 +139,7 @@ public class Requester {
                     response.toString(),
                     response_body,
                     response.getStatusLine().toString(),
-                    soap_xml);
+                    xmlstring(soap_xml));
             log.severe(msg);
             throw new IOException(msg);
         }

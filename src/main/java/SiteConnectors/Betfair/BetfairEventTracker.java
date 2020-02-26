@@ -91,7 +91,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     @Override
     public String name() {
-        return betfair.name;
+        return Betfair.name;
     }
 
 
