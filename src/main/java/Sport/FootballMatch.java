@@ -1,20 +1,14 @@
 package Sport;
 
-import Bet.FootballBet.FootballBet;
-import SiteConnectors.BettingSite;
-import SiteConnectors.SportData;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.Normalizer;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.*;
 
-import static tools.printer.print;
-
-public class FootballMatch extends Match{
+public class FootballMatch extends Event {
 
     public static String[] removable_keywords = {"fc", "town", "city", "women", "w", "of", "and", "&"};
 
@@ -43,7 +37,7 @@ public class FootballMatch extends Match{
     public static FootballMatch parse(Instant start, String name) throws ParseException {
         String[] teams = name.trim().split("\\sv\\s|\\sV\\s|\\svs\\s|\\sVS\\s|\\sVs\\s");
         if (teams.length != 2){
-            String msg = String.format("Cannot parse Match name '%s'", name);
+            String msg = String.format("Cannot parse Event name '%s'", name);
             throw new ParseException(msg, 1);
         }
         return new FootballMatch(start, new FootballTeam(teams[0]), new FootballTeam(teams[1]));
@@ -114,33 +108,33 @@ public class FootballMatch extends Match{
 
 
     @Override
-    public Boolean same_match(Match match){
-        // Checks if match is the same given the currently known local information (no online verification)
+    public Boolean same_match(Event event){
+        // Checks if event is the same given the currently known local information (no online verification)
 
         // Check Start time, false if different
-        if (!start_time.equals(match.start_time)){
+        if (!start_time.equals(event.start_time)){
             return false;
         }
 
 
-        // If both have IDs which match then they're the same
-        if (getID() != null && match.getClass() != null){
-            return getID().equals(match.getID());
+        // If both have IDs which event then they're the same
+        if (getID() != null && event.getClass() != null){
+            return getID().equals(event.getID());
         }
 
 
-        // If argument match isn't a football match then they're not the same
+        // If argument event isn't a football event then they're not the same
         FootballMatch fm;
         try{
-            fm = (FootballMatch) match;
+            fm = (FootballMatch) event;
         } catch (ClassCastException e){
             return false;
         }
 
 
-        // If both teams same or one same and other null, then match.
+        // If both teams same or one same and other null, then event.
         // If both null skip
-        // If one same and other not, then log error and dont match
+        // If one same and other not, then log error and dont event
         Boolean sameAteam = team_a.same_team(fm.team_a);
         Boolean sameBteam = team_b.same_team(fm.team_b);
         if (Boolean.TRUE.equals(sameAteam)){
@@ -149,14 +143,14 @@ public class FootballMatch extends Match{
             }
             else{
                 log.severe(String.format("Matches %s and %s have same time, same A team but different B team.",
-                        this.toString(), match.toString()));
+                        this.toString(), event.toString()));
                 return false;
             }
         }
         else if (Boolean.FALSE.equals(sameAteam)){
             if (Boolean.TRUE.equals(sameBteam)){
                 log.severe(String.format("Matches %s and %s have same time, same B team but different A team.",
-                        this.toString(), match.toString()));
+                        this.toString(), event.toString()));
             }
             return false;
         }
@@ -176,11 +170,11 @@ public class FootballMatch extends Match{
 
 
     public static boolean same_team_old(String T1, String T2, boolean deep_check){
-        //log.fine(String.format("Checking teams match for %s and %s.", T1, T2));
+        //log.fine(String.format("Checking teams event for %s and %s.", T1, T2));
 
         // Check exact strings
         if (T1.equals(T2)){
-            //log.fine(String.format("Match found for teams '%s' & '%s'. Exact.", T1, T2));
+            //log.fine(String.format("Event found for teams '%s' & '%s'. Exact.", T1, T2));
             return true;
         }
 
@@ -192,7 +186,7 @@ public class FootballMatch extends Match{
 
         // Check normalised strings
         if (t1.equals(t2)){
-            //log.fine(String.format("Match found for teams '%s' & '%s'. Normalised '%s' & '%s'.", T1, T2, t1, t2));
+            //log.fine(String.format("Event found for teams '%s' & '%s'. Normalised '%s' & '%s'.", T1, T2, t1, t2));
             return true;
         }
 
@@ -200,7 +194,7 @@ public class FootballMatch extends Match{
         ArrayList<String> p1 = new ArrayList<String>(Arrays.asList(t1.split("\\s+")));
         ArrayList<String> p2 = new ArrayList<String>(Arrays.asList(t2.split("\\s+")));
         if (p1.equals(p2)){
-            //log.fine(String.format("Match found for teams '%s' & '%s'. Same words %s %s.", T1, T2, p1, p2));
+            //log.fine(String.format("Event found for teams '%s' & '%s'. Same words %s %s.", T1, T2, p1, p2));
             return true;
         }
 
@@ -208,7 +202,7 @@ public class FootballMatch extends Match{
         HashSet<String> s1 = new HashSet<String>(p1);
         HashSet<String> s2 = new HashSet<String>(p2);
         if (s1.equals(s2)){
-            //log.fine(String.format("Match found for teams '%s' & '%s'. Mixed order %s %s.", T1, T2, s1, s2));
+            //log.fine(String.format("Event found for teams '%s' & '%s'. Mixed order %s %s.", T1, T2, s1, s2));
             return true;
         }
 
@@ -218,7 +212,7 @@ public class FootballMatch extends Match{
         }
 
 
-        // Removes keywords such as FC from name to see if match occurs.
+        // Removes keywords such as FC from name to see if event occurs.
         for (String keyword: removable_keywords){
             if (s1.contains(keyword) || s2.contains(keyword)){
                 p1.remove(keyword);
@@ -226,14 +220,14 @@ public class FootballMatch extends Match{
 
                 boolean success = same_team_old(String.join(" ", p1), String.join(" ", p2), false);
                 if (success){
-                    //log.fine(String.format("Match found for teams once '%s' removed. '%s' & '%s'.", keyword, T1, T2));
+                    //log.fine(String.format("Event found for teams once '%s' removed. '%s' & '%s'.", keyword, T1, T2));
                     return true;
                 }
             }
         }
 
 
-        log.fine(String.format("No match found for %s and %s.", T1, T2));
+        log.fine(String.format("No event found for %s and %s.", T1, T2));
         return false;
     }
 
@@ -245,7 +239,7 @@ public class FootballMatch extends Match{
 
     public static boolean appearsInList(FootballMatch match, Collection<FootballMatch> matches){
         for (Object item: matches){
-            Match m = (Match) item;
+            Event m = (Event) item;
             if (match.same_match(m)){
                 return true;
             }
@@ -264,5 +258,19 @@ public class FootballMatch extends Match{
             }
         }
         return in_both_lists;
+    }
+
+
+    public JSONObject toJSON(){
+        JSONArray t = new JSONArray();
+        t.add(team_a.name);
+        t.add(team_b.name);
+
+        JSONObject j = new JSONObject();
+        j.put("teams", t);
+        j.put("name", name);
+        j.put("time", start_time.toString());
+        j.put("meta", new JSONObject(metadata));
+        return j;
     }
 }

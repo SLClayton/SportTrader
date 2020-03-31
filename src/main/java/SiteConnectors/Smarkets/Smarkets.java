@@ -3,43 +3,23 @@ package SiteConnectors.Smarkets;
 import Bet.Bet;
 import Bet.BetOffer;
 import Bet.BetOrder;
-import Bet.FootballBet.FootballResultBet;
-import Bet.FootballBet.FootballScoreBet;
 import Bet.PlacedBet;
-import Bet.MarketOddsReport;
-import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Sport.FootballTeam;
-import Sport.Match;
-import Sport.Team;
-import Trader.EventTrader;
-import Trader.SportsTrader;
-import com.google.gson.JsonSyntaxException;
-import org.hamcrest.core.Is;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import tools.Requester;
 
-import java.awt.*;
-import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -449,7 +429,7 @@ public class Smarkets extends BettingSite {
 
         JSONArray events = getEvents(from, until, FOOTBALL);
 
-        // Create list of Football Match objects to send back
+        // Create list of Football Event objects to send back
         ArrayList<FootballMatch> footballMatches = new ArrayList<>();
         for (Object event_obj: events){
             JSONObject event = (JSONObject) event_obj;
@@ -458,7 +438,7 @@ public class Smarkets extends BettingSite {
             String name = (String) event.get("name");
             String[] teams = name.split(" vs.? ");
             if (teams.length != 2){
-                log.warning(String.format("Cannot parse football match name '%s' in smarkets.", name));
+                log.warning(String.format("Cannot parse football event name '%s' in smarkets.", name));
                 continue;
             }
 

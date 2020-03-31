@@ -20,18 +20,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import Bet.Bet;
 import Bet.BetOffer;
 import Bet.BetOrder;
-import Bet.FootballBet.FootballResultBet;
 import Bet.PlacedBet;
-import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
-import Sport.Match;
-import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.MyLogHandler;
@@ -366,7 +361,7 @@ public class Matchbook extends BettingSite {
                 new_fm.metadata.put(MATCHBOOK_EVENT_ID, String.valueOf(json_event.get("id")));
                 events.add(new_fm);
             } catch (ParseException e) {
-                String msg = String.format("Could not parse match '%s' starting at '%s'.", name, start);
+                String msg = String.format("Could not parse event '%s' starting at '%s'.", name, start);
                 log.warning(e.toString());
                 continue;
             }

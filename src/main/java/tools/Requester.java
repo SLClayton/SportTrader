@@ -138,10 +138,10 @@ public class Requester {
                     status_code,
                     response.toString(),
                     response_body,
-                    response.getStatusLine().toString(),
-                    xmlstring(soap_xml));
+                    response.getStatusLine().toString());
+                    //xmlstring(soap_xml));
             log.severe(msg);
-            throw new IOException(msg);
+            throw new IOException();
         }
 
         // Convert body to json and return
@@ -169,10 +169,10 @@ public class Requester {
             return return_object;
         }
         catch (XMLStreamException | JAXBException e) {
-            e.printStackTrace();
-            log.severe(String.format("Could not turn SOAP response into object of type %s\n%s",
-                    return_class.getSimpleName(), response_body));
-            return null;
+            String msg = String.format("Could not turn SOAP response into object of type %s\n%s",
+                    return_class.getSimpleName(), response_body);
+            log.severe(msg);
+            throw new IOException(msg);
         }
     }
 

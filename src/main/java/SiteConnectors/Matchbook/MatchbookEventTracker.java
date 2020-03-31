@@ -4,27 +4,13 @@ import Bet.Bet;
 import Bet.BetOffer;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
-import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
-import SiteConnectors.Smarkets.Smarkets;
-import SiteConnectors.Smarkets.SmarketsEventTracker;
-import Sport.FootballMatch;
-import Sport.Match;
-import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -54,9 +40,9 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
     @Override
     public boolean siteSpecificSetup() {
-        event_id = match.metadata.get(Matchbook.MATCHBOOK_EVENT_ID);
+        event_id = event.metadata.get(Matchbook.MATCHBOOK_EVENT_ID);
         if (event_id == null){
-            log.severe(String.format("No event id found in metadata for match %s md:%s", match, match.metadata));
+            log.severe(String.format("No event id found in metadata for event %s md:%s", event, event.metadata));
         }
         return true;
     }
@@ -105,7 +91,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
                     break;
                 default:
                     bet_blacklist.add(bet.id());
-                    log.fine(String.format("No '%s' bet for '%s' found in matchbook. Adding to blacklist.", bet.id(), match));
+                    log.fine(String.format("No '%s' bet for '%s' found in matchbook. Adding to blacklist.", bet.id(), event));
                     continue;
             }
 
@@ -114,7 +100,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
                 continue;
             }
             if ((!runner.containsKey("status")) || (!runner.get("status").equals("open"))){
-                log.warning(String.format("Matchbook runner is invalid for %s in %s", bet.id(), match));
+                log.warning(String.format("Matchbook runner is invalid for %s in %s", bet.id(), event));
                 continue;
             }
 
@@ -135,11 +121,12 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
                 BigDecimal odds = new BigDecimal(String.valueOf(mb_offer.get("decimal-odds")));
                 BigDecimal volume = new BigDecimal(String.valueOf(mb_offer.get("available-amount")));
-                HashMap<String, String> metadata = new HashMap<>();
-                metadata.put(Matchbook.MARKET_ID, String.valueOf(runner.get("market-id")));
-                metadata.put(Matchbook.RUNNER_ID, String.valueOf(runner.get("id")));
 
-                new_betOffers.add(new BetOffer(lastMarketOddsReport_start_time, match, bet, matchbook, odds, volume, metadata));
+                BetOffer bo = new BetOffer(lastMarketOddsReport_start_time, event, bet, matchbook, odds, volume);
+                bo.addMetadata(Matchbook.MARKET_ID, String.valueOf(runner.get("market-id")));
+                bo.addMetadata(Matchbook.RUNNER_ID, String.valueOf(runner.get("id")));
+
+                new_betOffers.add(bo);
             }
 
             // Add to final report only
@@ -199,7 +186,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
         if (max_score != bet.over_score){
             log.severe(String.format("matchbook correct score market has correct number of runners but other-score" +
-                    " bet doesn't match up with max bet shown.\n%s\n%s", bet.id(), jstring(runners)));
+                    " bet doesn't event up with max bet shown.\n%s\n%s", bet.id(), jstring(runners)));
             return null;
         }
         if (score_runners != expected__score_runner_size){
@@ -267,7 +254,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
             return null;
         }
 
-        // Search runners for target name and return if match found
+        // Search runners for target name and return if event found
         JSONObject runner = null;
         for (Object runner_obj: runners){
             if (((JSONObject) runner_obj).get("name").equals(target_name)){
@@ -374,7 +361,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
             String market_name = (String) market_json.get("name");
 
             if (market_type.toLowerCase().equals("one_x_two")
-                    && market_name.toLowerCase().equals("match odds")){
+                    && market_name.toLowerCase().equals("event odds")){
 
                 market = (JSONObject) market_obj;
             }
@@ -415,7 +402,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
             if (!runner_name.toLowerCase().startsWith("draw")){
                 log.warning(String
                         .format("While confirming RESUlT bet in matchbook for %s, draw runner not draw: '%s'.",
-                                match, runner_name));
+                                event, runner_name));
                 return null;
             }
         }

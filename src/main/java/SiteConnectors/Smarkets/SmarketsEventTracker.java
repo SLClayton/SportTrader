@@ -4,28 +4,15 @@ import Bet.Bet;
 import Bet.BetOffer;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
-import SiteConnectors.FlashScores;
 import SiteConnectors.SiteEventTracker;
-import Sport.FootballMatch;
-import Sport.Match;
-import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static tools.printer.*;
@@ -74,9 +61,9 @@ public class SmarketsEventTracker extends SiteEventTracker {
     @Override
     public boolean siteSpecificSetup() throws IOException, URISyntaxException, InterruptedException {
 
-        event_id = match.metadata.get(Smarkets.SMARKETS_EVENT_ID);
+        event_id = event.metadata.get(Smarkets.SMARKETS_EVENT_ID);
 
-        // Setup market data for this match
+        // Setup market data for this event
         market_ids = new ArrayList<>();
         JSONArray markets = smarkets.getMarkets(event_id);
         for (Object market_obj: markets) {
@@ -215,10 +202,10 @@ public class SmarketsEventTracker extends SiteEventTracker {
         lastMarketOddsReport_start_time = Instant.now();
 
         if (event_id == null){
-            return MarketOddsReport.ERROR(String.format("No event id for smarkets match %s metadata %s",
-                    match, match.metadata));
+            return MarketOddsReport.ERROR(String.format("No event id for smarkets event %s metadata %s",
+                    event, event.metadata));
         }
-        log.fine(String.format("%s Updating market odds report for smarkets.", match));
+        log.fine(String.format("%s Updating market odds report for smarkets.", event));
 
         JSONObject lastPrices = getPrices();
         if (lastPrices == null){
@@ -344,14 +331,13 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 BigDecimal decimal_odds = Smarkets.price2dec(price);
                 BigDecimal volume = Smarkets.quantity2size(quantity, price);
 
-                // Add smarkets specific data to metadata
-                HashMap<String, String> metadata = new HashMap<>();
-                metadata.put(Smarkets.CONTRACT_ID, contract_id);
-                metadata.put(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
-                metadata.put(Smarkets.SMARKETS_PRICE, String.valueOf(price));
-                metadata.put("fullname", contract_fullname);
+                BetOffer bo = new BetOffer(lastMarketOddsReport_start_time, event, bet, smarkets, decimal_odds, volume);
+                bo.addMetadata(Smarkets.CONTRACT_ID, contract_id);
+                bo.addMetadata(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
+                bo.addMetadata(Smarkets.SMARKETS_PRICE, String.valueOf(price));
+                bo.addMetadata("fullname", contract_fullname);
 
-                new_betOffers.add(new BetOffer(lastMarketOddsReport_start_time, match, bet, smarkets, decimal_odds, volume, metadata));
+                new_betOffers.add(bo);
             }
 
             new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);

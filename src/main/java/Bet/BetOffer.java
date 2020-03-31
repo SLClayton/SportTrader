@@ -1,27 +1,25 @@
 package Bet;
 
 import SiteConnectors.BettingSite;
-import Sport.Match;
+import Sport.Event;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static tools.printer.print;
+import java.util.Map;
 
 public class BetOffer implements Comparable<BetOffer> {
 
-    public Match match;
+    public Event event;
     public Bet bet;
     public BettingSite site;
     public BigDecimal odds;
     public BigDecimal volume;
-    public HashMap<String, String> metadata;
+    public Map<String, String> metadata;
 
     public BigDecimal roi_ratio;
 
@@ -29,13 +27,14 @@ public class BetOffer implements Comparable<BetOffer> {
     public Instant time_betOffer_creation;
 
 
-    public BetOffer(Instant time_getMarketOddsReport, Match MATCH, Bet BET, BettingSite SITE,
-                    BigDecimal ODDS, BigDecimal VOLUME, HashMap METADATA){
+    /*
+    public BetOffer(Instant time_getMarketOddsReport, Event MATCH, Bet BET, BettingSite SITE,
+                    BigDecimal ODDS, BigDecimal VOLUME, Map METADATA){
 
         time_start_getMarketOddsReport = time_getMarketOddsReport;
         time_betOffer_creation = Instant.now();
 
-        match = MATCH;
+        event = MATCH;
         bet = BET;
         site = SITE;
         odds = ODDS;
@@ -43,12 +42,43 @@ public class BetOffer implements Comparable<BetOffer> {
         metadata = METADATA;
         roi_ratio = ROI_ratio();
     }
+    */
+
+
+    public BetOffer(Instant time_getMarketOddsReport, Event Event, Bet BET, BettingSite SITE,
+                    BigDecimal ODDS, BigDecimal VOLUME){
+
+        time_start_getMarketOddsReport = time_getMarketOddsReport;
+        time_betOffer_creation = Instant.now();
+
+        event = Event;
+        bet = BET;
+        site = SITE;
+        odds = ODDS;
+        volume = VOLUME;
+        metadata = new HashMap<>();
+        roi_ratio = ROI_ratio();
+    }
+
+
 
 
     public BetOffer newOdds(BigDecimal odds){
         // Returns a new betOffer with the same attributes except new odds and volume
-        BetOffer newBetOffer = new BetOffer(time_start_getMarketOddsReport, match, bet, site, odds, volume, metadata);
+        BetOffer newBetOffer = new BetOffer(time_start_getMarketOddsReport, event, bet, site, odds, volume);
+        for (Map.Entry<String, String> item: metadata.entrySet()){
+            newBetOffer.metadata.put(item.getKey(), item.getValue());
+        }
         return newBetOffer;
+    }
+
+
+    public String addMetadata(String key, String value){
+        return metadata.put(key, value);
+    }
+
+    public String getMetadata(String key){
+        return metadata.get(key);
     }
 
 
@@ -66,7 +96,7 @@ public class BetOffer implements Comparable<BetOffer> {
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
         m.put("created", String.valueOf(time_betOffer_creation));
-        m.put("match", String.valueOf(match));
+        m.put("event", String.valueOf(event));
         m.put("bet", String.valueOf(bet.id()));
         m.put("site", String.valueOf(site.getName()));
         m.put("odds", String.valueOf(odds));

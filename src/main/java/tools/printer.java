@@ -6,12 +6,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.security.MessageDigest;
@@ -49,8 +55,35 @@ public abstract class printer {
         print(xmlstring(xml));
     }
 
+    public static String prettyPrintXml(String xmlStringToBeFormatted) {
+        String formattedXmlString = null;
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setValidating(true);
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            InputSource inputSource = new InputSource(new StringReader(xmlStringToBeFormatted));
+            Document document = documentBuilder.parse(inputSource);
+
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+            StreamResult streamResult = new StreamResult(new StringWriter());
+            DOMSource dOMSource = new DOMSource(document);
+            transformer.transform(dOMSource, streamResult);
+            formattedXmlString = streamResult.getWriter().toString().trim();
+        } catch (Exception ex) {
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            System.err.println(sw.toString());
+        }
+        return formattedXmlString;
+    }
+
+
     public static String xmlstring(String xml){
-        return xml.replaceAll("><", ">\n<");
+        //return xml.replaceAll("><", ">\n<");
+        return prettyPrintXml(xml);
     }
 
 
@@ -104,6 +137,11 @@ public abstract class printer {
     }
 
 
+    public static void toFile(String s){
+        toFile(s, "output.txt");
+    }
+
+
     public static void toFile(String s, String filename) {
         PrintWriter writer = null;
 
@@ -141,6 +179,10 @@ public abstract class printer {
 
     public static JSONObject getJSON(String filename) throws FileNotFoundException, ParseException {
         return (JSONObject) new JSONParser().parse(getFileString(filename));
+    }
+
+    public static JSONArray getJSONArray(String filename) throws FileNotFoundException, ParseException {
+        return (JSONArray) new JSONParser().parse(getFileString(filename));
     }
 
 
@@ -213,6 +255,10 @@ public abstract class printer {
         sleepUntil(sleep_until, null);
     }
 
+    public static void sleep(long millis) throws InterruptedException {
+        Thread.sleep(millis);
+    }
+
 
 
 
@@ -269,5 +315,29 @@ public abstract class printer {
             total += n;
         }
         return count;
+    }
+
+    public static Map<String, Integer> sum_map(Collection<String> from_list){
+        Map<String, Integer> count = new HashMap<>();
+        for (String item: from_list){
+            Integer current_count = count.get(item);
+            if (current_count == null){
+                current_count = 0;
+            }
+            count.put(item, current_count + 1);
+        }
+        return count;
+    }
+
+    public static String most_common(Collection<String> items){
+        Map<String, Integer> count = sum_map(items);
+
+        String current_most = null;
+        for (String potential_most: count.keySet()){
+            if (current_most == null || count.get(potential_most) > count.get(current_most)){
+                current_most = potential_most;
+            }
+        }
+        return current_most;
     }
 }

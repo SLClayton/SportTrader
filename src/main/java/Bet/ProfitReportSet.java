@@ -98,7 +98,7 @@ public class ProfitReportSet {
             for (Bet bet: tautology.bets){
 
                 // Check each offer in sorted list to see if it is valid to bet on
-                ArrayList<BetOffer> betOffers = marketOddsReport.get(bet.id());
+                List<BetOffer> betOffers = marketOddsReport.get(bet.id());
                 BetOffer best_valid_offer = null;
                 for (BetOffer betOffer: betOffers){
                     if (betOffer.hasMinVolumeNeeded()){

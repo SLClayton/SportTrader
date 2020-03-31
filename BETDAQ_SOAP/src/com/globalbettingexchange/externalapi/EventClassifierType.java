@@ -57,6 +57,7 @@ public class EventClassifierType {
     @XmlAttribute(name = "ParentId")
     protected Long parentId;
 
+
     /**
      * Gets the value of the eventClassifiers property.
      * 

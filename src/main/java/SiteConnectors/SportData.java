@@ -2,7 +2,7 @@ package SiteConnectors;
 
 import Sport.FootballMatch;
 import Sport.FootballTeam;
-import Sport.Match;
+import Sport.Event;
 import Sport.Team;
 
 import java.time.Instant;
@@ -37,10 +37,10 @@ public interface SportData {
     String getFootballTeamID(Team team);
 
 
-    String getMatchID(Match match);
+    String getMatchID(Event event);
 
 
-    void update_match_id_map(Match match);
+    void update_match_id_map(Event event);
 
 
     boolean update_football_team_id_map(FootballTeam team);

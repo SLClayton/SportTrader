@@ -120,7 +120,7 @@ public class FlashScores implements SportData {
 
     @Override
     public FootballMatch getFootballMatch(Team team, Instant start_time) {
-        // Returns match if team and time have a match, null if not
+        // Returns event if team and time have a event, null if not
 
         ArrayList<FootballMatch> teamFixtures = getFootballFixtures(team);
         if (teamFixtures == null){
@@ -228,7 +228,7 @@ public class FlashScores implements SportData {
             FootballTeam team_b = new FootballTeam(team_b_name);
             team_b.id = id_creator(team_b_URLNAME, team_b_FSID);
 
-            // Add match to list
+            // Add event to list
             FootballMatch fm = new FootballMatch(start_time, team_a, team_b);
             fm.id = match_id;
             footballMatches.add(fm);
@@ -359,29 +359,29 @@ public class FlashScores implements SportData {
 
 
     @Override
-    public String getMatchID(Match match){
-        return match_id_map.get((match.key()));
+    public String getMatchID(Event event){
+        return match_id_map.get((event.key()));
     }
 
 
     @Override
-    public void update_match_id_map(Match match){
-        String key = match.key();
+    public void update_match_id_map(Event event){
+        String key = event.key();
         if (key == null){
             throw new NullPointerException();
         }
 
-        String current_id = match_id_map.get(match.key());
+        String current_id = match_id_map.get(event.key());
         if (current_id != null){
-            if (!match.id.equals(current_id)) {
+            if (!event.id.equals(current_id)) {
                 log.severe(String.format("Trying to add %s to match_id_map but key %s already exists " +
                                 "in mapping for id %s",
-                        match.toString(), match.key(), current_id));
+                        event.toString(), event.key(), current_id));
                 print(match_id_map.toString());
             }
             return;
         }
-        match_id_map.put(match.key(), match.id);
+        match_id_map.put(event.key(), event.id);
     }
 
 
@@ -419,11 +419,11 @@ public class FlashScores implements SportData {
 
     @Override
     public boolean verifyFootballMatch(FootballMatch match) {
-        // Tries to find match in flashscores and updates match ID and team IDs in local maps
+        // Tries to find event in flashscores and updates event ID and team IDs in local maps
         // Objects need to be refreshed after this to get their newly found IDs
 
         if (unverifiable_matches.contains(match.name)){
-            log.fine(String.format("Tried to verify match %s but its already failed previously.", match));
+            log.fine(String.format("Tried to verify event %s but its already failed previously.", match));
             return false;
         }
         log.fine(String.format("Attempting to verify %s in flashscores", match));
@@ -435,7 +435,7 @@ public class FlashScores implements SportData {
         ArrayList<FootballTeam> possible_teams_b = new ArrayList<>();
         ArrayList<FootballTeam>[] possible_teams = new ArrayList[] {possible_teams_a, possible_teams_b};
 
-        // If team already has an ID, then it can only be one match, so add that single match to list
+        // If team already has an ID, then it can only be one event, so add that single event to list
         // Otherwise, fill possibility list with the results from a search of its name.
         for (int i=0; i<2; i++){
             if (teams[i].getID() != null){
@@ -479,10 +479,10 @@ public class FlashScores implements SportData {
             // Check any matches appear in both lists
             List<FootballMatch> in_both_lists = FootballMatch.listOverlap(all_matches_a, all_matches_b);
 
-            // Break if match found
+            // Break if event found
             if (in_both_lists.size() == 1){
                 verifiedMatch = in_both_lists.get(0);
-                log.fine(String.format("Single match found in verification %s.", verifiedMatch));
+                log.fine(String.format("Single event found in verification %s.", verifiedMatch));
                 break;
             }
 
@@ -498,12 +498,12 @@ public class FlashScores implements SportData {
 
         // None found
         if (verifiedMatch == null){
-            log.warning(String.format("Could not verify match %s in flashscores.", match.toString()));
+            log.warning(String.format("Could not verify event %s in flashscores.", match.toString()));
             unverifiable_matches.add(match.name);
             return false;
         }
 
-        // Fill in Flashscores related data to match and return it
+        // Fill in Flashscores related data to event and return it
         update_football_team_id_map(verifiedMatch.team_a);
         update_football_team_id_map(verifiedMatch.team_b);
         update_match_id_map(verifiedMatch);

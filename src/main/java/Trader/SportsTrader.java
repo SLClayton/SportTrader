@@ -4,6 +4,7 @@ import Bet.Bet;
 import Bet.FootballBet.FootballBetGenerator;
 import Bet.FootballBet.FootballHandicapBet;
 import SiteConnectors.*;
+import SiteConnectors.Betdaq.Betdaq;
 import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.Matchbook.Matchbook;
 import SiteConnectors.Smarkets.Smarkets;
@@ -107,41 +108,17 @@ public class SportsTrader {
 
         siteClasses = new ArrayList<Class>();
         siteClasses.add(Betfair.class);
-        siteClasses.add(Matchbook.class);
+        //siteClasses.add(Matchbook.class);
         siteClasses.add(Smarkets.class);
+        siteClasses.add(Betdaq.class);
 
         siteObjects = new HashMap<>();
         eventTraders = new ArrayList<>();
 
         marketOddsReportWorkers = new ArrayList<>();
         marketOddsReportRequestQueue = new LinkedBlockingQueue<>();
-
-        //psr p = new psr();
-        //new Thread(p).start();
     }
 
-    public class psr implements Runnable {
-        @Override
-        public void run() {
-            while (true){
-                try {
-                    sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (exit_flag) {
-                    break;
-                }
-
-                Map<String, Map<String, Integer>> ss =
-                        MarketOddsReportWorker.site_sums(marketOddsReportWorkers);
-
-                if (ss.size() > 0){
-                    print(ss);
-                }
-            }
-        }
-    }
 
 
     public void newMarketOddsReportWorker(){
@@ -156,6 +133,7 @@ public class SportsTrader {
         morw.start();
         log.info(String.format("Created new MORW '%s'", morw.thread.getName()));
     }
+
 
     public void removeMarketOddsReportWorker(){
         MarketOddsReportWorker morw = marketOddsReportWorkers.remove(marketOddsReportWorkers.size() - 1);
@@ -302,7 +280,7 @@ public class SportsTrader {
             throw new ConfigException(msg);
         }
 
-        // Check number active sites is not lower than min number of sites per match
+        // Check number active sites is not lower than min number of sites per event
         int number_active_sites = 0;
         for (Map.Entry<String, Boolean> entry: ACTIVE_SITES.entrySet()){
             if (entry.getValue()){
@@ -419,7 +397,7 @@ public class SportsTrader {
                 footballMatches = new ArrayList<>();
                 FootballMatch fm = FootballMatch.parse(SM_TIME, SM_NAME);
                 footballMatches.add(fm);
-                log.info(String.format("Using %s match for testing.", fm.name));
+                log.info(String.format("Using %s event for testing.", fm.name));
             }
             else {
                 footballMatches = getFootballMatches();
@@ -436,7 +414,7 @@ public class SportsTrader {
         }
 
 
-        // Create football match job queue and fill
+        // Create football event job queue and fill
         BlockingQueue<FootballMatch> match_queue = new LinkedBlockingQueue<>();
         for (FootballMatch fm: footballMatches){
             match_queue.add(fm);
@@ -517,10 +495,10 @@ public class SportsTrader {
         log.info("Master safe exit triggered. Closing down program.");
 
         exit_flag = true;
+        if (stats != null){ stats.exit_flag = true;}
         if (sessionsUpdater != null){ sessionsUpdater.exit_flag = true;}
         if (sportDataFileSaver != null){ sportDataFileSaver.exit_flag = true;}
         if (siteAccountInfoUpdater != null){ siteAccountInfoUpdater.exit_flag = true;}
-        if (stats != null){ stats.exit_flag = true;}
 
         if (eventTraderSpawns != null) {
             for (EventTraderSpawn ets : eventTraderSpawns) {
@@ -594,7 +572,7 @@ public class SportsTrader {
 
     public class EventTraderSpawn implements Runnable{
 
-        // Should check match queue and attempt to create an event trader fully setup
+        // Should check event queue and attempt to create an event trader fully setup
         // One made per max event traders present and try until complete.
 
         BlockingQueue<FootballMatch> match_queue;
@@ -620,7 +598,7 @@ public class SportsTrader {
 
             while (!exit_flag){
 
-                // Get match from queue, break and finish if anything goes wrong.
+                // Get event from queue, break and finish if anything goes wrong.
                 FootballMatch footballMatch = null;
                 try {
                     footballMatch = match_queue.poll(0, TimeUnit.MILLISECONDS);
@@ -634,7 +612,7 @@ public class SportsTrader {
 
                 log.info(String.format("Attempting to verify and setup %s.", footballMatch));
 
-                // Attempt to setup site event trackers for all sites for this match, try queue again if fails
+                // Attempt to setup site event trackers for all sites for this event, try queue again if fails
                 EventTrader eventTrader = new EventTrader(sportsTrader, footballMatch, siteObjects, footballBetGenerator);
 
                 int successful_site_connections = eventTrader.setupMatch();
@@ -645,7 +623,7 @@ public class SportsTrader {
                 }
 
                 // Set result and break loop
-                log.info(String.format("EventTraderSetup complete for match %s.", footballMatch));
+                log.info(String.format("EventTraderSetup complete for event %s.", footballMatch));
                 result = eventTrader;
                 break;
             }
@@ -820,7 +798,6 @@ public class SportsTrader {
             e.printStackTrace();
             return;
         }
-
 
         st.run();
     }

@@ -101,7 +101,7 @@ public class EventTrader implements Runnable {
             // Spawn an empty event tracker from the site object
             SiteEventTracker eventTracker = site.getEventTracker();
 
-            // Try to setup match ion site event tracker, remove site if fail
+            // Try to setup event ion site event tracker, remove site if fail
             boolean setup_success = false;
             try {
                 setup_success = eventTracker.setupMatch(match);

@@ -53,12 +53,12 @@ public class Quota {
         print(String.format("Found %s matches.", matches.size()));
 
 
-        // Try setting up a match from list of matches. Must successfully setup in
+        // Try setting up a event from list of matches. Must successfully setup in
         // betfair and at least 1 other.
         List<SiteEventTracker> siteEventTrackers = new ArrayList<>();
         FootballMatch match = null;
         for (FootballMatch potential_match: matches){
-            print(String.format("Attempting to use match %s", potential_match));
+            print(String.format("Attempting to use event %s", potential_match));
 
             // Clear event trackers
             siteEventTrackers.clear();
@@ -70,7 +70,7 @@ public class Quota {
                 siteEventTrackers.add(bf_tracker);
             }
             else{
-                // Restart loop with different match
+                // Restart loop with different event
                 print("Failed setup setup in betfair.");
                 continue;
             }
@@ -96,12 +96,12 @@ public class Quota {
                 match = potential_match;
                 break;
             }
-            print(String.format("Only setup in %s site/s. Trying next match.",
+            print(String.format("Only setup in %s site/s. Trying next event.",
                     siteEventTrackers.size()));
         }
 
         if (match == null){
-            print(String.format("Tried all %s matches and could not find match", matches.size()));
+            print(String.format("Tried all %s matches and could not find event", matches.size()));
             return;
         }
 

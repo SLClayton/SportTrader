@@ -155,7 +155,7 @@ public class PlacedBet {
         // Put betOrder this placed bet was based on in json
         JSONObject boj = betOrder.toJSON();
         boj.remove("site");
-        boj.remove("match");
+        boj.remove("event");
         m.put("betOrder", betOrder.toJSON());
 
         // Put placed bet information in json
@@ -163,7 +163,7 @@ public class PlacedBet {
         pb.put("state", String.valueOf(state));
         pb.put("time_placed", String.valueOf(time_placed));
         pb.put("site", String.valueOf(site().getName()));
-        pb.put("match", String.valueOf(betOrder.match()));
+        pb.put("event", String.valueOf(betOrder.match()));
         if (successful()){
             pb.put("bet_id", String.valueOf(bet_id));
             pb.put("back_stake", String.valueOf(backersStake_layersProfit));

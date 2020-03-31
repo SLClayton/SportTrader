@@ -106,10 +106,10 @@ public class BetOrderProfitReport implements Comparable<BetOrderProfitReport> {
         }
         else{
             if (betOrders.size() > 0){
-                j.put("match", betOrders.get(0).match().toString());
+                j.put("event", betOrders.get(0).match().toString());
             }
             else{
-                j.put("match", null);
+                j.put("event", null);
             }
         }
 

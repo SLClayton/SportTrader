@@ -506,9 +506,9 @@ public class SportsTraderStats implements Runnable {
             bets_available.clear();
             bets_with_offers.clear();
 
-            for (Map.Entry<String, ArrayList<BetOffer>> entry: oddsReport.entrySet()){
+            for (Map.Entry<String, List<BetOffer>> entry: oddsReport.entrySet()){
                 String bet_id = entry.getKey();
-                ArrayList<BetOffer> offers = entry.getValue();
+                List<BetOffer> offers = entry.getValue();
 
                 bets_available.add(bet_id);
                 if (offers.size() > 0) {

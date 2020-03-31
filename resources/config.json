@@ -6,14 +6,14 @@
     "IN_PLAY": false,
     "HOURS_AHEAD": 48,
 
-    "SINGLE_MATCH_TEST": false,
-    "SM_NAME": "chelsea vs crystal palace",
-    "SM_TIME": "2019-11-09T12:30:00.000Z",
+    "SINGLE_MATCH_TEST": true,
+    "SM_NAME": "chelsea vs everton",
+    "SM_TIME": "2020-03-08T14:00:00.000Z",
 
     "CHECK_MARKETS": true,
-    "RATE_LIMIT": 300,
+    "RATE_LIMIT": 1000,
     "RATE_LOCKSTEP_INTERVAL": 0,
-    "REQUEST_TIMEOUT": 250,
+    "REQUEST_TIMEOUT": 300,
 
     "PLACE_BETS": false,
     "END_ON_BET": true,
@@ -24,11 +24,12 @@
 
     "ACTIVE_SITES": {
         "betfair": true,
-    	"matchbook": true,
-        "smarkets": true
+    	"matchbook": false,
+        "smarkets": true,
+        "betdaq": true
     },
-    "EVENT_SOURCE": "matchbook",
-    "MIN_SITES_PER_MATCH": 3,
+    "EVENT_SOURCE": "betdaq",
+    "MIN_SITES_PER_MATCH": 2,
 
     "SMARKETS_REQ_SIZE": 200,
     "SMARKETS_RH_WAIT": 40,

@@ -1,16 +1,13 @@
 package Sport;
 
-import SiteConnectors.BettingSite;
 import SiteConnectors.SportData;
 import Trader.SportsTrader;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
-public abstract class Match {
+public abstract class Event {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
@@ -21,7 +18,7 @@ public abstract class Match {
     public String id;
     public Map<String, String> metadata;
 
-    public Match(){
+    public Event(){
         this.sportData = SportsTrader.getSportData();
         metadata = new HashMap<>();
     }
@@ -62,7 +59,7 @@ public abstract class Match {
     public abstract String key();
 
 
-    public abstract Boolean same_match(Match match);
+    public abstract Boolean same_match(Event event);
 
 
 

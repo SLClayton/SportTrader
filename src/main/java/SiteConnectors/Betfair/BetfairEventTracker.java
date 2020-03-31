@@ -7,7 +7,6 @@ import Bet.MarketOddsReport;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Sport.Team;
-import Trader.EventTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -77,7 +76,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         super(betfair);
         this.betfair = betfair;
 
-        match = null;
+        event = null;
         lastMarketDataUpdate = null;
         marketType_id_map = new HashMap<>();
         correctScore_selectionId_map = new HashMap<>();
@@ -98,10 +97,10 @@ public class BetfairEventTracker extends SiteEventTracker {
     @Override
     public boolean siteSpecificSetup() throws IOException, URISyntaxException {
 
-        event_id = match.metadata.get(Betfair.BETFAIR_EVENT_ID);
+        event_id = event.metadata.get(Betfair.BETFAIR_EVENT_ID);
         if (event_id == null){
-            log.severe(String.format("Could not find betfair event id in match metadata. %s md:%s",
-                    match.toString(), match.metadata.toString()));
+            log.severe(String.format("Could not find betfair event id in event metadata. %s md:%s",
+                    event.toString(), event.metadata.toString()));
             return false;
         }
 
@@ -174,7 +173,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         lastMarketOddsReport_start_time = Instant.now();
 
-        if (match == null){
+        if (event == null){
             log.severe("Trying to get market odds report on null event.");
             return MarketOddsReport.ERROR("NULL event in betfair event tracker");
         }
@@ -242,7 +241,7 @@ public class BetfairEventTracker extends SiteEventTracker {
                         || runner_status.equals("CLOSED")))){
 
                     log.warning(String.format("Runner status is %s in bet %s for %s in betfair.",
-                            runner_status, bet, match));
+                            runner_status, bet, event));
                 }
                 continue;
             }
@@ -267,11 +266,12 @@ public class BetfairEventTracker extends SiteEventTracker {
 
                 BigDecimal odds = new BigDecimal(bf_offer.get("price").toString());
                 BigDecimal volume = new BigDecimal(bf_offer.get("size").toString());
-                HashMap<String, String> metadata = new HashMap<String, String>();
-                metadata.put("selectionId", runner.get("selectionId").toString());
-                metadata.put("marketId", runner.get("marketId").toString());
 
-                betOffers.add(new BetOffer(lastMarketOddsReport_start_time, match, bet, betfair, odds, volume, metadata));
+                BetOffer bo = new BetOffer(lastMarketOddsReport_start_time, event, bet, betfair, odds, volume);
+                bo.addMetadata(Betfair.BETFAIR_SELECTION_ID, runner.get("selectionId").toString());
+                bo.addMetadata(Betfair.BETFAIR_MARKET_ID, runner.get("marketId").toString());
+
+                betOffers.add(bo);
             }
 
             setStatus("loopaddbets");
@@ -299,7 +299,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         String market_id = marketType_id_map.get(market_type);
         if (market_id == null){
-            log.fine(String.format("CORRECT_SCORE not found for %s in market id map", match));
+            log.fine(String.format("CORRECT_SCORE not found for %s in market id map", event));
             return null;
         }
 
@@ -345,7 +345,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         // this event
         if (fbosb.over_score != max_score){
             log.severe(String.format("betfair correct score market has correct number of runners but other-score" +
-                    " bet doesn't match up with max bet shown.\n%s\n%s", bet.id(), jstring(runners)));
+                    " bet doesn't event up with max bet shown.\n%s\n%s", bet.id(), jstring(runners)));
             return null;
         }
         if (score_runners != expected_runners_size){
@@ -403,7 +403,7 @@ public class BetfairEventTracker extends SiteEventTracker {
     private JSONObject extractRunnerHANDICAP(FootballBet BET, JSONArray market_odds) {
 
         FootballHandicapBet bet = (FootballHandicapBet) BET;
-        FootballMatch footballMatch = (FootballMatch) this.match;
+        FootballMatch footballMatch = (FootballMatch) this.event;
 
         // Check if handicap is integer or 0.5 interval
         boolean integer_handicap = bet.a_handicap.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0;
@@ -530,7 +530,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         String market_id = marketType_id_map.get(bf_market_name);
         if (market_id == null){
             log.fine(String.format("%s not found for %s in market id map.\n%s",
-                    bf_market_name, match, marketType_id_map.toString()));
+                    bf_market_name, event, marketType_id_map.toString()));
             return null;
         }
 
@@ -576,7 +576,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         }
         String market_id = marketType_id_map.get(market_type);
         if (market_id == null){
-            log.fine(String.format("CORRECT_SCORE not found for %s in market id map", match));
+            log.fine(String.format("CORRECT_SCORE not found for %s in market id map", event));
             return null;
         }
 
@@ -613,7 +613,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
 
     private JSONObject extractRunnerRESULT(FootballBet BET, JSONArray market_odds) {
-        //log.fine(String.format("Getting runner result from %s for %s.", match, BET.id()));
+        //log.fine(String.format("Getting runner result from %s for %s.", event, BET.id()));
 
         FootballResultBet bet = (FootballResultBet) BET;
 
@@ -635,7 +635,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         // Check it has 3 runners TEAMA, DRAW and TEAMB
         JSONArray runners = (JSONArray) market.get("runners");
         if (runners.size() != 3){
-            log.severe(String.format("RESULT market for %s has %d runners and not 3.", match, runners.size()));
+            log.severe(String.format("RESULT market for %s has %d runners and not 3.", event, runners.size()));
             return null;
         }
 

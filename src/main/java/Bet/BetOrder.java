@@ -1,19 +1,14 @@
 package Bet;
 
 import SiteConnectors.BettingSite;
-import Sport.Match;
+import Sport.Event;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.lang.management.BufferPoolMXBean;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import static tools.printer.print;
 
 public class BetOrder {
 
@@ -137,8 +132,8 @@ public class BetOrder {
     }
 
 
-    public Match match(){
-        return bet_offer.match;
+    public Event match(){
+        return bet_offer.event;
     }
 
 
@@ -157,7 +152,7 @@ public class BetOrder {
 
         m.put("bet_offer", bet_offer.toJSON());
 
-        m.put("match", String.valueOf(bet_offer.match));
+        m.put("event", String.valueOf(bet_offer.event));
         m.put("site", String.valueOf(bet_offer.site.getName()));
         m.put("target_return", String.valueOf(target_return));
         m.put("investment", String.valueOf(investment));

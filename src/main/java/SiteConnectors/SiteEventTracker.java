@@ -1,29 +1,17 @@
 package SiteConnectors;
 
 import Bet.Bet;
-import Bet.FootballBet.FootballBet;
 import Bet.MarketOddsReport;
 import Sport.FootballMatch;
-import Sport.Match;
+import Sport.Event;
 import Trader.EventTrader;
 import Trader.MarketOddsReportWorker;
 import Trader.SportsTrader;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import static net.dongliu.commons.Prints.print;
@@ -37,7 +25,7 @@ public abstract class SiteEventTracker {
     public EventTrader eventTrader;
     public SportData sportData;
 
-    public Match match;
+    public Event event;
     public Collection<Bet> bets;
     public Set<String> bet_blacklist;
 
@@ -100,7 +88,7 @@ public abstract class SiteEventTracker {
         MarketOddsReport mor = _getMarketOddsReport(bets);
         if (mor == null){
             String msg = String.format("getMarketOdds report for %s %s has returned null when it should never do so.",
-                    site, match);
+                    site, event);
             log.severe(msg);
             mor = MarketOddsReport.ERROR(msg);
         }
@@ -111,64 +99,70 @@ public abstract class SiteEventTracker {
     public abstract MarketOddsReport _getMarketOddsReport(Collection<Bet> bets) throws InterruptedException;
 
 
-    public boolean setupMatch(Match setup_match) throws InterruptedException, IOException, URISyntaxException {
+    public boolean setupMatch(Event setup_event) throws InterruptedException, IOException, URISyntaxException {
 
-        log.fine(String.format("Setting up match for %s in %s", setup_match, site));
-        Instant start = setup_match.start_time.minus(1, ChronoUnit.SECONDS);
-        Instant end = setup_match.start_time.plus(1, ChronoUnit.SECONDS);
+        log.fine(String.format("Setting up event for %s in %s", setup_event, site));
+        Instant start = setup_event.start_time.minusSeconds(1);
+        Instant end = setup_event.start_time.plusSeconds(1);
 
-        // Depending on match type (sport) search site for relevant events
-        ArrayList<Match> possible_matches = new ArrayList<>();
-        if (setup_match instanceof FootballMatch){
-            possible_matches.addAll(site.getFootballMatches(start, end));
+
+        // Depending on event type (sport) search site for relevant events
+        ArrayList<Event> potential_events = new ArrayList<>();
+        if (setup_event instanceof FootballMatch){
+            potential_events.addAll(site.getFootballMatches(start, end));
         }
         else{
-            log.severe(String.format("Setup match '%s' is not of valid type.", setup_match.toString()));
+            log.severe(String.format("Setup event '%s' is not of valid type.", setup_event.toString()));
             return false;
         }
 
-        // Check if any of the searched events match the setup_match from local data only
-        match = null;
-        for (Match potential_match: possible_matches){
-            if (Boolean.TRUE.equals(setup_match.same_match(potential_match))){
-                log.fine(String.format("Matched %s with %s from %s with local data.", setup_match, potential_match, site));
-                match = potential_match;
+
+        // Check if any of the searched events event the setup_event from local data only
+        event = null;
+        for (Event potential_event : potential_events){
+            if (Boolean.TRUE.equals(setup_event.same_match(potential_event))){
+                log.fine(String.format("Matched %s with %s from %s with local data.", setup_event, potential_event, site));
+                event = potential_event;
                 break;
             }
         }
-        // If no match found, ensure matches are verified with IDs and check again
-        if (match == null){
-            if (setup_match.notVerified()){
-                log.fine(String.format("Trying to verify setup match %s.", setup_match));
-                if (!setup_match.verify()){
-                    log.warning(String.format("Unable to verify setup match for %s", setup_match.toString()));
+
+
+        // If no event found just from local data, ensure matches are verified with IDs and check again
+        if (event == null){
+
+            // Verify event
+            if (setup_event.notVerified()){
+                log.fine(String.format("Trying to verify setup event %s.", setup_event));
+                if (!setup_event.verify()){
+                    log.warning(String.format("Unable to verify setup event for %s", setup_event.toString()));
                     return false;
                 }
             }
 
-            // Check again
-            for (Match potential_match: possible_matches){
-                if (potential_match.notVerified()){
-                    log.fine(String.format("Trying to verify potential match %s.", potential_match));
-                    potential_match.verify();
+            // Check again if verification worked.
+            for (Event potential_event : potential_events){
+                if (potential_event.notVerified()){
+                    log.fine(String.format("Trying to verify potential event %s.", potential_event));
+                    potential_event.verify();
                 }
-                if (Boolean.TRUE.equals(setup_match.same_match(potential_match))){
+                if (Boolean.TRUE.equals(setup_event.same_match(potential_event))){
                     log.fine(String.format("Matched %s with %s from %s after verifying matches.",
-                            setup_match, potential_match, site));
-                    match = potential_match;
+                            setup_event, potential_event, site));
+                    event = potential_event;
                     break;
                 }
             }
         }
 
-        // If match is still not found then fail this setup process.
-        if (match == null){
+        // If event is still not found then fail this setup process.
+        if (event == null){
             log.warning(String.format("No matches found for %s in %s. Checked %d: %s",
-                    setup_match.toString(), site.toString(), possible_matches.size(), possible_matches.toString()));
+                    setup_event.toString(), site.toString(), potential_events.size(), potential_events.toString()));
             return false;
         }
 
-        // If gotten this far then a match will have been assigned to the match variable.
+        // If gotten this far then a event will have been assigned to the event variable.
         return siteSpecificSetup();
     }
 

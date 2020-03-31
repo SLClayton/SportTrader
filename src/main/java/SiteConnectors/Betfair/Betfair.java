@@ -1,16 +1,12 @@
 package SiteConnectors.Betfair;
 
-import Bet.Bet;
 import Bet.BetOffer;
 import Bet.BetOrder;
-import Bet.FootballBet.FootballResultBet;
-import Bet.FootballBet.FootballScoreBet;
 import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
-import Trader.EventTrader;
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,7 +21,6 @@ import tools.printer;
 
 import javax.net.ssl.*;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.*;
@@ -36,8 +31,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -54,6 +47,9 @@ public class Betfair extends BettingSite {
     public final static String name = "betfair";
     public final static String id = "BF";
     public final static String BETFAIR_EVENT_ID = "BETFAIR_EVENT_ID";
+    public final static String BETFAIR_MARKET_ID = "BETFAIR_MARKET_ID";
+    public final static String BETFAIR_SELECTION_ID = "BETFAIR_SELECTION_ID";
+
 
     public String hostname = "https://api.betfair.com/";
     public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
@@ -484,7 +480,7 @@ public class Betfair extends BettingSite {
         // Get response
         JSONArray events = getEvents(filter);
 
-        // Build match object for each return
+        // Build event object for each return
         ArrayList<FootballMatch> footballMatches = new ArrayList<FootballMatch>();
         for (Object event_obj: events){
             JSONObject event = (JSONObject) ((JSONObject) event_obj).get("event");
@@ -760,7 +756,7 @@ public class Betfair extends BettingSite {
 
                     log.info(String.format("Successful invested £%s @ %S on %s '%s' in betfair (returns %s).",
                             invested.toString(), avg_odds.toString(), betOrder.bet_offer.bet.id(),
-                            betOrder.bet_offer.match.name, returns.toString()));
+                            betOrder.bet_offer.event.name, returns.toString()));
 
 
                     PlacedBet pb = new PlacedBet("SUCCESS", bet_id, betOrder, size_matched, avg_odds,
@@ -849,16 +845,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
-        if (increment.signum() == 0) {
-            // 0 increment does not make much sense, but prevent division by 0
-            return value;
-        } else {
-            BigDecimal divided = value.divide(increment, 0, roundingMode);
-            BigDecimal result = divided.multiply(increment);
-            return result;
-        }
-    }
+
 
 
     private static BigDecimal validPrice(BigDecimal price) {

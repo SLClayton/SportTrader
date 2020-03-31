@@ -4,16 +4,11 @@ import Bet.Bet;
 import Bet.BetOffer;
 import Bet.BetOrder;
 import Bet.PlacedBet;
-import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
-import Sport.Match;
-import Trader.EventTrader;
 import Trader.SportsTrader;
 import org.json.simple.parser.ParseException;
-import tools.MyLogHandler;
 import tools.Requester;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,12 +19,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
-
-import static tools.printer.print;
 
 public abstract class BettingSite {
 
@@ -153,6 +147,11 @@ public abstract class BettingSite {
             throws IOException, URISyntaxException, InterruptedException;
 
 
+    public List<FootballMatch> getFootballMatches() throws InterruptedException, IOException, URISyntaxException {
+        return getFootballMatches(Instant.now(), Instant.now().plus(24, ChronoUnit.HOURS));
+    }
+
+
 
     public PlacedBet placeBet(BetOrder betOrder, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException {
         List<BetOrder> betOrders = new ArrayList<>();
@@ -219,6 +218,16 @@ public abstract class BettingSite {
     }
 
 
+    public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
+        if (increment.signum() == 0) {
+            // 0 increment does not make much sense, but prevent division by 0
+            return value;
+        } else {
+            BigDecimal divided = value.divide(increment, 0, roundingMode);
+            BigDecimal result = divided.multiply(increment);
+            return result;
+        }
+    }
 
 
 
