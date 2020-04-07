@@ -91,6 +91,7 @@ public class SportsTrader {
     public SportsTrader() throws IOException, ConfigException, org.json.simple.parser.ParseException {
         Thread.currentThread().setName("Main");
         exit_flag = false;
+
         log.setUseParentHandlers(false);
         log.setLevel(Level.INFO);
         try {

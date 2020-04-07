@@ -3,6 +3,7 @@ package SiteConnectors.Betdaq;
 import Bet.*;
 import Bet.FootballBet.*;
 import SiteConnectors.*;
+import SiteConnectors.Betfair.Betfair;
 import Sport.FootballMatch;
 import com.globalbettingexchange.externalapi.*;
 import org.json.simple.JSONArray;
@@ -13,7 +14,6 @@ import tools.Requester;
 import tools.printer;
 
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -26,6 +26,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static java.lang.System.exit;
@@ -35,7 +37,6 @@ public class Betdaq extends BettingSite {
 
     public final static String name = "betdaq";
     public final static String id = "BD";
-
 
     public static final long FOOTBALL_ID = 100003;
     public static final long HORSE_RACING_ID = 100004;
@@ -70,7 +71,7 @@ public class Betdaq extends BettingSite {
     public static final String BETDAQ_EVENT_ID = "betdaq_event_id";
     public static final String BETDAQ_SELECTION_ID = "betdaq_selection_id";
 
-    public static final String WSDL = "http://api.betdaq.com/v2.0/API.wsdl";
+    public static final String WSDL_URL = "http://api.betdaq.com/v2.0/API.wsdl";
     public static final String readOnlyUrl = "https://api.betdaq.com/v2.0/ReadOnlyService.asmx";
     public static final String secureServiceUrl = "https://api.betdaq.com/v2.0/Secure/SecureService.asmx";
 
@@ -379,7 +380,6 @@ public class Betdaq extends BettingSite {
         }
 
         return ladder;
-
     }
 
 
@@ -425,6 +425,7 @@ public class Betdaq extends BettingSite {
 
         // Must be >1 and can't be >1000
         if (price.compareTo(BigDecimal.ONE) != 1 || price.compareTo(new BigDecimal(1000)) == 1){
+            log.severe(String.format("Trying to get valid betdaq price for %s which is either <=1 or >1000.", price));
             return null;
         }
 
@@ -635,6 +636,7 @@ public class Betdaq extends BettingSite {
         return j;
     }
 
+
     public static JSONObject sJSON(SelectionType s){
         JSONObject j = new JSONObject();
         j.put("id", s.getId());
@@ -680,11 +682,9 @@ public class Betdaq extends BettingSite {
 
         try {
 
-            Betdaq b = new Betdaq();
 
-
-            BigDecimal bd = new BigDecimal("15.45");
-            print(b.validPrice(bd, false));
+            Requester r = new Requester();
+            r.get("https://google.com");
 
 
 

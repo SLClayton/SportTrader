@@ -1,12 +1,12 @@
 {
-    "RUN_STATS": true,
+    "RUN_STATS": false,
     "LOG_LEVEL": "INFO",
 
     "MAX_MATCHES": 1,
     "IN_PLAY": false,
     "HOURS_AHEAD": 48,
 
-    "SINGLE_MATCH_TEST": true,
+    "SINGLE_MATCH_TEST": false,
     "SM_NAME": "chelsea vs everton",
     "SM_TIME": "2020-03-08T14:00:00.000Z",
 

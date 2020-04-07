@@ -38,7 +38,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
-import static net.dongliu.commons.Prints.print;
 import static tools.printer.*;
 
 public class Betfair extends BettingSite {

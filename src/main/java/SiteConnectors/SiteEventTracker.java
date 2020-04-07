@@ -14,8 +14,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static net.dongliu.commons.Prints.print;
-
 public abstract class SiteEventTracker {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());

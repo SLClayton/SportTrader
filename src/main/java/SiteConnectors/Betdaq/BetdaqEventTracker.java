@@ -190,14 +190,14 @@ public class BetdaqEventTracker extends SiteEventTracker {
             // Add a link between market name and id for this event
             market_name_id_map.put(marketType.getName().toLowerCase(), marketType.getId());
 
+            Pattern unneeded_suffix = Pattern.compile("\\(\\w+ - \\w+\\)\\z");
+
             // Add a link for selection name (with market name concat to front) and selection id.
             for (SelectionType selectionType: marketType.getSelections()){
 
-                // Get initial selection name
-                String selectionName = selectionType.getName();
-
                 // If selection name contains some shortened names like '(Shef - ManC)' remove it
-                Matcher m = Pattern.compile("\\(\\w+ - \\w+\\)\\z").matcher(selectionName);
+                String selectionName = selectionType.getName();
+                Matcher m = unneeded_suffix.matcher(selectionName);
                 if (m.find()){
                     selectionName = selectionName.substring(0, m.start()) + selectionName.substring(m.end()).trim();
                 }

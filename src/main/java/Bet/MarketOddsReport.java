@@ -9,8 +9,7 @@ import org.json.simple.JSONObject;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static net.dongliu.commons.Prints.print;
-import static tools.printer.toFile;
+import static tools.printer.*;
 
 public class MarketOddsReport {
     /*

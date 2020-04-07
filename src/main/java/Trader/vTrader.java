@@ -11,7 +11,6 @@ import org.json.simple.parser.ParseException;
 import tools.ScreenReader;
 import tools.printer.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.xml.bind.JAXBElement;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,8 +23,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.List;
 
-import static java.lang.System.exit;
-import static net.dongliu.commons.Prints.print;
 import static tools.printer.*;
 
 public class vTrader {
@@ -219,7 +216,7 @@ public class vTrader {
                 long race_id = market.getId();
                 Instant race_time = nextRace_start;
 
-                print("\n\nUsing next race: " + nextRace.getName());
+                print("\n\nUsing next race: " + String.valueOf(nextRace.getName()));
 
                 // Collect runners names
                 Set<String> horse_names = new HashSet<>();
@@ -236,13 +233,14 @@ public class vTrader {
                 while (Instant.now().isBefore(nextRace_start.minusSeconds(15))) {
 
                     // Get runners from screen
-                    List<String> these_runners = sr.extractRunnersFromScreen(x, y, 0.6, 0.7, 4, true);
+                    List<String> these_runners = sr.extractRunnersFromScreen(x, y, 0.55, 0.75, 7, true);
                     runners.addAll(these_runners);
-                    sleep(500);
+                    sleep(800);
                 }
 
                 // Get all horses from runners
                 List<Horse> horses = getHorsesFromRunners(horse_names, runners);
+                print(String.format("Found oods for %s/%s horses.", horses.size(), horse_names.size()));
                 for (Horse h: horses){
                     print(h + "    price: " + horse_prices.get(h.name));
                 }
@@ -287,6 +285,7 @@ public class vTrader {
                     h.put("winner", winner_name.equals(horse.name));
                     h.put("race", race_id);
                     h.put("time", race_time.toString());
+                    h.put("r_size", horse_names.size());
 
                     horse_data.add(h);
                 }
@@ -306,7 +305,6 @@ public class vTrader {
 
     public static void main(String[] args){
         try {
-
             vTrader vTrader = new vTrader();
             vTrader.run();
 

@@ -2,10 +2,7 @@ package tools;
 
 
 import Trader.SportsTrader;
-import com.globalbettingexchange.externalapi.GetAccountBalancesResponse;
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.config.CookieSpecs;
@@ -40,9 +37,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static net.dongliu.commons.Prints.print;
 import static tools.printer.*;
 
 public class Requester {
@@ -66,6 +63,21 @@ public class Requester {
                 .build();
 
         headers = new HashMap<>();
+
+
+    }
+
+
+    public static void main(String[] args){
+        try {
+            Requester r = new Requester();
+            r.get("https://google.com");
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        print("END");
     }
 
 
