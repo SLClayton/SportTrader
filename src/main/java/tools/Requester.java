@@ -63,8 +63,6 @@ public class Requester {
                 .build();
 
         headers = new HashMap<>();
-
-
     }
 
 

@@ -20,11 +20,14 @@ public class BetdaqEventTracker extends SiteEventTracker {
     Betdaq betdaq;
 
     Long event_id;
-    public Map<String, Long> market_name_id_map;
+    public Map<String, Long> marketName_id_map;
     public Map<String, Long> market_selection_id_map;
-    public Map<Long, Long> selection_market_map;
+    public Map<Long, Long> selectionId_marketId_map;
     public Integer correct_score_max;
     public Integer correct_score_max_ht;
+
+    // Pattern to match things like "(Manc - Sheff)" at the end of market names
+    public static Pattern unneeded_market_suffix = Pattern.compile("\\(\\w+ - \\w+\\)\\z");
 
 
     public static List<String> market_names = Arrays.asList(
@@ -66,7 +69,6 @@ public class BetdaqEventTracker extends SiteEventTracker {
     public MarketOddsReport _getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
         lastMarketOddsReport_start_time = Instant.now();
 
-
         // Ensure event has been setup
         if (event == null){
             log.severe("Trying to get market odds report on null event.");
@@ -76,12 +78,10 @@ public class BetdaqEventTracker extends SiteEventTracker {
         // Get list of prices for each market
         List<MarketTypeWithPrices> marketPrices = null;
         try {
-            marketPrices = betdaq._getPrices(market_name_id_map.values());
+            marketPrices = betdaq._getPrices(marketName_id_map.values());
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
-
-        // Ensure prices aren't null
         if (marketPrices == null){
             log.severe(String.format("Market prices for %s found to be null when requesting from betdaq.",
                     event.toString()));
@@ -108,7 +108,7 @@ public class BetdaqEventTracker extends SiteEventTracker {
             }
 
             // Find market id from the selection id
-            Long market_id = selection_market_map.get(selection_id);
+            Long market_id = selectionId_marketId_map.get(selection_id);
             if (market_id == null){
                 log.severe(String.format("Betdaq selection %s/%s has no market id in map.", bet.id(), selection_id));
                 bet_blacklist.add(bet.id());
@@ -166,49 +166,50 @@ public class BetdaqEventTracker extends SiteEventTracker {
     }
 
 
+    public static String remove_selectionName_suffix(String raw_selectionName){
+        // If selection name contains some shortened names like '(Shef - ManC)' remove it
+        Matcher m = unneeded_market_suffix.matcher(raw_selectionName);
+        String new_selectionName = raw_selectionName;
+        if (m.find()){
+            new_selectionName = new_selectionName.substring(0, m.start()) + new_selectionName.substring(m.end()).trim();
+        }
+        return new_selectionName;
+    }
+
     @Override
     public boolean siteSpecificSetup() throws IOException, URISyntaxException, InterruptedException {
 
+        // Get the Betdaq specific event ID from the parent class event metadata and get details from betdaq
         event_id = Long.parseLong(event.metadata.get(Betdaq.BETDAQ_EVENT_ID));
-
-        // Get event details
-        EventClassifierType football_events =  betdaq.getEventTree(Betdaq.FOOTBALL_ID, true);
+        EventClassifierType betdaq_event =  betdaq.getEventTree(event_id, true);
 
         // Create list of market ids for specific market types in this event
-        market_name_id_map = new HashMap<>();
+        marketName_id_map = new HashMap<>();
         market_selection_id_map = new HashMap<>();
-        selection_market_map = new HashMap<>();
+        selectionId_marketId_map = new HashMap<>();
         correct_score_max = null;
         correct_score_max_ht = null;
-        for (MarketType marketType: football_events.getMarkets()){
+        for (MarketType marketType: betdaq_event.getMarkets()){
 
-            // Ensure market is in whitelist
+            // Skip if market name not in whitelist
             if (!market_names.contains(marketType.getName())) {
                 continue;
             }
-
             // Add a link between market name and id for this event
-            market_name_id_map.put(marketType.getName().toLowerCase(), marketType.getId());
-
-            Pattern unneeded_suffix = Pattern.compile("\\(\\w+ - \\w+\\)\\z");
+            marketName_id_map.put(marketType.getName().toLowerCase(), marketType.getId());
 
             // Add a link for selection name (with market name concat to front) and selection id.
             for (SelectionType selectionType: marketType.getSelections()){
 
                 // If selection name contains some shortened names like '(Shef - ManC)' remove it
-                String selectionName = selectionType.getName();
-                Matcher m = unneeded_suffix.matcher(selectionName);
-                if (m.find()){
-                    selectionName = selectionName.substring(0, m.start()) + selectionName.substring(m.end()).trim();
-                }
-
                 // Add full selection name to map for its ID
-                market_selection_id_map.put(String.format("%s_%s", marketType.getName(), selectionName).toLowerCase(),
-                        selectionType.getId());
-                selection_market_map.put(selectionType.getId(), marketType.getId());
+                String selectionName = remove_selectionName_suffix(selectionType.getName());
+                String fullMarketSelectionName = String.format("%s_%s", marketType.getName(), selectionName).toLowerCase();
+                market_selection_id_map.put(fullMarketSelectionName, selectionType.getId());
+                selectionId_marketId_map.put(selectionType.getId(), marketType.getId());
             }
 
-            // If the correct score market, find the number of selections
+            // If 'correct score' market, find the number of selections
             if (marketType.getName().equals("Correct Score")){
                 correct_score_max = sqrt(marketType.getSelections().size() - 3) - 1;
             }
@@ -219,8 +220,8 @@ public class BetdaqEventTracker extends SiteEventTracker {
         }
 
         // Ensure at least 1 market is found
-        if (market_name_id_map.size() == 0){
-            log.severe(String.format("Could not find any relevant markets when setting up %s in betdaq."));
+        if (marketName_id_map.size() == 0){
+            log.severe(String.format("Could not find any relevant markets when setting up %s in betdaq.", event.name));
             return false;
         }
 

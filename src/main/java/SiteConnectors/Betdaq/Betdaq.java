@@ -6,10 +6,12 @@ import SiteConnectors.*;
 import SiteConnectors.Betfair.Betfair;
 import Sport.FootballMatch;
 import com.globalbettingexchange.externalapi.*;
+import org.apache.commons.collections.map.HashedMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import sun.jvm.hotspot.opto.Block;
 import tools.Requester;
 import tools.printer;
 
@@ -25,7 +27,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -80,6 +86,8 @@ public class Betdaq extends BettingSite {
 
     public List<BigDecimal> odds_ladder;
 
+    public GetPricesRequestHandler getPricesRequestHandler;
+
 
     public Betdaq() throws IOException, ParseException, InterruptedException, URISyntaxException {
 
@@ -92,21 +100,182 @@ public class Betdaq extends BettingSite {
         password = login_details.get("p").toString();
 
         requester = Requester.SOAPRequester();
-
         login();
+        getPricesRequestHandler = new GetPricesRequestHandler();
+        getPricesRequestHandler.start();
+    }
+
+
+    public class GetPricesRequestHandler implements Runnable{
+
+        public int MAX_BATCH_SIZE = 10;
+        public int REQUEST_THREADS = 10;
+        public long MAX_WAIT_TIME = 20;
+
+        public Thread thread;
+        public BlockingQueue<RequestHandler> request_queue;
+        public BlockingQueue<List<RequestHandler>> batch_queue;
+        public List<GetPricesRequestSender> requestSenders;
+
+        public GetPricesRequestHandler(){
+            exit_flag = false;
+            request_queue = new LinkedBlockingQueue<>();
+            batch_queue = new LinkedBlockingQueue<>();
+            thread = new Thread(this);
+        }
+
+        public void start(){
+            thread.start();
+        }
+
+        public void safe_exit(){
+            exit_flag = true;
+            for (GetPricesRequestSender worker: requestSenders){
+                worker.safe_exit();
+            }
+            thread.interrupt();
+        }
+
+        public boolean addToQueue(RequestHandler requestHandler){
+            return request_queue.add(requestHandler);
+        }
+
+        @Override
+        public void run() {
+            log.info("Running getPrice handler for betdaq.");
+
+            Instant wait_until = null;
+            RequestHandler new_handler = null;
+            List<RequestHandler> requestHandlers = new ArrayList<>(MAX_BATCH_SIZE);
+
+            // Start batch senders
+            requestSenders = new ArrayList<>(REQUEST_THREADS);
+            for (int i=1; i<=REQUEST_THREADS; i++){
+                GetPricesRequestSender worker = new GetPricesRequestSender(batch_queue);
+                worker.thread.setName("bd RS-" + i);
+                worker.start();
+                requestSenders.add(worker);
+            }
+
+
+            while (!exit_flag) {
+                try {
+                    new_handler = null;
+
+                    // Collect next request from queue (wait or timeout)
+                    if (wait_until == null){
+                        new_handler = request_queue.take();
+                        wait_until = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
+                    }
+                    else{
+                        long milliseconds_to_wait = wait_until.toEpochMilli() - Instant.now().toEpochMilli();
+                        new_handler = request_queue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
+                    }
+
+                    // If a new handler has been taken out, then add to next batch
+                    if (new_handler != null){
+                        requestHandlers.add(new_handler);
+                    }
+
+                    // send batch off if conditions met.
+                    // new_handler = null means its timed out
+                    if ((requestHandlers.size() >= MAX_BATCH_SIZE || !Instant.now().isBefore(wait_until))
+                        && !exit_flag){
+
+                        batch_queue.add(requestHandlers);
+                        wait_until = null;
+                        requestHandlers = new ArrayList<>();
+                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            log.info("Ending betdaq request handler.");
+        }
+    }
+
+
+    public class GetPricesRequestSender implements Runnable{
+
+        public BlockingQueue<ArrayList<RequestHandler>> batch_queue;
+        public Thread thread;
+        public boolean exit_flag;
+
+        public GetPricesRequestSender(BlockingQueue queue){
+            exit_flag = false;
+            batch_queue = queue;
+            thread = new Thread(this);
+        }
+
+        public void start(){
+            thread.start();
+        }
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
+        @Override
+        public void run() {
+            log.info("Starting betdaq request sender.");
+            List<RequestHandler> request_handler_batch = null;
+
+            while (!exit_flag){
+                try {
+
+                    //Wait for next batch from queue
+                    request_handler_batch = null;
+                    request_handler_batch = batch_queue.take();
+
+                    // Extract market ids from each request handler
+                    Set<Long> market_ids = new HashSet<>(request_handler_batch.size());
+                    for (RequestHandler rh: request_handler_batch){
+                        Collection<Long> rh_market_ids = (Collection<Long>) rh.request;
+                        market_ids.addAll(rh_market_ids);
+                    }
+
+                    // Send off for prices
+                    List<MarketTypeWithPrices> market_prices = _getPrices(market_ids);
+
+                    // Create id map of results
+                    Map<Long, MarketTypeWithPrices> marketId_Prices_map = new HashMap<>();
+                    for (MarketTypeWithPrices mtwp: market_prices){
+                        marketId_Prices_map.put(mtwp.getId(), mtwp);
+                    }
+
+                    // Send results back to each request handler
+                    for (RequestHandler rh: request_handler_batch){
+
+                        // Extract the market_ids this request handler wanted
+                        Collection<Long> rh_market_ids = (Collection<Long>) rh.request;
+
+                        // Create a list of responses from these IDs
+                        List<MarketTypeWithPrices> responses = new ArrayList<>(rh_market_ids.size());
+                        for (Long market_id: rh_market_ids){
+                            responses.add(marketId_Prices_map.get(market_id));
+                        }
+
+                        rh.setResponse(responses);
+                    }
+
+                } catch (InterruptedException e) {
+                    continue;
+                } catch (IOException | URISyntaxException e){
+                    e.printStackTrace();
+                }
+            }
+            log.info("Ending betdaq request sender.");
+        }
     }
 
 
     public String getSOAPHeader(){
         String header = String.format(
-                "<soapenv:Header>" +
-                "<ext:ExternalApiHeader " +
-                "version=\"2\" " +
-                "languageCode=\"en\" " +
-                "username=\"%s\" " +
-                "password=\"%s\" " +
-                "applicationIdentifier=\"ST\"/>" +
-                "</soapenv:Header>", username, password);
+                "<soapenv:Header><ext:ExternalApiHeader version=\"2\" languageCode=\"en\" " +
+                "username=\"%s\" password=\"%s\" " +
+                "applicationIdentifier=\"ST\"/></soapenv:Header>", username, password);
         return header;
     }
 
@@ -152,7 +321,7 @@ public class Betdaq extends BettingSite {
 
     @Override
     public void safe_exit() {
-
+        getPricesRequestHandler.safe_exit();
     }
 
 
@@ -204,6 +373,7 @@ public class Betdaq extends BettingSite {
 
         return r.getMarkets();
     }
+
 
     public MarketType getMarketInfo(long market_id) throws IOException, URISyntaxException {
         List<Long> market_ids = new ArrayList<>(1);
@@ -380,6 +550,22 @@ public class Betdaq extends BettingSite {
         }
 
         return ladder;
+    }
+
+
+    public List<MarketTypeWithPrices> getPrices(Collection<Long> market_ids) throws InterruptedException {
+        RequestHandler rh = new RequestHandler();
+        rh.request = market_ids;
+        getPricesRequestHandler.addToQueue(rh);
+        List<MarketTypeWithPrices> result = (List<MarketTypeWithPrices>) rh.getResponse();
+        return result;
+    }
+
+
+    public MarketTypeWithPrices getPrices(long market_id) throws InterruptedException {
+        List<Long> market_ids = new ArrayList<>(1);
+        market_ids.add(market_id);
+        return getPrices(market_ids).get(0);
     }
 
 

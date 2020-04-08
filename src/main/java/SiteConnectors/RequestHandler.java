@@ -29,8 +29,6 @@ public class RequestHandler {
         this.request = request;
     }
 
-
-
     public boolean isActive(){
         return active == true;
     }

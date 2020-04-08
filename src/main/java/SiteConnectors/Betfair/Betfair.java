@@ -178,7 +178,7 @@ public class Betfair extends BettingSite {
                         jsonHandlers.add(new_handler);
                     }
 
-                    if ((new_handler == null || jsonHandlers.size() > MAX_BATCH_SIZE || Instant.now().isAfter(wait_until))
+                    if ((new_handler == null || jsonHandlers.size() >= MAX_BATCH_SIZE || Instant.now().isAfter(wait_until))
                         && !exit_flag){
 
                         workerQueue.put(jsonHandlers);

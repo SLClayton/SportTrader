@@ -2,7 +2,7 @@
     "RUN_STATS": false,
     "LOG_LEVEL": "INFO",
 
-    "MAX_MATCHES": 1,
+    "MAX_MATCHES": 3,
     "IN_PLAY": false,
     "HOURS_AHEAD": 48,
 
@@ -11,7 +11,7 @@
     "SM_TIME": "2020-03-08T14:00:00.000Z",
 
     "CHECK_MARKETS": true,
-    "RATE_LIMIT": 1000,
+    "RATE_LIMIT": 500,
     "RATE_LOCKSTEP_INTERVAL": 0,
     "REQUEST_TIMEOUT": 300,
 
@@ -23,13 +23,13 @@
     "MAX_INVESTMENT": 50.00,
 
     "ACTIVE_SITES": {
-        "betfair": true,
+        "betfair": false,
     	"matchbook": false,
-        "smarkets": true,
+        "smarkets": false,
         "betdaq": true
     },
     "EVENT_SOURCE": "betdaq",
-    "MIN_SITES_PER_MATCH": 2,
+    "MIN_SITES_PER_MATCH": 1,
 
     "SMARKETS_REQ_SIZE": 200,
     "SMARKETS_RH_WAIT": 40,
