@@ -118,6 +118,12 @@ public class SportsTrader {
 
         marketOddsReportWorkers = new ArrayList<>();
         marketOddsReportRequestQueue = new LinkedBlockingQueue<>();
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                safe_exit();
+            }
+        });
     }
 
 
@@ -411,6 +417,7 @@ public class SportsTrader {
         }
         if (footballMatches == null) {
             log.severe("Error getting initial football matches. Exiting...");
+            safe_exit();
             return;
         }
 
@@ -452,9 +459,11 @@ public class SportsTrader {
         log.info(String.format("%d Event Traders setup successfully with at least %d site connectors.",
                 eventTraders.size(), MIN_SITES_PER_MATCH));
 
+
         // Exit if none have worked.
         if (eventTraders.size() == 0){
             log.severe("0 matches have been setup correctly. Exiting.");
+            safe_exit();
             return;
         }
 
@@ -462,6 +471,7 @@ public class SportsTrader {
         // End if config says so.
         if (!CHECK_MARKETS){
             log.info("CHECK_MARKETS set to false. Ending here.");
+            safe_exit();
             return;
         }
 
@@ -484,8 +494,9 @@ public class SportsTrader {
         // Wait until exit flag raised
         while (!exit_flag){
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
+                log.info("Main thread interrupted.");
                 break;
             }
         }
@@ -509,7 +520,7 @@ public class SportsTrader {
 
         if (siteObjects != null) {
             for (Map.Entry<String, BettingSite> entry : siteObjects.entrySet()) {
-                entry.getValue().exit_flag = true;
+                entry.getValue().safe_exit();
             }
         }
 
@@ -788,8 +799,6 @@ public class SportsTrader {
 
 
     public static void main(String[] args){
-
-
 
         SportsTrader st = null;
         try {

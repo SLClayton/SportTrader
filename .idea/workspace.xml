@@ -7,19 +7,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
-      <change afterPath="$PROJECT_DIR$/META-INF (1)/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vTrader.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/backup/racer_data_horse_flats.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/backup/racer_data_horse_jumps.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_cars.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_cycling.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_horse_flats.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_horse_jumps.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_speedway.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/v_config_cars.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/v_config_cycling.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/v_config_dogs.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/v_config_flats.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/v_config_jumps.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vtrader_data/v_config_speedway.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vtrader (1).jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts (1)/SportTrader_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts (1)/SportTrader_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/vTrader_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SportTrader.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/META-INF (1)/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/META-INF/MANIFEST.MF" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/horse_data.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/horse_data.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/horse_data.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/BetdaqEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/BetdaqEventTracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/RequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/RequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tools/Requester.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/Requester.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/vTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/vTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/ScreenReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/ScreenReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vTrader.jar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,17 +98,18 @@
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\resources\vtrader_data" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\resources" />
       <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\BETDAQ_SOAP\src\betdaqsoap\com\globalbettingexchange\externalapi" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main" />
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
       <recent name="Bet" />
       <recent name="SiteConnectors" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\resources\vtrader_data" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
     </key>
@@ -137,6 +152,7 @@
     <configuration name="vTrader" type="Application" factoryName="Application" activateToolWindowBeforeRun="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Trader.vTrader" />
       <module name="SportTrader" />
+      <option name="PROGRAM_PARAMETERS" value="resources/vtrader_data/v_config_dogs.json" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -151,9 +167,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.SportsTrader" />
+        <item itemvalue="Application.vTrader" />
         <item itemvalue="Application.Requester" />
         <item itemvalue="Application.Betdaq" />
-        <item itemvalue="Application.vTrader" />
         <item itemvalue="Application.Quota" />
       </list>
     </recent_temporary>
@@ -227,104 +243,92 @@
     <option name="LAST_COMMIT_MESSAGE" value="started matchbook site and tracker" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2050" y="-2" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586010293765">
-      <screen x="1920" y="-360" width="2560" height="1400" />
+    <state x="693" y="264" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587461505857">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="693" y="264" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1587461505857" />
+    <state x="229" y="298" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1587377792375" />
     <state x="2050" y="-2" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586010293765" />
-    <state x="446" y="234" key="#com.intellij.ide.util.MemberChooser" timestamp="1579105824900">
+    <state x="555" y="348" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1587377768245">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="555" y="348" key="#com.intellij.ide.macro.MacrosDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1587377768245" />
+    <state x="191" y="308" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1587417516655">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="446" y="234" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1579105824900" />
-    <state x="2175" y="55" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1586269455193">
-      <screen x="1920" y="-360" width="2560" height="1400" />
-    </state>
-    <state x="191" y="308" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579023145949" />
+    <state x="191" y="308" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1587417516655" />
+    <state x="255" y="415" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1587389779419" />
     <state x="2175" y="55" key="#com.intellij.ide.util.TreeClassChooserDialog/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586269455193" />
-    <state x="203" y="213" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1579707053891">
+    <state x="328" y="413" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1587416602422">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="203" y="213" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707053891" />
-    <state x="328" y="413" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1579013357114">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="328" y="413" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579013357114" />
-    <state x="11" y="450" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1579729784454">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="11" y="450" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579729784454" />
-    <state x="210" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1579127231091">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="210" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579127231091" />
+    <state x="328" y="413" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1587416602422" />
     <state x="2268" y="90" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1586254103744">
       <screen x="1920" y="-360" width="2560" height="1400" />
     </state>
     <state x="2268" y="90" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586254103744" />
-    <state x="231" y="417" key="#com.intellij.ws.actions.GenerateJavaFromWsdlAction$1" timestamp="1579708070232">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="231" y="417" key="#com.intellij.ws.actions.GenerateJavaFromWsdlAction$1/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579708070232" />
-    <state x="256" y="409" key="#com.intellij.ws.actions.GenerateJavaFromWsdlDialog" timestamp="1579707351935">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="256" y="409" key="#com.intellij.ws.actions.GenerateJavaFromWsdlDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707351935" />
     <state x="2389" y="98" key="FileChooserDialogImpl" timestamp="1586164586446">
       <screen x="1920" y="-360" width="2560" height="1400" />
     </state>
     <state x="2389" y="98" key="FileChooserDialogImpl/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586164586446" />
-    <state width="1618" height="251" key="GridCell.Tab.0.bottom" timestamp="1586338526344">
-      <screen x="1920" y="-360" width="2560" height="1400" />
+    <state width="1574" height="68" key="GridCell.Tab.0.bottom" timestamp="1589211035887">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="1623" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1586296372870" />
-    <state width="1618" height="251" key="GridCell.Tab.0.bottom/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586338526344" />
+    <state width="1623" height="216" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
+    <state width="1574" height="68" key="GridCell.Tab.0.bottom/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589211035887" />
+    <state width="1418" height="14" key="GridCell.Tab.0.bottom/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586353960044" />
     <state width="1094" height="685" key="GridCell.Tab.0.bottom/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580941929835" />
-    <state width="1618" height="251" key="GridCell.Tab.0.center" timestamp="1586338526344">
-      <screen x="1920" y="-360" width="2560" height="1400" />
+    <state width="1574" height="68" key="GridCell.Tab.0.center" timestamp="1589211035887">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="1623" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1586296372870" />
-    <state width="1618" height="251" key="GridCell.Tab.0.center/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586338526344" />
+    <state width="1623" height="216" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
+    <state width="1574" height="68" key="GridCell.Tab.0.center/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589211035887" />
+    <state width="1418" height="14" key="GridCell.Tab.0.center/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586353960043" />
     <state width="1094" height="685" key="GridCell.Tab.0.center/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580941929835" />
-    <state width="1618" height="251" key="GridCell.Tab.0.left" timestamp="1586338526344">
-      <screen x="1920" y="-360" width="2560" height="1400" />
+    <state width="1574" height="68" key="GridCell.Tab.0.left" timestamp="1589211035887">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="1623" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1586296372870" />
-    <state width="1618" height="251" key="GridCell.Tab.0.left/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586338526344" />
+    <state width="1623" height="216" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
+    <state width="1574" height="68" key="GridCell.Tab.0.left/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589211035887" />
+    <state width="1418" height="14" key="GridCell.Tab.0.left/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586353960043" />
     <state width="1094" height="685" key="GridCell.Tab.0.left/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580941929835" />
-    <state width="1618" height="251" key="GridCell.Tab.0.right" timestamp="1586338526344">
-      <screen x="1920" y="-360" width="2560" height="1400" />
+    <state width="1574" height="68" key="GridCell.Tab.0.right" timestamp="1589211035887">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="1623" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1586296372870" />
-    <state width="1618" height="251" key="GridCell.Tab.0.right/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586338526344" />
+    <state width="1623" height="216" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
+    <state width="1574" height="68" key="GridCell.Tab.0.right/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589211035887" />
+    <state width="1418" height="14" key="GridCell.Tab.0.right/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586353960044" />
     <state width="1094" height="685" key="GridCell.Tab.0.right/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580941929835" />
-    <state x="35" y="179" key="Maven.ArtifactSearchDialog" timestamp="1580493151884">
+    <state width="1574" height="68" key="GridCell.Tab.1.bottom" timestamp="1589211035887">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1574" height="68" key="GridCell.Tab.1.bottom/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589211035887" />
+    <state width="1574" height="68" key="GridCell.Tab.1.center" timestamp="1589211035887">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1574" height="68" key="GridCell.Tab.1.center/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589211035887" />
+    <state width="1574" height="68" key="GridCell.Tab.1.left" timestamp="1589211035887">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1574" height="68" key="GridCell.Tab.1.left/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589211035887" />
+    <state width="1574" height="68" key="GridCell.Tab.1.right" timestamp="1589211035887">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1574" height="68" key="GridCell.Tab.1.right/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589211035887" />
+    <state x="0" y="99" width="922" height="849" key="SettingsEditor" timestamp="1587417529723">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="35" y="179" key="Maven.ArtifactSearchDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580493151884" />
-    <state x="1920" y="-227" width="922" height="849" key="SettingsEditor" timestamp="1586272161077">
-      <screen x="1920" y="-360" width="2560" height="1400" />
-    </state>
-    <state x="0" y="99" width="922" height="849" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1582381561950" />
+    <state x="0" y="99" width="922" height="849" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1587417529723" />
+    <state x="0" y="133" key="SettingsEditor/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1587390480062" />
     <state x="1920" y="-227" key="SettingsEditor/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586272161077" />
-    <state x="176" y="348" key="com.intellij.ide.util.TipDialog" timestamp="1579707168252">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="176" y="348" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579013328617" />
-    <state x="176" y="348" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707168252" />
     <state x="3377" y="-360" width="1110" height="1407" key="dock-window-1" timestamp="1586341557851">
       <screen x="1920" y="-360" width="2560" height="1400" />
     </state>
-    <state x="953" y="0" width="974" height="1047" key="dock-window-1/0.0.1920.1040@0.0.1920.1040" timestamp="1579791588933" />
     <state x="3377" y="-360" width="1110" height="1407" key="dock-window-1/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586341557851" />
-    <state x="1072" y="0" width="855" height="1047" key="dock-window-1/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579735067104" />
-    <state x="3101" y="-127" width="820" height="722" key="find.popup" timestamp="1586013563937">
-      <screen x="1920" y="-360" width="2560" height="1400" />
+    <state x="1181" y="233" width="820" height="722" key="find.popup" timestamp="1589207330456">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="342" y="255" width="607" height="536" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1579035041725" />
+    <state x="1181" y="233" width="820" height="722" key="find.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1589207330456" />
     <state x="3101" y="-127" width="820" height="722" key="find.popup/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586013563937" />
-    <state x="886" y="173" width="615" height="536" key="find.popup/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580431915158" />
-    <state x="0" y="145" width="928" height="757" key="new project wizard" timestamp="1579707332298">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="0" y="145" width="928" height="757" key="new project wizard/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579707332298" />
   </component>
 </project>

@@ -11,7 +11,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import sun.jvm.hotspot.opto.Block;
 import tools.Requester;
 import tools.printer;
 
@@ -51,6 +50,11 @@ public class Betdaq extends BettingSite {
     public static final long CRICKET_ID = 100007;
     public static final long VIRTUAL_SPORTS_ID = 1457259;
     public static final long VIRTUAL_HORSES_FLATS_ID = 1461197;
+    public static final long VIRTUAL_HORSES_JUMPS_ID = 3897608;
+    public static final long VIRTUAL_GREYHOUND_ID = 1461198;
+    public static final long VIRTUAL_SPEEDWAY_ID = 1461203;
+    public static final long VIRTUAL_CYCLING_ID = 1461202;
+    public static final long VIRTUAL_CARS_ID = 1461201;
 
     public static final short MATCH_ODDS_TYPE = 3;
     public static final short ASIAN_HANDICAP_TYPE = 10;
@@ -89,7 +93,7 @@ public class Betdaq extends BettingSite {
     public GetPricesRequestHandler getPricesRequestHandler;
 
 
-    public Betdaq() throws IOException, ParseException, InterruptedException, URISyntaxException {
+    public Betdaq(boolean run_requestHandlers) throws IOException, ParseException, InterruptedException, URISyntaxException {
 
         commission_rate = new BigDecimal("0.02");
         min_back_stake = new BigDecimal("0.5");
@@ -101,8 +105,16 @@ public class Betdaq extends BettingSite {
 
         requester = Requester.SOAPRequester();
         login();
-        getPricesRequestHandler = new GetPricesRequestHandler();
-        getPricesRequestHandler.start();
+
+        if (run_requestHandlers){
+            getPricesRequestHandler = new GetPricesRequestHandler();
+            getPricesRequestHandler.start();
+        }
+    }
+
+
+    public Betdaq() throws InterruptedException, URISyntaxException, ParseException, IOException {
+        this(true);
     }
 
 
@@ -132,6 +144,7 @@ public class Betdaq extends BettingSite {
             exit_flag = true;
             for (GetPricesRequestSender worker: requestSenders){
                 worker.safe_exit();
+                worker.thread.interrupt();
             }
             thread.interrupt();
         }
@@ -152,7 +165,7 @@ public class Betdaq extends BettingSite {
             requestSenders = new ArrayList<>(REQUEST_THREADS);
             for (int i=1; i<=REQUEST_THREADS; i++){
                 GetPricesRequestSender worker = new GetPricesRequestSender(batch_queue);
-                worker.thread.setName("bd RS-" + i);
+                worker.thread.setName("BD RS-" + i);
                 worker.start();
                 requestSenders.add(worker);
             }
@@ -188,7 +201,7 @@ public class Betdaq extends BettingSite {
                     }
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    log.info("Betdaq price request handler interrupted.");
                 }
             }
             log.info("Ending betdaq request handler.");
@@ -553,7 +566,11 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public List<MarketTypeWithPrices> getPrices(Collection<Long> market_ids) throws InterruptedException {
+    public List<MarketTypeWithPrices> getPrices(Collection<Long> market_ids) throws InterruptedException, IOException, URISyntaxException {
+        if (getPricesRequestHandler == null){
+            return _getPrices(market_ids);
+        }
+
         RequestHandler rh = new RequestHandler();
         rh.request = market_ids;
         getPricesRequestHandler.addToQueue(rh);
@@ -562,7 +579,7 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public MarketTypeWithPrices getPrices(long market_id) throws InterruptedException {
+    public MarketTypeWithPrices getPrices(long market_id) throws InterruptedException, IOException, URISyntaxException {
         List<Long> market_ids = new ArrayList<>(1);
         market_ids.add(market_id);
         return getPrices(market_ids).get(0);
@@ -756,13 +773,13 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public static JSONObject eJSON(EventClassifierType e, boolean show_children,
+    public static JSONObject eventJSON(EventClassifierType e, boolean show_children,
                                    boolean show_markets, boolean show_selections){
 
         JSONArray children = new JSONArray();
         for (EventClassifierType child: e.getEventClassifiers()){
             if (show_children) {
-                children.add(eJSON(child, show_children, show_markets, show_selections));
+                children.add(eventJSON(child, show_children, show_markets, show_selections));
             }
             else{
                 children.add(child.getName());
@@ -772,7 +789,7 @@ public class Betdaq extends BettingSite {
         JSONArray markets = new JSONArray();
         for (MarketType marketType: e.getMarkets()){
             if (show_markets){
-                markets.add(mJSON(marketType, show_selections));
+                markets.add(marketJSON(marketType, show_selections));
             }
             else {
                 markets.add(marketType.getName());
@@ -794,11 +811,11 @@ public class Betdaq extends BettingSite {
         return j;
     }
 
-    public static JSONObject mJSON(MarketType m, boolean show_selections){
+    public static JSONObject marketJSON(MarketType m, boolean show_selections){
         JSONArray selections = new JSONArray();
         for (SelectionType selection: m.getSelections()){
             if (show_selections){
-                selections.add(sJSON(selection));
+                selections.add(selectionJSON(selection));
             }
             else {
                 selections.add(selection.getName());
@@ -823,7 +840,7 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public static JSONObject sJSON(SelectionType s){
+    public static JSONObject selectionJSON(SelectionType s){
         JSONObject j = new JSONObject();
         j.put("id", s.getId());
         j.put("name", s.getName());

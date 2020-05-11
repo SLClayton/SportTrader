@@ -26,11 +26,8 @@ public class ScreenReader {
     public JFrame jFrame;
     public JPanel jPanel;
     public static Pattern runner_regex = Pattern.compile("[a-z]{3,}+\\d{1,2}/\\d{1,2}");
-    int runners_width = 196;
-    int runners_height = 170;
 
-    int winner_height = 28;
-    int winner_width = 170;
+
 
 
     public ScreenReader(){
@@ -167,29 +164,13 @@ public class ScreenReader {
     }
 
 
-    public String findWinner(int x, int y, Collection<String> possible_winners){
-        BufferedImage screenshot = winner_screenshot(x, y);
-        screenshot = scale(screenshot, 4.5);
-        show(screenshot);
+    public List<String> extractRunnersFromScreen(int x, int y, int width, int height,
+                                                 double black_from, double black_to, int num_images,
+                                                 boolean show) {
 
-        for (BufferedImage this_image: black_range(screenshot, 0.6, 0.7, 5)){
-            String rawtext = getText(this_image).toLowerCase().replaceAll("\\s", "");
-
-            for (String horse_name: possible_winners){
-                if (rawtext.contains(horse_name)){
-                    return horse_name;
-                }
-            }
-        }
-        return null;
-    }
-
-
-    public List<String> extractRunnersFromScreen(int x, int y, double black_from, double black_to, int num_images, boolean show) {
-
-        BufferedImage image = screenshot(x, y, runners_width, runners_height);
+        BufferedImage image = screenshot(x, y, width, height);
         image = scale(image, 4.0);
-        List<BufferedImage> images = black_range(image, 0.6, 0.7, 4);
+        List<BufferedImage> images = black_range(image, black_from, black_to, num_images);
 
         List<String> runners = new ArrayList<>();
         for (BufferedImage this_image: images){
@@ -220,14 +201,6 @@ public class ScreenReader {
         return image;
     }
 
-
-    public BufferedImage runners_screenshot(int x, int y){
-        return screenshot(x, y, runners_width, runners_height);
-    }
-
-    public BufferedImage winner_screenshot(int x, int y){
-        return screenshot(x, y, winner_width, winner_height);
-    }
 
 
     public static List<BufferedImage> black_range(BufferedImage image, double from, double to, int num_images){

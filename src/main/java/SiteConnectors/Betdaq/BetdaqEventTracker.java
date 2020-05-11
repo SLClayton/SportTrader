@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static tools.printer.pp;
+
 public class BetdaqEventTracker extends SiteEventTracker {
 
     Betdaq betdaq;
@@ -184,12 +186,14 @@ public class BetdaqEventTracker extends SiteEventTracker {
         EventClassifierType betdaq_event =  betdaq.getEventTree(event_id, true);
 
         // Create list of market ids for specific market types in this event
+        List<String> all_market_names = new ArrayList<>();
         marketName_id_map = new HashMap<>();
         market_selection_id_map = new HashMap<>();
         selectionId_marketId_map = new HashMap<>();
         correct_score_max = null;
         correct_score_max_ht = null;
         for (MarketType marketType: betdaq_event.getMarkets()){
+            all_market_names.add(marketType.getName());
 
             // Skip if market name not in whitelist
             if (!market_names.contains(marketType.getName())) {
@@ -221,7 +225,8 @@ public class BetdaqEventTracker extends SiteEventTracker {
 
         // Ensure at least 1 market is found
         if (marketName_id_map.size() == 0){
-            log.severe(String.format("Could not find any relevant markets when setting up %s in betdaq.", event.name));
+            log.warning(String.format("Could not find any relevant markets when setting up %s in betdaq. markets: %s",
+                    event.name, all_market_names));
             return false;
         }
 
