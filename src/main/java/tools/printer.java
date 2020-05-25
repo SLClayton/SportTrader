@@ -271,45 +271,11 @@ public abstract class printer {
     }
 
 
-    public static void main(String[] args) {
-        ArrayList<String> ints = new ArrayList<>();
-        ints.add("1");
-        ints.add("2");
-        ints.add("3");
-        ints.add("4");
-        ints.add("5");
-        ints.add("6");
-        ints.add("7");
-        ints.add("8");
-        ints.add("9");
-        ints.add("10");
-        ints.add("11");
-        ints.add("12");
-        print(shard(ints, 2));
-    }
-
-
-    public static boolean nully(Object obj, boolean printNotNull){
-        if (obj == null){
-            print("Object is NULL.");
-            return true;
-        }
-        if (printNotNull) {
-            print("Object is NOT NULL.");
-        }
-        return false;
-    }
-
-
-    public static boolean nully(Object obj){
-        return nully(obj, true);
-    }
-
-
-    public static Map<String, Integer> count(Set<String> options, Collection<String> from_list){
+    public static Map<String, Integer> sum_map(Collection<String> from_list, Collection<String> options){
+        HashSet<String> options_set = new HashSet<>(options);
         int total = 0;
         Map<String, Integer> count = new HashMap<>();
-        for (String site_name: options){
+        for (String site_name: options_set){
             int n = Collections.frequency(from_list, site_name);
             count.put(site_name, n);
             total += n;
@@ -339,5 +305,14 @@ public abstract class printer {
             }
         }
         return current_most;
+    }
+
+
+    public static long avg(Collection<Long> list){
+        long sum = 0;
+        for (long item: list){
+            sum += item;
+        }
+        return  sum / list.size();
     }
 }

@@ -15,8 +15,13 @@ import tools.Requester;
 import tools.printer;
 
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
@@ -36,6 +41,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static java.lang.System.exit;
+import static java.lang.System.setErr;
 import static tools.printer.*;
 
 public class Betdaq extends BettingSite {
@@ -80,6 +86,8 @@ public class Betdaq extends BettingSite {
 
     public static final String BETDAQ_EVENT_ID = "betdaq_event_id";
     public static final String BETDAQ_SELECTION_ID = "betdaq_selection_id";
+    public static final String BETDAQ_SELECTION_RESET_COUNT = "betdaq_selection_reset_count";
+    public static final String BETDAQ_SEQ_NUMBER = "betdaq_seq_number";
 
     public static final String WSDL_URL = "http://api.betdaq.com/v2.0/API.wsdl";
     public static final String readOnlyUrl = "https://api.betdaq.com/v2.0/ReadOnlyService.asmx";
@@ -624,7 +632,7 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public BigDecimal validPrice(BigDecimal price, boolean round_up) {
+    public static BigDecimal validPrice(BigDecimal price, boolean round_up) {
 
         // Must be >1 and can't be >1000
         if (price.compareTo(BigDecimal.ONE) != 1 || price.compareTo(new BigDecimal(1000)) == 1){
@@ -660,63 +668,20 @@ public class Betdaq extends BettingSite {
     }
 
 
+    public PlaceOrdersWithReceiptResponse2 placeOrders(List<PlaceOrdersWithReceiptRequestItem> items) throws
+            IOException, URISyntaxException {
 
-    @Override
-    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
-            throws IOException, URISyntaxException {
-
-
-        String xml_orders = "";
-        for (int i=0; i<betOrders.size(); i++){
-            BetOrder betOrder = betOrders.get(i);
-
-            // Get selection id from metadata
-            String selection_id = betOrder.bet_offer.metadata.get(Betdaq.BETDAQ_SELECTION_ID);
-            if (selection_id == null){
-                log.severe(String.format("Betorder passed to betdaq has no '%s' tag in metadata.",
-                        Betdaq.BETDAQ_SELECTION_ID));
-                continue;
-            }
-
-            // Polairty is BACK or LAY
-            String polarity = "1";
-            if (betOrder.isLay()){ polarity = "2";}
-
-            // Ensure stake is rounded
-            BigDecimal backers_stake = betOrder.getBackersStake().setScale(2, RoundingMode.HALF_UP);
-
-            // Find
-            BigDecimal price = betOrder.odds().subtract(BigDecimal.ONE);
-            if (betOrder.isBack()) {
-                price = validPrice(price.multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE), false);
-            }
-            else{
-                price = validPrice(price.divide(MIN_ODDS_RATIO).add(BigDecimal.ONE), true);
-            }
+        // Wrap up orders in layers of java objects required for betdaq XML structure
+        PlaceOrdersWithReceiptRequest.Orders orders = new PlaceOrdersWithReceiptRequest.Orders();
+        orders.getOrder().addAll(items);
+        PlaceOrdersWithReceiptRequest por = new PlaceOrdersWithReceiptRequest();
+        por.setOrders(orders);
+        PlaceOrdersWithReceipt placeOrdersWithReceipt = new PlaceOrdersWithReceipt();
+        placeOrdersWithReceipt.setOrders(por);
 
 
-            xml_orders += "<ext:Order " +
-                    "SelectionId=\"" + selection_id + "\" " +
-                    "Stake=\"" + backers_stake.toString() + "\" " +
-                    "Price=\"" + price.toString() + "\"" +
-                    "Polarity=\"" + polarity + "\" " +
-                    "ExpectedSelectionResetCount=\"0\" " +
-                    "ExpectedWithdrawalSequenceNumber=\"0\" " +
-                    "KillType=\"3\" " +
-                    "FillOrKillThreshold=\"" + backers_stake.toString() + "\" " +
-                    "CancelOnInRunning=\"false\" " +
-                    "CancelIfSelectionReset=\"true\" " +
-                    "PunterReferenceNumber=\"" + i + "\"/>";
-
-        }
-
-        String soap_body = "<ext:PlaceOrdersWithReceipt><ext:orders><ext:Orders>" +
-                            xml_orders +
-                            "</ext:Orders></ext:orders></ext:PlaceOrdersWithReceipt>";
-
-        Instant time_sent = Instant.now();
         PlaceOrdersWithReceiptResponse2 r = ((PlaceOrdersWithReceiptResponse)
-                requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), soap_body,
+                requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), placeOrdersWithReceipt,
                         PlaceOrdersWithReceiptResponse.class)).getPlaceOrdersWithReceiptResult();
 
 
@@ -728,11 +693,89 @@ public class Betdaq extends BettingSite {
             return null;
         }
 
-        Instant time_placed = r.getTimestamp().toGregorianCalendar().toInstant();
+        return r;
+    }
+
+    public static Short polarity(String BACK_OR_LAY){
+        switch (BACK_OR_LAY.toUpperCase()){
+            case (Bet.BACK):
+                return 1;
+            case (Bet.LAY):
+                return 2;
+            default:
+                log.severe(String.format("Trying to get betdaq polarity of %s which is not back or lay.", BACK_OR_LAY));
+                return null;
+        }
+    }
+
+
+    public static PlaceOrdersWithReceiptRequestItem betOrder2BetdaqOrder(BetOrder betOrder, int id, BigDecimal MIN_ODDS_RATIO){
+
+        // Get selection id from metadata
+        String selection_id_string = betOrder.bet_offer.metadata.get(Betdaq.BETDAQ_SELECTION_ID);
+        String sequence_number_string = betOrder.bet_offer.metadata.get(Betdaq.BETDAQ_SEQ_NUMBER);
+        String reset_count_string = betOrder.bet_offer.metadata.get(Betdaq.BETDAQ_SELECTION_RESET_COUNT);
+        if (selection_id_string == null || sequence_number_string == null || reset_count_string == null){
+            String msg = "Betorder passed to betdaq has has invalid metadata: ";
+            msg += String.format("selectionID=%s seq_num=%s reset_count=%s",
+                    selection_id_string, sequence_number_string, reset_count_string);
+            log.severe(msg);
+            return null;
+        }
+
+        // Ensure stake is rounded
+        BigDecimal backers_stake = betOrder.getBackersStake().setScale(2, RoundingMode.HALF_UP);
+
+        // Find
+        BigDecimal price = betOrder.odds().subtract(BigDecimal.ONE);
+        if (betOrder.isBack()) {
+            price = validPrice(price.multiply(MIN_ODDS_RATIO).add(BigDecimal.ONE), false);
+        }
+        else{
+            price = validPrice(price.divide(MIN_ODDS_RATIO).add(BigDecimal.ONE), true);
+        }
+
+        PlaceOrdersWithReceiptRequestItem item = new PlaceOrdersWithReceiptRequestItem();
+        item.setSelectionId(Long.valueOf(selection_id_string));
+        item.setStake(backers_stake);
+        item.setPrice(price);
+        item.setPolarity(polarity(betOrder.bet().type()));
+        item.setExpectedSelectionResetCount(Short.valueOf(reset_count_string));
+        item.setExpectedWithdrawalSequenceNumber(Short.valueOf(sequence_number_string));
+        item.setKillType((short) 3);
+        item.setFillOrKillThreshold(backers_stake);
+        item.setCancelOnInRunning(false);
+        item.setCancelIfSelectionReset(true);
+        item.setPunterReferenceNumber((long) id);
+    }
+
+
+    @Override
+    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+            throws IOException, URISyntaxException {
+
+
+        List<PlaceOrdersWithReceiptRequestItem> requestItems = new ArrayList<>();
+        for (int i=0; i<betOrders.size(); i++){
+            BetOrder betOrder = betOrders.get(i);
+            PlaceOrdersWithReceiptRequestItem item = betOrder2BetdaqOrder(betOrder, i, MIN_ODDS_RATIO);
+            requestItems.add(item);
+        }
+
+
+        Instant time_sent = Instant.now();
+        PlaceOrdersWithReceiptResponse2 response = placeOrders(requestItems);
+
+        if (response == null){
+            log.severe("Got no response for betdaq placed bets.");
+            return null;
+        }
+
+
+        Instant time_placed = response.getTimestamp().toGregorianCalendar().toInstant();
 
         List<PlacedBet> placedBets = new ArrayList<>(betOrders.size());
-
-        for (PlaceOrdersWithReceiptResponseItem receipt: r.getOrders().getOrder()){
+        for (PlaceOrdersWithReceiptResponseItem receipt: response.getOrders().getOrder()){
 
             BigDecimal backerStake = receipt.getMatchedStake();
             BigDecimal layerStake = receipt.getMatchedAgainstStake();
@@ -881,13 +924,13 @@ public class Betdaq extends BettingSite {
 
 
 
+
+
+
     public static void main(String[] args){
 
         try {
 
-
-            Requester r = new Requester();
-            r.get("https://google.com");
 
 
 

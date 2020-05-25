@@ -30,11 +30,11 @@ public class RequestHandler {
     }
 
     public boolean isActive(){
-        return active == true;
+        return active;
     }
 
     public boolean notActive() {
-        return active == false;
+        return !active;
     }
 
 

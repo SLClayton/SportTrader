@@ -14,6 +14,7 @@
     "RATE_LIMIT": 0,
     "RATE_LOCKSTEP_INTERVAL": 0,
     "REQUEST_TIMEOUT": 300,
+    "LIMIT_LOW_PROFIT": true,
 
     "PLACE_BETS": false,
     "END_ON_BET": true,

@@ -21,12 +21,14 @@ import org.jsoup.select.Evaluator;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.*;
@@ -87,13 +89,13 @@ public class Requester {
         return requester;
     }
 
+
     public static Requester SOAPRequester(){
         Requester requester = new Requester();
         requester.setHeader("Content-Type", "text/xml");
         requester.xmlInputFactory = XMLInputFactory.newFactory();
         return requester;
     }
-
 
 
     public void setHeader(String key, String value){
@@ -103,10 +105,42 @@ public class Requester {
     }
 
 
+    public static String SOAP2XML(Object SOAP_obj) throws JAXBException {
+        Class obj_type = SOAP_obj.getClass();
+        Marshaller marshaller = JAXBContext.newInstance(obj_type).createMarshaller();
+        StringWriter sw = new StringWriter();
+        marshaller.marshal(SOAP_obj, sw);
+        return sw.toString();
+    }
+
+
     public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class)
             throws IOException, URISyntaxException {
         return SOAPRequest(url, soap_header, soap_body, return_class, false);
     }
+
+
+    public Object SOAPRequest(String url, String soap_header, Object soap_java_obj, Class<?> return_class)
+            throws IOException, URISyntaxException {
+
+        String xml_body = null;
+        try {
+            xml_body = SOAP2XML(soap_java_obj);
+        }
+        catch (JAXBException e){
+            log.severe(String.format("Error trying to convert soap java obj of type %s to XML",
+                    return_class.getSimpleName()));
+            return null;
+        }
+        return SOAPRequest(url, soap_header, xml_body, return_class, false);
+    }
+
+
+    public Object SOAPRequest(String url, String soap_header, Object soap_java_obj, Class<?> return_class, boolean print)
+            throws IOException, URISyntaxException, JAXBException {
+        return SOAPRequest(url, soap_header, SOAP2XML(soap_java_obj), return_class, print);
+    }
+
 
     public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class, boolean print)
             throws IOException, URISyntaxException {

@@ -65,6 +65,7 @@ public class SportsTrader {
     public String SM_TIME;
     public long RATE_LOCKSTEP_INTERVAL;
     public String LOG_LEVEL;
+    public boolean LIMIT_LOW_PROFIT;
 
 
     public Lock betlock = new ReentrantLock();
@@ -109,7 +110,7 @@ public class SportsTrader {
 
         siteClasses = new ArrayList<Class>();
         siteClasses.add(Betfair.class);
-        //siteClasses.add(Matchbook.class);
+        siteClasses.add(Matchbook.class);
         siteClasses.add(Smarkets.class);
         siteClasses.add(Betdaq.class);
 
@@ -244,7 +245,8 @@ public class SportsTrader {
                 "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
                 "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
                 "REQUEST_TIMEOUT", "RUN_STATS", "SINGLE_MATCH_TEST", "SM_NAME", "SM_TIME", "RATE_LOCKSTEP_INTERVAL",
-                "LOG_LEVEL", "SMARKETS_REQ_SIZE", "SMARKETS_RH_WAIT", "BETFAIR_RH_WAIT", "MATCHBOOK_RH_WAIT"};
+                "LOG_LEVEL", "SMARKETS_REQ_SIZE", "SMARKETS_RH_WAIT", "BETFAIR_RH_WAIT", "MATCHBOOK_RH_WAIT",
+                "LIMIT_LOW_PROFIT"};
 
         List<String> missingFields = new ArrayList<>();
         for (String field: required){
@@ -277,6 +279,7 @@ public class SportsTrader {
         SM_TIME = (String) config.get("SM_TIME");
         RATE_LOCKSTEP_INTERVAL = ((Long) config.get("RATE_LOCKSTEP_INTERVAL"));
         LOG_LEVEL = ((String) config.get("LOG_LEVEL")).toUpperCase();
+        LIMIT_LOW_PROFIT = (boolean) config.get("LIMIT_LOW_PROFIT");
 
 
         // Check target inv per bet is lower than max investment per bet

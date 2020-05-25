@@ -11,8 +11,8 @@ import java.util.Map;
 
 public abstract class Bet {
 
-    public static String BACK = "BACK";
-    public static String LAY = "LAY";
+    public final static String BACK = "BACK";
+    public final static String LAY = "LAY";
     public static String[] BET_TYPES = {BACK, LAY};
 
     public Sport sport;

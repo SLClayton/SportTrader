@@ -31,6 +31,7 @@ public class EventTrader implements Runnable {
     public boolean RUN_STATS;
     public long RATE_LOCKSTEP_INTERVAL;
     public boolean PLACE_BETS;
+    public boolean LIMIT_LOW_PROFIT;
 
     boolean exit_flag;
     public Thread thread;
@@ -46,7 +47,7 @@ public class EventTrader implements Runnable {
     public Collection<BetGroup> tautologies;
 
     public ArrayList<String> ok_site_oddsReports;
-    public ArrayList<String> timout_site_oddsReports;
+    public ArrayList<String> timeout_site_oddsReports;
     public ArrayList<String> rateLimited_site_oddsReports;
     public ArrayList<String> error_site_oddsReports;
     public BigDecimal last_best_profit;
@@ -74,11 +75,12 @@ public class EventTrader implements Runnable {
         RUN_STATS = sportsTrader.RUN_STATS;
         RATE_LOCKSTEP_INTERVAL = sportsTrader.RATE_LOCKSTEP_INTERVAL;
         PLACE_BETS = sportsTrader.PLACE_BETS;
+        LIMIT_LOW_PROFIT = sportsTrader.LIMIT_LOW_PROFIT;
 
         stats = sportsTrader.stats;
 
         ok_site_oddsReports = new ArrayList<>();
-        timout_site_oddsReports = new ArrayList<>();
+        timeout_site_oddsReports = new ArrayList<>();
         rateLimited_site_oddsReports = new ArrayList<>();
         error_site_oddsReports = new ArrayList<>();
 
@@ -177,15 +179,15 @@ public class EventTrader implements Runnable {
                     if (best.length() > 8){ best = best.substring(0, 8);}
                     log.info(String.format("%s ArbsChcks: avg=%dms OK%s TMT%s LMT%s NA%s Bst: %s",
                             loop_times.size(), avg(loop_times),
-                            count(site_ids, ok_site_oddsReports),
-                            count(new HashSet<>(timout_site_oddsReports), timout_site_oddsReports),
-                            count(new HashSet<>(rateLimited_site_oddsReports), rateLimited_site_oddsReports),
-                            count(new HashSet<>(error_site_oddsReports), error_site_oddsReports),
+                            sum_map(ok_site_oddsReports),
+                            sum_map(timeout_site_oddsReports),
+                            sum_map(rateLimited_site_oddsReports),
+                            sum_map(error_site_oddsReports),
                             best));
 
                     loop_times.clear();
                     ok_site_oddsReports.clear();
-                    timout_site_oddsReports.clear();
+                    timeout_site_oddsReports.clear();
                     rateLimited_site_oddsReports.clear();
                     error_site_oddsReports.clear();
                     best_profit = null;
@@ -194,23 +196,12 @@ public class EventTrader implements Runnable {
 
 
                 // Sleep for a time depending on best profit found.
-                try {
-                    if (last_best_profit == null
-                            || last_best_profit.compareTo(new BigDecimal("-0.08")) == -1) {
-                        Thread.sleep(10000);
-                    } else if (last_best_profit.compareTo(new BigDecimal("-0.05")) == -1){
-                        Thread.sleep(6000);
-                    } else if (last_best_profit.compareTo(new BigDecimal("-0.03")) == -1){
-                        Thread.sleep(5000);
-                    } else if (last_best_profit.compareTo(new BigDecimal("-0.02")) == -1){
-                        Thread.sleep(3000);
-                    } else if (last_best_profit.compareTo(new BigDecimal("-0.01")) == -1){
-                        Thread.sleep(2000);
-                    } else if (last_best_profit.compareTo(new BigDecimal("-0.005")) == -1){
-                        Thread.sleep(1000);
+                if (LIMIT_LOW_PROFIT) {
+                    try {
+                        sleep(getSleepTime(last_best_profit));
+                    } catch (InterruptedException e) {
+                        log.warning("Event trader sleep time interrupted.");
                     }
-                } catch (InterruptedException e){
-                    log.warning("Event trader sleep time interupted.");
                 }
 
 
@@ -221,13 +212,24 @@ public class EventTrader implements Runnable {
     }
 
 
-    public long avg(Collection<Long> list){
-        long sum = 0;
-        for (long item: list){
-            sum += item;
+    public static long getSleepTime(BigDecimal prev_profit){
+        if (prev_profit == null || prev_profit.compareTo(new BigDecimal("-0.08")) == -1) {
+            return 10000;
+        } else if (prev_profit.compareTo(new BigDecimal("-0.05")) == -1){
+            return 6000;
+        } else if (prev_profit.compareTo(new BigDecimal("-0.03")) == -1){
+            return 5000;
+        } else if (prev_profit.compareTo(new BigDecimal("-0.02")) == -1){
+            return 3000;
+        } else if (prev_profit.compareTo(new BigDecimal("-0.01")) == -1){
+            return 2000;
+        } else if (prev_profit.compareTo(new BigDecimal("-0.005")) == -1){
+            return 1000;
+        } else {
+            return 0;
         }
-        return  sum / list.size();
     }
+
 
 
     public String id(){
@@ -259,8 +261,8 @@ public class EventTrader implements Runnable {
 
         // Wait for results to be generated in each thread and collect them all
         // Use null if time-out occurs for any site
-        ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<MarketOddsReport>();
-        Instant timeout = Instant.now().plus(REQUEST_TIMEOUT, ChronoUnit.MILLIS);
+        ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<>();
+        Instant timeout = Instant.now().plusMillis(REQUEST_TIMEOUT);
         for (Map.Entry<SiteEventTracker, RequestHandler> entry: requestHandlers.entrySet()){
             BettingSite site = entry.getKey().site;
             RequestHandler rh = entry.getValue();
@@ -290,7 +292,7 @@ public class EventTrader implements Runnable {
                 ok_site_oddsReports.add(site.getID());
             }
             else if (mor.rate_limited()){ rateLimited_site_oddsReports.add(site.getID()); }
-            else if (mor.timed_out()){ timout_site_oddsReports.add(site.getID()); }
+            else if (mor.timed_out()){ timeout_site_oddsReports.add(site.getID()); }
             else{
                 log.warning(String.format("Failed to get MarkerOddsReport from %s - %s",
                     site.getName(), mor.getErrorMessage()));
