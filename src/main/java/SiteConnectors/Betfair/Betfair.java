@@ -1,8 +1,10 @@
 package SiteConnectors.Betfair;
 
-import Bet.BetOffer;
+import Bet.Bet;
 import Bet.BetOrder;
+import Bet.FootballBet.FootballBetGenerator;
 import Bet.PlacedBet;
+import Bet.MarketOddsReport;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
@@ -38,6 +40,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
+import static java.lang.System.exit;
 import static tools.printer.*;
 
 public class Betfair extends BettingSite {
@@ -65,6 +68,8 @@ public class Betfair extends BettingSite {
 
     public BlockingQueue<Object[]> eventSearchHandlerQueue;
 
+    public BigDecimal base_commission_rate = new BigDecimal("0.02");
+    static BigDecimal bf_min_back_stake = new BigDecimal("2.00");
     public BigDecimal commission_discount = BigDecimal.ZERO;
     public long betfairPoints = 0;
 
@@ -81,8 +86,6 @@ public class Betfair extends BettingSite {
         super();
         log.info("Creating new Betfair Connector");
         balance = BigDecimal.ZERO;
-        commission_rate = new BigDecimal("0.02");
-        min_back_stake = new BigDecimal("2.00");
 
         setupConfig("config.json");
 
@@ -344,8 +347,13 @@ public class Betfair extends BettingSite {
 
 
     @Override
-    public BigDecimal commission() {
-        return commission_rate.subtract(commission_discount);
+    public BigDecimal winCommissionRate() {
+        return base_commission_rate.subtract(commission_discount);
+    }
+
+    @Override
+    public BigDecimal lossCommissionRate() {
+        return BigDecimal.ZERO;
     }
 
 
@@ -363,8 +371,17 @@ public class Betfair extends BettingSite {
 
     @Override
     public BigDecimal minBackersStake() {
-        return min_back_stake;
+        return bf_min_back_stake;
     }
+
+
+    @Override
+    public BigDecimal minLayersStake(BigDecimal odds) {
+        return Bet.backStake2LayStake(bf_min_back_stake, odds).setScale(2, RoundingMode.UP);
+    }
+
+
+
 
     @Override
     public void safe_exit() {
@@ -389,7 +406,7 @@ public class Betfair extends BettingSite {
         for (List<String> market_ids_chunk: market_id_chunks){
 
             JSONArray priceData = new JSONArray();
-            priceData.add("EX_ALL_OFFERS");
+            priceData.add("EX_BEST_OFFERS");
 
             JSONObject priceProjection = new JSONObject();
             priceProjection.put("priceData", priceData);
@@ -444,8 +461,8 @@ public class Betfair extends BettingSite {
         exposure = new BigDecimal(Double.toString((double) r.get("exposure"))).multiply(new BigDecimal(-1));
         betfairPoints = (long) r.get("pointsBalance");
         commission_discount = new BigDecimal(Double.toString((double) r.get("discountRate")));
-        commission_rate = new BigDecimal(Double.toString((double) r.get("retainedCommission")))
-                .divide(new BigDecimal(100));
+        base_commission_rate = new BigDecimal(Double.toString((double) r.get("retainedCommission")))
+                .divide(new BigDecimal(100), 20, RoundingMode.HALF_UP).stripTrailingZeros();
     }
 
 
@@ -519,113 +536,6 @@ public class Betfair extends BettingSite {
         return (JSONArray) r.get("result");
     }
 
-
-    public static String getEventFromSearch(String query, Betfair bf){
-
-        ArrayBlockingQueue<String> responseQueue = new ArrayBlockingQueue<>(1);
-        Object[] params = new Object[] {query, responseQueue};
-
-        try {
-            bf.eventSearchHandlerQueue.put(params);
-            String response = responseQueue.take();
-            return response;
-        } catch (InterruptedException e) {
-            log.severe("Interrupt while getting event from search in betfair");
-            return null;
-        }
-    }
-
-
-    public static String _getEventFromSearch(String query, Betfair bf){
-
-        // Create HTTP GET to search betfairs regular search for query
-        // returning pure html
-        Map<String, Object> params = new HashMap<>();
-        params.put("query", query);
-        String html;
-        Requester requester = Requester.JSONRequester();
-        try {
-            html = requester.getRaw("https://www.betfair.com/exchange/search", params);
-        } catch (IOException | URISyntaxException e) {
-            log.warning(String.format("Could not find betfair event id for search query '%s'", query));
-            return null;
-        }
-
-        // Find the correct part of the html for the first item in the search list
-        Document doc = Jsoup.parse(html);
-        Elements firstResult = doc.getElementsByClass("mod-searchresults-ebs-link i13n-ltxt-Event i13n-pos-1 i13n-gen-15 i13n-R-1");
-        Element element = firstResult.get(0);
-
-        // Select the href from the first item
-        // (the url endpoint to the event page, this contains the event ID)
-        String href = element.attributes().get("href");
-
-        // Whichever tag in the href will tell us what to do next
-        String event_tag = "/event?id=";
-        String market_tag = "market/";
-        String event_id = null;
-
-        if (href.contains(event_tag)){
-            // Find where the ID begins in the href
-            int id_start = href.indexOf(event_tag) + event_tag.length();
-
-            // Extract the event ID
-            event_id = href.substring(id_start);
-        }
-        else if (href.contains(market_tag)){
-            // Find where the ID begins in the href
-            int id_start = href.indexOf(market_tag) + market_tag.length();
-
-            // Extract the market id and use function to get event id
-            String market_id = href.substring(id_start);
-            event_id = bf.getEventFromMarket(market_id);
-        }
-        else{
-            log.warning(String.format("Could not find either '%s' or '%s' in href '%s' when searching betfair for '%s'",
-                    event_tag, market_tag, href, query));
-            return null;
-        }
-
-        // Check event_id is valid (numeric)
-        if (StringUtil.isNumeric(event_id)){
-            return event_id;
-        }
-
-        log.warning(String.format("Could not find event id in href '%s' from html when searching betfair for '%s'",
-                href, query));
-        return null;
-    }
-
-
-    public String getEventFromMarket(String market_id){
-        JSONObject filter = new JSONObject();
-        JSONArray market_ids = new JSONArray();
-        market_ids.add(market_id);
-        filter.put("marketIds", market_ids);
-
-        JSONArray eventsResponse;
-        try {
-            eventsResponse = getEvents(filter);
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-            log.severe(String.format("Error while getting event id from market id in betfair for %s", market_id));
-            return null;
-        }
-
-        if (eventsResponse.size() == 0){
-            log.severe(String.format("No Events found in betfair for market id %s", market_id));
-            return null;
-        }
-        if (eventsResponse.size() > 1){
-            log.severe(String.format("Multiple events found in betfair for market id %s\n%s",
-                    market_id, jstring(eventsResponse)));
-            return null;
-        }
-
-        String event_id = (String) ((JSONObject) ((JSONObject) eventsResponse.get(0)).get("event")).get("id");
-
-        return event_id;
-    }
 
 
     public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
@@ -746,7 +656,7 @@ public class Betfair extends BettingSite {
                         invested = size_matched;
                     }
                     else {
-                        invested = BetOffer.backStake2LayStake(size_matched, avg_odds);
+                        invested = Bet.backStake2LayStake(size_matched, avg_odds);
                     }
 
                     BigDecimal returns = this.ROI(betOrder.betType(), avg_odds, betOrder.commission(),
@@ -758,8 +668,7 @@ public class Betfair extends BettingSite {
                             betOrder.bet_offer.event.name, returns.toString()));
 
 
-                    PlacedBet pb = new PlacedBet("SUCCESS", bet_id, betOrder, size_matched, avg_odds,
-                            returns, time_placed, time_sent);
+                    PlacedBet pb = null;
                     pb.site_json_response = bet_report;
                     placedBets.add(pb);
                 }
@@ -769,7 +678,7 @@ public class Betfair extends BettingSite {
                     log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
                             String.valueOf(orderStatus), jstring(bet_report)));
 
-                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(orderStatus), time_placed, time_sent);
+                    PlacedBet pb = null;
                     pb.site_json_response = bet_report;
                     placedBets.add(pb);
                 }
@@ -780,7 +689,7 @@ public class Betfair extends BettingSite {
                     log.warning(String.format("unsuccessful bet placed in betfair '%s'.\n%s",
                             String.valueOf(error), jstring(bet_report)));
 
-                    PlacedBet pb = new PlacedBet("FAILED", betOrder, String.valueOf(error), time_placed, time_sent);
+                    PlacedBet pb = null;
                     pb.site_json_response = bet_report;
                     placedBets.add(pb);
                 }
@@ -800,7 +709,7 @@ public class Betfair extends BettingSite {
 
 
 
-    public void testbet(Double size, Double price, String market, String selection, Double handicap) throws IOException, URISyntaxException {
+    public void testbet(String side, Double size, Double price, String market, String selection, Double handicap) throws IOException, URISyntaxException {
 
         if (handicap == null){
             handicap = 0.0;
@@ -816,7 +725,7 @@ public class Betfair extends BettingSite {
         instructions.put("orderType", "LIMIT");
         instructions.put("handicap", handicap.toString());
         instructions.put("selectionId", selection);
-        instructions.put("side", "BACK");
+        instructions.put("side", side.toUpperCase());
         instructions.put("limitOrder", limitOrder);
 
         JSONArray instructions_list = new JSONArray();
@@ -889,9 +798,14 @@ public class Betfair extends BettingSite {
 
 
             Betfair b = new Betfair();
+            FootballMatch fm = FootballMatch.parse("2020-05-28T18:30:00.0Z", "Stuttgart v Hamburg");
+            BetfairEventTracker bet = (BetfairEventTracker) b.getEventTracker();
+            bet.setupMatch(fm);
 
+            MarketOddsReport mor = bet._getMarketOddsReport(new ArrayList<Bet>(FootballBetGenerator._getAllBets()));
+            toFile(mor.toJSON());
 
-            b.testbet(2.00, 1.4, "1.163930531", "56343", 1.0);
+            b.testbet("LAY", 2.00, 2.7, "1.170472130", "44519", null);
 
 
 

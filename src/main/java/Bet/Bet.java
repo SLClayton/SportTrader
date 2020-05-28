@@ -4,6 +4,8 @@ package Bet;
 import Bet.FootballBet.FootballBet;
 import org.json.simple.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,34 +13,25 @@ import java.util.Map;
 
 public abstract class Bet {
 
-    public final static String BACK = "BACK";
-    public final static String LAY = "LAY";
-    public static String[] BET_TYPES = {BACK, LAY};
+    public enum BetType {BACK, LAY}
 
     public Sport sport;
     public String category;
-    protected String type;
+    protected BetType type;
 
     public enum Sport{FOOTBALL, TENNIS, RUGBY}
 
-    public Bet(String bet_type) {
-        if (!bet_type.equals(BACK) && !bet_type.equals(LAY)){
-            throw new ExceptionInInitializerError("Bet type must be either BACK or LAY");
-        }
+    public Bet(BetType bet_type) {
         type = bet_type;
     }
 
 
-    public String type(){
-        return type;
-    }
-
     public Boolean isLay(){
-        return (type == LAY);
+        return type.equals(BetType.LAY);
     }
 
     public Boolean isBack(){
-        return type == BACK;
+        return type.equals(BetType.BACK);
     }
 
     public abstract JSONObject toJSON();
@@ -48,6 +41,27 @@ public abstract class Bet {
     @Override
     public String toString(){
         return id();
+    }
+
+
+    public BetType getType(){
+        return type;
+    }
+
+
+    public static BigDecimal backStake2LayStake(BigDecimal back_stake, BigDecimal odds){
+        // AKA
+        // Back stake to Back Profit
+        // Lay profit to lay stake
+        return odds.subtract(BigDecimal.ONE).multiply(back_stake);
+    }
+
+
+    public static BigDecimal layStake2backStake(BigDecimal lay_stake, BigDecimal odds){
+        // AKA
+        // Lay Stake to Lay Profit
+        // Back Profit to Back Stake
+        return lay_stake.divide((odds.subtract(BigDecimal.ONE)), 12, RoundingMode.HALF_UP);
     }
 
 

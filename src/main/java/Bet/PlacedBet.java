@@ -1,6 +1,8 @@
 package Bet;
 
 import SiteConnectors.BettingSite;
+import Trader.SportsTrader;
+import com.globalbettingexchange.externalapi.PlaceOrdersWithReceipt;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -11,6 +13,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import static tools.printer.print;
 
@@ -18,29 +21,29 @@ public class PlacedBet {
     // This should be exact real values taken from a site of an actual bet that
     // has been placed.
 
-    public static String FAILED_STATE = "FAILED";
-    public static String SUCCESS_STATE = "SUCCESS";
+    public enum State {SUCCESS, FAIL, PARTIAL}
 
-    public String state;
-    public String bet_id;
     public BetOrder betOrder;
+    public State state;
+    public String bet_id;
+
     public BigDecimal backersStake_layersProfit;
-    public BigDecimal backersProfit_layersStake;
     public BigDecimal investment;
-    public BigDecimal profit;
-    public BigDecimal profit_commission;
     public BigDecimal avg_odds;
-    public BigDecimal returns;
     public String error;
-    public JSONObject site_json_response;
 
     public Instant time_sent;
     public Instant time_created;
     public Instant time_placed;
 
+    public JSONObject site_json_response;
 
-    public PlacedBet(String state, String bet_id, BetOrder betOrder, BigDecimal back_stake, BigDecimal lay_stake,
-                     BigDecimal avg_odds, BigDecimal returns, Instant time_placed, Instant time_sent){
+
+    public PlacedBet(State state, BetOrder betOrder, String bet_id, BigDecimal back_stake,
+                     BigDecimal avg_odds, Instant time_sent, Instant time_placed, String error){
+
+
+        //TODO: Use examples found to re-create this
 
         this.time_created = Instant.now();
 
@@ -48,54 +51,33 @@ public class PlacedBet {
         this.bet_id = bet_id;
         this.betOrder = betOrder;
         this.backersStake_layersProfit = back_stake;
-        this.backersProfit_layersStake = lay_stake;
         this.avg_odds = avg_odds;
-        this.returns = returns;
 
         this.time_placed = time_placed;
         this.time_sent = time_sent;
 
-        // BACK
-        if (isBack()){
-            investment = site().stake2Investment(backersStake_layersProfit).setScale(2, RoundingMode.HALF_UP);
-            profit = backersProfit_layersStake;
-        }
-        // LAY
-        else{
-            investment = site().stake2Investment(backersProfit_layersStake).setScale(2, RoundingMode.HALF_UP);
-            profit = backersStake_layersProfit;
-        }
-
-        profit_commission = profit.multiply(betOrder.commission());
-    }
-
-    public PlacedBet(String state, String bet_id, BetOrder betOrder, BigDecimal back_stake,
-                     BigDecimal avg_odds, BigDecimal returns, Instant time_placed, Instant time_sent){
-        // Constructor without given lay stake, this is calculated using back stake and odds
-        // to get the lay stake (backers profit) and then put through the main constructor
-
-        this(state, bet_id, betOrder, back_stake, BetOffer.backStake2LayStake(back_stake, avg_odds),
-                avg_odds, returns, time_placed, time_sent);
-    }
-
-
-    public PlacedBet(String state, BetOrder betOrder, String error, Instant time_placed, Instant time_sent){
-        // For errors in placed bet
-
-        this.state = state;
-        this.betOrder = betOrder;
         this.error = error;
-        this.time_placed = time_placed;
-        this.time_sent = time_sent;
-
-        backersProfit_layersStake = null;
-        backersStake_layersProfit = null;
-        returns = null;
-        investment = null;
     }
 
-    public PlacedBet(String state, BetOrder betOrder, String error){
-        this(state, betOrder, error, null, null);
+
+    public static PlacedBet FullPlacedBet(BetOrder betOrder, String bet_id, BigDecimal backers_stake,
+                                          BigDecimal avg_odds, Instant time_sent, Instant time_placed){
+
+        return new PlacedBet(State.SUCCESS, betOrder, bet_id, backers_stake, avg_odds,
+                time_sent, time_placed, null);
+    }
+
+
+    public static PlacedBet FailedPlacedBet(BetOrder betOrder, String bet_id, Instant time_sent, Instant time_placed,
+                                            String error){
+
+        return new PlacedBet(State.FAIL, betOrder, null, null, null,
+                time_sent, time_placed, error);
+    }
+
+
+    public BigDecimal getBackersProfit_layersStake(){
+        return Bet.backStake2LayStake(backersStake_layersProfit, avg_odds);
     }
 
     public boolean isBack(){
@@ -109,8 +91,58 @@ public class PlacedBet {
 
 
     public boolean successful(){
-        return (state.toUpperCase().equals(SUCCESS_STATE));
+        return state.equals(State.SUCCESS);
     }
+
+
+    public boolean failed(){
+        return state.equals(State.FAIL);
+    }
+
+
+    public BigDecimal stake(){
+        if (isBack()){
+            return backersStake_layersProfit;
+        }
+        else{
+            return getBackersProfit_layersStake();
+        }
+    }
+
+
+    public BigDecimal potProfitBeforeCom(){
+        if (isBack()){
+            return getBackersProfit_layersStake();
+        }
+        else{
+            return backersStake_layersProfit;
+        }
+    }
+
+
+    public BigDecimal winCommission(){
+        return winCommission(potProfitBeforeCom());
+    }
+
+
+    public BigDecimal winCommission(BigDecimal potProfitBeforeCom){
+        return site().winCommissionRate().multiply(potProfitBeforeCom);
+    }
+
+
+    public BigDecimal total_investment(){
+        return site().investmentNeededForStake(stake());
+    }
+
+
+    public BigDecimal potReturns(){
+        BigDecimal profit_before_com = potProfitBeforeCom();
+        return total_investment()
+                .add(profit_before_com)
+                .subtract(winCommission(profit_before_com));
+    }
+
+
 
 
     public BettingSite site(){
@@ -118,20 +150,14 @@ public class PlacedBet {
     }
 
 
-    public BigDecimal profit(){
-        return returns.subtract(investment);
+    public BetOffer getBetOffer(){
+        return betOrder.bet_offer;
     }
 
 
     public String toString(){
         return toJSON().toString();
     }
-
-
-    public BetOffer getBetOffer(){
-        return betOrder.bet_offer;
-    }
-
 
     public JSONObject toJSON(){
         JSONObject m = new JSONObject();
@@ -167,12 +193,12 @@ public class PlacedBet {
         if (successful()){
             pb.put("bet_id", String.valueOf(bet_id));
             pb.put("back_stake", String.valueOf(backersStake_layersProfit));
-            pb.put("lay_stake", String.valueOf(backersProfit_layersStake));
+            pb.put("lay_stake", String.valueOf(getBackersProfit_layersStake()));
             pb.put("invested", String.valueOf(investment));
             pb.put("avg_odds", String.valueOf(avg_odds));
-            pb.put("returns", String.valueOf(returns));
-            pb.put("profit", String.valueOf(profit));
-            pb.put("prof_com", String.valueOf(profit_commission));
+            pb.put("returns", String.valueOf(potReturns()));
+            pb.put("profit", String.valueOf(potProfitBeforeCom()));
+            pb.put("prof_com", String.valueOf(winCommission()));
         }
         else{
             pb.put("error", String.valueOf(error));

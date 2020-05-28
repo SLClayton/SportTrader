@@ -1,5 +1,6 @@
 package Bet.FootballBet;
 
+import Bet.Bet;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ public class FootballOverUnderBet extends FootballBet{
     public BigDecimal goals;
 
 
-    public FootballOverUnderBet(String bet_type, String SIDE, BigDecimal GOALS){
+    public FootballOverUnderBet(BetType bet_type, String SIDE, BigDecimal GOALS){
         super(bet_type);
 
         side = SIDE;

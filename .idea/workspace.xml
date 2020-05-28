@@ -7,17 +7,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/betdaq/PlaceOrdersWithReceiptResponse_BACK.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/betdaq/PlaceOrdersWithReceiptResponse_LAY.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/betfair/ListMarketBook_BACK.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/betfair/ListMarketBook_LAY.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/smarkets/placeOrder_BACK.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/smarkets/placeOrder_LAY.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/racer_data_cars.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_cars.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/racer_data_horse_jumps.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_horse_jumps.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound (1).json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound (1).json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/Bet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/Bet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballHandicapBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballHandicapBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOtherScoreBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOverUnderBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballOverUnderBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballResultBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballResultBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballScoreBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballScoreBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedOrderProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedOrderProfitReport.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/BetdaqEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/BetdaqEventTracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/RequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/RequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/MatchbookEventTracker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/SmarketsEventTracker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/MarketOddsReportWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/MarketOddsReportWorker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/vTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/vTrader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tools/Requester.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/Requester.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tools/printer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/printer.java" afterDir="false" />
     </list>
@@ -69,7 +93,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/smarkets" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -83,6 +107,17 @@
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="B:\GoogleDrive\Work\Programming\SportTrader\resources\smarkets" />
+      <recent name="B:\GoogleDrive\Work\Programming\SportTrader\resources\betfair" />
+      <recent name="B:\GoogleDrive\Work\Programming\SportTrader\resources\betdaq" />
+      <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\resources\vtrader_data" />
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
+    </key>
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="Bet" />
+      <recent name="SiteConnectors" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\resources\vtrader_data" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\resources" />
@@ -90,17 +125,8 @@
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="Bet" />
-      <recent name="SiteConnectors" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\resources\vtrader_data" />
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
-      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
-    </key>
   </component>
-  <component name="RunManager" selected="Application.Betdaq">
+  <component name="RunManager" selected="Application.Smarkets">
     <configuration name="Betdaq" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="SiteConnectors.Betdaq.Betdaq" />
       <module name="SportTrader" />
@@ -114,15 +140,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Quota" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Trader.Quota" />
+    <configuration name="Betfair" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="SiteConnectors.Betfair.Betfair" />
       <module name="SportTrader" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Requester" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="tools.Requester" />
+    <configuration name="Smarkets" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="SiteConnectors.Smarkets.Smarkets" />
       <module name="SportTrader" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -135,28 +161,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="vTrader" type="Application" factoryName="Application" activateToolWindowBeforeRun="false" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Trader.vTrader" />
+    <configuration name="printer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="tools.printer" />
       <module name="SportTrader" />
-      <option name="PROGRAM_PARAMETERS" value="resources/vtrader_data/v_config_dogs.json" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
       <item itemvalue="Application.Betdaq" />
-      <item itemvalue="Application.Quota" />
       <item itemvalue="Application.SportsTrader" />
-      <item itemvalue="Application.vTrader" />
-      <item itemvalue="Application.Requester" />
+      <item itemvalue="Application.printer" />
+      <item itemvalue="Application.Betfair" />
+      <item itemvalue="Application.Smarkets" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Smarkets" />
+        <item itemvalue="Application.Betfair" />
         <item itemvalue="Application.Betdaq" />
+        <item itemvalue="Application.printer" />
         <item itemvalue="Application.SportsTrader" />
-        <item itemvalue="Application.vTrader" />
-        <item itemvalue="Application.Requester" />
-        <item itemvalue="Application.Quota" />
       </list>
     </recent_temporary>
   </component>
@@ -235,6 +260,10 @@
     <state x="693" y="264" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1587461505857" />
     <state x="229" y="298" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1587377792375" />
     <state x="2050" y="-2" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586010293765" />
+    <state x="476" y="503" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1590684163106">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="476" y="503" key="#com.intellij.fileTypes.FileTypeChooser/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590684163106" />
     <state x="555" y="348" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1587377768245">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
@@ -261,29 +290,29 @@
       <screen x="1920" y="-360" width="2560" height="1400" />
     </state>
     <state x="2389" y="98" key="FileChooserDialogImpl/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586164586446" />
-    <state width="1386" height="486" key="GridCell.Tab.0.bottom" timestamp="1590401952715">
+    <state width="1415" height="278" key="GridCell.Tab.0.bottom" timestamp="1590684211281">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1623" height="216" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
-    <state width="1386" height="486" key="GridCell.Tab.0.bottom/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590401952715" />
+    <state width="1415" height="278" key="GridCell.Tab.0.bottom/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590684211281" />
     <state width="1418" height="14" key="GridCell.Tab.0.bottom/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586353960044" />
-    <state width="1386" height="486" key="GridCell.Tab.0.center" timestamp="1590401952715">
+    <state width="1415" height="278" key="GridCell.Tab.0.center" timestamp="1590684211281">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1623" height="216" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
-    <state width="1386" height="486" key="GridCell.Tab.0.center/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590401952715" />
+    <state width="1415" height="278" key="GridCell.Tab.0.center/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590684211281" />
     <state width="1418" height="14" key="GridCell.Tab.0.center/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586353960043" />
-    <state width="1386" height="486" key="GridCell.Tab.0.left" timestamp="1590401952715">
+    <state width="1415" height="278" key="GridCell.Tab.0.left" timestamp="1590684211280">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1623" height="216" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
-    <state width="1386" height="486" key="GridCell.Tab.0.left/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590401952715" />
+    <state width="1415" height="278" key="GridCell.Tab.0.left/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590684211280" />
     <state width="1418" height="14" key="GridCell.Tab.0.left/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586353960043" />
-    <state width="1386" height="486" key="GridCell.Tab.0.right" timestamp="1590401952715">
+    <state width="1415" height="278" key="GridCell.Tab.0.right" timestamp="1590684211281">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1623" height="216" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
-    <state width="1386" height="486" key="GridCell.Tab.0.right/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590401952715" />
+    <state width="1415" height="278" key="GridCell.Tab.0.right/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590684211281" />
     <state width="1418" height="14" key="GridCell.Tab.0.right/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586353960044" />
     <state width="1574" height="68" key="GridCell.Tab.1.bottom" timestamp="1589211618520">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -307,15 +336,15 @@
     <state x="0" y="99" width="922" height="849" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1587417529723" />
     <state x="0" y="133" key="SettingsEditor/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1587390480062" />
     <state x="1920" y="-227" key="SettingsEditor/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586272161077" />
-    <state x="1429" y="0" width="1138" height="1407" key="dock-window-1" timestamp="1590423945160">
+    <state x="1459" y="0" width="1108" height="1407" key="dock-window-1" timestamp="1590682945319">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1429" y="0" width="1138" height="1407" key="dock-window-1/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590423945160" />
+    <state x="1459" y="0" width="1108" height="1407" key="dock-window-1/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590682945319" />
     <state x="3377" y="-360" width="1110" height="1407" key="dock-window-1/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586341557851" />
-    <state x="1181" y="233" width="820" height="722" key="find.popup" timestamp="1590419712063">
+    <state x="1181" y="233" width="820" height="722" key="find.popup" timestamp="1590675971584">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1181" y="233" width="820" height="722" key="find.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590419712063" />
+    <state x="1181" y="233" width="820" height="722" key="find.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590675971584" />
     <state x="3101" y="-127" width="820" height="722" key="find.popup/1920.-360.2560.1400/0.0.1920.1040@1920.-360.2560.1400" timestamp="1586013563937" />
   </component>
 </project>

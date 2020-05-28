@@ -13,7 +13,7 @@ public class FootballHandicapBet extends FootballBet{
     public BigDecimal a_handicap;
     public String result;
 
-    public FootballHandicapBet(String bet_type, BigDecimal A_HANDICAP, String RESULT){
+    public FootballHandicapBet(BetType bet_type, BigDecimal A_HANDICAP, String RESULT){
         super(bet_type);
         category = "HANDICAP";
         a_handicap = A_HANDICAP.setScale(1, RoundingMode.HALF_UP);
@@ -59,10 +59,4 @@ public class FootballHandicapBet extends FootballBet{
         return a_handicap.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0;
     }
 
-
-    public static void main(String[] args){
-        FootballHandicapBet b = new FootballHandicapBet("BACK", new BigDecimal("3.5"), FootballBet.TEAM_A);
-
-        print(b.isInteger());
-    }
 }

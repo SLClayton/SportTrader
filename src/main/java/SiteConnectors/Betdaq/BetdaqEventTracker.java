@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static tools.printer.pp;
+import static tools.printer.print;
 
 public class BetdaqEventTracker extends SiteEventTracker {
 
@@ -33,7 +34,7 @@ public class BetdaqEventTracker extends SiteEventTracker {
 
 
     public static List<String> market_names = Arrays.asList(
-            "Event Odds",
+            "Match Odds",
             "Correct Score",
             "Half Time Score",
             "First-Half Result",
@@ -263,8 +264,8 @@ public class BetdaqEventTracker extends SiteEventTracker {
         // Event Odds
         if (bet instanceof FootballResultBet) {
             FootballResultBet fbrb = (FootballResultBet) bet;
-            String market_name = "event odds";
-            if (fbrb.halftime){market_name = "First-Half Result";}
+            String market_name = "match odds";
+            if (fbrb.halftime){market_name = "first-half result";}
             String selection_name = null;
             if      (fbrb.winnerA()) { selection_name = footballMatch.team_a.name.toLowerCase();}
             else if (fbrb.winnerA()) { selection_name = footballMatch.team_b.name.toLowerCase();}

@@ -269,7 +269,7 @@ public class SportsTrader {
         MIN_ODDS_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_ODDS_RATIO")));
         EVENT_SOURCE = (String) config.get("EVENT_SOURCE");
         MAX_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("MAX_INVESTMENT")));
-        MIN_PROFIT_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_PROFIT_RATIO")));
+        MIN_PROFIT_RATIO = new BigDecimal(String.valueOf(config.get("MIN_PROFIT_RATIO")));
         END_ON_BET = (boolean) config.get("END_ON_BET");
         TARGET_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("TARGET_INVESTMENT")));
         REQUEST_TIMEOUT = ((Long) config.get("REQUEST_TIMEOUT"));

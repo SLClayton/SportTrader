@@ -27,24 +27,6 @@ public class BetOffer implements Comparable<BetOffer> {
     public Instant time_betOffer_creation;
 
 
-    /*
-    public BetOffer(Instant time_getMarketOddsReport, Event MATCH, Bet BET, BettingSite SITE,
-                    BigDecimal ODDS, BigDecimal VOLUME, Map METADATA){
-
-        time_start_getMarketOddsReport = time_getMarketOddsReport;
-        time_betOffer_creation = Instant.now();
-
-        event = MATCH;
-        bet = BET;
-        site = SITE;
-        odds = ODDS;
-        volume = VOLUME;
-        metadata = METADATA;
-        roi_ratio = ROI_ratio();
-    }
-    */
-
-
     public BetOffer(Instant time_getMarketOddsReport, Event Event, Bet BET, BettingSite SITE,
                     BigDecimal ODDS, BigDecimal VOLUME){
 
@@ -115,10 +97,6 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
-    public BigDecimal commission(){
-        return site.commission();
-    }
-
 
     public boolean isBack(){
         return bet.isBack();
@@ -130,26 +108,30 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
-    public String betType(){
-        return bet.type;
-    }
-
 
     public BigDecimal minStake(){
         BigDecimal min_backers_stake = site.minBackersStake();
-        if (isLay()){
-            return backStake2LayStake(min_backers_stake, odds);
+        BigDecimal min_stake;
+        if (isBack()){
+            min_stake = min_backers_stake;
         }
-        return min_backers_stake.setScale(2, RoundingMode.UP);
+        else {
+            min_stake =  Bet.backStake2LayStake(min_backers_stake, odds);
+        }
+        return min_stake.setScale(2, RoundingMode.UP);
     }
 
 
     public BigDecimal maxStake(){
         BigDecimal max_backers_stake = volume;
-        if (isLay()){
-            return backStake2LayStake(max_backers_stake, odds);
+        BigDecimal max_stake;
+        if (isBack()){
+            max_stake = max_backers_stake;
         }
-        return max_backers_stake.setScale(2, RoundingMode.DOWN);
+        else {
+            max_stake = Bet.backStake2LayStake(max_backers_stake, odds);
+        }
+        return max_stake.setScale(2, RoundingMode.DOWN);
     }
 
 
@@ -173,20 +155,7 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
-    public static BigDecimal backStake2LayStake(BigDecimal back_stake, BigDecimal odds){
-        // AKA
-        // Back stake to Back Profit
-        // Lay profit to lay stake
-        return odds.subtract(BigDecimal.ONE).multiply(back_stake);
-    }
 
-
-    public static BigDecimal layStake2backStake(BigDecimal lay_stake, BigDecimal odds){
-        // AKA
-        // Lay Stake to Lay Profit
-        // Back Profit to Back Stake
-        return lay_stake.divide((odds.subtract(BigDecimal.ONE)), 20, RoundingMode.HALF_UP);
-    }
 
 
     public static BigDecimal dec2americ(BigDecimal decimal_odds){

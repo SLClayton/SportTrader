@@ -5,6 +5,7 @@ import java.util.*;
 
 
 import Bet.Bet;
+import Bet.Bet.BetType;
 import Bet.BetGroup;
 import Trader.SportsTrader;
 import org.json.simple.JSONObject;
@@ -74,6 +75,11 @@ public class FootballBetGenerator {
     }
 
 
+    public static List<FootballBet> _getAllBets(){
+        FootballBetGenerator fbg = new FootballBetGenerator();
+        return fbg.getAllBets();
+    }
+
 
     public void save(){
         log.info("Saving football bets to file in resources.");
@@ -98,8 +104,8 @@ public class FootballBetGenerator {
         ArrayList<FootballScoreBet> bets = new ArrayList<FootballScoreBet>();
         for (int a_score=0; a_score<=highest; a_score++){
             for (int b_score=0; b_score<=highest; b_score++){
-                for (int i=0; i<Bet.BET_TYPES.length ; i++){
-                    String type = Bet.BET_TYPES[i];
+                for (int i = 0; i< BetType.values().length ; i++){
+                    BetType type = BetType.values()[i];
 
                     bets.add(new FootballScoreBet(type, a_score, b_score, halftime));
                 }
@@ -114,8 +120,8 @@ public class FootballBetGenerator {
         for (int score=lowest; score<=highest; score++){
             for (int i=0; i<FootballOtherScoreBet.RESULTS.length; i++){
                 String result = FootballOtherScoreBet.RESULTS[i];
-                for (int j=0; j<Bet.BET_TYPES.length; j++){
-                    String type = Bet.BET_TYPES[j];
+                for (int j=0; j<BetType.values().length; j++){
+                    BetType type = BetType.values()[j];
 
                     FootballOtherScoreBet b = new FootballOtherScoreBet(type, score, result, false);
                     bets.add(b);
@@ -129,8 +135,8 @@ public class FootballBetGenerator {
     public ArrayList<FootballOtherScoreBet> getOtherScoreBetsHT(int lowest, int highest){
         ArrayList<FootballOtherScoreBet> bets = new ArrayList<>();
         for (int score=lowest; score<=highest; score++){
-            for (int j=0; j<Bet.BET_TYPES.length; j++) {
-                String type = Bet.BET_TYPES[j];
+            for (int j=0; j<BetType.values().length; j++) {
+                BetType type = BetType.values()[j];
 
                 bets.add(new FootballOtherScoreBet(type, score, FootballBet.ANY, true));
             }
@@ -143,8 +149,8 @@ public class FootballBetGenerator {
         ArrayList<FootballResultBet> bets = new ArrayList<FootballResultBet>();
         for (int i=0; i<FootballResultBet.RESULTS.length; i++){
             String result = FootballResultBet.RESULTS[i];
-            for (int j=0; j<Bet.BET_TYPES.length; j++) {
-                String type = Bet.BET_TYPES[j];
+            for (int j=0; j<BetType.values().length; j++) {
+                BetType type = BetType.values()[j];
 
                 bets.add(new FootballResultBet(type, result, halftime));
             }
@@ -169,7 +175,7 @@ public class FootballBetGenerator {
                     continue;
                 }
 
-                for (String type: Bet.BET_TYPES){
+                for (BetType type: BetType.values()){
                     bets.add(new FootballHandicapBet(type, handicap, result));
                 }
             }
@@ -188,8 +194,8 @@ public class FootballBetGenerator {
 
             for (int i=0; i<FootballOverUnderBet.OVER_UNDER_ENUM.length; i++){
                 String side = FootballOverUnderBet.OVER_UNDER_ENUM[i];
-                for (int j = 0; j < Bet.BET_TYPES.length; j++) {
-                    String type = Bet.BET_TYPES[j];
+                for (int j = 0; j < BetType.values().length; j++) {
+                    BetType type = BetType.values()[j];
 
                     bets.add(new FootballOverUnderBet(type, side, goals));
                 }
@@ -488,9 +494,8 @@ public class FootballBetGenerator {
             }
 
             if (oub.over()){
-                String match_id = oub.id().replace(FootballOverUnderBet.OVER,
-                                                   FootballOverUnderBet.UNDER)
-                                          .replace(Bet.BACK, Bet.LAY);
+                String match_id = oub.id().replace(FootballOverUnderBet.OVER, FootballOverUnderBet.UNDER)
+                                          .replace(String.valueOf(BetType.BACK), String.valueOf(BetType.LAY));
 
                 for (FootballOverUnderBet twinbet: over_under_bets){
                     if (twinbet.id().equals(match_id)){
@@ -501,7 +506,8 @@ public class FootballBetGenerator {
             else if (oub.under()){
                 String match_id = oub.id().replace(FootballOverUnderBet.UNDER,
                                                    FootballOverUnderBet.OVER)
-                                          .replace(Bet.BACK, Bet.LAY);
+                                          .replace(String.valueOf(BetType.BACK),
+                                                   String.valueOf(BetType.LAY));
                 for (FootballOverUnderBet twinbet: over_under_bets){
                     if (twinbet.id().equals(match_id)){
                         twins.add(new Bet[] {oub, twinbet});

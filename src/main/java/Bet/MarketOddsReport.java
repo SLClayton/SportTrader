@@ -171,8 +171,11 @@ public class MarketOddsReport {
 
     public MarketOddsReport filter(String filter){
         Map<String, List<BetOffer>> filtered_offers = new HashMap<>();
+
+
         for (String bet: betOffers.keySet()){
             if (bet.contains(filter)){
+                print(bet);
                 filtered_offers.put(bet, betOffers.get(bet));
             }
         }
@@ -238,10 +241,12 @@ public class MarketOddsReport {
         }
 
 
+        List<String> ordered_betOffers_keys = new ArrayList<>(betOffers.keySet());
+        ordered_betOffers_keys.sort(Comparator.naturalOrder());
+
         JSONObject odds_reports = new JSONObject();
-        for (Map.Entry<String, List<BetOffer>> entry: betOffers.entrySet()){
-            String bet_id = entry.getKey();
-            List<BetOffer> bet_offers = entry.getValue();
+        for (String bet_id: ordered_betOffers_keys){
+            List<BetOffer> bet_offers = betOffers.get(bet_id);
 
 
             if (full_offers){

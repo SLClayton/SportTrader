@@ -11,7 +11,7 @@ public  class FootballScoreBet extends FootballBet{
     public int score_b;
     public Boolean halftime;
 
-    public FootballScoreBet(String bet_type, int SCORE_A, int SCORE_B, Boolean HALFTIME){
+    public FootballScoreBet(BetType bet_type, int SCORE_A, int SCORE_B, Boolean HALFTIME){
         super(bet_type);
         score_a = SCORE_A;
         score_b = SCORE_B;

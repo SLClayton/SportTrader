@@ -1,6 +1,7 @@
 package SiteConnectors;
 
 import Bet.Bet;
+import Bet.Bet.BetType;
 import Bet.BetOffer;
 import Bet.BetOrder;
 import Bet.PlacedBet;
@@ -38,13 +39,10 @@ public abstract class BettingSite {
     public BigDecimal balance;
     public BigDecimal exposure;
 
-    public BigDecimal commission_rate;
-    public BigDecimal min_back_stake;
     public Lock balanceLock = new ReentrantLock();
     public BigDecimal balance_buffer = new BigDecimal("10.00");
 
     public BettingSite() {
-
         exit_flag = false;
 
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -65,7 +63,9 @@ public abstract class BettingSite {
             KeyStoreException, KeyManagementException, UnrecoverableKeyException, URISyntaxException, ParseException;
 
 
-    public abstract BigDecimal commission();
+    public abstract BigDecimal winCommissionRate();
+
+    public abstract BigDecimal lossCommissionRate();
 
 
     public abstract String getName();
@@ -75,6 +75,9 @@ public abstract class BettingSite {
 
 
     public abstract BigDecimal minBackersStake();
+
+
+    public abstract BigDecimal minLayersStake(BigDecimal odds);
 
 
     public static Set<String> getIDs(Collection<BettingSite> sites){
@@ -132,13 +135,30 @@ public abstract class BettingSite {
 
 
 
-    public BigDecimal investment2Stake(BigDecimal investment) {
-        return investment;
+    public BigDecimal stakePartOfInvestment(BigDecimal investment) {
+
+        // 100% of stake + 1% loss commission is the total investment so a total 1.01 ratio for 1%
+        BigDecimal total_ratio = BigDecimal.ONE.add(lossCommissionRate());
+
+        // The amount of the total investment which is the stake (1.00 out of 1.01)
+        BigDecimal stake_ratio = BigDecimal.ONE.divide(total_ratio, 12, RoundingMode.HALF_UP);
+
+        // Multiply total investment by the amount of it that is stake, to get the total stake
+        BigDecimal stake_amount = investment.multiply(stake_ratio);
+
+        return stake_amount;
     }
 
 
-    public BigDecimal stake2Investment(BigDecimal stake) {
-        return stake;
+    public BigDecimal investmentNeededForStake(BigDecimal stake) {
+
+        // Total amount of commission charged if lost bet
+        BigDecimal loss_commission_amount = stake.multiply(lossCommissionRate());
+
+        // Sum up the total amount of money needed
+        BigDecimal total_inv_needed = stake.add(loss_commission_amount);
+
+        return total_inv_needed;
     }
 
 
@@ -172,20 +192,20 @@ public abstract class BettingSite {
     public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real) {
         // Default ROI, commission on profits only
 
-        return ROI(bet_offer.betType(), bet_offer.odds, bet_offer.commission(), investment, real);
+        return ROI(bet_offer.bet.getType(), bet_offer.odds, bet_offer.site.winCommissionRate(), investment, real);
     }
 
 
-    public static BigDecimal ROI(String BACK_LAY, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
+    public static BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
                                  boolean real) {
         // Default ROI, commission on profits only
 
         BigDecimal roi;
 
         // BACK
-        if (BACK_LAY.equals(Bet.BACK)) {
+        if (betType == BetType.BACK) {
             BigDecimal backers_stake = investment;
-            BigDecimal backers_profit = BetOffer.backStake2LayStake(backers_stake, odds);
+            BigDecimal backers_profit = Bet.backStake2LayStake(backers_stake, odds);
             BigDecimal commission = backers_profit.multiply(commission_rate);
             roi = backers_stake.add(backers_profit).subtract(commission);
         }
@@ -193,7 +213,7 @@ public abstract class BettingSite {
         // LAY
         else {
             BigDecimal layers_stake = investment;
-            BigDecimal layers_profit = BetOffer.layStake2backStake(layers_stake, odds);
+            BigDecimal layers_profit = Bet.layStake2backStake(layers_stake, odds);
             BigDecimal commission = layers_profit.multiply(commission_rate);
             roi = layers_stake.add(layers_profit).subtract(commission);
         }

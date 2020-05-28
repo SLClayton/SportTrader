@@ -466,7 +466,7 @@ public class EventTrader implements Runnable {
 
             PlaceBetsRunnable placeBetsRunnable = new PlaceBetsRunnable(site_betOrders);
             placeBetsRunnable.thread = new Thread(placeBetsRunnable);
-            placeBetsRunnable.thread.setName(String.format("%s-BtchBtPlcr", site_name));
+            placeBetsRunnable.thread.setName(String.format("%s-BetPlacer", site_name));
             placeBetsRunnable.start();
             placeBetsRunnables.add(placeBetsRunnable);
         }
@@ -485,9 +485,7 @@ public class EventTrader implements Runnable {
                 while (failedbets.size() < placeBetsRunnable.betOrders.size()){
                     BetOrder betOrder = placeBetsRunnable.betOrders.get(failedbets.size());
 
-                    PlacedBet generic_failbet = new PlacedBet(PlacedBet.FAILED_STATE, betOrder,
-                            String.format("Error with all bets sent in this batch to %s.",
-                                    placeBetsRunnable.site.getName()));
+                    PlacedBet generic_failbet = null;
 
                     failedbets.add(generic_failbet);
                 }
@@ -524,9 +522,7 @@ public class EventTrader implements Runnable {
                 e.printStackTrace();
                 placedBets = new ArrayList<>();
                 while (placedBets.size() < betOrders.size()){
-                    placedBets.add(new PlacedBet(PlacedBet.FAILED_STATE,
-                            betOrders.get(placedBets.size()),
-                            String.format("placeBets batch fail for %s", site.getName())));
+                    placedBets.add(null);
                 }
             }
         }

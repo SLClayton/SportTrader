@@ -52,7 +52,7 @@ public class vTrader {
 
 
     public vTrader(String config_file) throws InterruptedException, URISyntaxException, ParseException, IOException {
-        betdaq = new Betdaq(false);
+        betdaq = new Betdaq();
         sr = new ScreenReader();
 
         this.config_file = config_file;

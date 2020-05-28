@@ -193,10 +193,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
     }
 
 
-    public JSONObject getPrices() throws InterruptedException {
-        return smarkets.getPricesFromHandler(market_ids);
-    }
-
     @Override
     public MarketOddsReport _getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
         lastMarketOddsReport_start_time = Instant.now();
@@ -207,7 +203,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
         }
         log.fine(String.format("%s Updating market odds report for smarkets.", event));
 
-        JSONObject lastPrices = getPrices();
+        JSONObject lastPrices = smarkets.getPrices(market_ids);
         if (lastPrices == null){
             return MarketOddsReport.ERROR("Smarkets last prices returned null.");
         }

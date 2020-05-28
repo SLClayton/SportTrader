@@ -11,7 +11,7 @@ public class FootballResultBet extends FootballBet {
     public String result;
     public Boolean halftime;
 
-    public FootballResultBet(String bet_type, String match_result, Boolean is_halftime){
+    public FootballResultBet(BetType bet_type, String match_result, Boolean is_halftime){
         super(bet_type);
 
         result = match_result;
@@ -56,7 +56,7 @@ public class FootballResultBet extends FootballBet {
             throw new Exception("Comparing halftime with non halftime bet.");
         }
         else{
-            if (type == otherscorebet.type()){
+            if (type == otherscorebet.getType()){
                 return result.equals(otherscorebet.result);
             }else{
                 return !(result.equals(otherscorebet.result));

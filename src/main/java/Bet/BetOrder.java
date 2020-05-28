@@ -1,5 +1,6 @@
 package Bet;
 
+import Bet.Bet.BetType;
 import SiteConnectors.BettingSite;
 import Sport.Event;
 import org.json.simple.JSONArray;
@@ -45,17 +46,17 @@ public class BetOrder {
         if (isBack()) {
 
             // Get what stake this site would need with this investment
-            backersStake_layersProfit = bet_offer.site.investment2Stake(investment);
+            backersStake_layersProfit = bet_offer.site.stakePartOfInvestment(investment);
 
             // If real, then round backers stake and re-calculate investment.
             if (real) {
                 backersStake_layersProfit = backersStake_layersProfit
                         .setScale(2, RoundingMode.HALF_UP);
-                investment = bet_offer.site.stake2Investment(backersStake_layersProfit);
+                investment = bet_offer.site.investmentNeededForStake(backersStake_layersProfit);
             }
 
             // Calculate the profit and return generated with this stake
-            backersProfit_layersStake = BetOffer.backStake2LayStake(backersStake_layersProfit, bet_offer.odds);
+            backersProfit_layersStake = Bet.backStake2LayStake(backersStake_layersProfit, bet_offer.odds);
             potential_profit = backersProfit_layersStake;
             stake = backersStake_layersProfit;
         }
@@ -65,16 +66,16 @@ public class BetOrder {
 
             // Get what stake this site would need with this investment, then calculate what
             // the backers stake would be as this is what a bet is placed on.
-            backersProfit_layersStake = bet_offer.site.investment2Stake(investment);
-            backersStake_layersProfit = BetOffer.layStake2backStake(backersProfit_layersStake, bet_offer.odds);
+            backersProfit_layersStake = bet_offer.site.stakePartOfInvestment(investment);
+            backersStake_layersProfit = Bet.layStake2backStake(backersProfit_layersStake, bet_offer.odds);
 
             // If real, then round backers stake and re-calculate layers stake and investment.
             if (real) {
                 backersStake_layersProfit = backersStake_layersProfit
                         .setScale(2, RoundingMode.HALF_UP);
 
-                backersProfit_layersStake = BetOffer.backStake2LayStake(backersStake_layersProfit, bet_offer.odds);
-                investment = bet_offer.site.stake2Investment(backersProfit_layersStake);
+                backersProfit_layersStake = Bet.backStake2LayStake(backersStake_layersProfit, bet_offer.odds);
+                investment = bet_offer.site.investmentNeededForStake(backersProfit_layersStake);
             }
 
             // Calculate the return generated with this stake
@@ -84,7 +85,7 @@ public class BetOrder {
 
 
         // Calculate the potential commission given the potential profit
-        potential_commission = potential_profit.multiply(site().commission());
+        potential_commission = potential_profit.multiply(site().winCommissionRate());
         actual_return = investment.add(potential_profit).subtract(potential_commission);
     }
 
@@ -93,7 +94,7 @@ public class BetOrder {
 
 
     public BigDecimal commission(){
-        return bet_offer.commission();
+        return bet_offer.site.winCommissionRate();
     }
 
 
@@ -127,8 +128,8 @@ public class BetOrder {
     }
 
 
-    public String betType(){
-        return bet().type();
+    public BetType betType(){
+        return bet().getType();
     }
 
 

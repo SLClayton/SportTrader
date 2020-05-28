@@ -41,7 +41,7 @@ public class PlacedOrderProfitReport {
         boolean any_failures = false;
         for (PlacedBet pb: placedBets){
 
-            if (!pb.state.equals(PlacedBet.SUCCESS_STATE)){
+            if (!pb.state.equals(PlacedBet.State.SUCCESS)){
                 any_failures = true;
                 continue;
             }
@@ -50,11 +50,11 @@ public class PlacedOrderProfitReport {
 
             total_investment = total_investment.add(pb.investment);
 
-            if (min_return == null || pb.returns.compareTo(min_return) == -1){
-                min_return = pb.returns;
+            if (min_return == null || pb.potReturns().compareTo(min_return) == -1){
+                min_return = pb.potReturns();
             }
-            if (max_return == null || pb.returns.compareTo(max_return) == 1){
-                max_return = pb.returns;
+            if (max_return == null || pb.potReturns().compareTo(max_return) == 1){
+                max_return = pb.potReturns();
             }
         }
         if      (any_success && any_failures){  state = State.MIX_STATES; }

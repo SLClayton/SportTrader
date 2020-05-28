@@ -32,7 +32,7 @@ public abstract class FootballBet extends Bet {
     public final static String CORRECT_SCORE_HT = "CORRECT-SCORE-HT";
 
 
-    public FootballBet(String bet_type){
+    public FootballBet(BetType bet_type){
         super(bet_type);
         sport = Sport.FOOTBALL;
     }

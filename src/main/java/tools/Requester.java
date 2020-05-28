@@ -113,6 +113,15 @@ public class Requester {
         return sw.toString();
     }
 
+    public static String SOAP2XMLnull(Object SOAP_obj)  {
+        try{
+            return SOAP2XML(SOAP_obj);
+        }
+        catch (JAXBException e){
+            return String.format("<JAXB EXCEPTION - %s>", e.toString());
+        }
+    }
+
 
     public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class)
             throws IOException, URISyntaxException {
@@ -182,8 +191,8 @@ public class Requester {
                     status_code,
                     response.toString(),
                     response_body,
-                    response.getStatusLine().toString());
-                    //xmlstring(soap_xml));
+                    response.getStatusLine().toString(),
+                    xmlstring(soap_xml));
             log.severe(msg);
             throw new IOException();
         }

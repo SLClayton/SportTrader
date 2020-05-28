@@ -12,9 +12,7 @@ import org.xml.sax.InputSource;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
@@ -55,35 +53,44 @@ public abstract class printer {
         print(xmlstring(xml));
     }
 
-    public static String prettyPrintXml(String xmlStringToBeFormatted) {
-        String formattedXmlString = null;
-        try {
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilderFactory.setValidating(true);
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            InputSource inputSource = new InputSource(new StringReader(xmlStringToBeFormatted));
-            Document document = documentBuilder.parse(inputSource);
+    public static void ppxs(Object obj){
+        ppx(Requester.SOAP2XMLnull(obj));
+    }
 
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-
-            StreamResult streamResult = new StreamResult(new StringWriter());
-            DOMSource dOMSource = new DOMSource(document);
-            transformer.transform(dOMSource, streamResult);
-            formattedXmlString = streamResult.getWriter().toString().trim();
-        } catch (Exception ex) {
-            StringWriter sw = new StringWriter();
-            ex.printStackTrace(new PrintWriter(sw));
-            System.err.println(sw.toString());
-        }
-        return formattedXmlString;
+    public static String xmlstring(String xml){
+        return xml.replaceAll(">\\s*<", ">\n<");
     }
 
 
-    public static String xmlstring(String xml){
-        //return xml.replaceAll("><", ">\n<");
-        return prettyPrintXml(xml);
+    public static String mapString(Map<String, ?> map){
+        int longest_key = 0;
+        for (Object key: map.keySet()){
+            String key_string = String.valueOf(key);
+            longest_key = Math.max(longest_key, key_string.length());
+        }
+
+        List<String> sorted_keys = new ArrayList<>(map.keySet());
+        sorted_keys.sort(Comparator.naturalOrder());
+
+        String s = "";
+        for (String key: sorted_keys){
+
+            String key_string = String.valueOf(key);
+            while (key_string.length() < longest_key){
+                key_string += " ";
+            }
+
+            s += key_string + " : " + String.valueOf(map.get(key));
+            s += "\n";
+        }
+        if (s.endsWith("\n")){
+            s = s.substring(0, s.length() - 2);
+        }
+        return s;
+    }
+
+    public static void pm(Map<String, ?> map){
+        print(mapString(map));
     }
 
 
@@ -99,7 +106,7 @@ public abstract class printer {
 
     public static void print(Object output){
         if (output == null){
-            print("null");
+            System.out.println("null");
         }
         else {
             System.out.println(String.valueOf(output));
@@ -181,6 +188,7 @@ public abstract class printer {
         return (JSONObject) new JSONParser().parse(getFileString(filename));
     }
 
+
     public static JSONArray getJSONArray(String filename) throws FileNotFoundException, ParseException {
         return (JSONArray) new JSONParser().parse(getFileString(filename));
     }
@@ -189,6 +197,7 @@ public abstract class printer {
     public static String getFileString(String filename) throws FileNotFoundException {
         return new Scanner(new File(filename)).useDelimiter("\\Z").next();
     }
+
 
     public static String getResourceFileString(String filename) throws FileNotFoundException {
         return getFileString(resource_path + filename);
@@ -260,9 +269,6 @@ public abstract class printer {
     }
 
 
-
-
-
     public static void makeDirIfNotExists(String dir_name){
         File dir = new File(FileSystems.getDefault().getPath(".") + "/" + dir_name);
         if (!dir.exists()) {
@@ -282,6 +288,7 @@ public abstract class printer {
         }
         return count;
     }
+
 
     public static Map<String, Integer> sum_map(Collection<String> from_list){
         Map<String, Integer> count = new HashMap<>();
@@ -314,5 +321,13 @@ public abstract class printer {
             sum += item;
         }
         return  sum / list.size();
+    }
+
+    public static void main(String[] args){
+        Map map = new HashMap();
+        map.put("Sam", 23);
+        map.put("Ben", 231);
+
+        pm(map);
     }
 }

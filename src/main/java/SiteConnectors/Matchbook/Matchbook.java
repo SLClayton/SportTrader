@@ -55,9 +55,13 @@ public class Matchbook extends BettingSite {
     public BigDecimal[] valid_decimal_odds;
 
     public long MAX_WAIT_TIME;
+    static BigDecimal mb_min_back_stake = new BigDecimal("0.10");
+    static BigDecimal mb_min_lay_stake = new BigDecimal("0.10");
 
     public marketDataRequestHandler marketDataRequestHandler;
     public BlockingQueue<RequestHandler> marketDataRequestHandlerQueue;
+
+    protected BigDecimal base_commission_rate;
 
 
     public Matchbook() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
@@ -72,8 +76,7 @@ public class Matchbook extends BettingSite {
         }
         log.info("Creating new Matchbook Connector");
 
-        min_back_stake = new BigDecimal("0.10");
-        commission_rate = new BigDecimal("0.02");
+        base_commission_rate = new BigDecimal("0.02");
 
         setupConfig("config.json");
 
@@ -313,8 +316,13 @@ public class Matchbook extends BettingSite {
 
 
     @Override
-    public BigDecimal commission() {
-        return commission_rate;
+    public BigDecimal winCommissionRate() {
+        return base_commission_rate;
+    }
+
+    @Override
+    public BigDecimal lossCommissionRate() {
+        return BigDecimal.ZERO;
     }
 
 
@@ -325,7 +333,13 @@ public class Matchbook extends BettingSite {
 
     @Override
     public BigDecimal minBackersStake() {
-        return min_back_stake;
+        return mb_min_back_stake;
+    }
+
+
+    @Override
+    public BigDecimal minLayersStake(BigDecimal odds) {
+        return mb_min_lay_stake;
     }
 
 
@@ -505,7 +519,7 @@ public class Matchbook extends BettingSite {
 
             JSONObject offer = new JSONObject();
             offer.put("runner-id", betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID));
-            offer.put("side", betOrder.betType().toLowerCase());
+            offer.put("side", betOrder.betType().toString());
             offer.put("odds", odds.setScale(3, RoundingMode.HALF_UP).doubleValue());
             offer.put("stake", betOrder.getBackersStake().doubleValue());
             offer.put("keep-in-play", true);
@@ -514,7 +528,7 @@ public class Matchbook extends BettingSite {
             betOrder.site_json_request = offer;
 
             runner_betOrder_map.put(
-                    betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID) + betOrder.betType().toLowerCase(),
+                    betOrder.bet_offer.metadata.get(Matchbook.RUNNER_ID) + betOrder.betType().toString(),
                     betOrder);
         }
 
@@ -589,8 +603,7 @@ public class Matchbook extends BettingSite {
                         betOrder.match().name, returns.toString()));
 
 
-                PlacedBet pb = new PlacedBet(PlacedBet.SUCCESS_STATE, bet_id, betOrder, total_back_stake,
-                        total_lay_stake, avg_odds, returns, time_placed, time_sent);
+                PlacedBet pb = null;
                 pb.site_json_response = offer;
                 placedBets.add(pb);
             }
@@ -600,7 +613,7 @@ public class Matchbook extends BettingSite {
                 log.severe(String.format("Failed to place %s on bet %s in matchbook. Bet not fully matched.",
                         betOrder.investment.toString(), betOrder.bet_offer.bet.id(), jstring(response)));
 
-                PlacedBet pb = new PlacedBet(PlacedBet.FAILED_STATE, betOrder, status, null, time_sent);
+                PlacedBet pb = null;
                 pb.site_json_response = offer;
                 placedBets.add(pb);
             }

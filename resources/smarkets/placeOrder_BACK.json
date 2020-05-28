@@ -1,0 +1,14 @@
+{
+  "available_quantity": 0,
+  "orig_price": 4000,
+  "side": "buy",
+  "quantity": 15000,
+  "exposure": "-0.59",
+  "contract_id": "34615938",
+  "price": 3876,
+  "executed_avg_price": 3876,
+  "market_id": "9918245",
+  "available_balance": "220.96",
+  "order_id": "202793189840658442",
+  "total_executed_quantity": 15000
+}
