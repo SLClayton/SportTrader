@@ -1,11 +1,13 @@
 package Bet;
 
+import Bet.Bet.BetType;
 import SiteConnectors.BettingSite;
 import Trader.SportsTrader;
 import com.globalbettingexchange.externalapi.PlaceOrdersWithReceipt;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import javax.swing.*;
 import java.lang.management.BufferPoolMXBean;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,20 +17,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import static tools.printer.print;
+import static tools.printer.*;
 
 public class PlacedBet {
     // This should be exact real values taken from a site of an actual bet that
     // has been placed.
 
-    public enum State {SUCCESS, FAIL, PARTIAL}
+    private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    public BetOrder betOrder;
+    public enum State {SUCCESS, FAIL, PARTIAL, INVALID_BETORDER}
+
+
+
     public State state;
     public String bet_id;
+    public BetType bet_type;
 
-    public BigDecimal backersStake_layersProfit;
-    public BigDecimal investment;
+    private BigDecimal backersStake_layersProfit;
+    private BigDecimal backersProfit_layersStake;
     public BigDecimal avg_odds;
     public String error;
 
@@ -36,57 +42,40 @@ public class PlacedBet {
     public Instant time_created;
     public Instant time_placed;
 
-    public JSONObject site_json_response;
+    public String raw_response;
+    public BetOrder betOrder;
+    private BettingSite site;
 
 
-    public PlacedBet(State state, BetOrder betOrder, String bet_id, BigDecimal back_stake,
-                     BigDecimal avg_odds, Instant time_sent, Instant time_placed, String error){
-
-
-        //TODO: Use examples found to re-create this
-
+    public PlacedBet(){
         this.time_created = Instant.now();
 
-        this.state = state;
-        this.bet_id = bet_id;
-        this.betOrder = betOrder;
-        this.backersStake_layersProfit = back_stake;
-        this.avg_odds = avg_odds;
+        state = null;
+        bet_id = null;
+        bet_type = null;
 
-        this.time_placed = time_placed;
-        this.time_sent = time_sent;
+        backersStake_layersProfit = null;
+        backersProfit_layersStake = null;
+        avg_odds = null;
+        error = null;
 
-        this.error = error;
+        time_sent = null;
+        time_created = null;
+        time_placed = null;
+
+        raw_response = null;
+        betOrder = null;
+        site = null;
     }
 
-
-    public static PlacedBet FullPlacedBet(BetOrder betOrder, String bet_id, BigDecimal backers_stake,
-                                          BigDecimal avg_odds, Instant time_sent, Instant time_placed){
-
-        return new PlacedBet(State.SUCCESS, betOrder, bet_id, backers_stake, avg_odds,
-                time_sent, time_placed, null);
-    }
-
-
-    public static PlacedBet FailedPlacedBet(BetOrder betOrder, String bet_id, Instant time_sent, Instant time_placed,
-                                            String error){
-
-        return new PlacedBet(State.FAIL, betOrder, null, null, null,
-                time_sent, time_placed, error);
-    }
-
-
-    public BigDecimal getBackersProfit_layersStake(){
-        return Bet.backStake2LayStake(backersStake_layersProfit, avg_odds);
-    }
 
     public boolean isBack(){
-        return betOrder.isBack();
+        return bet_type == BetType.BACK;
     }
 
 
     public boolean isLay(){
-        return betOrder.isLay();
+        return bet_type == BetType.LAY;
     }
 
 
@@ -100,23 +89,92 @@ public class PlacedBet {
     }
 
 
-    public BigDecimal stake(){
+    public BigDecimal get_backersProfit_layersStake(Integer scale){
+        BigDecimal value;
+        if (backersProfit_layersStake != null){
+            value = backersProfit_layersStake;
+        }
+        else if (backersStake_layersProfit != null){
+            value = Bet.backStake2LayStake(backersStake_layersProfit, avg_odds);
+        }
+        else {
+            log.severe("Trying to return backersprofit_layerssStake for placedBet but both values null.");
+            return null;
+        }
+
+        if (scale != null) {
+            value = value.setScale(2, RoundingMode.HALF_UP);
+        }
+        return value;
+    }
+
+    public BigDecimal get_backersProfit_layersStake(){
+        return get_backersProfit_layersStake(null);
+    }
+
+
+    public BigDecimal get_backersStake_layersProfit(Integer scale){
+        BigDecimal value;
+        if (backersStake_layersProfit != null){
+            value = backersStake_layersProfit;
+        }
+        else if (backersProfit_layersStake != null){
+            value = Bet.layStake2backStake(backersProfit_layersStake, avg_odds);
+        }
+        else {
+            log.severe("Trying to return backersStake_layersProfit for placedBet but both values null.");
+            return null;
+        }
+
+        if (scale != null) {
+            value = value.setScale(2, RoundingMode.HALF_UP);
+        }
+        return value;
+    }
+
+    public BigDecimal get_backersStake_layersProfit(){
+        return get_backersStake_layersProfit(null);
+    }
+
+    public void set_backersStake_layersProfit(BigDecimal value){
+        this.backersStake_layersProfit = value;
+    }
+
+    public void set_backersProfit_layersStake(BigDecimal value){
+        this.backersProfit_layersStake = value;
+    }
+
+
+    public BigDecimal stake(Integer scale){
         if (isBack()){
-            return backersStake_layersProfit;
+            return get_backersStake_layersProfit(scale);
         }
         else{
-            return getBackersProfit_layersStake();
+            return get_backersProfit_layersStake(scale);
         }
+    }
+
+
+    public BigDecimal stake(){
+        return stake(null);
     }
 
 
     public BigDecimal potProfitBeforeCom(){
         if (isBack()){
-            return getBackersProfit_layersStake();
+            return get_backersProfit_layersStake();
         }
         else{
-            return backersStake_layersProfit;
+            return get_backersStake_layersProfit();
         }
+    }
+
+    public BigDecimal potProfitAfterCom(){
+        BigDecimal potProfitBeforeCom = potProfitBeforeCom();
+        if (potProfitBeforeCom == null){
+            return null;
+        }
+        return potProfitBeforeCom.subtract(winCommission(potProfitBeforeCom));
     }
 
 
@@ -124,88 +182,146 @@ public class PlacedBet {
         return winCommission(potProfitBeforeCom());
     }
 
-
     public BigDecimal winCommission(BigDecimal potProfitBeforeCom){
-        return site().winCommissionRate().multiply(potProfitBeforeCom);
+        if (getSite() == null || potProfitBeforeCom == null){
+            return null;
+        }
+        return getSite().winCommissionRate().multiply(potProfitBeforeCom);
+    }
+
+    public BigDecimal lossCommission(BigDecimal stake){
+        if (getSite() == null || stake == null){
+            return null;
+        }
+        return getSite().lossCommissionRate().multiply(stake);
+    }
+
+    public BigDecimal lossCommission(){
+        return lossCommission(stake());
     }
 
 
+    public BigDecimal total_investment(Integer scale){
+        BigDecimal stake = stake();
+        if (stake == null){
+            return null;
+        }
+
+        BigDecimal loss_commission = lossCommission(stake);
+        if (loss_commission == null){
+            return null;
+        }
+
+        BigDecimal investment = stake.add(loss_commission);
+
+        if (scale != null){
+            investment = investment.setScale(scale, RoundingMode.HALF_UP);
+        }
+        return investment;
+    }
+
     public BigDecimal total_investment(){
-        return site().investmentNeededForStake(stake());
+        return total_investment(null);
     }
 
 
     public BigDecimal potReturns(){
         BigDecimal profit_before_com = potProfitBeforeCom();
-        return total_investment()
+        BigDecimal total_investment = total_investment();
+
+        if (profit_before_com == null || total_investment == null){
+            return null;
+        }
+
+        return total_investment
                 .add(profit_before_com)
                 .subtract(winCommission(profit_before_com));
     }
 
 
-
-
-    public BettingSite site(){
-        return betOrder.site();
+    public BettingSite getSite(){
+        if (site != null){
+            return site;
+        }
+        if (betOrder != null){
+            return betOrder.site();
+        }
+        return null;
     }
 
+    public void setSite(BettingSite betting_site){
+        this.site = betting_site;
 
-    public BetOffer getBetOffer(){
-        return betOrder.bet_offer;
+        if (betOrder != null && betOrder.site() != this.site){
+            log.severe(String.format("PlacedBet SITE (%s) and BetOrder Site (%s) ARE DIFFERENT",
+                    this.site.getName(), betOrder.site().getName()));
+        }
     }
+
 
 
     public String toString(){
         return toJSON().toString();
     }
 
+
     public JSONObject toJSON(){
-        JSONObject m = new JSONObject();
+        JSONObject j = new JSONObject();
 
-        // Add timings information
-        JSONObject timings = new JSONObject();
-        timings.put("bet_placed", time_placed.toString());
-        timings.put("betoffercreated", getBetOffer().time_betOffer_creation.toString());
-        timings.put("bet_sent", time_sent.toString());
-        timings.put("placedbet_created", time_created.toString());
-        m.put("timings", timings);
+        JSONObject time_info = new JSONObject();
+        JSONObject com_info = new JSONObject();
 
-        // Add in raw betting site requests and responses
-        if (site_json_response != null){
-            m.put("site_response", site_json_response);
+
+        j.put("_backersStake_layersProfit", BDString(backersStake_layersProfit));
+        j.put("_backersProfit_layersStake", BDString(backersProfit_layersStake));
+        j.put("state", stringValue(state));
+        j.put("bet_id", stringValue(bet_id));
+        j.put("avg_odds", BDString(avg_odds));
+        j.put("type", stringValue(bet_type));
+        j.put("site", stringValue(getSite()));
+
+
+        j.put("tot_inv", BDString(total_investment()));
+        j.put("pot_prof_b4_com", BDString(potProfitBeforeCom()));
+        j.put("pot_prof", BDString(potProfitAfterCom()));
+
+        j.put("pot_returns", BDString(potReturns()));
+
+
+
+        if (getSite() != null){
+            com_info.put("win_com", BDString(winCommission()));
+            com_info.put("loss_com", BDString(lossCommission()));
+            com_info.put("win_com_rate", BDString(getSite().winCommissionRate()));
+            com_info.put("loss_com_rate", BDString(getSite().lossCommissionRate()));
         }
-        if (betOrder.site_json_request != null){
-            m.put("site_request", betOrder.site_json_request);
+        if (betOrder != null){
+            j.put("betOrder", betOrder.toJSON());
+        }
+        if (betOrder != null && time_placed != null){
+            time_info.put("offer_to_placed",
+                    time_placed.toEpochMilli() - betOrder.bet_offer.time_betOffer_creation.toEpochMilli());
+        }
+        if (betOrder != null && time_sent != null){
+            time_info.put("offer_to_sent",
+                    time_sent.toEpochMilli() - betOrder.bet_offer.time_betOffer_creation.toEpochMilli());
+        }
+        if (time_placed != null){
+            time_info.put("time_placed", time_placed.toString());
+        }
+        if (time_placed != null && time_sent != null){
+            time_info.put("sent_to_placed", time_placed.toEpochMilli() - time_sent.toEpochMilli());
         }
 
-        // Put betOrder this placed bet was based on in json
-        JSONObject boj = betOrder.toJSON();
-        boj.remove("site");
-        boj.remove("event");
-        m.put("betOrder", betOrder.toJSON());
-
-        // Put placed bet information in json
-        JSONObject pb = new JSONObject();
-        pb.put("state", String.valueOf(state));
-        pb.put("time_placed", String.valueOf(time_placed));
-        pb.put("site", String.valueOf(site().getName()));
-        pb.put("event", String.valueOf(betOrder.match()));
-        if (successful()){
-            pb.put("bet_id", String.valueOf(bet_id));
-            pb.put("back_stake", String.valueOf(backersStake_layersProfit));
-            pb.put("lay_stake", String.valueOf(getBackersProfit_layersStake()));
-            pb.put("invested", String.valueOf(investment));
-            pb.put("avg_odds", String.valueOf(avg_odds));
-            pb.put("returns", String.valueOf(potReturns()));
-            pb.put("profit", String.valueOf(potProfitBeforeCom()));
-            pb.put("prof_com", String.valueOf(winCommission()));
+        if (error != null){
+            j.put("error", error);
         }
-        else{
-            pb.put("error", String.valueOf(error));
-        }
-        m.put("placed_bet", pb);
 
-        return m;
+
+        j.put("timings", time_info);
+        j.put("comission", com_info);
+
+        return j;
     }
 
     public static JSONArray list2JSON(ArrayList<PlacedBet> placedBets){
@@ -217,5 +333,9 @@ public class PlacedBet {
     }
 
 
+    public static void main(String[] args){
+        BigDecimal bd = new BigDecimal("6000.004000");
+        print(BDString(bd));
+    }
 
 }

@@ -604,7 +604,7 @@ public class Matchbook extends BettingSite {
 
 
                 PlacedBet pb = null;
-                pb.site_json_response = offer;
+                pb.raw_response = offer.toJSONString();
                 placedBets.add(pb);
             }
             else{
@@ -614,7 +614,7 @@ public class Matchbook extends BettingSite {
                         betOrder.investment.toString(), betOrder.bet_offer.bet.id(), jstring(response)));
 
                 PlacedBet pb = null;
-                pb.site_json_response = offer;
+                pb.raw_response = offer.toJSONString();
                 placedBets.add(pb);
             }
         }

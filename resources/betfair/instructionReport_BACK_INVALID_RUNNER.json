@@ -1,0 +1,28 @@
+[
+  {
+    "result": {
+      "instructionReports": [
+        {
+          "instruction": {
+            "orderType": "LIMIT",
+            "side": "BACK",
+            "selectionId": 44511120,
+            "handicap": 0.0,
+            "limitOrder": {
+              "size": 2.0,
+              "price": 5.5,
+              "timeInForce": "FILL_OR_KILL"
+            }
+          },
+          "errorCode": "INVALID_RUNNER",
+          "status": "FAILURE"
+        }
+      ],
+      "errorCode": "BET_ACTION_ERROR",
+      "status": "FAILURE",
+      "marketId": "1.170529627"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  }
+]

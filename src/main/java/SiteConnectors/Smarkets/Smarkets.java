@@ -900,7 +900,7 @@ public class Smarkets extends BettingSite {
 
                 pb = null;
             }
-            pb.site_json_response = jsonConverter(response);
+            pb.raw_response = jsonConverter(response).toJSONString();
             placedBets.add(pb);
         }
 

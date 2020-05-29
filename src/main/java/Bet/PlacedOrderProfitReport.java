@@ -48,7 +48,7 @@ public class PlacedOrderProfitReport {
             any_success = true;
 
 
-            total_investment = total_investment.add(pb.investment);
+            total_investment = total_investment.add(pb.total_investment());
 
             if (min_return == null || pb.potReturns().compareTo(min_return) == -1){
                 min_return = pb.potReturns();

@@ -16,6 +16,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.security.MessageDigest;
@@ -105,11 +106,25 @@ public abstract class printer {
 
 
     public static void print(Object output){
-        if (output == null){
-            System.out.println("null");
+         System.out.println(stringValue(output));
+    }
+
+
+    public static String stringValue(Object obj){
+        if (obj == null){
+            return "null";
         }
-        else {
-            System.out.println(String.valueOf(output));
+        else{
+            return String.valueOf(obj);
+        }
+    }
+
+    public static String BDString(BigDecimal input){
+        if (input == null){
+            return "null";
+        }
+        else{
+            return input.stripTrailingZeros().toPlainString();
         }
     }
 
