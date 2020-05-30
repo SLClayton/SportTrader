@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PlaceOrdersWithReceiptResponse xmlns="http://www.GlobalBettingExchange.com/ExternalAPI/">
+    <PlaceOrdersWithReceiptResult>
+        <ReturnStatus Code="0" Description="Success" CallId="61d0b377-7da9-4d4a-b115-8d5dc0b982d5" />
+        <Timestamp>2020-05-30T08:24:33.3451970Z</Timestamp>
+        <Orders>
+            <Order
+                    Status="2"
+                    MatchedAgainstStake="0.66"
+                    MatchedStake="0.65"
+                    MatchedPrice="2.0153846153846153846153846154"
+                    UnmatchedStake="0.00"
+                    Polarity="1"
+                    SequenceNumber="125"
+                    SelectionId="122126647"
+                    PunterReferenceNumber="0"
+                    OrderHandle="6543853511"
+            />
+            <Order Status="3"
+                   MatchedAgainstStake="0"
+                   MatchedStake="0"
+                   MatchedPrice="0"
+                   UnmatchedStake="0.75"
+                   Polarity="1"
+                   SequenceNumber="126"
+                   SelectionId="122126647"
+                   PunterReferenceNumber="0"
+                   OrderHandle="6543853512" />
+        </Orders>
+    </PlaceOrdersWithReceiptResult>
+</PlaceOrdersWithReceiptResponse>

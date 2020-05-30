@@ -10,6 +10,7 @@ import Trader.SportsTrader;
 import org.json.simple.parser.ParseException;
 import tools.Requester;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -136,29 +137,12 @@ public abstract class BettingSite {
 
 
     public BigDecimal stakePartOfInvestment(BigDecimal investment) {
-
-        // 100% of stake + 1% loss commission is the total investment so a total 1.01 ratio for 1%
-        BigDecimal total_ratio = BigDecimal.ONE.add(lossCommissionRate());
-
-        // The amount of the total investment which is the stake (1.00 out of 1.01)
-        BigDecimal stake_ratio = BigDecimal.ONE.divide(total_ratio, 12, RoundingMode.HALF_UP);
-
-        // Multiply total investment by the amount of it that is stake, to get the total stake
-        BigDecimal stake_amount = investment.multiply(stake_ratio);
-
-        return stake_amount;
+        return Bet.stakePartOfInvestment(investment, lossCommissionRate());
     }
 
 
     public BigDecimal investmentNeededForStake(BigDecimal stake) {
-
-        // Total amount of commission charged if lost bet
-        BigDecimal loss_commission_amount = stake.multiply(lossCommissionRate());
-
-        // Sum up the total amount of money needed
-        BigDecimal total_inv_needed = stake.add(loss_commission_amount);
-
-        return total_inv_needed;
+        return Bet.investmentNeededForStake(stake, lossCommissionRate());
     }
 
 
@@ -189,14 +173,17 @@ public abstract class BettingSite {
 
 
 
-    public BigDecimal ROI(BetOffer bet_offer, BigDecimal investment, boolean real) {
-        // Default ROI, commission on profits only
+    public BigDecimal ROI(BetType betType, BigDecimal investment, BigDecimal odds){
+        return Bet.ROI(betType, investment, odds, winCommissionRate(), lossCommissionRate(), null);
+    }
 
-        return ROI(bet_offer.bet.getType(), bet_offer.odds, bet_offer.site.winCommissionRate(), investment, real);
+    public BigDecimal ROI(BetType betType, BigDecimal investment, BigDecimal odds, Integer scale){
+        return Bet.ROI(betType, investment, odds, winCommissionRate(), lossCommissionRate(), scale);
     }
 
 
-    public static BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
+
+    public static BigDecimal _ROI_lagacy(BetType betType, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
                                  boolean real) {
         // Default ROI, commission on profits only
 

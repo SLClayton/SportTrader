@@ -68,6 +68,10 @@ public class Matchbook extends BettingSite {
             IOException, KeyManagementException, KeyStoreException, URISyntaxException, InterruptedException,
             org.json.simple.parser.ParseException {
 
+        log.severe("MATCHBOOK NEEDS WORK BEFORE IT'LL WORK!!!!!");
+        log.severe("MATCHBOOK NEEDS WORK BEFORE IT'LL WORK!!!!!");
+        log.severe("MATCHBOOK NEEDS WORK BEFORE IT'LL WORK!!!!!");
+
         if (log == null){
             log = Logger.getLogger(Matchbook.class.getName());
             //log.setUseParentHandlers(false);

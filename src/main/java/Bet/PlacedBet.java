@@ -4,6 +4,9 @@ import Bet.Bet.BetType;
 import SiteConnectors.BettingSite;
 import Trader.SportsTrader;
 import com.globalbettingexchange.externalapi.PlaceOrdersWithReceipt;
+import com.globalbettingexchange.externalapi.PlaceOrdersWithReceiptResponse;
+import com.globalbettingexchange.externalapi.PlaceOrdersWithReceiptResponse2;
+import com.globalbettingexchange.externalapi.PlaceOrdersWithReceiptResponseItem;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import static tools.Requester.SOAP2XMLnull;
 import static tools.printer.*;
 
 public class PlacedBet {
@@ -42,7 +46,7 @@ public class PlacedBet {
     public Instant time_created;
     public Instant time_placed;
 
-    public String raw_response;
+    public Object raw_response;
     public BetOrder betOrder;
     private BettingSite site;
 
@@ -66,6 +70,23 @@ public class PlacedBet {
         raw_response = null;
         betOrder = null;
         site = null;
+    }
+
+    public static PlacedBet failedBet(String error){
+        PlacedBet pb = new PlacedBet();
+        pb.state = State.FAIL;
+        pb.error = error;
+        return pb;
+    }
+
+    public void setFail(String error_msg){
+        state = State.FAIL;
+        error = error_msg;
+    }
+
+
+    public void setSuccess(){
+        state = State.SUCCESS;
     }
 
 
@@ -136,6 +157,7 @@ public class PlacedBet {
         return get_backersStake_layersProfit(null);
     }
 
+
     public void set_backersStake_layersProfit(BigDecimal value){
         this.backersStake_layersProfit = value;
     }
@@ -170,11 +192,18 @@ public class PlacedBet {
     }
 
     public BigDecimal potProfitAfterCom(){
+
         BigDecimal potProfitBeforeCom = potProfitBeforeCom();
         if (potProfitBeforeCom == null){
             return null;
         }
-        return potProfitBeforeCom.subtract(winCommission(potProfitBeforeCom));
+
+        BigDecimal commission = winCommission(potProfitBeforeCom);
+        if (commission == null){
+            return null;
+        }
+
+        return potProfitBeforeCom.subtract(commission);
     }
 
 
@@ -272,8 +301,8 @@ public class PlacedBet {
         JSONObject com_info = new JSONObject();
 
 
-        j.put("_backersStake_layersProfit", BDString(backersStake_layersProfit));
-        j.put("_backersProfit_layersStake", BDString(backersProfit_layersStake));
+        j.put("backersStake_layersProfit", BDString(backersStake_layersProfit));
+        j.put("backersProfit_layersStake", BDString(backersProfit_layersStake));
         j.put("state", stringValue(state));
         j.put("bet_id", stringValue(bet_id));
         j.put("avg_odds", BDString(avg_odds));
@@ -309,12 +338,34 @@ public class PlacedBet {
         if (time_placed != null){
             time_info.put("time_placed", time_placed.toString());
         }
+        if (time_sent != null){
+            time_info.put("time_sent", time_sent.toString());
+        }
         if (time_placed != null && time_sent != null){
             time_info.put("sent_to_placed", time_placed.toEpochMilli() - time_sent.toEpochMilli());
         }
 
         if (error != null){
             j.put("error", error);
+        }
+
+        if (raw_response != null){
+            if (raw_response instanceof JSONObject){
+                j.put("raw_resp", (JSONObject) raw_response);
+            }
+            else if (raw_response instanceof PlaceOrdersWithReceiptResponseItem){
+                PlaceOrdersWithReceiptResponse powrr = new PlaceOrdersWithReceiptResponse();
+                PlaceOrdersWithReceiptResponse2 powrr2 = new PlaceOrdersWithReceiptResponse2();
+                PlaceOrdersWithReceiptResponse2.Orders orders = new PlaceOrdersWithReceiptResponse2.Orders();
+                orders.getOrder().add((PlaceOrdersWithReceiptResponseItem) raw_response);
+                powrr2.setOrders(orders);
+                powrr.setPlaceOrdersWithReceiptResult(powrr2);
+                String xml = SOAP2XMLnull(powrr);
+                j.put("raw_resp", xml);
+            }
+            else{
+                j.put("raw_resp", raw_response.toString());
+            }
         }
 
 

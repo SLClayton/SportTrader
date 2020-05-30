@@ -324,8 +324,8 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 // Get price and vol as integers and convert them.
                 long price = (long) s_offer.get("price");
                 long quantity = (long) s_offer.get("quantity");
-                BigDecimal decimal_odds = Smarkets.price2dec(price);
-                BigDecimal volume = Smarkets.quantity2size(quantity, price);
+                BigDecimal decimal_odds = Smarkets.price2DecOdds(price);
+                BigDecimal volume = Smarkets.quantity2BackStake(quantity, price);
 
                 BetOffer bo = new BetOffer(lastMarketOddsReport_start_time, event, bet, smarkets, decimal_odds, volume);
                 bo.addMetadata(Smarkets.CONTRACT_ID, contract_id);

@@ -572,13 +572,13 @@ public class Betfair extends BettingSite {
             throws IOException, URISyntaxException {
 
         // Sort bets into groups depending on their market ID
-        Map<String, ArrayList<BetOrder>> market_betOrders = new HashMap<>();
+        Map<String, ArrayList<BetOrder>> market_betOrders_map = new HashMap<>();
         for (BetOrder betOrder: betOrders){
             String marketId = betOrder.bet_offer.metadata.get("marketId");
-            if (!market_betOrders.containsKey(marketId)) {
-                market_betOrders.put(marketId, new ArrayList<BetOrder>());
+            if (!market_betOrders_map.containsKey(marketId)) {
+                market_betOrders_map.put(marketId, new ArrayList<BetOrder>());
             }
-            market_betOrders.get(marketId).add(betOrder);
+            market_betOrders_map.get(marketId).add(betOrder);
         }
 
 
@@ -588,7 +588,7 @@ public class Betfair extends BettingSite {
 
         // Create whole RPC request
         JSONArray RPCs = new JSONArray();
-        for (Map.Entry<String, ArrayList<BetOrder>> entry: market_betOrders.entrySet()){
+        for (Map.Entry<String, ArrayList<BetOrder>> entry: market_betOrders_map.entrySet()){
             String marketId = entry.getKey();
             ArrayList<BetOrder> marketBetOrders = entry.getValue();
 
@@ -661,8 +661,6 @@ public class Betfair extends BettingSite {
                 placedBet.betOrder = betOrders.get(Integer.parseInt(cust_order_ref));
 
                 placedBets.add(placedBet);
-
-                //TODO: End part done, re-do start bit
             }
         }
 
