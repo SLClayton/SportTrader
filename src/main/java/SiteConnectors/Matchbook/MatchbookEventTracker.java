@@ -122,7 +122,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
                 BigDecimal odds = new BigDecimal(String.valueOf(mb_offer.get("decimal-odds")));
                 BigDecimal volume = new BigDecimal(String.valueOf(mb_offer.get("available-amount")));
 
-                BetOffer bo = new BetOffer(lastMarketOddsReport_start_time, event, bet, matchbook, odds, volume);
+                BetOffer bo = new BetOffer(matchbook, event, bet, odds, volume);
                 bo.addMetadata(Matchbook.MARKET_ID, String.valueOf(runner.get("market-id")));
                 bo.addMetadata(Matchbook.RUNNER_ID, String.valueOf(runner.get("id")));
 

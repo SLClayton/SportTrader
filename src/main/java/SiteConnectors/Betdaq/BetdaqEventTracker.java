@@ -154,7 +154,7 @@ public class BetdaqEventTracker extends SiteEventTracker {
                     BigDecimal price = offer.getValue().getPrice();
                     BigDecimal volume = offer.getValue().getStake();
 
-                    BetOffer bo = new BetOffer(lastMarketOddsReport_start_time, event, bet, site, price, volume);
+                    BetOffer bo = new BetOffer(site, event, bet, price, volume);
                     bo.addMetadata(Betdaq.BETDAQ_EVENT_ID, String.valueOf(market_id));
                     bo.addMetadata(Betdaq.BETDAQ_SELECTION_ID, String.valueOf(selection_id));
                     bo.addMetadata(Betdaq.BETDAQ_SELECTION_RESET_COUNT, String.valueOf(selectionType.getResetCount()));

@@ -23,14 +23,13 @@ import java.util.logging.Logger;
 import static tools.Requester.SOAP2XMLnull;
 import static tools.printer.*;
 
-public class PlacedBet {
+public class PlacedBet implements ProfitReportItem {
     // This should be exact real values taken from a site of an actual bet that
     // has been placed.
 
     private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public enum State {SUCCESS, FAIL, PARTIAL, INVALID_BETORDER}
-
 
 
     public State state;
@@ -47,6 +46,7 @@ public class PlacedBet {
     public Instant time_placed;
 
     public Object raw_response;
+    public Object raw_request;
     public BetOrder betOrder;
     private BettingSite site;
 
@@ -101,12 +101,15 @@ public class PlacedBet {
 
 
     public boolean successful(){
-        return state.equals(State.SUCCESS);
+        return getState().equals(State.SUCCESS);
     }
 
-
     public boolean failed(){
-        return state.equals(State.FAIL);
+        return getState().equals(State.FAIL);
+    }
+
+    public State getState(){
+        return state;
     }
 
 
@@ -218,6 +221,7 @@ public class PlacedBet {
         return getSite().winCommissionRate().multiply(potProfitBeforeCom);
     }
 
+
     public BigDecimal lossCommission(BigDecimal stake){
         if (getSite() == null || stake == null){
             return null;
@@ -230,33 +234,10 @@ public class PlacedBet {
     }
 
 
-    public BigDecimal total_investment(Integer scale){
-        BigDecimal stake = stake();
-        if (stake == null){
-            return null;
-        }
-
-        BigDecimal loss_commission = lossCommission(stake);
-        if (loss_commission == null){
-            return null;
-        }
-
-        BigDecimal investment = stake.add(loss_commission);
-
-        if (scale != null){
-            investment = investment.setScale(scale, RoundingMode.HALF_UP);
-        }
-        return investment;
-    }
-
-    public BigDecimal total_investment(){
-        return total_investment(null);
-    }
-
 
     public BigDecimal potReturns(){
         BigDecimal profit_before_com = potProfitBeforeCom();
-        BigDecimal total_investment = total_investment();
+        BigDecimal total_investment = getInvestment();
 
         if (profit_before_com == null || total_investment == null){
             return null;
@@ -268,22 +249,50 @@ public class PlacedBet {
     }
 
 
-    public BettingSite getSite(){
-        if (site != null){
-            return site;
+    @Override
+    public BigDecimal getInvestment() {
+        BigDecimal stake = stake();
+        if (stake == null){
+            return null;
         }
-        if (betOrder != null){
-            return betOrder.site();
+
+        BigDecimal loss_commission = lossCommission(stake);
+        if (loss_commission == null){
+            return null;
         }
+
+        BigDecimal investment = stake.add(loss_commission);
+        return investment;
+    }
+
+    @Override
+    public BigDecimal getReturn() {
         return null;
+    }
+
+    @Override
+    public BetOffer getBetOffer() {
+        if (betOrder == null){
+            return null;
+        }
+        return betOrder.getBetOffer();
+    }
+
+    public BettingSite getSite(){
+        return site;
+    }
+
+    @Override
+    public Bet getBet() {
+        return betOrder.getBet();
     }
 
     public void setSite(BettingSite betting_site){
         this.site = betting_site;
 
-        if (betOrder != null && betOrder.site() != this.site){
+        if (betOrder != null && betOrder.getSite() != this.site){
             log.severe(String.format("PlacedBet SITE (%s) and BetOrder Site (%s) ARE DIFFERENT",
-                    this.site.getName(), betOrder.site().getName()));
+                    this.site.getName(), betOrder.getSite().getName()));
         }
     }
 
@@ -291,6 +300,26 @@ public class PlacedBet {
 
     public String toString(){
         return toJSON().toString();
+    }
+
+
+    public static Object stringObject(Object obj){
+        if (obj instanceof JSONObject){
+            return (JSONObject) obj;
+        }
+        else if (obj instanceof PlaceOrdersWithReceiptResponseItem){
+            PlaceOrdersWithReceiptResponse powrr = new PlaceOrdersWithReceiptResponse();
+            PlaceOrdersWithReceiptResponse2 powrr2 = new PlaceOrdersWithReceiptResponse2();
+            PlaceOrdersWithReceiptResponse2.Orders orders = new PlaceOrdersWithReceiptResponse2.Orders();
+            orders.getOrder().add((PlaceOrdersWithReceiptResponseItem) obj);
+            powrr2.setOrders(orders);
+            powrr.setPlaceOrdersWithReceiptResult(powrr2);
+            String xml = SOAP2XMLnull(powrr);
+            return xml;
+        }
+        else{
+            return obj.toString();
+        }
     }
 
 
@@ -307,33 +336,33 @@ public class PlacedBet {
         j.put("bet_id", stringValue(bet_id));
         j.put("avg_odds", BDString(avg_odds));
         j.put("type", stringValue(bet_type));
-        j.put("site", stringValue(getSite()));
 
-
-        j.put("tot_inv", BDString(total_investment()));
+        j.put("tot_inv", BDString(getInvestment()));
         j.put("pot_prof_b4_com", BDString(potProfitBeforeCom()));
         j.put("pot_prof", BDString(potProfitAfterCom()));
 
         j.put("pot_returns", BDString(potReturns()));
 
 
-
         if (getSite() != null){
+            BigDecimal loss_com_rate = getSite().lossCommissionRate();
+            if (loss_com_rate.signum() != 0){
+                com_info.put("loss_com_rate", BDString(loss_com_rate));
+                com_info.put("loss_com", BDString(lossCommission()));
+            }
             com_info.put("win_com", BDString(winCommission()));
-            com_info.put("loss_com", BDString(lossCommission()));
             com_info.put("win_com_rate", BDString(getSite().winCommissionRate()));
-            com_info.put("loss_com_rate", BDString(getSite().lossCommissionRate()));
         }
         if (betOrder != null){
             j.put("betOrder", betOrder.toJSON());
         }
         if (betOrder != null && time_placed != null){
             time_info.put("offer_to_placed",
-                    time_placed.toEpochMilli() - betOrder.bet_offer.time_betOffer_creation.toEpochMilli());
+                    time_placed.toEpochMilli() - getBetOffer().time_betOffer_creation.toEpochMilli());
         }
         if (betOrder != null && time_sent != null){
             time_info.put("offer_to_sent",
-                    time_sent.toEpochMilli() - betOrder.bet_offer.time_betOffer_creation.toEpochMilli());
+                    time_sent.toEpochMilli() - getBetOffer().time_betOffer_creation.toEpochMilli());
         }
         if (time_placed != null){
             time_info.put("time_placed", time_placed.toString());
@@ -350,22 +379,10 @@ public class PlacedBet {
         }
 
         if (raw_response != null){
-            if (raw_response instanceof JSONObject){
-                j.put("raw_resp", (JSONObject) raw_response);
-            }
-            else if (raw_response instanceof PlaceOrdersWithReceiptResponseItem){
-                PlaceOrdersWithReceiptResponse powrr = new PlaceOrdersWithReceiptResponse();
-                PlaceOrdersWithReceiptResponse2 powrr2 = new PlaceOrdersWithReceiptResponse2();
-                PlaceOrdersWithReceiptResponse2.Orders orders = new PlaceOrdersWithReceiptResponse2.Orders();
-                orders.getOrder().add((PlaceOrdersWithReceiptResponseItem) raw_response);
-                powrr2.setOrders(orders);
-                powrr.setPlaceOrdersWithReceiptResult(powrr2);
-                String xml = SOAP2XMLnull(powrr);
-                j.put("raw_resp", xml);
-            }
-            else{
-                j.put("raw_resp", raw_response.toString());
-            }
+            j.put("raw_response", stringObject(raw_response));
+        }
+        if (raw_request != null){
+            j.put("raw_request", stringObject(raw_request));
         }
 
 

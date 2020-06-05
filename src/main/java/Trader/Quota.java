@@ -174,11 +174,11 @@ public class Quota {
 
         List<PlacedBet> placedBets = new ArrayList<>();
         for (BetOrder bo: betOrderProfitReport.betOrders){
-            PlacedBet placedBet = bo.site().placeBet(bo, new BigDecimal("0.9"));
+            PlacedBet placedBet = bo.getSite().placeBet(bo, new BigDecimal("0.9"));
             placedBets.add(placedBet);
         }
 
-        PlacedOrderProfitReport placedOrderProfitReport = new PlacedOrderProfitReport(placedBets, betOrderProfitReport);
+        PlacedOrderProfitReport_legacy placedOrderProfitReport = new PlacedOrderProfitReport_legacy(placedBets, betOrderProfitReport);
 
         pp(placedOrderProfitReport.toJSON(true));
     }

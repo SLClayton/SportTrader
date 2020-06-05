@@ -11,7 +11,7 @@ import static tools.printer.pp;
 public class ProfitReportSet {
     // A set of profit reports. Usually to show every tautology.
 
-    public ArrayList<BetOrderProfitReport> betOrderProfitReports;
+    public List<BetOrderProfitReport> betOrderProfitReports;
 
 
     public ProfitReportSet(){
@@ -112,7 +112,7 @@ public class ProfitReportSet {
                     failed_bets.add(bet);
                     continue tautologyLoop;
                 }
-                betOrders.add(new BetOrder(best_valid_offer, BigDecimal.ONE, false));
+                betOrders.add(BetOrder.fromTargetInvestment(best_valid_offer, BigDecimal.ONE));
             }
 
 

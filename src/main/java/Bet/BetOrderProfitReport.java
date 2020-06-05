@@ -21,10 +21,8 @@ public class BetOrderProfitReport implements Comparable<BetOrderProfitReport> {
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
     public List<BetOrder> betOrders;
-    public String type;
 
     public BigDecimal total_investment;
-
     public BigDecimal min_return;
     public BigDecimal max_return;
     public BigDecimal min_profit;
@@ -37,46 +35,7 @@ public class BetOrderProfitReport implements Comparable<BetOrderProfitReport> {
 
     public BetOrderProfitReport(ArrayList<BetOrder> betOrders) {
 
-        this.betOrders = betOrders;
 
-        // Sum up all investments
-        // Find minimum return of all bet orders
-        // Find maximum return of all bet orders
-        total_investment = BigDecimal.ZERO;
-        for (BetOrder bo: betOrders){
-            total_investment = total_investment.add(bo.investment);
-
-            if (min_return == null || bo.actual_return.compareTo(min_return) == -1){
-                min_return = bo.actual_return;
-            }
-            if (max_return == null || bo.actual_return.compareTo(max_return) == 1){
-                max_return = bo.actual_return;
-            }
-
-            if (ret_from_min_stake == null) {
-                ret_from_min_stake = bo.bet_offer.returnFromMinStake();
-            }
-            else{
-                ret_from_min_stake = ret_from_min_stake.max(bo.bet_offer.returnFromMinStake());
-            }
-
-            if (ret_from_max_stake == null){
-                ret_from_max_stake = bo.bet_offer.returnFromMaxStake();
-            }
-            else{
-                ret_from_max_stake = ret_from_max_stake.min(bo.bet_offer.returnFromMaxStake());
-            }
-        }
-
-        min_profit = min_return.subtract(total_investment);
-        max_profit = max_return.subtract(total_investment);
-
-        if (total_investment.compareTo(BigDecimal.ZERO) == 0){
-            profit_ratio = null;
-        }
-        else{
-            profit_ratio = min_profit.divide(total_investment, 20, RoundingMode.HALF_UP);
-        }
     }
 
 
@@ -106,7 +65,7 @@ public class BetOrderProfitReport implements Comparable<BetOrderProfitReport> {
         }
         else{
             if (betOrders.size() > 0){
-                j.put("event", betOrders.get(0).match().toString());
+                j.put("event", betOrders.get(0).getEvent().toString());
             }
             else{
                 j.put("event", null);
@@ -116,7 +75,7 @@ public class BetOrderProfitReport implements Comparable<BetOrderProfitReport> {
 
         BetGroup tautology = new BetGroup();
         for (BetOrder bo: betOrders){
-            tautology.add(bo.bet());
+            tautology.add(bo.getBet());
         }
         j.put("tautology_id", tautology.id());
         j.put("bet_ids", tautology.toJSON(false));
@@ -134,21 +93,27 @@ public class BetOrderProfitReport implements Comparable<BetOrderProfitReport> {
     public Set<BettingSite> sitesUsed(){
         Set<BettingSite> sites_used = new HashSet<>();
         for (BetOrder bo: betOrders){
-            sites_used.add(bo.site());
+            sites_used.add(bo.getSite());
         }
         return sites_used;
     }
 
 
-    public BetOrderProfitReport newProfitReportReturn(BigDecimal target_return) {
+    public BetOrderProfitReport newProfitReportReturn(BigDecimal new_target_return) {
         // Create a new profit report thats the same but with a different target return.
-
-
         ArrayList<BetOrder> new_bet_orders = new ArrayList<BetOrder>();
-        for (int i=0; i< betOrders.size(); i++){
-            new_bet_orders.add(new BetOrder(betOrders.get(i).bet_offer, target_return, true));
+        for (BetOrder betOrder: betOrders){
+            new_bet_orders.add(betOrder.newTargetReturn(new_target_return));
         }
+        return new BetOrderProfitReport(new_bet_orders);
+    }
 
+    public BetOrderProfitReport newProfitReportInvestment(BigDecimal new_target_investment) {
+        // Create a new profit report thats the same but with a different target investment.
+        ArrayList<BetOrder> new_bet_orders = new ArrayList<BetOrder>();
+        for (BetOrder betOrder: betOrders){
+            new_bet_orders.add(betOrder.newTargetInvestment(new_target_investment));
+        }
         return new BetOrderProfitReport(new_bet_orders);
     }
 
@@ -163,29 +128,10 @@ public class BetOrderProfitReport implements Comparable<BetOrderProfitReport> {
     }
 
 
-    public BetOrderProfitReport newProfitReportInvestment(BigDecimal new_target_investment) {
-
-        // Find the average target returns of the betOrders
-        BigDecimal sum_target_return = BigDecimal.ZERO;
-        for (BetOrder betOrder: betOrders){
-            sum_target_return = sum_target_return.add(betOrder.target_return);
-        }
-        BigDecimal avg_target_return = sum_target_return.divide(
-                new BigDecimal(betOrders.size()), 20, RoundingMode.HALF_UP);
-
-        // Use ratio of this investment and target investment to multiply old target return
-        // to new target return
-        BigDecimal ratio = new_target_investment.divide(total_investment, 20, RoundingMode.HALF_UP);
-        BigDecimal new_target_return = avg_target_return.multiply(ratio);
-
-        return newProfitReportReturn(new_target_return);
-    }
-
-
-    public BetGroup getTautology(){
+    public BetGroup getBetGroup(){
         ArrayList<Bet> bets = new ArrayList<>();
         for (BetOrder betOrder: betOrders){
-            bets.add(betOrder.bet());
+            bets.add(betOrder.getBet());
         }
         return new BetGroup(bets);
     }

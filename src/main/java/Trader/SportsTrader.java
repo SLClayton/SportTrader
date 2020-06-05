@@ -41,38 +41,16 @@ import static tools.printer.*;
 
 public class SportsTrader {
 
-    private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
-    private static final SportData sportData = new FlashScores();
-
-    public int MAX_MATCHES;
-    public int MIN_SITES_PER_MATCH;
-    public boolean IN_PLAY;
-    public int HOURS_AHEAD;
-    public boolean CHECK_MARKETS;
-    public boolean PLACE_BETS;
-    public long RATE_LIMIT;
-    public BigDecimal MIN_ODDS_RATIO;
-    public Map<String, Boolean> ACTIVE_SITES;
-    public String EVENT_SOURCE;
-    public BigDecimal MAX_INVESTMENT;
-    public BigDecimal MIN_PROFIT_RATIO;
-    public boolean END_ON_BET;
-    public BigDecimal TARGET_INVESTMENT;
-    public long REQUEST_TIMEOUT;
-    public boolean RUN_STATS;
-    public boolean SINGLE_MATCH_TEST;
-    public String SM_NAME;
-    public String SM_TIME;
-    public long RATE_LOCKSTEP_INTERVAL;
-    public String LOG_LEVEL;
-    public boolean LIMIT_LOW_PROFIT;
+    public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+    public static final SportData sportData = new FlashScores();
+    public static final Config config = Config.getConfig("config.json");
 
 
     public Lock betlock = new ReentrantLock();
 
     public ArrayList<Class> siteClasses;
     public Map<String, BettingSite> siteObjects;
-    public int session_Update_interval_hours = 4; // in hours
+    public int session_Update_interval_hours = 4;
 
     public FootballBetGenerator footballBetGenerator;
 
@@ -105,8 +83,11 @@ public class SportsTrader {
             throw e;
         }
 
-        setupConfig("config.json");
-        log.setLevel(Level.parse(LOG_LEVEL));
+        if (config == null){
+            throw new ConfigException("Config returned null.");
+        }
+
+        log.setLevel(Level.parse(config.LOG_LEVEL));
 
         siteClasses = new ArrayList<Class>();
         siteClasses.add(Betfair.class);
@@ -231,80 +212,6 @@ public class SportsTrader {
     }
 
 
-    private void setupConfig(String config_filename) throws FileNotFoundException,
-            ConfigException, org.json.simple.parser.ParseException {
-
-        JSONObject config = null;
-        String config_string = getResourceFileString(config_filename);
-        config = (JSONObject) new JSONParser().parse(config_string);
-
-        // Log the config of this execution
-        log.info(String.format("Loading config file:\n%s", config_string));
-
-        String[] required = new String[] {"MAX_MATCHES", "IN_PLAY", "HOURS_AHEAD", "CHECK_MARKETS",
-                "PLACE_BETS", "RATE_LIMIT", "ACTIVE_SITES", "MIN_ODDS_RATIO", "MIN_SITES_PER_MATCH",
-                "EVENT_SOURCE", "MAX_INVESTMENT", "MIN_PROFIT_RATIO", "END_ON_BET", "TARGET_INVESTMENT",
-                "REQUEST_TIMEOUT", "RUN_STATS", "SINGLE_MATCH_TEST", "SM_NAME", "SM_TIME", "RATE_LOCKSTEP_INTERVAL",
-                "LOG_LEVEL", "SMARKETS_REQ_SIZE", "SMARKETS_RH_WAIT", "BETFAIR_RH_WAIT", "MATCHBOOK_RH_WAIT",
-                "LIMIT_LOW_PROFIT"};
-
-        List<String> missingFields = new ArrayList<>();
-        for (String field: required){
-            if (!(config.keySet().contains(field))){
-                missingFields.add(field);
-            }
-        }
-        if (missingFields.size() > 0){
-            throw new ConfigException(missingFields);
-        }
-
-        MAX_MATCHES = ((Long) config.get("MAX_MATCHES")).intValue();
-        MIN_SITES_PER_MATCH = ((Long) config.get("MIN_SITES_PER_MATCH")).intValue();
-        IN_PLAY = (boolean) config.get("IN_PLAY");
-        HOURS_AHEAD = ((Long) config.get("HOURS_AHEAD")).intValue();
-        CHECK_MARKETS = (boolean) config.get("CHECK_MARKETS");
-        PLACE_BETS = (boolean) config.get("PLACE_BETS");
-        ACTIVE_SITES = (Map<String, Boolean>) config.get("ACTIVE_SITES");
-        RATE_LIMIT = ((Long) config.get("RATE_LIMIT"));
-        MIN_ODDS_RATIO = new BigDecimal(String.valueOf((Double) config.get("MIN_ODDS_RATIO")));
-        EVENT_SOURCE = (String) config.get("EVENT_SOURCE");
-        MAX_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("MAX_INVESTMENT")));
-        MIN_PROFIT_RATIO = new BigDecimal(String.valueOf(config.get("MIN_PROFIT_RATIO")));
-        END_ON_BET = (boolean) config.get("END_ON_BET");
-        TARGET_INVESTMENT = new BigDecimal(String.valueOf((Double) config.get("TARGET_INVESTMENT")));
-        REQUEST_TIMEOUT = ((Long) config.get("REQUEST_TIMEOUT"));
-        RUN_STATS = (boolean) config.get("RUN_STATS");
-        SINGLE_MATCH_TEST = (boolean) config.get("SINGLE_MATCH_TEST");
-        SM_NAME = (String) config.get("SM_NAME");
-        SM_TIME = (String) config.get("SM_TIME");
-        RATE_LOCKSTEP_INTERVAL = ((Long) config.get("RATE_LOCKSTEP_INTERVAL"));
-        LOG_LEVEL = ((String) config.get("LOG_LEVEL")).toUpperCase();
-        LIMIT_LOW_PROFIT = (boolean) config.get("LIMIT_LOW_PROFIT");
-
-
-        // Check target inv per bet is lower than max investment per bet
-        if (TARGET_INVESTMENT.compareTo(MAX_INVESTMENT) == 1){
-            String msg = String.format("TARGET_INVESTMENT (%s) is higher than MAX_INVESTMENT (%s). Exiting",
-                    TARGET_INVESTMENT.toString(), MAX_INVESTMENT.toString());
-            log.severe(msg);
-            throw new ConfigException(msg);
-        }
-
-        // Check number active sites is not lower than min number of sites per event
-        int number_active_sites = 0;
-        for (Map.Entry<String, Boolean> entry: ACTIVE_SITES.entrySet()){
-            if (entry.getValue()){
-                number_active_sites += 1;
-            }
-        }
-        if (number_active_sites < MIN_SITES_PER_MATCH){
-            String msg = String.format("MIN_SITES_PER_MATCH (%d) is lower than number of active sites (%d). Exiting",
-                    MIN_SITES_PER_MATCH, number_active_sites);
-            log.severe(msg);
-            throw new ConfigException(msg);
-        }
-    }
-
 
     public Map<String, BettingSite> getSiteObjects(ArrayList<Class> siteClasses){
 
@@ -324,13 +231,13 @@ public class SportsTrader {
             }
 
             // Check site appears in config
-            if (!ACTIVE_SITES.containsKey(site_name)){
+            if (!config.ACTIVE_SITES.containsKey(site_name)){
                 log.severe("Site %s appears in class list but has no config entry. Skipping.");
                 return null;
             }
 
             // Check config is set as active for this class
-            boolean site_active = ACTIVE_SITES.get(site_name);
+            boolean site_active = config.ACTIVE_SITES.get(site_name);
             if (!site_active){
                 log.info(String.format("Site %s not activated in config. Skipping.", site_name));
                 continue;
@@ -376,7 +283,7 @@ public class SportsTrader {
 
 
         // Run stats keeper
-        if (RUN_STATS){
+        if (config.RUN_STATS){
             stats = new SportsTraderStats("stats.json", footballBetGenerator);
         }
 
@@ -403,9 +310,9 @@ public class SportsTrader {
 
         List<FootballMatch> footballMatches = null;
         try {
-            if (SINGLE_MATCH_TEST) {
+            if (config.SINGLE_MATCH_TEST) {
                 footballMatches = new ArrayList<>();
-                FootballMatch fm = FootballMatch.parse(SM_TIME, SM_NAME);
+                FootballMatch fm = FootballMatch.parse(config.SM_TIME, config.SM_NAME);
                 footballMatches.add(fm);
                 log.info(String.format("Using %s event for testing.", fm.name));
             }
@@ -434,7 +341,7 @@ public class SportsTrader {
         // Create same number of event trader setups as max matches allowed to concurrently
         // setup each event trader
         eventTraderSpawns = new ArrayList<>();
-        for (int i=0; i<MAX_MATCHES; i++){
+        for (int i=0; i<config.MAX_MATCHES; i++){
             EventTraderSpawn eventTraderSpawn = new EventTraderSpawn(this, match_queue);
             eventTraderSpawn.thread.setName("EvntTdrSpwnr" + String.valueOf(i+1));
             eventTraderSpawn.start();
@@ -460,7 +367,7 @@ public class SportsTrader {
         }
 
         log.info(String.format("%d Event Traders setup successfully with at least %d site connectors.",
-                eventTraders.size(), MIN_SITES_PER_MATCH));
+                eventTraders.size(), config.MIN_SITES_PER_MATCH));
 
 
         // Exit if none have worked.
@@ -472,7 +379,7 @@ public class SportsTrader {
 
 
         // End if config says so.
-        if (!CHECK_MARKETS){
+        if (!config.CHECK_MARKETS){
             log.info("CHECK_MARKETS set to false. Ending here.");
             safe_exit();
             return;
@@ -480,7 +387,7 @@ public class SportsTrader {
 
 
         // Start stats keeper
-        if (RUN_STATS) {
+        if (config.RUN_STATS) {
             stats.start();
         }
 
@@ -631,9 +538,9 @@ public class SportsTrader {
                 EventTrader eventTrader = new EventTrader(sportsTrader, footballMatch, siteObjects, footballBetGenerator);
 
                 int successful_site_connections = eventTrader.setupMatch();
-                if (successful_site_connections < MIN_SITES_PER_MATCH){
+                if (successful_site_connections < config.MIN_SITES_PER_MATCH){
                     log.warning(String.format("%s Only %d/%d sites connected. MIN_SITES_PER_MATCH=%d.",
-                            footballMatch, successful_site_connections, siteObjects.size(), MIN_SITES_PER_MATCH));
+                            footballMatch, successful_site_connections, siteObjects.size(), config.MIN_SITES_PER_MATCH));
                     continue;
                 }
 
@@ -769,11 +676,11 @@ public class SportsTrader {
 
     private List<FootballMatch> getFootballMatches() throws IOException, URISyntaxException, InterruptedException {
 
-        String site_name = EVENT_SOURCE;
+        String site_name = config.EVENT_SOURCE;
         BettingSite site = siteObjects.get(site_name);
         if (site == null){
             log.severe(String.format("EVENT_SOURCE '%s' cannot be found. It may not bet set in ACTIVE_SITES.",
-                    EVENT_SOURCE));
+                    config.EVENT_SOURCE));
             return null;
         }
 
@@ -782,16 +689,16 @@ public class SportsTrader {
         Instant now = Instant.now();
 
         // Find time frame to search in
-        if (IN_PLAY){
+        if (config.IN_PLAY){
             from = now.minus(5, ChronoUnit.HOURS);
             log.info(String.format("Searching for matches from %s, %d hours ahead and in-play.",
-                    site_name, HOURS_AHEAD));
+                    site_name, config.HOURS_AHEAD));
         } else{
             from = now;
             log.info(String.format("Searching for matches from %s, %d hours ahead.",
-                    site_name, HOURS_AHEAD));
+                    site_name, config.HOURS_AHEAD));
         }
-        until = now.plus(HOURS_AHEAD, ChronoUnit.HOURS);
+        until = now.plus(config.HOURS_AHEAD, ChronoUnit.HOURS);
 
         // Get all football matches found in time frame.
         List<FootballMatch> fms = site.getFootballMatches(from, until);

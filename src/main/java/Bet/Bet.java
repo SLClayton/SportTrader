@@ -8,10 +8,7 @@ import org.json.simple.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static tools.printer.BDString;
 import static tools.printer.print;
@@ -72,15 +69,15 @@ public abstract class Bet {
 
     public static BigDecimal ROI_ratio(BetType betType, BigDecimal odds, BigDecimal win_com_rate,
                                  BigDecimal loss_com_rate){
-        return ROI(betType, BigDecimal.ONE, odds, win_com_rate, loss_com_rate, null);
+        return ROI(betType, odds, BigDecimal.ONE, win_com_rate, loss_com_rate, null);
     }
 
-    public static BigDecimal ROI(BetType betType, BigDecimal investment, BigDecimal odds, BigDecimal win_com_rate,
+    public static BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment, BigDecimal win_com_rate,
                                  BigDecimal loss_com_rate){
-        return ROI(betType, investment, odds, win_com_rate, loss_com_rate, null);
+        return ROI(betType, odds, investment, win_com_rate, loss_com_rate, null);
     }
 
-    public static BigDecimal ROI(BetType betType, BigDecimal investment, BigDecimal odds, BigDecimal win_com_rate,
+    public static BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment, BigDecimal win_com_rate,
                       BigDecimal loss_com_rate, Integer scale){
 
         BigDecimal backersStake_layersProfit;
@@ -116,6 +113,48 @@ public abstract class Bet {
         }
 
         return pot_return;
+    }
+
+
+    public static BigDecimal dec2americ(BigDecimal decimal_odds){
+
+        BigDecimal american_odds;
+
+        if (decimal_odds.compareTo(new BigDecimal(2)) == -1){
+            american_odds = new BigDecimal(-100)
+                    .divide(decimal_odds.subtract(BigDecimal.ONE), 12, RoundingMode.HALF_UP);
+        }
+        else{
+            american_odds = decimal_odds.subtract(BigDecimal.ONE).multiply(new BigDecimal(100));
+        }
+
+        return american_odds;
+    }
+
+
+    public static BigDecimal americ2dec(BigDecimal american_odds){
+        BigDecimal decimal_odds;
+
+        if (american_odds.compareTo(new BigDecimal(100)) != -1){
+            decimal_odds = american_odds
+                    .divide(new BigDecimal(100), 12, RoundingMode.HALF_UP).add(BigDecimal.ONE);
+        }
+        else if (american_odds.compareTo(new BigDecimal(-100)) != 1){
+            decimal_odds = new BigDecimal(-100)
+                    .divide(american_odds, 12, RoundingMode.HALF_UP).add(BigDecimal.ONE);
+        }
+        else{
+            return null;
+        }
+
+        return decimal_odds;
+    }
+
+
+    public static BigDecimal multiplyDecimalOdds(BigDecimal odds, BigDecimal multiplicand){
+        return odds.subtract(BigDecimal.ONE)
+                .multiply(multiplicand)
+                .add(BigDecimal.ONE);
     }
 
 

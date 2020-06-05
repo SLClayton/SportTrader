@@ -3,143 +3,181 @@ package Bet;
 import Bet.Bet.BetType;
 import SiteConnectors.BettingSite;
 import Sport.Event;
+import ch.qos.logback.core.db.BindDataSourceToJNDIAction;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.List;
+import java.util.*;
 
-public class BetOrder {
+import static tools.printer.*;
 
-    public boolean real;
-    public BetOffer bet_offer;
-    public BigDecimal target_return;
-
-    public BigDecimal backersStake_layersProfit;
-    public BigDecimal backersProfit_layersStake;
-
-    public BigDecimal investment;
-    public BigDecimal stake;
-    public BigDecimal potential_profit;
-    public BigDecimal potential_commission;
-    public BigDecimal actual_return;
-
-    public JSONObject site_json_request;
+public class BetOrder implements ProfitReportItem {
 
     public Instant time_created;
+    private String id;
+
+    private BetOffer bet_offer;
+    private BigDecimal backers_stake;
+
+    public Object raw_request;
 
 
-    public BetOrder(BetOffer bet_offer, BigDecimal target_return, boolean real) {
-
+    private BetOrder(BetOffer bet_offer, BigDecimal backers_stake) {
         time_created = Instant.now();
-
+        id = rndString(12);
         this.bet_offer = bet_offer;
-        this.target_return = target_return;
-        this.real = real;
-
-        // Calculate investment needed to achieve the target return, using the ROI ratio
-        investment = target_return.divide(bet_offer.roi_ratio, 20, RoundingMode.HALF_UP);
-
-        // BACK
-        if (isBack()) {
-
-            // Get what stake this site would need with this investment
-            backersStake_layersProfit = bet_offer.site.stakePartOfInvestment(investment);
-
-            // If real, then round backers stake and re-calculate investment.
-            if (real) {
-                backersStake_layersProfit = backersStake_layersProfit
-                        .setScale(2, RoundingMode.HALF_UP);
-                investment = bet_offer.site.investmentNeededForStake(backersStake_layersProfit);
-            }
-
-            // Calculate the profit and return generated with this stake
-            backersProfit_layersStake = Bet.backStake2LayStake(backersStake_layersProfit, bet_offer.odds);
-            potential_profit = backersProfit_layersStake;
-            stake = backersStake_layersProfit;
-        }
-
-        // LAY
-        else {
-
-            // Get what stake this site would need with this investment, then calculate what
-            // the backers stake would be as this is what a bet is placed on.
-            backersProfit_layersStake = bet_offer.site.stakePartOfInvestment(investment);
-            backersStake_layersProfit = Bet.layStake2backStake(backersProfit_layersStake, bet_offer.odds);
-
-            // If real, then round backers stake and re-calculate layers stake and investment.
-            if (real) {
-                backersStake_layersProfit = backersStake_layersProfit
-                        .setScale(2, RoundingMode.HALF_UP);
-
-                backersProfit_layersStake = Bet.backStake2LayStake(backersStake_layersProfit, bet_offer.odds);
-                investment = bet_offer.site.investmentNeededForStake(backersProfit_layersStake);
-            }
-
-            // Calculate the return generated with this stake
-            potential_profit = backersStake_layersProfit;
-            stake = backersProfit_layersStake;
-        }
-
-
-        // Calculate the potential commission given the potential profit
-        potential_commission = potential_profit.multiply(site().winCommissionRate());
-        actual_return = investment.add(potential_profit).subtract(potential_commission);
+        this.backers_stake = backers_stake;
     }
 
 
-    public BetOrder(){}
+    public static BetOrder fromTargetReturn(BetOffer bet_offer, BigDecimal target_return){
+        BigDecimal target_investment = target_return.divide(bet_offer.ROI_ratio(), 12 , RoundingMode.HALF_UP);
+        return BetOrder.fromTargetInvestment(bet_offer, target_investment);
+    }
+
+    public static BetOrder fromTargetInvestment(BetOffer bet_offer, BigDecimal target_investment){
+        BigDecimal stake = bet_offer.site.stakePartOfInvestment(target_investment);
+        return BetOrder.fromStake(bet_offer, stake);
+    }
+
+    public static BetOrder fromStake(BetOffer bet_offer, BigDecimal stake){
+        if ((stake.compareTo(bet_offer.minStake()) < 0) || (stake.compareTo(bet_offer.maxStake()) > 0)){
+            log.severe(String.format("Creating betorder with invalid stake %s for betoffer with min=%s max=%s",
+                    BDString(stake), BDString(bet_offer.minStake()), BDString(bet_offer.maxStake())));
+        }
+
+        if (bet_offer.isBack()){
+            return new BetOrder(bet_offer, stake);
+        }
+        else if (bet_offer.isLay()){
+            return new BetOrder(bet_offer, bet_offer.layStake2BackStake(stake));
+        }
+        return null;
+    }
 
 
-    public BigDecimal commission(){
-        return bet_offer.site.winCommissionRate();
+    public BetOrder newTargetInvestment(BigDecimal new_target_investment){
+        return BetOrder.fromTargetInvestment(bet_offer, new_target_investment);
+    }
+
+    public BetOrder newTargetReturn(BigDecimal new_target_return){
+        return BetOrder.fromTargetReturn(bet_offer, new_target_return);
+    }
+
+    public BetOrder newStake(BigDecimal stake){
+        return BetOrder.fromStake(bet_offer, stake);
+    }
+
+    public String getID(){
+        return id;
+    }
+
+
+    public BigDecimal getStake(){
+        if (isBack()){
+            return backers_stake;
+        }
+        else if (isLay()){
+            return bet_offer.backStake2LayStake(backers_stake);
+        }
+        return null;
+    }
+
+
+    public BigDecimal getInvestment(){
+        return getSite().investmentNeededForStake(getStake());
+    }
+
+
+    public BetOffer getBetOffer(){
+        return bet_offer;
+    }
+
+
+    public BigDecimal getReturn(){
+        return getBetOffer().ROI(getInvestment());
+    }
+
+
+    public BigDecimal getProfitB4Comm(){
+        if (isBack()){
+            return Bet.backStake2LayStake(getBackersStake(), getOdds());
+        }
+        else if (isLay()){
+            return getBackersStake();
+        }
+        return null;
+    }
+
+
+    public BigDecimal getProfit(){
+        return getReturn().subtract(getInvestment());
+    }
+
+
+    public BettingSite getSite(){
+        return getBetOffer().site;
+    }
+
+
+    public BigDecimal winCommissionRate(){
+        return getSite().winCommissionRate();
+    }
+
+    public BigDecimal lossCommissionRate(){
+        return getSite().lossCommissionRate();
+    }
+
+
+    public BigDecimal getOddsWithBuffer(BigDecimal buffer_ratio){
+        return getBetOffer().getOddsWithBuffer(buffer_ratio);
+    }
+
+    public BigDecimal getValidOddsWithBuffer(BigDecimal buffer_ratio){
+        return getBetOffer().getValidOddsWithBuffer(buffer_ratio);
     }
 
 
     public BigDecimal getBackersStake(){
-        return backersStake_layersProfit;
+        return backers_stake;
     }
 
 
-    public Bet bet(){
-        return bet_offer.bet;
+    public Bet getBet(){
+        return getBetOffer().bet;
     }
 
 
     public String betID(){
-        return bet().id();
-    }
-
-
-    public BettingSite site(){
-        return bet_offer.site;
+        return getBet().id();
     }
 
 
     public boolean isBack(){
-        return bet_offer.bet.isBack();
+        return getBet().isBack();
     }
 
 
     public boolean isLay(){
-        return bet_offer.bet.isLay();
+        return getBet().isLay();
     }
 
 
     public BetType betType(){
-        return bet().getType();
+        return getBet().getType();
     }
 
 
-    public Event match(){
-        return bet_offer.event;
+    public Event getEvent(){
+        return getBetOffer().event;
     }
 
 
-    public BigDecimal odds(){
-        return bet_offer.odds;
+    public BigDecimal getOdds(){
+        return getBetOffer().odds;
     }
 
 
@@ -148,25 +186,23 @@ public class BetOrder {
     }
 
 
+    public PlacedBet.State getState(){
+        return null;
+    }
+
+
     public JSONObject toJSON(){
-        JSONObject m = new JSONObject();
+        JSONObject j = new JSONObject();
 
-        m.put("bet_offer", bet_offer.toJSON());
+        j.put("bet_offer", getBetOffer().toJSON());
+        j.put("back_stake", BDString(getBackersStake()));
+        j.put("stake", BDString(getStake()));
+        j.put("investment", BDString(getInvestment()));
+        j.put("pot_return", BDString(getReturn()));
+        j.put("pot_prof_b4_com", BDString(getProfitB4Comm()));
+        j.put("pot_profit", BDString(getProfit()));
 
-        m.put("event", String.valueOf(bet_offer.event));
-        m.put("site", String.valueOf(bet_offer.site.getName()));
-        m.put("target_return", String.valueOf(target_return));
-        m.put("investment", String.valueOf(investment));
-        m.put("real", String.valueOf(real));
-        if (isLay()){
-            m.put("layers_stake", String.valueOf(backersProfit_layersStake));
-        }
-        m.put("backers_stake", String.valueOf(backersStake_layersProfit));
-        m.put("profit", String.valueOf(potential_profit));
-        m.put("commission", String.valueOf(potential_commission));
-        m.put("actual_return", String.valueOf(actual_return));
-
-        return m;
+        return j;
     }
 
     public static JSONArray list2JSON(List<BetOrder> betOrders){
@@ -175,6 +211,47 @@ public class BetOrder {
             j.add(betOrder.toJSON());
         }
         return j;
+    }
+
+    public static Map<String, List<BetOrder>> splitListBySite(List<BetOrder> betOrders){
+        // Sort placed bets into lists depending on their site
+
+        Map<String, List<BetOrder>> site_bets = new HashMap<>();
+        for (BetOrder betOrder: betOrders){
+            String site_name = betOrder.getSite().getName();
+
+            if (!site_bets.containsKey(site_name)){
+                site_bets.put(site_name, new ArrayList<>());
+            }
+
+            site_bets.get(site_name).add(betOrder);
+        }
+        return site_bets;
+    }
+
+    public static Map<String, List<BetOrder>> splitListByMetaData(List<BetOrder> betOrders, String key){
+        // Sort placed bets into lists depending on their site
+
+        Map<String, List<BetOrder>> key_bet_map = new HashMap<>();
+        for (BetOrder betOrder: betOrders){
+            String metadata_value = betOrder.getBetOffer().getMetadata(key);
+
+            if (!key_bet_map.containsKey(metadata_value)){
+                key_bet_map.put(metadata_value, new ArrayList<>());
+            }
+
+            key_bet_map.get(metadata_value).add(betOrder);
+        }
+        return key_bet_map;
+    }
+
+    public static BetOrder find(Collection<BetOrder> betOrders, String id){
+        for (BetOrder betOrder: betOrders){
+            if (betOrder.getID().equals(id)){
+                return betOrder;
+            }
+        }
+        return null;
     }
 
 

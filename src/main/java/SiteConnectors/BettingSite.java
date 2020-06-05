@@ -4,12 +4,21 @@ import Bet.Bet;
 import Bet.Bet.BetType;
 import Bet.BetOffer;
 import Bet.BetOrder;
+import Bet.FootballBet.FootballBet;
+import Bet.FootballBet.FootballBetGenerator;
+import Bet.FootballBet.FootballOverUnderBet;
+import Bet.FootballBet.FootballResultBet;
 import Bet.PlacedBet;
+import Bet.MarketOddsReport;
+import SiteConnectors.Betdaq.Betdaq;
+import SiteConnectors.Betfair.Betfair;
+import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 import Trader.SportsTrader;
 import org.json.simple.parser.ParseException;
 import tools.Requester;
 
+import java.awt.event.HierarchyListener;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -26,6 +35,9 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+
+import static java.lang.System.exit;
+import static tools.printer.*;
 
 public abstract class BettingSite {
 
@@ -79,6 +91,7 @@ public abstract class BettingSite {
 
 
     public abstract BigDecimal minLayersStake(BigDecimal odds);
+
 
 
     public static Set<String> getIDs(Collection<BettingSite> sites){
@@ -146,6 +159,28 @@ public abstract class BettingSite {
     }
 
 
+    public BigDecimal getValidPayout(BigDecimal payout){
+        // Should return how the particular betting site rounds exact figures
+        // for bet results.
+
+        return payout.setScale(2, RoundingMode.HALF_UP);
+    }
+
+
+    public BigDecimal getValidOdds(BigDecimal odds, RoundingMode roundingMode){
+        // Should return the odds value, rounded to a valid Odds ladder price for
+        // the particular betting site.
+
+        return odds.setScale(2, roundingMode);
+    }
+
+
+    public BigDecimal getValidStake(BigDecimal stake, RoundingMode roundingMode){
+        // Should return the closest valid stake for a particular betting site.
+        return stake.setScale(2, roundingMode);
+    }
+
+
 
     public abstract List<FootballMatch> getFootballMatches(Instant from, Instant until)
             throws IOException, URISyntaxException, InterruptedException;
@@ -168,17 +203,20 @@ public abstract class BettingSite {
     }
 
 
-    public abstract List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+    public abstract List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal odds_ratio_buffer)
             throws IOException, URISyntaxException;
 
 
-
-    public BigDecimal ROI(BetType betType, BigDecimal investment, BigDecimal odds){
-        return Bet.ROI(betType, investment, odds, winCommissionRate(), lossCommissionRate(), null);
+    public BigDecimal ROI_ratio(BetType betType, BigDecimal odds){
+        return ROI(betType, BigDecimal.ONE, odds);
     }
 
-    public BigDecimal ROI(BetType betType, BigDecimal investment, BigDecimal odds, Integer scale){
-        return Bet.ROI(betType, investment, odds, winCommissionRate(), lossCommissionRate(), scale);
+    public BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment){
+        return ROI(betType, odds, investment, null);
+    }
+
+    public BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment, Integer scale){
+        return Bet.ROI(betType, odds, investment, winCommissionRate(), lossCommissionRate(), scale);
     }
 
 
@@ -225,20 +263,46 @@ public abstract class BettingSite {
     }
 
 
-    public static BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
-        if (increment.signum() == 0) {
-            // 0 increment does not make much sense, but prevent division by 0
-            return value;
-        } else {
-            BigDecimal divided = value.divide(increment, 0, roundingMode);
-            BigDecimal result = divided.multiply(increment);
-            return result;
-        }
+    public static void testBetOrder() throws Exception {
+
+        String time = "2020-06-06T13:30:00.0Z";
+        String matchname = "Bayer 04 Leverkusen v FC Bayern München";
+        String stake = "3.21";
+        Bet bet = new FootballResultBet(BetType.BACK, FootballBet.TEAM_A, false);
+        //Bet bet = new FootballOverUnderBet(BetType.LAY, FootballBet.UNDER, new BigDecimal("2.5"));
+
+
+        BettingSite b = new Smarkets();
+        SiteEventTracker set = b.getEventTracker();
+        set.setupMatch(FootballMatch.parse(time, matchname));
+        print(set);
+
+        MarketOddsReport mor = set.getMarketOddsReport(new ArrayList<Bet>(FootballBetGenerator._getAllBets()));
+        toFile(mor.toJSON(true));
+
+        BetOffer betOffer = mor.get(bet.id()).get(0);
+        pp(betOffer.toJSON());
+
+
+        BetOrder betOrder = betOffer.betOrderFromStake(new BigDecimal(stake));
+        pp(betOrder.toJSON());
+
+        PlacedBet placedBet = b.placeBet(betOrder, new BigDecimal("0.10"));
+        pp(placedBet.toJSON());
+
     }
 
 
 
     public static void main(String[] args) {
 
+        try {
+            testBetOrder();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        print("END.");
     }
 }

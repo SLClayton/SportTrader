@@ -249,7 +249,7 @@ public class SportsTraderStats implements Runnable {
             if (sum_ratios == null || n.compareTo(BigDecimal.ZERO) == 0){
                 return null;
             }
-            return sum_ratios.divide(n, 20, RoundingMode.HALF_UP);
+            return sum_ratios.divide(n, 12, RoundingMode.HALF_UP);
         }
 
 
@@ -257,7 +257,7 @@ public class SportsTraderStats implements Runnable {
             if (sum_best_ratios == null || total_best_ratios.compareTo(BigDecimal.ZERO) == 0){
                 return null;
             }
-            return sum_best_ratios.divide(total_best_ratios, 20, RoundingMode.HALF_UP);
+            return sum_best_ratios.divide(total_best_ratios, 12, RoundingMode.HALF_UP);
         }
 
 
@@ -423,13 +423,13 @@ public class SportsTraderStats implements Runnable {
             }
 
             for (BetOrderProfitReport betOrderProfitReport : profitReportSet.betOrderProfitReports){
-                int taut_id = betOrderProfitReport.getTautology().id();
+                int taut_id = betOrderProfitReport.getBetGroup().id();
                 BigDecimal profit_ratio = betOrderProfitReport.profit_ratio;
 
                 // update best profit if this beats it for this tautology.
                 Taut current_taut = tautologies.get(taut_id);
                 if (current_taut == null){
-                    current_taut = new Taut(betOrderProfitReport.getTautology());
+                    current_taut = new Taut(betOrderProfitReport.getBetGroup());
                     tautologies.put(taut_id,  current_taut);
                 }
                 current_taut.update(profit_ratio);

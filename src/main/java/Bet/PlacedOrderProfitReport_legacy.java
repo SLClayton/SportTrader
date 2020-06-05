@@ -9,7 +9,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class PlacedOrderProfitReport {
+public class PlacedOrderProfitReport_legacy {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
@@ -28,7 +28,7 @@ public class PlacedOrderProfitReport {
     public enum State {ALL_SUCCESS, ALL_FAILURES, MIX_STATES}
 
 
-    public PlacedOrderProfitReport(List<PlacedBet> placedBets, BetOrderProfitReport betOrderProfitReport) {
+    public PlacedOrderProfitReport_legacy(List<PlacedBet> placedBets, BetOrderProfitReport betOrderProfitReport) {
 
         this.placedBets = placedBets;
         this.betOrderProfitReport = betOrderProfitReport;
@@ -48,7 +48,7 @@ public class PlacedOrderProfitReport {
             any_success = true;
 
 
-            total_investment = total_investment.add(pb.total_investment());
+            total_investment = total_investment.add(pb.getInvestment());
 
             if (min_return == null || pb.potReturns().compareTo(min_return) == -1){
                 min_return = pb.potReturns();
@@ -68,7 +68,7 @@ public class PlacedOrderProfitReport {
             profit_ratio = null;
         }
         else{
-            profit_ratio = min_profit.divide(total_investment, 20, RoundingMode.HALF_UP);
+            profit_ratio = min_profit.divide(total_investment, 12, RoundingMode.HALF_UP);
         }
     }
 

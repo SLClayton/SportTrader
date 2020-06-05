@@ -59,6 +59,12 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
 
     @Override
+    public String toString(){
+        return String.format("[Smarktets tracker for %s]", event.toString());
+    }
+
+
+    @Override
     public boolean siteSpecificSetup() throws IOException, URISyntaxException, InterruptedException {
 
         event_id = event.metadata.get(Smarkets.SMARKETS_EVENT_ID);
@@ -198,8 +204,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
         lastMarketOddsReport_start_time = Instant.now();
 
         if (event_id == null){
-            return MarketOddsReport.ERROR(String.format("No event id for smarkets event %s metadata %s",
-                    event, event.metadata));
+            return MarketOddsReport.ERROR(String.format("No event id for smarkets event %s", event));
         }
         log.fine(String.format("%s Updating market odds report for smarkets.", event));
 
@@ -322,12 +327,12 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 JSONObject s_offer = (JSONObject) s_offer_obj;
 
                 // Get price and vol as integers and convert them.
-                long price = (long) s_offer.get("price");
+                int price = ((Long) s_offer.get("price")).intValue();
                 long quantity = (long) s_offer.get("quantity");
                 BigDecimal decimal_odds = Smarkets.price2DecOdds(price);
                 BigDecimal volume = Smarkets.quantity2BackStake(quantity, price);
 
-                BetOffer bo = new BetOffer(lastMarketOddsReport_start_time, event, bet, smarkets, decimal_odds, volume);
+                BetOffer bo = new BetOffer(smarkets, event, bet, decimal_odds, volume);
                 bo.addMetadata(Smarkets.CONTRACT_ID, contract_id);
                 bo.addMetadata(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
                 bo.addMetadata(Smarkets.SMARKETS_PRICE, String.valueOf(price));

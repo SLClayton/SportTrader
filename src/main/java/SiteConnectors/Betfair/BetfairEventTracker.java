@@ -267,9 +267,10 @@ public class BetfairEventTracker extends SiteEventTracker {
                 BigDecimal odds = new BigDecimal(bf_offer.get("price").toString());
                 BigDecimal volume = new BigDecimal(bf_offer.get("size").toString());
 
-                BetOffer bo = new BetOffer(lastMarketOddsReport_start_time, event, bet, betfair, odds, volume);
+                BetOffer bo = new BetOffer(betfair, event, bet, odds, volume);
                 bo.addMetadata(Betfair.BETFAIR_SELECTION_ID, runner.get("selectionId").toString());
                 bo.addMetadata(Betfair.BETFAIR_MARKET_ID, runner.get("marketId").toString());
+                bo.addMetadata(Betfair.BETFAIR_HANDICAP, runner.get("handicap").toString());
 
                 betOffers.add(bo);
             }

@@ -1,6 +1,7 @@
 package SiteConnectors;
 
 import Bet.Bet;
+import Bet.FootballBet.FootballBet;
 import Bet.MarketOddsReport;
 import Sport.FootballMatch;
 import Sport.Event;
@@ -75,9 +76,6 @@ public abstract class SiteEventTracker {
         }
         return lastMarketOddsReport_end_time.toEpochMilli() - lastMarketOddsReport_start_time.toEpochMilli();
     }
-
-
-
 
 
 

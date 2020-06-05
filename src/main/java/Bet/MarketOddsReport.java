@@ -28,7 +28,6 @@ public class MarketOddsReport {
      */
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
-    public static final String MULTIPLE = "MULTIPLE";
 
     private Map<String, List<BetOffer>> betOffers;
 
@@ -100,7 +99,12 @@ public class MarketOddsReport {
 
 
     public void addBetOffers(String bet_id, List<BetOffer> new_betOffers){
-        betOffers.put(bet_id, new_betOffers);
+        if (betOffers.containsKey(bet_id)){
+            betOffers.get(bet_id).addAll(new_betOffers);
+        }
+        else{
+            betOffers.put(bet_id, new_betOffers);
+        }
     }
 
 

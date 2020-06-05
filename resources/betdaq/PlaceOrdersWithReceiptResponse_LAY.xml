@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <PlaceOrdersWithReceiptResponse xmlns="http://www.GlobalBettingExchange.com/ExternalAPI/">
     <PlaceOrdersWithReceiptResult>
-        <ReturnStatus Code="0" Description="Success" CallId="f43057e3-f02a-4435-b827-6b0b70b35ba9" />
-        <Timestamp>2020-05-28T14:27:06.3961638Z</Timestamp>
+        <ReturnStatus Code="0" Description="Success" CallId="444f3167-18a3-4c1f-8347-e4487677e9fa"/>
+        <Timestamp>2020-06-03T15:51:05.9788328Z</Timestamp>
         <Orders>
+            <!-- LAY with stake 2.50 -->
             <Order
                     Status="2"
-                    MatchedAgainstStake="0.99"
-                    MatchedStake="0.60"
-                    MatchedPrice="2.65"
+                    MatchedAgainstStake="4.83"
+                    MatchedStake="2.50"
+                    MatchedPrice="2.932"
                     UnmatchedStake="0.00"
                     Polarity="2"
-                    SequenceNumber="98"
-                    SelectionId="121868600"
+                    SequenceNumber="146"
+                    SelectionId="122440972"
                     PunterReferenceNumber="0"
-                    OrderHandle="6542011123"
+                    OrderHandle="6550611264"
             />
         </Orders>
     </PlaceOrdersWithReceiptResult>

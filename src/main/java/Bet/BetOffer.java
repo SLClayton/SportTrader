@@ -12,44 +12,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static tools.printer.BDString;
+
 public class BetOffer implements Comparable<BetOffer> {
 
+    public BettingSite site;
     public Event event;
     public Bet bet;
-    public BettingSite site;
     public BigDecimal odds;
     public BigDecimal volume;
-    public Map<String, String> metadata;
-
-    public BigDecimal roi_ratio;
-
-    public Instant time_start_getMarketOddsReport;
+    private Map<String, String> metadata;
     public Instant time_betOffer_creation;
 
 
-    public BetOffer(Instant time_getMarketOddsReport, Event Event, Bet BET, BettingSite SITE,
-                    BigDecimal ODDS, BigDecimal VOLUME){
-
-        time_start_getMarketOddsReport = time_getMarketOddsReport;
+    public BetOffer(BettingSite SITE, Event EVENT, Bet BET, BigDecimal ODDS, BigDecimal VOLUME){
         time_betOffer_creation = Instant.now();
-
-        event = Event;
-        bet = BET;
         site = SITE;
+        event = EVENT;
+        bet = BET;
         odds = ODDS;
         volume = VOLUME;
         metadata = new HashMap<>();
-        roi_ratio = ROI_ratio();
     }
-
-
 
 
     public BetOffer newOdds(BigDecimal odds){
         // Returns a new betOffer with the same attributes except new odds and volume
-        BetOffer newBetOffer = new BetOffer(time_start_getMarketOddsReport, event, bet, site, odds, volume);
+        BetOffer newBetOffer = new BetOffer(site, event, bet, odds, volume);
         for (Map.Entry<String, String> item: metadata.entrySet()){
-            newBetOffer.metadata.put(item.getKey(), item.getValue());
+            newBetOffer.addMetadata(item.getKey(), item.getValue());
         }
         return newBetOffer;
     }
@@ -59,20 +50,79 @@ public class BetOffer implements Comparable<BetOffer> {
         return metadata.put(key, value);
     }
 
+    public String addMetadata(String key, Long value){
+        return metadata.put(key, String.valueOf(value));
+    }
+
+    public String addMetadata(String key, Integer value){
+        return metadata.put(key, String.valueOf(value));
+    }
+
+    public String addMetadata(String key, Double value){
+        return metadata.put(key, String.valueOf(value));
+    }
+
+
     public String getMetadata(String key){
         return metadata.get(key);
     }
 
+    public Long getMetadataLong(String key){
+        return Long.parseLong(getMetadata(key));
+    }
+
+    public Double getMetadataDouble(String key){
+        return new BigDecimal(getMetadata(key)).doubleValue();
+    }
+
+    public BigDecimal getMetadataBigDecimal(String key){
+        return new BigDecimal(getMetadata(key));
+    }
 
     public boolean hasMinVolumeNeeded(){
-        boolean r =  volume.compareTo(minStake()) != -1;
-        return r;
+        return volume.compareTo(minStake()) != -1;
     }
 
 
+    public BigDecimal backStake2LayStake(BigDecimal back_stake){
+        return Bet.backStake2LayStake(back_stake, odds);
+    }
+
+    public BigDecimal layStake2BackStake(BigDecimal lay_stake){
+        return Bet.layStake2backStake(lay_stake, odds);
+    }
+
+
+    public BigDecimal getOddsWithBuffer(BigDecimal buffer_ratio){
+        BigDecimal odds_ratio;
+        if (isBack()){
+            odds_ratio = BigDecimal.ONE.subtract(buffer_ratio);
+        }
+        else{
+            odds_ratio = BigDecimal.ONE.add(buffer_ratio);
+        }
+        return Bet.multiplyDecimalOdds(odds, odds_ratio);
+    }
+
+
+    public BigDecimal getValidOddsWithBuffer(BigDecimal buffer_ratio){
+        BigDecimal buffered_odds = getOddsWithBuffer(buffer_ratio);
+        RoundingMode roundingMode;
+        if (isBack()){
+            roundingMode = RoundingMode.DOWN;
+        }
+        else{
+            roundingMode = RoundingMode.UP;
+        }
+        return site.getValidOdds(buffered_odds, roundingMode);
+    }
+
+
+    @Override
     public String toString(){
         return toJSON().toString();
     }
+
 
 
     public JSONObject toJSON(){
@@ -81,12 +131,13 @@ public class BetOffer implements Comparable<BetOffer> {
         m.put("event", String.valueOf(event));
         m.put("bet", String.valueOf(bet.id()));
         m.put("site", String.valueOf(site.getName()));
-        m.put("odds", String.valueOf(odds));
-        m.put("volume", String.valueOf(volume));
-        m.put("roi_ratio", String.valueOf(roi_ratio));
+        m.put("odds", BDString(odds));
+        m.put("volume", BDString(volume));
+        m.put("roi_ratio", BDString(ROI_ratio()));
         m.put("metadata", String.valueOf(metadata));
         return m;
     }
+
 
     public static JSONArray list2JSON(List<BetOffer> betOfferList){
         JSONArray ja = new JSONArray();
@@ -108,93 +159,78 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
-
     public BigDecimal minStake(){
-        BigDecimal min_backers_stake = site.minBackersStake();
+        // The minimum stake of money that can be placed in this offer
+
         BigDecimal min_stake;
         if (isBack()){
-            min_stake = min_backers_stake;
+            min_stake = site.minBackersStake();
         }
-        else {
-            min_stake =  Bet.backStake2LayStake(min_backers_stake, odds);
+        else if (isLay()){
+            min_stake = site.minLayersStake(odds);
+        }
+        else{
+            return null;
         }
         return min_stake.setScale(2, RoundingMode.UP);
     }
 
 
     public BigDecimal maxStake(){
-        BigDecimal max_backers_stake = volume;
+        // The maximum stake of money that can be placed in this offer
+
         BigDecimal max_stake;
         if (isBack()){
-            max_stake = max_backers_stake;
+            max_stake = volume;
         }
         else {
-            max_stake = Bet.backStake2LayStake(max_backers_stake, odds);
+            max_stake = Bet.backStake2LayStake(volume, odds);
         }
         return max_stake.setScale(2, RoundingMode.DOWN);
     }
 
 
     public BigDecimal returnFromMinStake(){
-        return ROI(minStake(), true);
+        return ROI(minStake());
     }
 
 
     public BigDecimal returnFromMaxStake(){
-        return ROI(maxStake(), true);
+        return ROI(maxStake());
     }
 
 
     public BigDecimal ROI_ratio(){
-        return site.ROI(this, BigDecimal.ONE, false);
+        return ROI(BigDecimal.ONE);
+    }
+
+    public BigDecimal ROI(BigDecimal investment){
+        return ROI(investment, null);
+    }
+
+    public BigDecimal ROI(BigDecimal investment, Integer scale){
+        return site.ROI(bet.getType(), odds, investment, scale);
     }
 
 
-    public BigDecimal ROI(BigDecimal investment, boolean real){
-        return site.ROI(this, investment, real);
+
+
+
+    public BetOrder betOrderReturn(BigDecimal target_return){
+        return BetOrder.fromTargetReturn(this, target_return);
     }
 
-
-
-
-
-    public static BigDecimal dec2americ(BigDecimal decimal_odds){
-
-        BigDecimal american_odds;
-
-        if (decimal_odds.compareTo(new BigDecimal(2)) == -1){
-            american_odds = new BigDecimal(-100)
-                    .divide(decimal_odds.subtract(BigDecimal.ONE), 20, RoundingMode.HALF_UP);
-        }
-        else{
-            american_odds = decimal_odds.subtract(BigDecimal.ONE).multiply(new BigDecimal(100));
-        }
-
-        return american_odds;
+    public BetOrder betOrderInvestment(BigDecimal target_investment){
+        return BetOrder.fromTargetInvestment(this, target_investment);
     }
 
-
-    public static BigDecimal americ2dec(BigDecimal american_odds){
-        BigDecimal decimal_odds;
-
-        if (american_odds.compareTo(new BigDecimal(100)) != -1){
-            decimal_odds = american_odds
-                    .divide(new BigDecimal(100), 20, RoundingMode.HALF_UP).add(BigDecimal.ONE);
-        }
-        else if (american_odds.compareTo(new BigDecimal(-100)) != 1){
-            decimal_odds = new BigDecimal(-100)
-                    .divide(american_odds, 20, RoundingMode.HALF_UP).add(BigDecimal.ONE);
-        }
-        else{
-            return null;
-        }
-
-        return decimal_odds;
+    public BetOrder betOrderFromStake(BigDecimal stake){
+        return BetOrder.fromStake(this, stake);
     }
 
 
     @Override
     public int compareTo(BetOffer betOffer) {
-        return this.roi_ratio.compareTo(betOffer.roi_ratio);
+        return this.ROI_ratio().compareTo(betOffer.ROI_ratio());
     }
 }
