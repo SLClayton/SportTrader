@@ -20,28 +20,37 @@ public class Config {
     String file_path;
     JSONObject json;
 
+
+    public boolean RUN_STATS;
+    public String LOG_LEVEL;
+    public String SSL_DIR;
+
     public int MAX_MATCHES;
-    public int MIN_SITES_PER_MATCH;
     public boolean IN_PLAY;
     public int HOURS_AHEAD;
-    public boolean CHECK_MARKETS;
-    public boolean PLACE_BETS;
-    public long RATE_LIMIT;
-    public BigDecimal ODDS_RATIO_BUFFER;
-    public Map<String, Boolean> ACTIVE_SITES;
-    public String EVENT_SOURCE;
-    public BigDecimal MAX_INVESTMENT;
-    public BigDecimal MIN_PROFIT_RATIO;
-    public boolean END_ON_BET;
-    public BigDecimal TARGET_INVESTMENT;
-    public long REQUEST_TIMEOUT;
-    public boolean RUN_STATS;
+
     public boolean SINGLE_MATCH_TEST;
     public String SM_NAME;
     public String SM_TIME;
+
+    public boolean CHECK_MARKETS;
+    public long RATE_LIMIT;
     public long RATE_LOCKSTEP_INTERVAL;
-    public String LOG_LEVEL;
+    public long REQUEST_TIMEOUT;
     public boolean LIMIT_LOW_PROFIT;
+
+    public boolean PLACE_BETS;
+    public boolean END_ON_BET;
+    public BigDecimal MIN_PROFIT_RATIO;
+    public BigDecimal ODDS_RATIO_BUFFER;
+    public BigDecimal TARGET_INVESTMENT;
+    public BigDecimal MAX_INVESTMENT;
+
+    public Map<String, Boolean> ACTIVE_SITES;
+    public String EVENT_SOURCE;
+    public int MIN_SITES_PER_MATCH;
+
+
 
     private Config(String file_path) throws FileNotFoundException, ParseException, ConfigException {
         this.file_path = file_path;
@@ -68,6 +77,7 @@ public class Config {
 
         MAX_MATCHES = getInt("MAX_MATCHES");
         MIN_SITES_PER_MATCH = getInt("MIN_SITES_PER_MATCH");
+        SSL_DIR = getString("SSL_DIR");
         IN_PLAY = getBoolean("IN_PLAY");
         HOURS_AHEAD = getInt("HOURS_AHEAD");
         CHECK_MARKETS = getBoolean("CHECK_MARKETS");

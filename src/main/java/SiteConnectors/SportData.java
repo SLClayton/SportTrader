@@ -37,7 +37,7 @@ public interface SportData {
     String getFootballTeamID(Team team);
 
 
-    String getMatchID(Event event);
+    String getEventID(Event event);
 
 
     void update_match_id_map(Event event);

@@ -285,6 +285,8 @@ public class Matchbook extends BettingSite {
     }
 
 
+
+
     @Override
     public void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException {
 
@@ -503,6 +505,17 @@ public class Matchbook extends BettingSite {
             throws IOException, URISyntaxException {
 
         return null;
+    }
+
+
+    @Override
+    public BigDecimal minValidOdds() {
+        return valid_decimal_odds[0];
+    }
+
+    @Override
+    public BigDecimal maxValidOdds() {
+        return valid_decimal_odds[valid_decimal_odds.length - 1];
     }
 
 

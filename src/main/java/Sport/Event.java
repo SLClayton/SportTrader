@@ -7,6 +7,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static tools.printer.print;
+
 public abstract class Event {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
@@ -38,9 +40,14 @@ public abstract class Event {
 
     public String getID(){
         if (id == null){
-            id = sportData.getMatchID(this);
+            id = sportData.getEventID(this);
         }
         return id;
+    }
+
+
+    public void updateMetaData(Map<String, String> new_metadata){
+        metadata.putAll(new_metadata);
     }
 
 
@@ -62,7 +69,15 @@ public abstract class Event {
     public abstract Boolean same_match(Event event);
 
 
-
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            return toString().equals(((Event) obj).toString());
+        }
+        catch (ClassCastException e){
+            return false;
+        }
+    }
 }
 
 

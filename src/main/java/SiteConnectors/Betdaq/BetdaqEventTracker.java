@@ -92,7 +92,7 @@ public class BetdaqEventTracker extends SiteEventTracker {
         }
 
 
-        MarketOddsReport marketOddsReport = new MarketOddsReport();
+        MarketOddsReport marketOddsReport = new MarketOddsReport(event);
         for (Bet bet: bets){
 
             // Ensure bet isn't blacklisted
@@ -145,26 +145,24 @@ public class BetdaqEventTracker extends SiteEventTracker {
             }
 
 
-            List<BetOffer> betOffers = new ArrayList<>();
+            // Create a bet exchange and fill with offers for this selection
+            BetExchange betExchange = new BetExchange(site, event, bet);
+            betExchange.addMetadata(Betdaq.BETDAQ_EVENT_ID, market_id);
+            betExchange.addMetadata(Betdaq.BETDAQ_SELECTION_ID, selection_id);
+            betExchange.addMetadata(Betdaq.BETDAQ_SELECTION_RESET_COUNT, selectionType.getResetCount());
+            betExchange.addMetadata(Betdaq.BETDAQ_SEQ_NUMBER, marketType.getWithdrawalSequenceNumber());
+
             for (JAXBElement<PricesType> offer: selectionType.getForSidePricesAndAgainstSidePrices()){
 
-                if ((bet.isBack() && offer.getName().getLocalPart().equals("ForSidePrices"))
-                ||  (bet.isLay()  && offer.getName().getLocalPart().equals("AgainstSidePrices"))){
+                if ((bet.isBack() && offer.getName().getLocalPart().equals("ForSidePrices")) ||
+                    (bet.isLay()  && offer.getName().getLocalPart().equals("AgainstSidePrices"))){
 
                     BigDecimal price = offer.getValue().getPrice();
                     BigDecimal volume = offer.getValue().getStake();
-
-                    BetOffer bo = new BetOffer(site, event, bet, price, volume);
-                    bo.addMetadata(Betdaq.BETDAQ_EVENT_ID, String.valueOf(market_id));
-                    bo.addMetadata(Betdaq.BETDAQ_SELECTION_ID, String.valueOf(selection_id));
-                    bo.addMetadata(Betdaq.BETDAQ_SELECTION_RESET_COUNT, String.valueOf(selectionType.getResetCount()));
-                    bo.addMetadata(Betdaq.BETDAQ_SEQ_NUMBER, String.valueOf(marketType.getWithdrawalSequenceNumber()));
-                    betOffers.add(bo);
+                    marketOddsReport.addBetOffer(new BetOffer(site, event, bet, price, volume));
                 }
             }
-
-
-            marketOddsReport.addBetOffers(bet.id(), betOffers);
+            marketOddsReport.addExchange(betExchange);
         }
 
         return marketOddsReport;

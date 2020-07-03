@@ -18,9 +18,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
-import static tools.Requester.SOAP2XMLnull;
 import static tools.printer.*;
 
 public class PlacedBet implements ProfitReportItem {
@@ -143,7 +144,7 @@ public class PlacedBet implements ProfitReportItem {
             value = backersStake_layersProfit;
         }
         else if (backersProfit_layersStake != null){
-            value = Bet.layStake2backStake(backersProfit_layersStake, avg_odds);
+            value = Bet.layStake2BackStake(backersProfit_layersStake, avg_odds);
         }
         else {
             log.severe("Trying to return backersStake_layersProfit for placedBet but both values null.");
@@ -270,13 +271,6 @@ public class PlacedBet implements ProfitReportItem {
         return null;
     }
 
-    @Override
-    public BetOffer getBetOffer() {
-        if (betOrder == null){
-            return null;
-        }
-        return betOrder.getBetOffer();
-    }
 
     public BettingSite getSite(){
         return site;
@@ -307,6 +301,9 @@ public class PlacedBet implements ProfitReportItem {
         if (obj instanceof JSONObject){
             return (JSONObject) obj;
         }
+        else if (obj instanceof JSONArray){
+            return (JSONArray) obj;
+        }
         else if (obj instanceof PlaceOrdersWithReceiptResponseItem){
             PlaceOrdersWithReceiptResponse powrr = new PlaceOrdersWithReceiptResponse();
             PlaceOrdersWithReceiptResponse2 powrr2 = new PlaceOrdersWithReceiptResponse2();
@@ -329,18 +326,15 @@ public class PlacedBet implements ProfitReportItem {
         JSONObject time_info = new JSONObject();
         JSONObject com_info = new JSONObject();
 
-
         j.put("backersStake_layersProfit", BDString(backersStake_layersProfit));
         j.put("backersProfit_layersStake", BDString(backersProfit_layersStake));
         j.put("state", stringValue(state));
         j.put("bet_id", stringValue(bet_id));
         j.put("avg_odds", BDString(avg_odds));
         j.put("type", stringValue(bet_type));
-
         j.put("tot_inv", BDString(getInvestment()));
         j.put("pot_prof_b4_com", BDString(potProfitBeforeCom()));
         j.put("pot_prof", BDString(potProfitAfterCom()));
-
         j.put("pot_returns", BDString(potReturns()));
 
 
@@ -356,14 +350,6 @@ public class PlacedBet implements ProfitReportItem {
         if (betOrder != null){
             j.put("betOrder", betOrder.toJSON());
         }
-        if (betOrder != null && time_placed != null){
-            time_info.put("offer_to_placed",
-                    time_placed.toEpochMilli() - getBetOffer().time_betOffer_creation.toEpochMilli());
-        }
-        if (betOrder != null && time_sent != null){
-            time_info.put("offer_to_sent",
-                    time_sent.toEpochMilli() - getBetOffer().time_betOffer_creation.toEpochMilli());
-        }
         if (time_placed != null){
             time_info.put("time_placed", time_placed.toString());
         }
@@ -373,6 +359,7 @@ public class PlacedBet implements ProfitReportItem {
         if (time_placed != null && time_sent != null){
             time_info.put("sent_to_placed", time_placed.toEpochMilli() - time_sent.toEpochMilli());
         }
+
 
         if (error != null){
             j.put("error", error);
@@ -390,6 +377,13 @@ public class PlacedBet implements ProfitReportItem {
         j.put("comission", com_info);
 
         return j;
+    }
+
+    @Override
+    public Set<String> sites_used() {
+        Set<String> sites_used = new HashSet<>(1);
+        sites_used.add(getSite().getName());
+        return sites_used;
     }
 
     public static JSONArray list2JSON(ArrayList<PlacedBet> placedBets){

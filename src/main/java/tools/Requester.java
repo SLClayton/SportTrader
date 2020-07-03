@@ -106,22 +106,7 @@ public class Requester {
     }
 
 
-    public static String SOAP2XML(Object SOAP_obj) throws JAXBException {
-        Class obj_type = SOAP_obj.getClass();
-        Marshaller marshaller = JAXBContext.newInstance(obj_type).createMarshaller();
-        StringWriter sw = new StringWriter();
-        marshaller.marshal(SOAP_obj, sw);
-        return sw.toString();
-    }
 
-    public static String SOAP2XMLnull(Object SOAP_obj)  {
-        try{
-            return SOAP2XML(SOAP_obj);
-        }
-        catch (JAXBException e){
-            return String.format("<JAXB EXCEPTION - %s>", e.toString());
-        }
-    }
 
 
     public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class)

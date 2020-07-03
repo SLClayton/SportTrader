@@ -75,9 +75,14 @@ public class FootballBetGenerator {
     }
 
 
-    public static List<FootballBet> _getAllBets(){
+    public static List<FootballBet> _getAllFootballBets(){
         FootballBetGenerator fbg = new FootballBetGenerator();
         return fbg.getAllBets();
+    }
+
+    public static List<Bet> _getAllBets(){
+        FootballBetGenerator fbg = new FootballBetGenerator();
+        return new ArrayList<Bet>(fbg.getAllBets());
     }
 
 

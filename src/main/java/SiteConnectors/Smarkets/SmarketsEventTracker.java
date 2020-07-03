@@ -1,7 +1,6 @@
 package SiteConnectors.Smarkets;
 
-import Bet.Bet;
-import Bet.BetOffer;
+import Bet.*;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
 import SiteConnectors.SiteEventTracker;
@@ -216,7 +215,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
             return MarketOddsReport.RATE_LIMITED();
         }
 
-        MarketOddsReport new_marketOddsReport = new MarketOddsReport();
+        MarketOddsReport new_marketOddsReport = new MarketOddsReport(event);
 
         for (Bet bet: bets){
             if (bet_blacklist.contains(bet.id())){
@@ -321,8 +320,12 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 offers = (JSONArray) prices.get("bids");
             }
 
-            // Convert to our list to betOffer objects list
-            ArrayList<BetOffer> new_betOffers = new ArrayList<>();
+            // Convert to our list to a betexchange
+            BetExchange betExchange = new BetExchange(site, event, bet);
+            betExchange.addMetadata(Smarkets.CONTRACT_ID, contract_id);
+            betExchange.addMetadata(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
+            betExchange.addMetadata(Smarkets.FULLNAME, contract_fullname);
+
             for (Object s_offer_obj: offers){
                 JSONObject s_offer = (JSONObject) s_offer_obj;
 
@@ -333,15 +336,10 @@ public class SmarketsEventTracker extends SiteEventTracker {
                 BigDecimal volume = Smarkets.quantity2BackStake(quantity, price);
 
                 BetOffer bo = new BetOffer(smarkets, event, bet, decimal_odds, volume);
-                bo.addMetadata(Smarkets.CONTRACT_ID, contract_id);
-                bo.addMetadata(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
                 bo.addMetadata(Smarkets.SMARKETS_PRICE, String.valueOf(price));
-                bo.addMetadata("fullname", contract_fullname);
-
-                new_betOffers.add(bo);
+                betExchange.add(bo);
             }
-
-            new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
+            new_marketOddsReport.addExchange(betExchange);
         }
 
         lastMarketOddsReport_end_time = Instant.now();

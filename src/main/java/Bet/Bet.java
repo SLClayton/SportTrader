@@ -6,6 +6,7 @@ import SiteConnectors.BettingSite;
 import SiteConnectors.Smarkets.Smarkets;
 import org.json.simple.*;
 
+import java.lang.management.BufferPoolMXBean;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -46,6 +47,16 @@ public abstract class Bet {
     }
 
 
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            return id().equals(((Bet) obj).id());
+        }
+        catch (ClassCastException e){
+            return false;
+        }
+    }
+
     public BetType getType(){
         return type;
     }
@@ -59,7 +70,7 @@ public abstract class Bet {
     }
 
 
-    public static BigDecimal layStake2backStake(BigDecimal lay_stake, BigDecimal odds){
+    public static BigDecimal layStake2BackStake(BigDecimal lay_stake, BigDecimal odds){
         // AKA
         // Lay Stake to Lay Profit
         // Back Profit to Back Stake
@@ -67,18 +78,8 @@ public abstract class Bet {
     }
 
 
-    public static BigDecimal ROI_ratio(BetType betType, BigDecimal odds, BigDecimal win_com_rate,
-                                 BigDecimal loss_com_rate){
-        return ROI(betType, odds, BigDecimal.ONE, win_com_rate, loss_com_rate, null);
-    }
-
-    public static BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment, BigDecimal win_com_rate,
-                                 BigDecimal loss_com_rate){
-        return ROI(betType, odds, investment, win_com_rate, loss_com_rate, null);
-    }
-
-    public static BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment, BigDecimal win_com_rate,
-                      BigDecimal loss_com_rate, Integer scale){
+    public static BigDecimal ROI_old(BetType betType, BigDecimal odds, BigDecimal investment, BigDecimal win_com_rate,
+                      BigDecimal loss_com_rate){
 
         BigDecimal backersStake_layersProfit;
         BigDecimal backersProfit_layersStake;
@@ -87,33 +88,65 @@ public abstract class Bet {
         // Calculate the stake part (minus loss commission possibility) and profit of bet
         // depending on bet type.
         if (betType == BetType.BACK){
-            backersStake_layersProfit = stakePartOfInvestment(investment, loss_com_rate);
+            backersStake_layersProfit = investment2Stake(investment, loss_com_rate);
             backersProfit_layersStake = backStake2LayStake(backersStake_layersProfit, odds);
             pot_profit_b4_com = backersProfit_layersStake;
         }
         else if (betType == BetType.LAY){
-            backersProfit_layersStake = stakePartOfInvestment(investment, loss_com_rate);
-            backersStake_layersProfit = layStake2backStake(backersProfit_layersStake, odds);
+            backersProfit_layersStake = investment2Stake(investment, loss_com_rate);
+            backersStake_layersProfit = layStake2BackStake(backersProfit_layersStake, odds);
             pot_profit_b4_com = backersStake_layersProfit;
         }
         else{
             return null;
         }
 
-        // Win commission from rate X profit
+        // Win commission from rate x profit
         BigDecimal win_commission = pot_profit_b4_com.multiply(win_com_rate);
 
         // Find returns by summing original investment with profit and minus commission
         BigDecimal pot_return_b4_com = investment.add(pot_profit_b4_com);
         BigDecimal pot_return = pot_return_b4_com.subtract(win_commission);
 
-        // Round if asked.
-        if (scale != null){
-            pot_return = pot_return.setScale(scale, RoundingMode.HALF_UP);
-        }
-
         return pot_return;
     }
+
+    public static BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment, BigDecimal win_com_rate,
+                                 BigDecimal loss_com_rate){
+
+        BigDecimal stake = investment2Stake(investment, loss_com_rate);
+
+        // Profit = LAY STAKE for Back bets and BACK STAKE for Lay bets
+        BigDecimal profit_b4_com;
+        if (betType == BetType.BACK){
+            profit_b4_com = backStake2LayStake(stake, odds);
+        }
+        else if (betType == BetType.LAY){
+            profit_b4_com = layStake2BackStake(stake, odds);
+        }
+        else{
+            return null;
+        }
+
+        // Win commission from rate x profit
+        BigDecimal win_commission = profit_b4_com.multiply(win_com_rate);
+
+        // Find returns by summing original investment with profit and minus commission
+        BigDecimal return_b4_com = investment.add(profit_b4_com);
+        BigDecimal potential_return = return_b4_com.subtract(win_commission);
+
+        return potential_return.setScale(12, RoundingMode.HALF_UP);
+    }
+
+
+    public static BigDecimal return2Investment(BetType betType, BigDecimal odds, BigDecimal target_return,
+                                               BigDecimal win_com_rate, BigDecimal loss_com_rate){
+
+        // Finds the investment needed to get the target return
+        BigDecimal roi_ratio = ROI(betType, odds, BigDecimal.ONE, win_com_rate, loss_com_rate);
+        return target_return.divide(roi_ratio, 12, RoundingMode.HALF_UP);
+    }
+
 
 
     public static BigDecimal dec2americ(BigDecimal decimal_odds){
@@ -158,7 +191,7 @@ public abstract class Bet {
     }
 
 
-    public static BigDecimal stakePartOfInvestment(BigDecimal investment, BigDecimal loss_commission_rate) {
+    public static BigDecimal investment2Stake_slow(BigDecimal investment, BigDecimal loss_commission_rate) {
         // Examples in comments use 1% commission
 
         // 100% of stake + 1% loss commission is the total investment so a total 1.01 ratio for 1%
@@ -172,6 +205,26 @@ public abstract class Bet {
 
         return stake_amount;
     }
+
+    public static BigDecimal investment2Stake(BigDecimal investment, BigDecimal loss_commission_rate) {
+        // Examples in comments use 1% commission
+
+        // 100% of stake + 1% loss commission is the total investment so a total 1.01 ratio for 1%
+        BigDecimal total_ratio = BigDecimal.ONE.add(loss_commission_rate);
+
+        // The amount of the total investment which is the stake (1.00 out of 1.01) multiplied by investment
+        BigDecimal stake_amount = investment.divide(total_ratio, 12, RoundingMode.HALF_UP);
+
+        return stake_amount;
+    }
+
+
+    public static BigDecimal stake2Investment(BigDecimal stake, BigDecimal loss_commission_rate){
+        // Using 1% example
+        // stake + (stake x loss_com)
+        return stake.add(stake.multiply(loss_commission_rate));
+    }
+
 
 
     public static BigDecimal investmentNeededForStake(BigDecimal stake, BigDecimal loss_commission_rate){
@@ -189,35 +242,18 @@ public abstract class Bet {
         return id().equals(bet.id());
     }
 
-    public Map<String, BetGroup> sortByCategory(Collection<Bet> bets){
-        Map<String, BetGroup> map = new HashMap<>();
-        for (Bet bet: bets){
-            BetGroup current = map.get(bet.category);
-            if (current == null){
-                current = new BetGroup();
-                map.put(bet.category, current);
-            }
-            current.add(bet);
-        }
-        return map;
-    }
-
-    public static JSONArray getTautIds(Bet[][] tauts) {
-        JSONArray taut_list = new JSONArray();
-        for (int i = 0; i < tauts.length; i++) {
-            JSONArray taut_ids = new JSONArray();
-
-            for (int j = 0; j < tauts[i].length; j++) {
-                taut_ids.add(tauts[i][j].id());
-            }
-
-            taut_list.add(taut_ids);
-        }
-        return taut_list;
-    }
 
 
     public static void main(String[] args){
+
+        BigDecimal inv = return2Investment(BetType.BACK,
+                new BigDecimal("2.00"),
+                new BigDecimal("5.00"),
+                new BigDecimal("0.02"),
+                new BigDecimal("0.00"));
+
+
+        print(inv);
 
     }
 

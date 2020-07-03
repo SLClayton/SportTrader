@@ -14,6 +14,8 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -21,14 +23,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static tools.printer.pp;
-import static tools.printer.print;
+import static java.lang.System.exit;
+import static tools.printer.*;
 
 public class Quota {
+
+    static BigDecimal max_inv = new BigDecimal("20.00");
 
     public Quota(){}
 
@@ -43,13 +45,12 @@ public class Quota {
         // Create site objects
         Betfair betfair = new Betfair();
         List<BettingSite> sites = new ArrayList<>();
-        Matchbook mb = new Matchbook();
+        //sites.add(new Matchbook());
         Smarkets sm = new Smarkets();
-        sites.add(mb);
         sites.add(sm);
 
         // Get football matches
-        List<FootballMatch> matches = mb.getFootballMatches(Instant.now(), Instant.now().plusSeconds(60*60*24*7));
+        List<FootballMatch> matches = sm.getFootballMatches(Instant.now(), Instant.now().plusSeconds(60*60*24*7));
         print(String.format("Found %s matches.", matches.size()));
 
 
@@ -110,78 +111,81 @@ public class Quota {
         FootballBetGenerator fbbg = new FootballBetGenerator();
         List<BetGroup> tautologies = fbbg.getAllTautologies();
         List<Bet> bets = (List<Bet>) (Object) fbbg.getAllBets();
-        print("Generated bets.");
+        print(String.format("Generated %s bets.", bets.size()));
 
 
+        // Collect Market Odds Report for each site and combine
         List<MarketOddsReport> mors = new ArrayList<>();
         for (SiteEventTracker siteEventTracker: siteEventTrackers){
             MarketOddsReport mor = siteEventTracker.getMarketOddsReport(bets);
             if (mor.noError()){
+                print(String.format("Found MOR from %s with %s bets with offers.",
+                        siteEventTracker.site.getName(), mor.bets_size()));
                 mors.add(mor);
             }
             else{
                 print("Error getting mor for " + siteEventTracker.site.getName());
             }
         }
-
         if (mors.size() == 0){
             print("No other MOR generated");
             return;
         }
-
-
-        // Get MOR for all
         MarketOddsReport MOR = MarketOddsReport.combine(mors);
+        print(String.format("Combined %s MORs into one with %s bets with offers.",
+                mors.size(), MOR.number_bets_with_offers()));
 
 
-        // Generate profit reports for each tautology.
-        ProfitReportSet tautologyProfitReports = ProfitReportSet.getTautologyProfitReports(tautologies, MOR);
-        tautologyProfitReports.sort_by_profit();
+        // Create profit report for each tautology where return is ONE
+        ProfitReportSet profitReports_returnOne = ProfitReportSet.fromTautologies(tautologies, MOR, BigDecimal.ONE);
+        profitReports_returnOne.sort_by_profit();
+        print(String.format("Created %s profit reports where return is 1.0.", profitReports_returnOne.size()));
 
 
-        // Filter all reports that contains betfair and has >1 site
-        List<BetOrderProfitReport> valid_BetOrder_profitReports = new ArrayList<>();
-        for (BetOrderProfitReport pr: tautologyProfitReports.betOrderProfitReports){
-            Set<BettingSite> sites_used = pr.sitesUsed();
-            if (sites_used.contains(betfair) && sites_used.size() > 1){
-                valid_BetOrder_profitReports.add(pr);
-            }
-        }
-        if (valid_BetOrder_profitReports.size() == 0){
-            print("No matching profit report found that has bf bet and >1 other site bet.");
-            return;
-        }
 
 
-        BetOrderProfitReport betOrderProfitReport = null;
-        for (BetOrderProfitReport ratio_pr: valid_BetOrder_profitReports){
-            BetOrderProfitReport min_pr = ratio_pr.newProfitReportReturn(ratio_pr.ret_from_min_stake);
-            BetOrderProfitReport max_pr = ratio_pr.newProfitReportReturn(ratio_pr.ret_from_max_stake);
-
-            if ((min_pr.compareTo(max_pr) == -1) &&
-                    (min_pr.total_investment.compareTo(new BigDecimal("10.00")) == -1)){
-                betOrderProfitReport = min_pr;
-                break;
-            }
-        }
-        if (valid_BetOrder_profitReports.size() == 0){
-            print("No matching profit report found that has min_pr under max_pr and 10.00");
-            return;
-        }
-
-        pp(betOrderProfitReport.toJSON(true));
 
 
-        List<PlacedBet> placedBets = new ArrayList<>();
-        for (BetOrder bo: betOrderProfitReport.betOrders){
-            PlacedBet placedBet = bo.getSite().placeBet(bo, new BigDecimal("0.9"));
-            placedBets.add(placedBet);
-        }
 
-        PlacedOrderProfitReport_legacy placedOrderProfitReport = new PlacedOrderProfitReport_legacy(placedBets, betOrderProfitReport);
-
-        pp(placedOrderProfitReport.toJSON(true));
     }
+
+    /*
+    public static ProfitReport ensure_one_offer_from_site(ProfitReport profitReport, MarketOddsReport mor, String sitename){
+
+        List<ProfitReport> profitReports_with_newsite = new ArrayList<>();
+        for (Bet bet_to_swap: profitReport.bets_used()){
+
+
+            List<ProfitReportItem> items_with_swap = new ArrayList<>();
+            for (ProfitReportItem original_betOrder: profitReport.getItems()){
+
+                if (original_betOrder.getBet().equals(bet_to_swap)){
+                    BetOffer betOffer_newsite_equiv = mor.getBestValidOffer(bet_to_swap.id(), sitename);
+                    if (betOffer_newsite_equiv != null){
+                        items_with_swap.add(BetOrder.fromTargetReturn(betOffer_newsite_equiv, BigDecimal.ONE));
+                    }
+                }
+                else{
+                    items_with_swap.add(original_betOrder);
+                }
+
+            }
+            ProfitReport profitReport_with_newsite = new ProfitReport(items_with_swap);
+
+            if (profitReport_with_newsite.sites_used().contains(sitename)){
+                profitReports_with_newsite.add(profitReport_with_newsite);
+            }
+        }
+
+        Collections.sort(profitReports_with_newsite, Collections.reverseOrder());
+        if (profitReports_with_newsite.isEmpty()){
+            return null;
+        }
+        return profitReports_with_newsite.get(0);
+
+    }
+    */
+
 
 
 

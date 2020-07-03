@@ -63,7 +63,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
         // Update the raw odds for this event
         JSONObject eventMarketData = getMarketData();
-        MarketOddsReport new_marketOddsReport = new MarketOddsReport();
+        MarketOddsReport new_marketOddsReport = new MarketOddsReport(event);
 
 
         for (Bet bet: bets){
@@ -126,11 +126,8 @@ public class MatchbookEventTracker extends SiteEventTracker {
                 bo.addMetadata(Matchbook.MARKET_ID, String.valueOf(runner.get("market-id")));
                 bo.addMetadata(Matchbook.RUNNER_ID, String.valueOf(runner.get("id")));
 
-                new_betOffers.add(bo);
+                new_marketOddsReport.addBetOffer(bo);
             }
-
-            // Add to final report only
-            new_marketOddsReport.addBetOffers(bet.id(), new_betOffers);
         }
 
         lastMarketOddsReport_end_time = Instant.now();

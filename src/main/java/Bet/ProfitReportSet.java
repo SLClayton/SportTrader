@@ -6,65 +6,66 @@ import org.json.simple.JSONObject;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static tools.printer.BDMax;
 import static tools.printer.pp;
 
 public class ProfitReportSet {
-    // A set of profit reports. Usually to show every tautology.
+    /*
+        A set of Profit Reports.
+     */
 
-    public List<BetOrderProfitReport> betOrderProfitReports;
+    private List<ProfitReport> profitReports;
 
 
     public ProfitReportSet(){
-        betOrderProfitReports = new ArrayList<>();
+        profitReports = new ArrayList<>();
     }
 
 
-    public boolean add(BetOrderProfitReport betOrderProfitReport){
-        boolean added = betOrderProfitReports.add(betOrderProfitReport);
-        return added;
+    public List<ProfitReport> profitReports(){
+        return profitReports;
     }
 
+
+    public boolean add(ProfitReport profitReport){
+        return profitReports.add(profitReport);
+    }
 
 
     public BigDecimal best_profit(){
         BigDecimal best_profit = null;
-        for (BetOrderProfitReport pr: betOrderProfitReports){
-            if (best_profit == null){
-                best_profit = pr.profit_ratio;
-            }
-            else{
-                best_profit = best_profit.max(pr.profit_ratio);
-            }
+        for (ProfitReport pr: profitReports){
+            best_profit = BDMax(best_profit, pr.minProfitRatio());
         }
         return best_profit;
     }
 
 
     public void sort_by_profit(){
-        Collections.sort(betOrderProfitReports, Collections.reverseOrder());
+        Collections.sort(profitReports, Collections.reverseOrder());
     }
 
 
 
     public int size(){
-        return betOrderProfitReports.size();
+        return profitReports.size();
     }
 
 
-    public BetOrderProfitReport get(int index){
-        return betOrderProfitReports.get(index);
+    public ProfitReport get(int index){
+        return profitReports.get(index);
     }
 
 
-    public BetOrderProfitReport remove(int index){
-        return betOrderProfitReports.remove(index);
+    public ProfitReport remove(int index){
+        return profitReports.remove(index);
     }
 
 
     public ProfitReportSet filter_reports(BigDecimal min_profit_ratio){
         ProfitReportSet filtered = new ProfitReportSet();
-        for (BetOrderProfitReport pr: betOrderProfitReports){
-            if (pr.profit_ratio.compareTo(min_profit_ratio) != -1){
+        for (ProfitReport pr: profitReports){
+            if (pr.minProfitRatio().compareTo(min_profit_ratio) >= 0){
                 filtered.add(pr);
             }
         }
@@ -72,53 +73,22 @@ public class ProfitReportSet {
     }
 
 
-    public static ProfitReportSet getTautologyProfitReports(Collection<BetGroup> tautologies, MarketOddsReport marketOddsReport){
+
+    public static ProfitReportSet fromTautologies(Collection<BetGroup> tautologies, MarketOddsReport marketOddsReport,
+                                                  BigDecimal returns){
         /*
         // Using a list of tautologies and the market odds report, generate a profit report
         // for each tautology which
          */
 
         // Calculate profitReport for each tautology using the best ROI for each bet
-        Set<Bet> failed_bets = new HashSet<Bet>();
+        Set<String> invalid_bets = new HashSet<String>();
         ProfitReportSet tautologyProfitReports = new ProfitReportSet();
         tautologyLoop:
         for (BetGroup tautology : tautologies){
 
-            // Ensure all bets exist before continuing
-            for (Bet bet: tautology.bets){
-                if (!marketOddsReport.contains(bet.id()) || marketOddsReport.get(bet.id()).size() <= 0){
-                    failed_bets.add(bet);
-                    continue tautologyLoop;
-                }
-            }
-
-
-            // Generate a list of ratio profitReport using the best offer for each bet
-            ArrayList<BetOrder> betOrders = new ArrayList<BetOrder>();
-            for (Bet bet: tautology.bets){
-
-                // Check each offer in sorted list to see if it is valid to bet on
-                List<BetOffer> betOffers = marketOddsReport.get(bet.id());
-                BetOffer best_valid_offer = null;
-                for (BetOffer betOffer: betOffers){
-                    if (betOffer.hasMinVolumeNeeded()){
-                        best_valid_offer = betOffer;
-                        break;
-                    }
-                }
-
-                if (best_valid_offer == null){
-                    // No valid offer for this bet so tautology is scrapped
-                    failed_bets.add(bet);
-                    continue tautologyLoop;
-                }
-                betOrders.add(BetOrder.fromTargetInvestment(best_valid_offer, BigDecimal.ONE));
-            }
-
-
-
-            BetOrderProfitReport pr = new BetOrderProfitReport(betOrders);
-            if (pr.isValid()){
+            ProfitReport pr = ProfitReport.fromTautology(tautology, marketOddsReport, returns);
+            if (pr != null && pr.isValid()){
                 tautologyProfitReports.add(pr);
             }
         }
@@ -126,14 +96,15 @@ public class ProfitReportSet {
     }
 
 
-    public JSONObject toJSON(){
+    public JSONObject toJSON(boolean include_items){
         JSONObject j = new JSONObject();
-        JSONArray ja = new JSONArray();
-        for (BetOrderProfitReport pr: betOrderProfitReports){
-            ja.add(pr.toJSON(false));
-        }
 
-        j.put("profit_reports", ja);
+        JSONArray report_jsons = new JSONArray();
+        for (ProfitReport pr: profitReports){
+            report_jsons.add(pr.toJSON(include_items));
+        }
+        j.put("profit_reports", report_jsons);
+
 
         return j;
     }

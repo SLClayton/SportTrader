@@ -2,20 +2,22 @@ package Bet;
 
 import SiteConnectors.BettingSite;
 import Trader.SportsTrader;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import tools.printer.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
-import static tools.printer.BDMax;
-import static tools.printer.BDMin;
+import static tools.printer.*;
 
-public class ProfitReport {
+public class ProfitReport implements Comparable<ProfitReport> {
+
+    /*
+        A list of either BetOrders or PlacedBets representing a whole implemented tautology.
+     */
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
@@ -24,38 +26,51 @@ public class ProfitReport {
     private BigDecimal total_investment;
     private BigDecimal min_return;
     private BigDecimal max_return;
-    private BigDecimal max_minStakeReturn;
-    private BigDecimal min_maxStakeReturn;
 
     public enum OutcomeState {ALL_SUCCESSFUL, NONE_SUCCESSFUL, MIX_STATES}
 
     public ProfitReport(List<ProfitReportItem> items){
 
+        // All items must add up to a tautology for profit report to make sense
         this.items = items;
 
         total_investment = BigDecimal.ZERO;
         for (ProfitReportItem item: items){
 
-            // Find total investment of all items
             total_investment = total_investment.add(item.getInvestment());
+            BigDecimal item_return = item.getReturn();
 
             // Find smallest and largest returns possible if all items placed
-            BigDecimal item_return = item.getReturn();
             min_return = BDMin(min_return, item_return);
             max_return = BDMax(max_return, item_return);
-
-
-            BetOffer betOffer = item.getBetOffer();
-            if (betOffer != null) {
-                max_minStakeReturn = BDMax(max_minStakeReturn, betOffer.returnFromMinStake());
-                min_maxStakeReturn = BDMin(min_maxStakeReturn, betOffer.returnFromMinStake());
-            }
         }
+    }
+
+
+
+    public static ProfitReport fromTautology(BetGroup tautology, MarketOddsReport marketOddsReport, BigDecimal returns){
+
+        return null;
+    }
+
+
+    @Override
+    public int compareTo(ProfitReport profitReport) {
+        return this.minProfitRatio().compareTo(profitReport.minProfitRatio());
     }
 
 
     public List<ProfitReportItem> getItems(){
         return items;
+    }
+
+
+    public List<BetOrder> getBetOrders(){
+        List<BetOrder> betOrders = new ArrayList<BetOrder>(items.size());
+        for (ProfitReportItem item: items){
+            betOrders.add((BetOrder) item);
+        }
+        return betOrders;
     }
 
 
@@ -72,17 +87,18 @@ public class ProfitReport {
     }
 
 
-    public OutcomeState getState(){
+    public OutcomeState getPlacedBetsState(){
         int successes = 0;
 
         for (ProfitReportItem item: items){
-            PlacedBet.State item_state  = item.getState();
-
-            if (item_state == null){
-                return null;
+            try{
+                PlacedBet.State item_state  =  ((PlacedBet) item).getState();
+                if (item_state == PlacedBet.State.SUCCESS){
+                    successes += 1;
+                }
             }
-            if (item_state == PlacedBet.State.SUCCESS){
-                successes += 1;
+            catch (ClassCastException e){
+                return null;
             }
         }
 
@@ -96,7 +112,7 @@ public class ProfitReport {
     }
 
 
-    public boolean isvalid(){
+    public boolean isValid(){
         return minProfit() != null;
     }
 
@@ -115,14 +131,6 @@ public class ProfitReport {
     }
 
 
-    public BigDecimal getMax_minStakeReturn(){
-        return max_minStakeReturn;
-    }
-
-    public BigDecimal getMin_maxStakeReturn(){
-        return min_maxStakeReturn;
-    }
-
 
     public BigDecimal minProfit(){
         return getMinReturn().subtract(getTotalInvestment());
@@ -133,12 +141,20 @@ public class ProfitReport {
     }
 
 
-    public boolean smallerInvestment(ProfitReport profitReport){
-        return getTotalInvestment().compareTo(profitReport.getTotalInvestment()) < 0;
+    public Set<String> sites_used() {
+        Set<String> sites_used = new HashSet<>();
+        for (ProfitReportItem item: items){
+            sites_used.addAll(item.sites_used());
+        }
+        return sites_used;
     }
 
-    public boolean largerInvestment(ProfitReport profitReport){
-        return getTotalInvestment().compareTo(profitReport.getTotalInvestment()) > 0;
+    public Set<Bet> bets_used(){
+        Set<Bet> bets_used = new HashSet<>();
+        for (ProfitReportItem item: items){
+            bets_used.add(item.getBet());
+        }
+        return bets_used;
     }
 
 
@@ -159,6 +175,7 @@ public class ProfitReport {
     }
 
 
+
     public BetGroup getBetGroup(){
         ArrayList<Bet> bets = new ArrayList<>();
         for (ProfitReportItem item: items){
@@ -166,4 +183,36 @@ public class ProfitReport {
         }
         return new BetGroup(bets);
     }
+
+
+    public JSONObject toJSON(boolean include_items) {
+        JSONObject j = new JSONObject();
+        j.put("items", items.size());
+        j.put("min_return", BDString(min_return));
+        j.put("max_return", BDString(max_return));
+        j.put("total_investment", BDString(total_investment));
+        j.put("prof_ratio", BDString(minProfitRatio()));
+
+
+        JSONArray bet_ids = new JSONArray();
+        for (ProfitReportItem item: items){
+            bet_ids.add(item.getBet().id());
+        }
+        Collections.sort(bet_ids);
+        j.put("bets", bet_ids);
+
+
+        if (include_items){
+            JSONArray j_items = new JSONArray();
+            for (ProfitReportItem item: items){
+                j_items.add(item.toJSON());
+            }
+            j.put("items", j_items);
+        }
+
+        return j;
+    }
+
+
+
 }

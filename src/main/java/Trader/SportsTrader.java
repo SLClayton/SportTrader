@@ -59,7 +59,6 @@ public class SportsTrader {
     public SportDataFileSaver sportDataFileSaver;
     public SessionsUpdater sessionsUpdater;
     public SiteAccountInfoUpdater siteAccountInfoUpdater;
-    public SportsTraderStats stats;
 
     public List<MarketOddsReportWorker> marketOddsReportWorkers;
     public BlockingQueue<RequestHandler> marketOddsReportRequestQueue;
@@ -282,11 +281,6 @@ public class SportsTrader {
         footballBetGenerator.getAllTautologies();
 
 
-        // Run stats keeper
-        if (config.RUN_STATS){
-            stats = new SportsTraderStats("stats.json", footballBetGenerator);
-        }
-
         // initialize our site classes to objects
         siteObjects = getSiteObjects(siteClasses);
         if (siteObjects == null){
@@ -386,12 +380,6 @@ public class SportsTrader {
         }
 
 
-        // Start stats keeper
-        if (config.RUN_STATS) {
-            stats.start();
-        }
-
-
         // Run all event traders
         for (EventTrader eventTrader: eventTraders){
             eventTrader.thread = new Thread(eventTrader);
@@ -417,7 +405,6 @@ public class SportsTrader {
         log.info("Master safe exit triggered. Closing down program.");
 
         exit_flag = true;
-        if (stats != null){ stats.exit_flag = true;}
         if (sessionsUpdater != null){ sessionsUpdater.exit_flag = true;}
         if (sportDataFileSaver != null){ sportDataFileSaver.exit_flag = true;}
         if (siteAccountInfoUpdater != null){ siteAccountInfoUpdater.exit_flag = true;}

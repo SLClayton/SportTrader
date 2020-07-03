@@ -329,29 +329,6 @@ public class FlashScores implements SportData {
     }
 
 
-    public FootballEventState getFootballState(String match_id) throws InterruptedException, IOException, URISyntaxException {
-        String url = String.format("https://www.flashscore.co.uk/match/%s/#match-summary", match_id);
-        String response = requester.getRaw(url);
-
-        Document doc = Jsoup.parse(response);
-        Element result = doc.getElementById("event_detail_current_result");
-        Elements scores = result.getElementsByClass("scoreboard");
-
-        if (scores.size() != 2){
-            log.severe(String.format("Something other than 2 scores found when searching for score in flashscores." +
-                    "\n%s", scores.toString()));
-        }
-
-
-        FootballEventState fes = new FootballEventState();
-        fes.score_a = Integer.valueOf(scores.get(0).text());
-        fes.score_b = Integer.valueOf(scores.get(1).text());
-
-        return fes;
-
-    }
-
-
     @Override
     public String getFootballTeamID(Team team){
         return football_alias_id_map.get(team.normal_name());
@@ -359,7 +336,7 @@ public class FlashScores implements SportData {
 
 
     @Override
-    public String getMatchID(Event event){
+    public String getEventID(Event event){
         return match_id_map.get((event.key()));
     }
 

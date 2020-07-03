@@ -44,13 +44,14 @@ public class Smarkets extends BettingSite {
     public final static String name = "smarkets";
     public final static String id = "SM";
 
-    public static String baseurl = "https://api.smarkets.com/v3/";
-    public static String FOOTBALL = "football";
-    public static String CONTRACT_ID = "CONTRACT_ID";
-    public static String MARKET_ID = "MARKET_ID";
-    public static String SMARKETS_PRICE = "SMARKETS_PRICE";
-    public static String SMARKETS_EVENT_ID = "SMARKETS_EVENT_ID";
+    public final static String baseurl = "https://api.smarkets.com/v3/";
+    public final static String FOOTBALL = "football";
+    public final static String CONTRACT_ID = "CONTRACT_ID";
+    public final static String MARKET_ID = "MARKET_ID";
+    public final static String SMARKETS_PRICE = "SMARKETS_PRICE";
+    public final static String SMARKETS_EVENT_ID = "SMARKETS_EVENT_ID";
     public final static String RATE_LIMITED = "RATE_LIMITED";
+    public final static String FULLNAME = "FULLNAME";
     public JSONObject RATE_LIMITED_JSON;
 
     public static int[] prices_enum = new int[] {1, 10, 20, 33, 34, 36, 37, 38, 40, 42, 43, 45, 48, 50, 53, 56, 59, 62, 67, 71, 77, 83, 91, 100, 105, 111, 118, 125, 133, 143, 154, 167, 182, 200, 208, 217, 227, 238, 250, 263, 278, 294, 312, 333, 345, 357, 370, 385, 400, 417, 435, 455, 476, 500, 513, 526, 541, 556, 571, 588, 606, 625, 645, 667, 690, 714, 741, 769, 800, 833, 870, 909, 952, 1000, 1020, 1042, 1064, 1087, 1111, 1136, 1163, 1190, 1220, 1250, 1282, 1316, 1351, 1389, 1429, 1471, 1515, 1562, 1613, 1667, 1695, 1724, 1754, 1786, 1818, 1852, 1887, 1923, 1961, 2000, 2041, 2083, 2128, 2174, 2222, 2273, 2326, 2381, 2439, 2500, 2532, 2564, 2597, 2632, 2667, 2703, 2740, 2778, 2817, 2857, 2899, 2941, 2985, 3030, 3077, 3125, 3175, 3226, 3279, 3333, 3356, 3378, 3401, 3425, 3448, 3472, 3497, 3521, 3546, 3571, 3597, 3623, 3650, 3676, 3704, 3731, 3759, 3788, 3817, 3846, 3876, 3906, 3937, 3968, 4000, 4032, 4065, 4098, 4132, 4167, 4202, 4237, 4274, 4310, 4348, 4386, 4425, 4464, 4505, 4545, 4587, 4630, 4673, 4717, 4762, 4808, 4854, 4902, 4950, 5000, 5025, 5051, 5076, 5102, 5128, 5155, 5181, 5208, 5236, 5263, 5291, 5319, 5348, 5376, 5405, 5435, 5464, 5495, 5525, 5556, 5587, 5618, 5650, 5682, 5714, 5747, 5780, 5814, 5848, 5882, 5917, 5952, 5988, 6024, 6061, 6098, 6135, 6173, 6211, 6250, 6289, 6329, 6369, 6410, 6452, 6494, 6536, 6579, 6623, 6667, 6711, 6757, 6803, 6849, 6897, 6944, 6993, 7042, 7092, 7143, 7194, 7246, 7299, 7353, 7407, 7463, 7519, 7576, 7634, 7692, 7752, 7812, 7874, 7937, 8000, 8065, 8130, 8197, 8264, 8333, 8403, 8475, 8547, 8621, 8696, 8772, 8850, 8929, 9009, 9091, 9174, 9259, 9346, 9434, 9524, 9615, 9709, 9804, 9901, 9999};
@@ -414,7 +415,9 @@ public class Smarkets extends BettingSite {
     @Override
     public void safe_exit() {
         exit_flag = true;
-        priceQuotesRequestHandler.safe_exit();
+        if (priceQuotesRequestHandler != null) {
+            priceQuotesRequestHandler.safe_exit();
+        }
     }
 
 
@@ -453,46 +456,6 @@ public class Smarkets extends BettingSite {
     }
 
 
-
-    public static BigDecimal _ROI_legacy(BetType betType, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
-                                 boolean real){
-        // (From smarkets support email on commission)
-        // For back bets that is the back stake if the bet loses or the profit if the bet wins.
-        // For lay bets it's the liability if the bet loses or the lay stake if the bet wins
-        //
-        // Pro Tier commission band where 1% commission is charged on winnings or losses per
-        // each individual bet that settles, and order rate is limited to 1 bet/s
-
-        BigDecimal roi = null;
-
-        // BACK
-        if (betType == BetType.BACK){
-            BigDecimal ratio = BigDecimal.ONE.add(commission_rate);
-            BigDecimal loss_commission_multiplier = commission_rate.divide(ratio, 12, RoundingMode.HALF_UP);
-            BigDecimal loss_commission = investment.multiply(loss_commission_multiplier);
-            BigDecimal backers_stake = investment.subtract(loss_commission);
-            BigDecimal backers_profit = Bet.backStake2LayStake(backers_stake, odds);
-            BigDecimal win_commission = backers_profit.multiply(commission_rate);
-            roi = investment.add(backers_profit).subtract(win_commission);
-        }
-
-        // LAY
-        else{
-            BigDecimal ratio = BigDecimal.ONE.add(commission_rate);
-            BigDecimal loss_commission_multiplier = commission_rate.divide(ratio, 12, RoundingMode.HALF_UP);
-            BigDecimal loss_commission = investment.multiply(loss_commission_multiplier);
-            BigDecimal layers_stake = investment.subtract(loss_commission);
-            BigDecimal layers_profit = Bet.layStake2backStake(layers_stake, odds);
-            BigDecimal win_commission = layers_profit.multiply(commission_rate);
-            roi = investment.add(layers_profit).subtract(win_commission);
-        }
-
-        // Round to nearest penny if 'real' value;
-        if (real){
-            roi = roi.setScale(2, RoundingMode.HALF_UP);
-        }
-        return roi;
-    }
 
 
 
@@ -687,10 +650,9 @@ public class Smarkets extends BettingSite {
     @Override
     public BigDecimal getValidOdds(BigDecimal odds, RoundingMode roundingMode) {
 
-        // Ensure odds in valid range
-        BigDecimal lowest_valid_odds = new BigDecimal("1.0001");
-        BigDecimal highest_valid_odds = new BigDecimal(10000);
-        if (odds.compareTo(lowest_valid_odds) < 0 || odds.compareTo(highest_valid_odds) > 0){
+        if (odds.compareTo(minValidOdds()) < 0 || odds.compareTo(maxValidOdds()) > 0){
+            log.severe(String.format("Could not return valid SM odds for input %s, outside valid range %s-%s",
+                    BDString(odds), BDString(minValidOdds()), BDString(maxValidOdds())));
             return null;
         }
 
@@ -708,6 +670,17 @@ public class Smarkets extends BettingSite {
         BigDecimal next_higher_decOdds = price2DecOdds(next_lower_price);
 
         return getClosest(next_lower_decOdds, next_higher_decOdds, odds, roundingMode);
+    }
+
+
+    @Override
+    public BigDecimal minValidOdds() {
+        return decOdds_enum[decOdds_enum.length - 1];
+    }
+
+    @Override
+    public BigDecimal maxValidOdds() {
+        return decOdds_enum[0];
     }
 
 
@@ -732,6 +705,7 @@ public class Smarkets extends BettingSite {
         PlacedBet placedBet = orderResp2PlacedBet(response);
         placedBet.raw_request = payload;
         placedBet.time_sent = time_sent;
+        placedBet.betOrder = betOrder;
 
         return placedBet;
     }
@@ -874,8 +848,8 @@ public class Smarkets extends BettingSite {
 
     public static JSONObject betOrder2Payload(BetOrder betOrder, BigDecimal odds_buffer_ratio){
 
-        String contract_id = betOrder.getBetOffer().getMetadata(Smarkets.CONTRACT_ID);
-        String market_id = betOrder.getBetOffer().getMetadata(Smarkets.MARKET_ID);
+        String contract_id = betOrder.betExchange.getMetadata(Smarkets.CONTRACT_ID);
+        String market_id = betOrder.betExchange.getMetadata(Smarkets.MARKET_ID);
         if (contract_id == null || market_id == null){
             log.severe(String.format("invalid betoffer metadata for smarkets: contract_id=%s  market_id=%s",
                     stringValue(contract_id), stringValue(market_id)));
@@ -972,11 +946,6 @@ public class Smarkets extends BettingSite {
     public static void main(String[] args){
 
         try{
-
-            Smarkets s = new Smarkets();
-
-            print(s.getValidOdds(new BigDecimal("2.32"), RoundingMode.UP));
-
 
         }
         catch (Exception e) {

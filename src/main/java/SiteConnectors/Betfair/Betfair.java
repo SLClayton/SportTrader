@@ -14,6 +14,7 @@ import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -39,6 +40,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
+import static java.lang.System.exit;
 import static tools.printer.*;
 
 public class Betfair extends BettingSite {
@@ -51,24 +53,26 @@ public class Betfair extends BettingSite {
     public final static String BETFAIR_SELECTION_ID = "BETFAIR_SELECTION_ID";
     public final static String BETFAIR_HANDICAP = "BETFAIR_HANDICAP";
 
-
-    public String hostname = "https://api.betfair.com/";
-    public String betting_endpoint = "https://api.betfair.com/exchange/betting/json-rpc/v1";
-    public String accounts_endpoint = hostname + "/exchange/account/json-rpc/v1";
-    public String app_id = "3BD65v2qKzw9ETp9";
-    public String app_id_dev = "DfgkZAnb0qi6Wmk1";
+    public static String loginurl = "https://identitysso-cert.betfair.com/api/certlogin";
+    public static String hostname = "https://api.betfair.com/";
+    public static String betting_endpoint = hostname + "/exchange/betting/json-rpc/v1";
+    public static String accounts_endpoint = hostname + "/exchange/account/json-rpc/v1";
+    public static String app_id_prod = "3BD65v2qKzw9ETp9";
+    public static String app_id_dev = "DfgkZAnb0qi6Wmk1";
+    public static String app_id = app_id_prod;
     public String token;
 
     public Long MAX_WAIT_TIME;
     public Long REQUEST_TIMEOUT;
 
     public RPCRequestHandler rpcRequestHandler;
-    public BlockingQueue<RequestHandler> rpcRequestHandlerQueue;
 
     public BlockingQueue<Object[]> eventSearchHandlerQueue;
 
     public BigDecimal base_commission_rate = new BigDecimal("0.05");
     static BigDecimal bf_min_back_stake = new BigDecimal("2.00");
+    static BigDecimal bf_min_odds = new BigDecimal("1.01");
+    static BigDecimal bf_max_odds = new BigDecimal(1000);
     public BigDecimal commission_discount = BigDecimal.ZERO;
     public long betfairPoints = 0;
 
@@ -92,13 +96,6 @@ public class Betfair extends BettingSite {
         requester = Requester.JSONRequester();
         requester.setHeader("X-Application", app_id);
         login();
-
-
-        rpcRequestHandlerQueue = new LinkedBlockingQueue<>();
-        rpcRequestHandler = new RPCRequestHandler(rpcRequestHandlerQueue);
-        rpcRequestHandler.thread.setDaemon(true);
-        rpcRequestHandler.thread.setName("BF ReqHandler");
-        rpcRequestHandler.start();
     }
 
 
@@ -106,6 +103,12 @@ public class Betfair extends BettingSite {
         JSONObject config = getJSONResource(config_filename);
         MAX_WAIT_TIME = ((Long) config.get("BETFAIR_RH_WAIT"));
         REQUEST_TIMEOUT = ((Long) config.get("REQUEST_TIMEOUT"));
+    }
+
+
+    public void setupRPCRequestHandler(){
+        rpcRequestHandler = new RPCRequestHandler();
+        rpcRequestHandler.start();
     }
 
 
@@ -121,11 +124,13 @@ public class Betfair extends BettingSite {
         public List<RPCRequestSender> rpcRequestSenders;
         public boolean exit_flag;
 
-        public RPCRequestHandler(BlockingQueue requestQueue){
+        public RPCRequestHandler(){
             exit_flag = false;
-            this.requestQueue = requestQueue;
+            requestQueue = new LinkedBlockingQueue<>();
             workerQueue = new LinkedBlockingQueue<>();
             thread = new Thread(this);
+            thread.setDaemon(true);
+            thread.setName("BF ReqHandler");
         }
 
 
@@ -165,13 +170,13 @@ public class Betfair extends BettingSite {
             while (!exit_flag) {
 
                 try {
+
+                    // Wait for queue item until interrupted if no time limit set.
                     if (wait_until == null){
-                        new_handler = null;
-                        while (!exit_flag && new_handler == null) {
-                            new_handler = requestQueue.poll(1, TimeUnit.SECONDS);
-                        }
+                        new_handler = requestQueue.take();
                         wait_until = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
                     }
+                    // Wait for queue item until time limit or interrupted.
                     else {
                         milliseconds_to_wait = wait_until.toEpochMilli() - Instant.now().toEpochMilli();
                         new_handler = requestQueue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
@@ -190,7 +195,7 @@ public class Betfair extends BettingSite {
                     }
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    log.warning("Betfair RPC Request Handler interrupted.");
                 }
             }
             log.info("Ending betfair request handler.");
@@ -245,6 +250,7 @@ public class Betfair extends BettingSite {
                         }
                     }
 
+
                     // Send request
                     JSONArray full_response = (JSONArray) requester.post(betting_endpoint, final_request);
 
@@ -296,15 +302,14 @@ public class Betfair extends BettingSite {
 
     @Override
     public String getSessionToken() throws CertificateException, NoSuchAlgorithmException, KeyStoreException,
-            IOException, UnrecoverableKeyException, KeyManagementException, org.json.simple.parser.ParseException {
+            IOException, UnrecoverableKeyException, KeyManagementException, org.json.simple.parser.ParseException,
+            URISyntaxException {
 
-        String loginurl = "https://identitysso-cert.betfair.com/api/certlogin";
+
 
         Map login_details = printer.getJSON(ssldir + "betfair-login.json");
         String username = login_details.get("u").toString();
         String password = login_details.get("p").toString();
-
-
 
 
         KeyStore ks = KeyStore.getInstance("JKS");
@@ -315,7 +320,11 @@ public class Betfair extends BettingSite {
         CloseableHttpClient httpclient = HttpClients.custom().setSSLContext(sslContext).build();
 
 
-        String uri = String.format("%s?username=%s&password=%s", loginurl, username, password);
+        //String uri = String.format("%s?username=%s&password=%s", loginurl, username, password);
+        String uri = new URIBuilder(loginurl)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .toString();
 
         HttpPost request = new HttpPost(uri);
         request.addHeader("X-Application", app_id);
@@ -386,7 +395,9 @@ public class Betfair extends BettingSite {
     @Override
     public void safe_exit() {
         exit_flag = true;
-        rpcRequestHandler.safe_exit();
+        if (rpcRequestHandler != null) {
+            rpcRequestHandler.safe_exit();
+        }
     }
 
 
@@ -399,6 +410,10 @@ public class Betfair extends BettingSite {
     public JSONArray getMarketOdds(Collection<String> market_ids) throws InterruptedException {
         log.fine(String.format("Getting market odds for market ids: %s", market_ids.toString()));
 
+        if (market_ids.isEmpty()){
+            log.warning("Attempted to get market odds for 0 market ids in betfair.");
+            return new JSONArray();
+        }
         List<List<String>> market_id_chunks = shard(market_ids, markets_per_req);
 
         // Build rpc request from market id chunks
@@ -427,9 +442,15 @@ public class Betfair extends BettingSite {
             rpc_requests.add(rpc_request);
         }
 
+        // Setup request handler if not already
+        if (rpcRequestHandler == null){
+            setupRPCRequestHandler();
+        }
+
+
         // Create JSON handler and put it in the queue to be sent off
         RequestHandler rh = new RequestHandler(rpc_requests);
-        rpcRequestHandlerQueue.put(rh);
+        rpcRequestHandler.requestQueue.put(rh);
 
         // Put all responses together in one jsonarray
         JSONArray response = (JSONArray) rh.getResponse();
@@ -536,8 +557,8 @@ public class Betfair extends BettingSite {
 
 
     public JSONObject betOrder2PlaceInstruction(BetOrder betOrder, BigDecimal odds_buffer_ratio){
-        Long selection_id = betOrder.getBetOffer().getMetadataLong(Betfair.BETFAIR_SELECTION_ID);
-        BigDecimal handicap = betOrder.getBetOffer().getMetadataBigDecimal(Betfair.BETFAIR_HANDICAP);
+        Long selection_id = betOrder.betExchange.getMetadataLong(Betfair.BETFAIR_SELECTION_ID);
+        BigDecimal handicap = betOrder.betExchange.getMetadataBD(Betfair.BETFAIR_HANDICAP);
 
         if (selection_id == null || handicap == null){
             log.severe(String.format("Invalid betOrder metadata: Selectionid=%s  handicap=%s",
@@ -549,21 +570,16 @@ public class Betfair extends BettingSite {
             odds_buffer_ratio = BigDecimal.ZERO;
         }
 
-        BigDecimal odds_with_buffer = betOrder.getOddsWithBuffer(odds_buffer_ratio);
-        BigDecimal valid_odds;
-        if (betOrder.isBack()){
-            valid_odds = getValidOdds(odds_with_buffer, RoundingMode.DOWN);
-        }
-        else{
-            valid_odds = getValidOdds(odds_with_buffer, RoundingMode.UP);
+        BigDecimal valid_odds_with_buffer = betOrder.getValidOddsWithBuffer(odds_buffer_ratio);
+        if (valid_odds_with_buffer == null){
+            log.severe("Could not create BF place instruction, couldn't find valid odds.");
         }
 
         BigDecimal valid_stake = getValidStake(betOrder.getBackersStake(), RoundingMode.HALF_UP);
 
-
         JSONObject limit_order = new JSONObject();
         limit_order.put("size", valid_stake);
-        limit_order.put("price", valid_odds.toString());
+        limit_order.put("price", valid_odds_with_buffer.toString());
         limit_order.put("persistenceType", "PERSIST");
         limit_order.put("timeInForce", "FILL_OR_KILL");
         limit_order.put("minFillSize", valid_stake);
@@ -583,7 +599,7 @@ public class Betfair extends BettingSite {
     public JSONArray betOrders2RPCArray(List<BetOrder> betOrders, BigDecimal odds_buffer_ratio){
 
         // Bets in each market go in a different RPC request, so split betOrders by their market
-        Map<String, List<BetOrder>> betOrders_by_market = BetOrder.splitListByMetaData(betOrders, BETFAIR_MARKET_ID);
+        Map<String, List<BetOrder>> betOrders_by_market = BetOrder.splitListByMetadata(betOrders, BETFAIR_MARKET_ID);
 
         JSONArray RPC_Array = new JSONArray();
         for (String marke_id: betOrders_by_market.keySet()){
@@ -652,7 +668,6 @@ public class Betfair extends BettingSite {
         Instant time_sent = Instant.now();
         JSONArray response = (JSONArray) requester.post(betting_endpoint, RPCs);
 
-        pp(response);
 
         // Get responses and generate PlaceBet for each
         ArrayList<PlacedBet> placedBets = new ArrayList<>();
@@ -692,11 +707,14 @@ public class Betfair extends BettingSite {
     @Override
     public BigDecimal getValidOdds(BigDecimal odds, RoundingMode roundingMode) {
 
-        String increment;
-        if (odds.compareTo(new BigDecimal("1.01")) < 0 || odds.compareTo(new BigDecimal(1000)) > 0){
+        if (odds.compareTo(minValidOdds()) < 0 || odds.compareTo(maxValidOdds()) > 0){
+            log.severe(String.format("Could not return valid BF odds for input %s, outside valid range %s-%s",
+                    BDString(odds), BDString(minValidOdds()), BDString(maxValidOdds())));
             return null;
         }
-        else if (odds.compareTo(new BigDecimal(2)) <= 0){
+
+        String increment;
+        if (odds.compareTo(new BigDecimal(2)) <= 0){
             increment = "0.01";
         }
         else if (odds.compareTo(new BigDecimal(3)) <= 0){
@@ -726,9 +744,19 @@ public class Betfair extends BettingSite {
         else {
             increment = "10";
         }
+
         return round(odds, new BigDecimal(increment), roundingMode);
     }
 
+    @Override
+    public BigDecimal minValidOdds() {
+        return bf_min_odds;
+    }
+
+    @Override
+    public BigDecimal maxValidOdds() {
+        return bf_max_odds;
+    }
 
     public void testbet(String side, Double size, Double price, String market, String selection, Double handicap) throws IOException, URISyntaxException {
 
@@ -788,12 +816,11 @@ public class Betfair extends BettingSite {
     public static void main(String[] args){
         try {
 
-            Betdaq b = new Betdaq();
-            FootballMatch fm = FootballMatch.parse("2020-06-03T18:30:00.0Z", "Werder Bremen v Eintr Frankfurt");
-            SiteEventTracker et = b.getEventTracker();
-            et.setupMatch(fm);
-            MarketOddsReport mor = et.getMarketOddsReport(new ArrayList<Bet>(FootballBetGenerator._getAllBets()));
-            toFile(mor.toJSON(true));
+            URIBuilder builder = new URIBuilder("https://apache.org/shindig")
+                    .addParameter("hello world", "foo&bar")
+                    .setFragment("foo");
+            String s = builder.toString();
+            print(s);
 
 
         } catch (Exception e) {

@@ -70,14 +70,6 @@ public abstract class SiteEventTracker {
     }
 
 
-    public Long lastMarketOddsTime(){
-        if (lastMarketOddsReport_end_time == null || lastMarketOddsReport_end_time == null){
-            return null;
-        }
-        return lastMarketOddsReport_end_time.toEpochMilli() - lastMarketOddsReport_start_time.toEpochMilli();
-    }
-
-
 
     public MarketOddsReport getMarketOddsReport(Collection<Bet> bets) throws InterruptedException{
         // Its important that he MarketOddsReport isn't null when pass back so ensure this with wrapper
@@ -114,18 +106,18 @@ public abstract class SiteEventTracker {
 
 
         // Check if any of the searched events event the setup_event from local data only
-        event = null;
+        Event matching_event = null;
         for (Event potential_event : potential_events){
             if (Boolean.TRUE.equals(setup_event.same_match(potential_event))){
                 log.fine(String.format("Matched %s with %s from %s with local data.", setup_event, potential_event, site));
-                event = potential_event;
+                matching_event = potential_event;
                 break;
             }
         }
 
 
         // If no event found just from local data, ensure matches are verified with IDs and check again
-        if (event == null){
+        if (matching_event == null){
 
             // Verify event
             if (setup_event.notVerified()){
@@ -145,20 +137,24 @@ public abstract class SiteEventTracker {
                 if (Boolean.TRUE.equals(setup_event.same_match(potential_event))){
                     log.fine(String.format("Matched %s with %s from %s after verifying matches.",
                             setup_event, potential_event, site));
-                    event = potential_event;
+                    matching_event = potential_event;
                     break;
                 }
             }
         }
 
         // If event is still not found then fail this setup process.
-        if (event == null){
+        if (matching_event == null){
             log.warning(String.format("No matches found for %s in %s. Checked %d: %s",
                     setup_event.toString(), site.toString(), potential_events.size(), potential_events.toString()));
             return false;
         }
 
-        // If gotten this far then a event will have been assigned to the event variable.
+        // If gotten this far then a event will have been assigned to the matching_event variable.
+        // Merge the metadata found for this website into the existing event object and then
+        // start the site specific setups
+        setup_event.updateMetaData(matching_event.metadata);
+        event = setup_event;
         return siteSpecificSetup();
     }
 

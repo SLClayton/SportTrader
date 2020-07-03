@@ -14,6 +14,7 @@ import SiteConnectors.Betdaq.Betdaq;
 import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
+import Trader.Config;
 import Trader.SportsTrader;
 import org.json.simple.parser.ParseException;
 import tools.Requester;
@@ -42,6 +43,7 @@ import static tools.printer.*;
 public abstract class BettingSite {
 
     public static Logger log = Logger.getLogger(SportsTrader.class.getName());
+    private Config config = SportsTrader.config;
 
     //public final static String name = "ABSTRACT_BETTING_SITE";
     public String ssldir;
@@ -63,6 +65,7 @@ public abstract class BettingSite {
         } else { // Assume linux
             ssldir = System.getProperty("user.home") + "/ssl/";
         }
+        ssldir = config.SSL_DIR;
 
         balance = new BigDecimal("0.00");
     }
@@ -85,6 +88,9 @@ public abstract class BettingSite {
 
 
     public abstract String getID();
+
+    public abstract BigDecimal minValidOdds();
+    public abstract BigDecimal maxValidOdds();
 
 
     public abstract BigDecimal minBackersStake();
@@ -149,8 +155,8 @@ public abstract class BettingSite {
 
 
 
-    public BigDecimal stakePartOfInvestment(BigDecimal investment) {
-        return Bet.stakePartOfInvestment(investment, lossCommissionRate());
+    public BigDecimal investment2Stake(BigDecimal investment) {
+        return Bet.investment2Stake(investment, lossCommissionRate());
     }
 
 
@@ -207,54 +213,21 @@ public abstract class BettingSite {
             throws IOException, URISyntaxException;
 
 
-    public BigDecimal ROI_ratio(BetType betType, BigDecimal odds){
-        return ROI(betType, BigDecimal.ONE, odds);
-    }
 
     public BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment){
-        return ROI(betType, odds, investment, null);
+        return Bet.ROI(betType, odds, investment, winCommissionRate(), lossCommissionRate());
     }
 
-    public BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment, Integer scale){
-        return Bet.ROI(betType, odds, investment, winCommissionRate(), lossCommissionRate(), scale);
-    }
-
-
-
-    public static BigDecimal _ROI_lagacy(BetType betType, BigDecimal odds, BigDecimal commission_rate, BigDecimal investment,
-                                 boolean real) {
-        // Default ROI, commission on profits only
-
-        BigDecimal roi;
-
-        // BACK
-        if (betType == BetType.BACK) {
-            BigDecimal backers_stake = investment;
-            BigDecimal backers_profit = Bet.backStake2LayStake(backers_stake, odds);
-            BigDecimal commission = backers_profit.multiply(commission_rate);
-            roi = backers_stake.add(backers_profit).subtract(commission);
-        }
-
-        // LAY
-        else {
-            BigDecimal layers_stake = investment;
-            BigDecimal layers_profit = Bet.layStake2backStake(layers_stake, odds);
-            BigDecimal commission = layers_profit.multiply(commission_rate);
-            roi = layers_stake.add(layers_profit).subtract(commission);
-        }
-
-        // Round to nearest penny if 'real' value;
-        if (real) {
-            roi = roi.setScale(2, RoundingMode.HALF_UP);
-        }
-
-        return roi;
-    }
 
 
     @Override
     public boolean equals(Object o){
-        return ((o instanceof BettingSite) && getName().equals(((BettingSite) o).getName()));
+        try{
+            return getName().equals(((BettingSite) o).getName());
+        }
+        catch (ClassCastException e){
+            return false;
+        }
     }
 
     @Override
@@ -265,30 +238,20 @@ public abstract class BettingSite {
 
     public static void testBetOrder() throws Exception {
 
-        String time = "2020-06-06T13:30:00.0Z";
-        String matchname = "Bayer 04 Leverkusen v FC Bayern München";
-        String stake = "3.21";
-        Bet bet = new FootballResultBet(BetType.BACK, FootballBet.TEAM_A, false);
+
+        String time = "2020-06-06T16:30:00.0Z";
+        String matchname = "Borussia Dortmund v Hertha Berlin";
+        String stake = "0.77";
+        Bet bet = new FootballResultBet(BetType.LAY, FootballBet.TEAM_A, false);
         //Bet bet = new FootballOverUnderBet(BetType.LAY, FootballBet.UNDER, new BigDecimal("2.5"));
 
 
-        BettingSite b = new Smarkets();
+        BettingSite b = new Betdaq();
         SiteEventTracker set = b.getEventTracker();
         set.setupMatch(FootballMatch.parse(time, matchname));
         print(set);
 
-        MarketOddsReport mor = set.getMarketOddsReport(new ArrayList<Bet>(FootballBetGenerator._getAllBets()));
-        toFile(mor.toJSON(true));
-
-        BetOffer betOffer = mor.get(bet.id()).get(0);
-        pp(betOffer.toJSON());
-
-
-        BetOrder betOrder = betOffer.betOrderFromStake(new BigDecimal(stake));
-        pp(betOrder.toJSON());
-
-        PlacedBet placedBet = b.placeBet(betOrder, new BigDecimal("0.10"));
-        pp(placedBet.toJSON());
+        exit(0);
 
     }
 

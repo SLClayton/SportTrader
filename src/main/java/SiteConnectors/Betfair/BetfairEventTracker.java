@@ -1,6 +1,6 @@
 package SiteConnectors.Betfair;
 
-import Bet.Bet;
+import Bet.*;
 import Bet.BetOffer;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
@@ -184,7 +184,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         if (market_odds == null){
             return MarketOddsReport.ERROR("Betfair market odds returned null.");
         }
-        MarketOddsReport new_marketOddsReport = new MarketOddsReport();
+        MarketOddsReport new_marketOddsReport = new MarketOddsReport(event);
 
 
         setStatus("loopstart");
@@ -259,27 +259,24 @@ public class BetfairEventTracker extends SiteEventTracker {
             }
 
             setStatus("loopbogen");
-            // Create a list of bet offers from those retrieved
-            ArrayList<BetOffer> betOffers = new ArrayList<BetOffer>();
+
+
+            // Create a new betExchange from the offers
+            BetExchange betExchange = new BetExchange(site, event, bet);
+            betExchange.addMetadata(Betfair.BETFAIR_SELECTION_ID, runner.get("selectionId"));
+            betExchange.addMetadata(Betfair.BETFAIR_MARKET_ID, runner.get("marketId"));
+            betExchange.addMetadata(Betfair.BETFAIR_HANDICAP, runner.get("handicap"));
+
             for (int i=0; i<betfair_offers.size(); i++){
                 JSONObject bf_offer = (JSONObject) betfair_offers.get(i);
 
                 BigDecimal odds = new BigDecimal(bf_offer.get("price").toString());
                 BigDecimal volume = new BigDecimal(bf_offer.get("size").toString());
-
-                BetOffer bo = new BetOffer(betfair, event, bet, odds, volume);
-                bo.addMetadata(Betfair.BETFAIR_SELECTION_ID, runner.get("selectionId").toString());
-                bo.addMetadata(Betfair.BETFAIR_MARKET_ID, runner.get("marketId").toString());
-                bo.addMetadata(Betfair.BETFAIR_HANDICAP, runner.get("handicap").toString());
-
-                betOffers.add(bo);
+                betExchange.add(new BetOffer(betfair, event, bet, odds, volume));
             }
-
-            setStatus("loopaddbets");
-            new_marketOddsReport.addBetOffers(bet.id(), betOffers);
+            new_marketOddsReport.addExchange(betExchange);
         }
 
-        setStatus("finish");
 
 
         lastMarketOddsReport_end_time = Instant.now();

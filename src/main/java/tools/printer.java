@@ -14,6 +14,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
@@ -60,12 +63,30 @@ public abstract class printer {
     }
 
 
+    public static String SOAP2XML(Object SOAP_obj) throws JAXBException {
+        Class obj_type = SOAP_obj.getClass();
+        Marshaller marshaller = JAXBContext.newInstance(obj_type).createMarshaller();
+        StringWriter sw = new StringWriter();
+        marshaller.marshal(SOAP_obj, sw);
+        return sw.toString();
+    }
+
+    public static String SOAP2XMLnull(Object SOAP_obj)  {
+        try{
+            return SOAP2XML(SOAP_obj);
+        }
+        catch (JAXBException e){
+            return String.format("<JAXB EXCEPTION - %s>", e.toString());
+        }
+    }
+
+
     public static void ppx(String xml){
         print(xmlstring(xml));
     }
 
     public static void ppxs(Object obj){
-        ppx(Requester.SOAP2XMLnull(obj));
+        ppx(SOAP2XMLnull(obj));
     }
 
     public static String xmlstring(String xml){
@@ -130,12 +151,17 @@ public abstract class printer {
     }
 
     public static String BDString(BigDecimal input){
+        return BDString(input, null);
+    }
+
+    public static String BDString(BigDecimal input, Integer scale){
         if (input == null){
             return "null";
         }
-        else{
-            return input.stripTrailingZeros().toPlainString();
+        if (scale != null){
+            input = input.setScale(scale, RoundingMode.HALF_UP);
         }
+        return input.stripTrailingZeros().toPlainString();
     }
 
 
@@ -580,7 +606,10 @@ public abstract class printer {
 
         try {
 
-            print(rndString(12));
+            BigDecimal a = null;
+            BigDecimal b = null;
+            BigDecimal c = BDMax(a,b);
+            print(BDString(c));
 
 
 
