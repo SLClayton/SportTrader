@@ -2,13 +2,8 @@ package SiteConnectors.Betfair;
 
 import Bet.Bet;
 import Bet.Bet.BetType;
-import Bet.BetOrder;
-import Bet.FootballBet.FootballBetGenerator;
-import Bet.FootballBet.FootballHandicapBet;
+import Bet.BetPlan;
 import Bet.PlacedBet;
-import Bet.MarketOddsReport;
-import SiteConnectors.Betdaq.Betdaq;
-import SiteConnectors.Betdaq.BetdaqEventTracker;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
@@ -40,8 +35,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
-import static java.lang.System.exit;
 import static tools.printer.*;
+import static tools.BigDecimalTools.*;
 
 public class Betfair extends BettingSite {
 
@@ -76,7 +71,7 @@ public class Betfair extends BettingSite {
     public BigDecimal commission_discount = BigDecimal.ZERO;
     public long betfairPoints = 0;
 
-    int weight_per_market = 17;  // Get marketbook request weight per market requested
+    int weight_per_market = 17;          // Get marketbook request weight per market requested
     int max_weight_per_req = 200;        // Max weight
     int markets_per_req = (int) (max_weight_per_req / weight_per_market);
 
@@ -384,12 +379,6 @@ public class Betfair extends BettingSite {
     }
 
 
-    @Override
-    public BigDecimal minLayersStake(BigDecimal odds) {
-        return Bet.backStake2LayStake(bf_min_back_stake, odds).setScale(2, RoundingMode.UP);
-    }
-
-
 
 
     @Override
@@ -556,9 +545,9 @@ public class Betfair extends BettingSite {
     }
 
 
-    public JSONObject betOrder2PlaceInstruction(BetOrder betOrder, BigDecimal odds_buffer_ratio){
-        Long selection_id = betOrder.betExchange.getMetadataLong(Betfair.BETFAIR_SELECTION_ID);
-        BigDecimal handicap = betOrder.betExchange.getMetadataBD(Betfair.BETFAIR_HANDICAP);
+    public JSONObject betOrder2PlaceInstruction(BetPlan betPlan, BigDecimal odds_buffer_ratio){
+        Long selection_id = betPlan.betExchange.getMetadataLong(Betfair.BETFAIR_SELECTION_ID);
+        BigDecimal handicap = betPlan.betExchange.getMetadataBD(Betfair.BETFAIR_HANDICAP);
 
         if (selection_id == null || handicap == null){
             log.severe(String.format("Invalid betOrder metadata: Selectionid=%s  handicap=%s",
@@ -570,12 +559,12 @@ public class Betfair extends BettingSite {
             odds_buffer_ratio = BigDecimal.ZERO;
         }
 
-        BigDecimal valid_odds_with_buffer = betOrder.getValidOddsWithBuffer(odds_buffer_ratio);
+        BigDecimal valid_odds_with_buffer = betPlan.getValidOddsWithBuffer(odds_buffer_ratio);
         if (valid_odds_with_buffer == null){
             log.severe("Could not create BF place instruction, couldn't find valid odds.");
         }
 
-        BigDecimal valid_stake = getValidStake(betOrder.getBackersStake(), RoundingMode.HALF_UP);
+        BigDecimal valid_stake = getValidStake(betPlan.getBackersStake(), RoundingMode.HALF_UP);
 
         JSONObject limit_order = new JSONObject();
         limit_order.put("size", valid_stake);
@@ -588,27 +577,27 @@ public class Betfair extends BettingSite {
         instruction.put("orderType", "LIMIT");
         instruction.put("selectionId", selection_id);
         instruction.put("handicap", handicap);
-        instruction.put("side", betOrder.betType().toString());
+        instruction.put("side", betPlan.betType().toString());
         instruction.put("limitOrder", limit_order);
-        instruction.put("customerOrderRef", betOrder.getID());
+        instruction.put("customerOrderRef", betPlan.getID());
 
         return instruction;
     }
 
 
-    public JSONArray betOrders2RPCArray(List<BetOrder> betOrders, BigDecimal odds_buffer_ratio){
+    public JSONArray betOrders2RPCArray(List<BetPlan> betPlans, BigDecimal odds_buffer_ratio){
 
         // Bets in each market go in a different RPC request, so split betOrders by their market
-        Map<String, List<BetOrder>> betOrders_by_market = BetOrder.splitListByMetadata(betOrders, BETFAIR_MARKET_ID);
+        Map<String, List<BetPlan>> betOrders_by_market = BetPlan.splitListByMetadata(betPlans, BETFAIR_MARKET_ID);
 
         JSONArray RPC_Array = new JSONArray();
         for (String marke_id: betOrders_by_market.keySet()){
-            List<BetOrder> market_betOrders = betOrders_by_market.get(marke_id);
+            List<BetPlan> market_betPlans = betOrders_by_market.get(marke_id);
 
             // Create instruction list for each betOrder
             JSONArray instruction_list = new JSONArray();
-            for (BetOrder betOrder: market_betOrders){
-                instruction_list.add(betOrder2PlaceInstruction(betOrder, odds_buffer_ratio));
+            for (BetPlan betPlan : market_betPlans){
+                instruction_list.add(betOrder2PlaceInstruction(betPlan, odds_buffer_ratio));
             }
 
             // Wrap each set of instructions for a market into a RPC request
@@ -659,10 +648,10 @@ public class Betfair extends BettingSite {
         return pb;
     }
 
-    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal odds_buffer_ratio)
+    public List<PlacedBet> placeBets(List<BetPlan> betPlans, BigDecimal odds_buffer_ratio)
             throws IOException, URISyntaxException {
 
-        JSONArray RPCs = betOrders2RPCArray(betOrders, odds_buffer_ratio);
+        JSONArray RPCs = betOrders2RPCArray(betPlans, odds_buffer_ratio);
 
         // Send off request to place bets on betfair exchange
         Instant time_sent = Instant.now();
@@ -685,7 +674,7 @@ public class Betfair extends BettingSite {
 
                 PlacedBet placedBet = instructionReport2PlacedBet(report);
                 placedBet.time_sent = time_sent;
-                placedBet.betOrder = BetOrder.find(betOrders, order_ref);
+                placedBet.betPlan = BetPlan.find(betPlans, order_ref);
                 placedBet.raw_request = RPCs;
 
                 placedBets.add(placedBet);

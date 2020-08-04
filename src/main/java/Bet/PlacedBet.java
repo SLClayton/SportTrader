@@ -2,54 +2,51 @@ package Bet;
 
 import Bet.Bet.BetType;
 import SiteConnectors.BettingSite;
+import Sport.Event;
 import Trader.SportsTrader;
-import com.globalbettingexchange.externalapi.PlaceOrdersWithReceipt;
 import com.globalbettingexchange.externalapi.PlaceOrdersWithReceiptResponse;
 import com.globalbettingexchange.externalapi.PlaceOrdersWithReceiptResponse2;
 import com.globalbettingexchange.externalapi.PlaceOrdersWithReceiptResponseItem;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import javax.swing.*;
-import java.lang.management.BufferPoolMXBean;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import static tools.printer.*;
+import static tools.BigDecimalTools.*;
 
-public class PlacedBet implements ProfitReportItem {
-    // This should be exact real values taken from a site of an actual bet that
-    // has been placed.
+public class PlacedBet implements SiteBet {
+    // This should be exact real values taken from a single site of an
+    // actual bet that has been placed.
 
-    private static final Logger log = Logger.getLogger(SportsTrader.class.getName());
+    private static final Logger log = SportsTrader.log;
 
-    public enum State {SUCCESS, FAIL, PARTIAL, INVALID_BETORDER}
+    public enum State {SUCCESS, FAIL, PARTIAL, INVALID_BETPLAN}
 
-
-    public State state;
+    public BetPlan betPlan;
+    private BettingSite site;
     public String bet_id;
     public BetType bet_type;
+    public State state;
 
     private BigDecimal backersStake_layersProfit;
     private BigDecimal backersProfit_layersStake;
     public BigDecimal avg_odds;
-    public String error;
 
     public Instant time_sent;
     public Instant time_created;
     public Instant time_placed;
 
+
     public Object raw_response;
     public Object raw_request;
-    public BetOrder betOrder;
-    private BettingSite site;
+    public String error;
+
 
 
     public PlacedBet(){
@@ -69,7 +66,7 @@ public class PlacedBet implements ProfitReportItem {
         time_placed = null;
 
         raw_response = null;
-        betOrder = null;
+        betPlan = null;
         site = null;
     }
 
@@ -85,7 +82,6 @@ public class PlacedBet implements ProfitReportItem {
         error = error_msg;
     }
 
-
     public void setSuccess(){
         state = State.SUCCESS;
     }
@@ -94,7 +90,6 @@ public class PlacedBet implements ProfitReportItem {
     public boolean isBack(){
         return bet_type == BetType.BACK;
     }
-
 
     public boolean isLay(){
         return bet_type == BetType.LAY;
@@ -114,7 +109,7 @@ public class PlacedBet implements ProfitReportItem {
     }
 
 
-    public BigDecimal get_backersProfit_layersStake(Integer scale){
+    public BigDecimal get_backersProfit_layersStake(){
         BigDecimal value;
         if (backersProfit_layersStake != null){
             value = backersProfit_layersStake;
@@ -126,19 +121,10 @@ public class PlacedBet implements ProfitReportItem {
             log.severe("Trying to return backersprofit_layerssStake for placedBet but both values null.");
             return null;
         }
-
-        if (scale != null) {
-            value = value.setScale(2, RoundingMode.HALF_UP);
-        }
         return value;
     }
 
-    public BigDecimal get_backersProfit_layersStake(){
-        return get_backersProfit_layersStake(null);
-    }
-
-
-    public BigDecimal get_backersStake_layersProfit(Integer scale){
+    public BigDecimal get_backersStake_layersProfit(){
         BigDecimal value;
         if (backersStake_layersProfit != null){
             value = backersStake_layersProfit;
@@ -150,15 +136,7 @@ public class PlacedBet implements ProfitReportItem {
             log.severe("Trying to return backersStake_layersProfit for placedBet but both values null.");
             return null;
         }
-
-        if (scale != null) {
-            value = value.setScale(2, RoundingMode.HALF_UP);
-        }
         return value;
-    }
-
-    public BigDecimal get_backersStake_layersProfit(){
-        return get_backersStake_layersProfit(null);
     }
 
 
@@ -171,18 +149,24 @@ public class PlacedBet implements ProfitReportItem {
     }
 
 
-    public BigDecimal stake(Integer scale){
+    public BigDecimal stake(){
         if (isBack()){
-            return get_backersStake_layersProfit(scale);
+            return get_backersStake_layersProfit();
         }
-        else{
-            return get_backersProfit_layersStake(scale);
+        else if (isLay()){
+            return get_backersProfit_layersStake();
         }
+        return null;
     }
 
 
-    public BigDecimal stake(){
-        return stake(null);
+    public BigDecimal getBackersStake(){
+        return get_backersStake_layersProfit();
+    }
+
+    @Override
+    public BigDecimal avgOdds() {
+        return avg_odds;
     }
 
 
@@ -190,24 +174,21 @@ public class PlacedBet implements ProfitReportItem {
         if (isBack()){
             return get_backersProfit_layersStake();
         }
-        else{
+        else if (isLay()){
             return get_backersStake_layersProfit();
         }
+        return null;
     }
 
     public BigDecimal potProfitAfterCom(){
-
-        BigDecimal potProfitBeforeCom = potProfitBeforeCom();
-        if (potProfitBeforeCom == null){
+        try {
+            BigDecimal potProfitBeforeCom = potProfitBeforeCom();
+            BigDecimal commission = winCommission(potProfitBeforeCom);
+            return potProfitBeforeCom.subtract(commission);
+        }
+        catch (NullPointerException e){
             return null;
         }
-
-        BigDecimal commission = winCommission(potProfitBeforeCom);
-        if (commission == null){
-            return null;
-        }
-
-        return potProfitBeforeCom.subtract(commission);
     }
 
 
@@ -216,18 +197,22 @@ public class PlacedBet implements ProfitReportItem {
     }
 
     public BigDecimal winCommission(BigDecimal potProfitBeforeCom){
-        if (getSite() == null || potProfitBeforeCom == null){
+        try {
+            return getSite().winCommissionRate().multiply(potProfitBeforeCom);
+        }
+        catch (NullPointerException e){
             return null;
         }
-        return getSite().winCommissionRate().multiply(potProfitBeforeCom);
     }
 
 
     public BigDecimal lossCommission(BigDecimal stake){
-        if (getSite() == null || stake == null){
+        try {
+            return getSite().lossCommissionRate().multiply(stake);
+        }
+        catch (NullPointerException e){
             return null;
         }
-        return getSite().lossCommissionRate().multiply(stake);
     }
 
     public BigDecimal lossCommission(){
@@ -235,40 +220,25 @@ public class PlacedBet implements ProfitReportItem {
     }
 
 
-
-    public BigDecimal potReturns(){
-        BigDecimal profit_before_com = potProfitBeforeCom();
-        BigDecimal total_investment = getInvestment();
-
-        if (profit_before_com == null || total_investment == null){
+    public BigDecimal getReturn(){
+        try {
+            return getInvestment().add(potProfitAfterCom());
+        }
+        catch (NullPointerException e){
             return null;
         }
-
-        return total_investment
-                .add(profit_before_com)
-                .subtract(winCommission(profit_before_com));
     }
 
 
-    @Override
     public BigDecimal getInvestment() {
-        BigDecimal stake = stake();
-        if (stake == null){
+        try {
+            BigDecimal stake = stake();
+            BigDecimal loss_commission = lossCommission(stake);
+            return stake.add(loss_commission);
+        }
+        catch (NullPointerException e){
             return null;
         }
-
-        BigDecimal loss_commission = lossCommission(stake);
-        if (loss_commission == null){
-            return null;
-        }
-
-        BigDecimal investment = stake.add(loss_commission);
-        return investment;
-    }
-
-    @Override
-    public BigDecimal getReturn() {
-        return null;
     }
 
 
@@ -276,17 +246,30 @@ public class PlacedBet implements ProfitReportItem {
         return site;
     }
 
-    @Override
     public Bet getBet() {
-        return betOrder.getBet();
+        try {
+            return betPlan.getBet();
+        }
+        catch (NullPointerException e){
+            return null;
+        }
+    }
+
+    public Event getEvent() {
+        try {
+            return betPlan.getEvent();
+        }
+        catch (NullPointerException e){
+            return null;
+        }
     }
 
     public void setSite(BettingSite betting_site){
         this.site = betting_site;
 
-        if (betOrder != null && betOrder.getSite() != this.site){
+        if (betPlan != null && betPlan.getSite() != this.site){
             log.severe(String.format("PlacedBet SITE (%s) and BetOrder Site (%s) ARE DIFFERENT",
-                    this.site.getName(), betOrder.getSite().getName()));
+                    this.site.getName(), betPlan.getSite().getName()));
         }
     }
 
@@ -335,7 +318,7 @@ public class PlacedBet implements ProfitReportItem {
         j.put("tot_inv", BDString(getInvestment()));
         j.put("pot_prof_b4_com", BDString(potProfitBeforeCom()));
         j.put("pot_prof", BDString(potProfitAfterCom()));
-        j.put("pot_returns", BDString(potReturns()));
+        j.put("pot_returns", BDString(getReturn()));
 
 
         if (getSite() != null){
@@ -347,8 +330,8 @@ public class PlacedBet implements ProfitReportItem {
             com_info.put("win_com", BDString(winCommission()));
             com_info.put("win_com_rate", BDString(getSite().winCommissionRate()));
         }
-        if (betOrder != null){
-            j.put("betOrder", betOrder.toJSON());
+        if (betPlan != null){
+            j.put("betOrder", betPlan.toJSON());
         }
         if (time_placed != null){
             time_info.put("time_placed", time_placed.toString());
@@ -379,25 +362,7 @@ public class PlacedBet implements ProfitReportItem {
         return j;
     }
 
-    @Override
-    public Set<String> sites_used() {
-        Set<String> sites_used = new HashSet<>(1);
-        sites_used.add(getSite().getName());
-        return sites_used;
-    }
-
-    public static JSONArray list2JSON(ArrayList<PlacedBet> placedBets){
-        JSONArray ja = new JSONArray();
-        for (PlacedBet pb: placedBets){
-            ja.add(pb.toJSON());
-        }
-        return ja;
-    }
 
 
-    public static void main(String[] args){
-        BigDecimal bd = new BigDecimal("6000.004000");
-        print(BDString(bd));
-    }
 
 }

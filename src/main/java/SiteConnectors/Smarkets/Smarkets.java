@@ -1,14 +1,8 @@
 package SiteConnectors.Smarkets;
 
-import Bet.Bet;
 import Bet.Bet.BetType;
-import Bet.BetOffer;
-import Bet.BetOrder;
-import Bet.MarketOddsReport;
-import Bet.FootballBet.FootballBetGenerator;
+import Bet.BetPlan;
 import Bet.PlacedBet;
-import SiteConnectors.Betfair.Betfair;
-import SiteConnectors.Betfair.BetfairEventTracker;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
@@ -21,7 +15,6 @@ import tools.Requester;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
@@ -35,9 +28,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.System.exit;
 import static tools.printer.*;
-import static tools.printer.round;
+import static tools.BigDecimalTools.*;
 
 public class Smarkets extends BettingSite {
 
@@ -406,11 +398,6 @@ public class Smarkets extends BettingSite {
         return smarkets_min_back_stake;
     }
 
-    @Override
-    public BigDecimal minLayersStake(BigDecimal odds) {
-        return smarkets_min_lay_stake;
-    }
-
 
     @Override
     public void safe_exit() {
@@ -692,10 +679,10 @@ public class Smarkets extends BettingSite {
     }
 
 
-    public PlacedBet placeOrder(BetOrder betOrder, BigDecimal odds_buffer_ratio) throws IOException, URISyntaxException {
+    public PlacedBet placeOrder(BetPlan betPlan, BigDecimal odds_buffer_ratio) throws IOException, URISyntaxException {
 
         // Convert betorder to json payload
-        JSONObject payload = betOrder2Payload(betOrder, odds_buffer_ratio);
+        JSONObject payload = betOrder2Payload(betPlan, odds_buffer_ratio);
 
         // Send off payload to smarkets
         Instant time_sent = Instant.now();
@@ -705,7 +692,7 @@ public class Smarkets extends BettingSite {
         PlacedBet placedBet = orderResp2PlacedBet(response);
         placedBet.raw_request = payload;
         placedBet.time_sent = time_sent;
-        placedBet.betOrder = betOrder;
+        placedBet.betPlan = betPlan;
 
         return placedBet;
     }
@@ -715,7 +702,7 @@ public class Smarkets extends BettingSite {
 
         // Runs the process of sending off a bet and
 
-        public BetOrder betOrder;
+        public BetPlan betPlan;
 
         public PlacedBet placedBet;
         public Exception exception;
@@ -723,8 +710,8 @@ public class Smarkets extends BettingSite {
         public BigDecimal odds_buffer_ratio;
 
 
-        public PlaceBetRunnable(BetOrder betOrder, BigDecimal odds_buffer_ratio){
-            this.betOrder = betOrder;
+        public PlaceBetRunnable(BetPlan betPlan, BigDecimal odds_buffer_ratio){
+            this.betPlan = betPlan;
             this.odds_buffer_ratio = odds_buffer_ratio;
             exception = null;
             placedBet = null;
@@ -739,7 +726,7 @@ public class Smarkets extends BettingSite {
         @Override
         public void run() {
             try {
-                placedBet = placeOrder(betOrder, odds_buffer_ratio);
+                placedBet = placeOrder(betPlan, odds_buffer_ratio);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.severe("Exception while placebetrunnable for smarkets bet - " + e.toString());
@@ -814,15 +801,15 @@ public class Smarkets extends BettingSite {
 
 
 
-    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal odds_buffer_ratio)
+    public List<PlacedBet> placeBets(List<BetPlan> betPlans, BigDecimal odds_buffer_ratio)
             throws IOException, URISyntaxException {
 
         // Smarkets bets are 1 per request, so send them all concurrently
 
         // Create payload and runnable for each betOrder
         ArrayList<PlaceBetRunnable> placeBetRunnables = new ArrayList<>();
-        for (BetOrder betOrder: betOrders) {
-            PlaceBetRunnable pbr = new PlaceBetRunnable(betOrder, odds_buffer_ratio);
+        for (BetPlan betPlan : betPlans) {
+            PlaceBetRunnable pbr = new PlaceBetRunnable(betPlan, odds_buffer_ratio);
             pbr.start();
             placeBetRunnables.add(pbr);
         }
@@ -846,10 +833,10 @@ public class Smarkets extends BettingSite {
     }
 
 
-    public static JSONObject betOrder2Payload(BetOrder betOrder, BigDecimal odds_buffer_ratio){
+    public static JSONObject betOrder2Payload(BetPlan betPlan, BigDecimal odds_buffer_ratio){
 
-        String contract_id = betOrder.betExchange.getMetadata(Smarkets.CONTRACT_ID);
-        String market_id = betOrder.betExchange.getMetadata(Smarkets.MARKET_ID);
+        String contract_id = betPlan.betExchange.getMetadata(Smarkets.CONTRACT_ID);
+        String market_id = betPlan.betExchange.getMetadata(Smarkets.MARKET_ID);
         if (contract_id == null || market_id == null){
             log.severe(String.format("invalid betoffer metadata for smarkets: contract_id=%s  market_id=%s",
                     stringValue(contract_id), stringValue(market_id)));
@@ -857,17 +844,17 @@ public class Smarkets extends BettingSite {
         }
 
         // Buffer odds value to ratio either side of bet to a valid smarkets size
-        BigDecimal valid_buffered_odds = betOrder.getValidOddsWithBuffer(odds_buffer_ratio);
+        BigDecimal valid_buffered_odds = betPlan.getValidOddsWithBuffer(odds_buffer_ratio);
         int valid_buffered_price = decOdds2Price(valid_buffered_odds).setScale(0, RoundingMode.HALF_UP).intValue();
 
         // Use the original odds to calculate smarkets quantity
-        long quantity = backStake2Quantity(betOrder.getBackersStake(), betOrder.getOdds());
+        long quantity = backStake2Quantity(betPlan.getBackersStake(), betPlan.avgOdds());
 
         JSONObject payload = new JSONObject();
         payload.put("contract_id", contract_id);
         payload.put("market_id", market_id);
-        payload.put("label", betOrder.getID());
-        payload.put("side", betType2Side(betOrder.betType()));
+        payload.put("label", betPlan.getID());
+        payload.put("side", betType2Side(betPlan.betType()));
         payload.put("price", valid_buffered_price);
         payload.put("quantity", quantity);
         payload.put("minimum_accepted_quantity", quantity);

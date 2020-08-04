@@ -70,6 +70,11 @@ public abstract class Event {
 
 
     @Override
+    public String toString() {
+        return String.format("[%s : %s]", start_time.toString(), name);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         try {
             return toString().equals(((Event) obj).toString());

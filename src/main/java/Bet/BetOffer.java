@@ -8,6 +8,7 @@ import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.BettingSite;
 import SiteConnectors.Smarkets.Smarkets;
 import Sport.Event;
+import org.apache.commons.collections.map.LinkedMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -17,13 +18,13 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
+import static Bet.Bet.penny;
 import static java.lang.System.exit;
 import static java.lang.System.in;
 import static tools.printer.*;
+import static tools.BigDecimalTools.*;
 
 public class BetOffer implements Comparable<BetOffer> {
-
-    static final BigDecimal penny = new BigDecimal("0.01");
 
     public final BettingSite site;
     public final Event event;
@@ -60,6 +61,18 @@ public class BetOffer implements Comparable<BetOffer> {
 
     public boolean hasMinVolumeNeeded(){
         return volume.compareTo(minStake()) >= 0;
+    }
+
+
+    public BetOffer removeVolume(BigDecimal volume_reduction){
+        // Returns and identical offer but with a certain amount of its volume removed
+        BigDecimal new_vol = volume.subtract(volume_reduction);
+        if (new_vol.signum() >= 0){
+            BetOffer betOffer = new BetOffer(site, event, bet, odds, new_vol);
+            betOffer.updateMetadata(metadata);
+            return betOffer;
+        }
+        return null;
     }
 
 
@@ -110,7 +123,18 @@ public class BetOffer implements Comparable<BetOffer> {
 
     @Override
     public String toString(){
-        return toJSON().toString();
+
+        String oddsString = padto(BDString(odds, 4), 10);
+        String volString = padto(BDString(volume, 4), 10);
+        String roiString = padto(BDString(ROI_ratio(), 4), 10);
+
+        return String.format("[%s: odds: %s vol: %s roi: %s  %s %s]",
+                site.getID(), oddsString, volString, roiString, event.toString(), bet.id());
+    }
+
+
+    public String getSiteName(){
+        return site.getName();
     }
 
 
@@ -225,24 +249,22 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
-    public BigDecimal return2Investment(BigDecimal target_return){
-        return target_return.divide(ROI_ratio(), 12, RoundingMode.HALF_UP);
+
+    public BigDecimal profitAfterCommission(BigDecimal profit_b4_com){
+        return Bet.profitAfterCommission(profit_b4_com, site.winCommissionRate());
     }
 
 
+    public BigDecimal return2Investment(BigDecimal target_return){
+        return site.return2Investment(bet.type, odds, target_return);
+    }
+
     public BigDecimal return2Stake(BigDecimal target_return){
-        BigDecimal inv = return2Investment(target_return);
-        return investment2Stake(inv);
+        return site.return2Stake(bet.type, odds, target_return);
     }
 
     public BigDecimal return2BackStake(BigDecimal target_return){
-        if (isBack()){
-            return return2Stake(target_return);
-        }
-        else if (isLay()){
-            return layStake2BackStake(return2Stake(target_return));
-        }
-        return null;
+        return site.return2BackStake(bet.type, odds, target_return);
     }
 
 
@@ -260,6 +282,15 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
+    public BetOfferStake getFullOfferStake(){
+        return getOfferStake(volume);
+    }
+
+    public BetOfferStake getOfferStake(BigDecimal back_stake){
+        return new BetOfferStake(this, back_stake);
+    }
+
+
     public boolean largerROI(BetOffer betOffer){
         return this.ROI_ratio().compareTo(betOffer.ROI_ratio()) > 0;
     }
@@ -272,192 +303,254 @@ public class BetOffer implements Comparable<BetOffer> {
 
 
 
-    public static BetOffer getBestValidOffer_old(List<BetOffer> betOffers, String site_name){
-        // Finds the best offer from a list, from a specific site if asked.
-
-        BetOffer best_offer = null;
-        for (BetOffer betOffer: betOffers){
-            if (betOffer.hasMinVolumeNeeded() &&
-                    (site_name == null || site_name.equals(betOffer.site.getName())) &&
-                    (best_offer == null || betOffer.largerROI(best_offer))){
-
-                best_offer = betOffer;
+    public static String list2String(List<BetOffer> betOffers){
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<betOffers.size(); i++){
+            sb.append(betOffers.get(i).toString());
+            if (i < betOffers.size()-1){
+                sb.append("\n");
             }
         }
-        return best_offer;
+        return sb.toString();
+    }
+
+    public static void printList(List<BetOffer> betOffers){
+        print(list2String(betOffers));
     }
 
 
-    public static BigDecimal ROI(List<BetOffer> betOffers, BigDecimal target_investment){
-        return ROI(betOffers, target_investment, false);
+
+    public static List<BetOffer> removeSite(List<BetOffer> betOffers, String site_name){
+        List<BetOffer> new_betOffers = new ArrayList<BetOffer>();
+        for (BetOffer betOffer: betOffers){
+            if (!betOffer.getSiteName().equals(site_name)){
+                new_betOffers.add(betOffer);
+            }
+        }
+        return new_betOffers;
     }
 
-    public static BigDecimal ROI(List<BetOffer> betOffers, BigDecimal target_investment, boolean is_list_sorted){
 
-        // Finds the Return, if the target investment was placed on the series of betOffers filled as far as possible
-        // NO MIN STAKE
 
-        // Sort list by best offer to worst
+    public static List<BetOfferStake> apply_stake(List<BetOffer> betOffers, BigDecimal target_backers_stake,
+                                                  boolean is_list_sorted){
+
+        // Applys a certain back stake to a list of offers to find what amount to place
+        // to fill each, on after the next until all back stake gone.
+
         if (!is_list_sorted) {
             Collections.sort(betOffers, Collections.reverseOrder());
         }
 
-        // Count down from target and up to return
-        BigDecimal inv_remainder = target_investment;
-        BigDecimal total_return = BigDecimal.ZERO;
-
-        for (BetOffer betOffer: betOffers){
-
-            // Find what back stake would be needed for the remaining investment
-            BigDecimal back_stake_for_remainder = betOffer.investment2BackStake(inv_remainder);
-
-            // Choose what back stake to use for this offer, either remaining amount, or the max volume of this offer
-            BigDecimal back_stake_this_offer = BDMin(
-                    back_stake_for_remainder.setScale(2, RoundingMode.HALF_UP),
-                    betOffer.volume.setScale(2, RoundingMode.DOWN));
-
-            // Calculate the investment and return resulting from this offer using the chosen back stake
-            BigDecimal this_investment = betOffer.backStake2Investment(back_stake_this_offer);
-            BigDecimal this_return = betOffer.ROI(this_investment);
-
-            // Remove the inv we just made from target investment
-            total_return = total_return.add(this_return);
-            inv_remainder = inv_remainder.subtract(this_investment);
-
-            // If less than 0.01 is remaining then complete
-            if (inv_remainder.compareTo(penny) < 0){
-                return total_return;
-            }
-        }
-        // Unable to complete target investment with given offers
-        return null;
-    }
-
-
-    public static BigDecimal getAvgROIRatio(List<BetOffer> betOffers, BigDecimal target_investment) {
-        return getAvgROIRatio(betOffers, target_investment, false);
-    }
-
-    public static BigDecimal getAvgROIRatio(List<BetOffer> betOffers, BigDecimal target_investment,
-                                             boolean is_list_sorted){
-
-        BigDecimal returns = ROI(betOffers, target_investment, is_list_sorted);
-        return returns.divide(target_investment, 12, RoundingMode.HALF_UP);
-    }
-
-
-    public static BigDecimal investmentForReturn(List<BetOffer> betOffers, BigDecimal target_return,
-                                                 boolean is_list_sorted){
-
-        // Finds what investment is needed to get a specific return on the series of betOffers filled as far as possible
-        // NO MIN STAKE
-
-        // Sort list by best offer to worst
-        if (!is_list_sorted) {
-            Collections.sort(betOffers, Collections.reverseOrder());
-        }
-
-        // Count down from remainder and sum up investment as we go
-        BigDecimal return_remainder = target_return;
-        BigDecimal total_investment = BigDecimal.ZERO;
-
-        for (BetOffer betOffer: betOffers){
-
-            // Find what back stake would be needed for the remaining return
-            BigDecimal back_stake_for_remainder = betOffer.return2BackStake(return_remainder);
-
-            // Choose what back stake to use for this offer, either remaining amount, or the max volume of this offer
-            BigDecimal back_stake_this_offer = BDMin(
-                    back_stake_for_remainder.setScale(2, RoundingMode.HALF_UP),
-                    betOffer.volume.setScale(2, RoundingMode.DOWN));
-
-            // Calculate the investment and return resulting from this offer using the chosen back stake
-            BigDecimal this_investment = betOffer.backStake2Investment(back_stake_this_offer);
-            BigDecimal this_return = betOffer.ROI(this_investment);
-
-            // Remove the inv we just made from target investment
-            total_investment = total_investment.add(this_investment);
-            return_remainder = return_remainder.subtract(this_return);
-
-            // If less than 0.01 is remaining then complete
-            if (return_remainder.compareTo(penny) < 0){
-                return total_investment;
-            }
-        }
-        // Unable to complete target investment with given offers
-        return null;
-    }
-
-    public static BigDecimal investmentForReturn(List<BetOffer> betOffers, BigDecimal target_return){
-        return investmentForReturn(betOffers, target_return, false);
-    }
-
-
-
-    public static BigDecimal backStake2LayStake(List<BetOffer> betOffers, BigDecimal target_backers_stake, boolean is_list_sorted){
-        // Finds the backersProfitLayersStake from the backersStakeLayersProfit
-        if (!is_list_sorted) {
-            Collections.sort(betOffers, Collections.reverseOrder());
-        }
         BigDecimal back_stake_remainder = target_backers_stake;
-        BigDecimal lay_stake_total = BigDecimal.ZERO;
+        List<BetOfferStake> betOfferStakes = new ArrayList<BetOfferStake>();
 
         for (BetOffer betOffer: betOffers){
             // Back stake is full amount or the filled offer
             BigDecimal back_stake_this_offer = BDMin(back_stake_remainder, betOffer.volume);
-            BigDecimal lay_stake_this_offer = betOffer.backStake2LayStake(back_stake_this_offer);
+            betOfferStakes.add(new BetOfferStake(betOffer, back_stake_this_offer));
 
-            // Remove the inv we just made from target investment
-            lay_stake_total = lay_stake_total.add(lay_stake_this_offer);
+            // Remove the back stake we just made from target back stake
             back_stake_remainder = back_stake_remainder.subtract(back_stake_this_offer);
 
             if (back_stake_remainder.signum() <= 0){
-                return lay_stake_total;
+                return betOfferStakes;
             }
         }
         return null;
     }
 
-    public static BigDecimal backStake2LayStake(List<BetOffer> betOffers, BigDecimal target_backers_stake) {
-        return backStake2LayStake(betOffers, target_backers_stake, false);
+    public static List<BetOfferStake> apply_stake(List<BetOffer> betOffers, BigDecimal target_backers_stake){
+        return apply_stake(betOffers, target_backers_stake, false);
+    }
+
+
+    public static BigDecimal backStake2LayStake(List<BetOffer> betOffers, BigDecimal back_stake,
+                                                boolean is_list_sorted){
+
+        List<BetOfferStake> betOfferStakes = apply_stake(betOffers, back_stake, is_list_sorted);
+        return BetOfferStake.totalLayStake(betOfferStakes);
+    }
+
+
+    public static Map<String, BigDecimal> apply_investment(List<BetOffer> betOffers, BigDecimal target_investment,
+                                                           boolean is_list_sorted){
+
+        // Takes betOffers from multiple sites and shows the best amount to placed on each
+        // site to get best return from given target investment
+
+        if (target_investment.signum() < 0){
+            return null;
+        }
+
+        if (!is_list_sorted) {
+            Collections.sort(betOffers, Collections.reverseOrder());
+        }
+
+        BigDecimal inv_remainder = target_investment;
+        Map<String, BigDecimal> site_investments = new HashMap<String, BigDecimal>();
+        List<BetOfferStake> betOfferStakes = new ArrayList<BetOfferStake>();
+
+        if (inv_remainder.compareTo(penny) <= 0){
+            return site_investments;
+        }
+
+        for (BetOffer betOffer: betOffers){
+
+            // Use either the back stake required to finish off remainder, or volume if that's smaller.
+            BigDecimal back_stake_for_remainder = betOffer.investment2BackStake(inv_remainder);
+            BigDecimal back_stake_to_use = BDMin(back_stake_for_remainder, betOffer.volume);
+            BetOfferStake betOfferStake = new BetOfferStake(betOffer, back_stake_to_use);
+            betOfferStakes.add(betOfferStake);
+
+
+            BigDecimal investment_used = betOfferStake.investment();
+            site_investments.put(betOffer.getSiteName(),
+                    site_investments.getOrDefault(betOffer.getSiteName(), BigDecimal.ZERO).add(investment_used));
+            inv_remainder = inv_remainder.subtract(investment_used);
+
+
+            if (inv_remainder.compareTo(penny) <= 0){
+                return site_investments;
+            }
+        }
+        return null;
+    }
+
+    public static Map<String, BigDecimal> apply_investment(List<BetOffer> betOffers, BigDecimal target_investment){
+        return apply_investment(betOffers, target_investment, false);
     }
 
 
 
-    public static void main(String[] args){
-        try {
 
-            Smarkets bf = new Smarkets();
 
-            Bet bet = new FootballResultBet(BetType.BACK, FootballBet.TEAM_A, false);
+    public static List<BetOfferStake> target_return(List<BetOffer> betOffers, BigDecimal target_return,
+                                                  boolean is_list_sorted){
 
-            List<BetOffer> betOffers = new ArrayList<>();
-            betOffers.add(new BetOffer(bf, null, bet, new BigDecimal("3.50"), new BigDecimal("11")));
-            betOffers.add(new BetOffer(bf, null, bet, new BigDecimal("3.40"), new BigDecimal("11")));
-            betOffers.add(new BetOffer(bf, null, bet, new BigDecimal("3.30"), new BigDecimal("11")));
-            betOffers.add(new BetOffer(bf, null, bet, new BigDecimal("3.25"), new BigDecimal("11")));
-            betOffers.add(new BetOffer(bf, null, bet, new BigDecimal("3.1"), new BigDecimal("10.00")));
+        // Applies a certain investment to a list of offers to find what amount to place
+        // to fill each, on after the next until all back stake gone.
 
+        if (!is_list_sorted) {
             Collections.sort(betOffers, Collections.reverseOrder());
-            for (BetOffer bo: betOffers){
-                print(String.format("%s   -   %s   -   %s",
-                        BDString(bo.odds), BDString(bo.ROI_ratio()), bo.volume));
+        }
+
+        BigDecimal return_remainder = target_return;
+        BigDecimal inv_so_far = BigDecimal.ZERO;
+        List<BetOfferStake> betOfferStakes = new ArrayList<BetOfferStake>();
+
+        for (BetOffer betOffer: betOffers){
+
+            // How much back stake would be needed to satisfy remaining return target
+            BigDecimal back_stake_remainder = betOffer.return2BackStake(return_remainder);
+
+            // Just use max volume of this offer if it is smaller than required amount
+            BigDecimal back_stake_this_offer = BDMin(back_stake_remainder, betOffer.volume);
+            BetOfferStake betOfferStake = new BetOfferStake(betOffer, back_stake_this_offer);
+
+            // Remove the back stake we just made from target back stake
+            return_remainder = return_remainder.subtract(betOfferStake.returns());
+            inv_so_far = inv_so_far.add(betOfferStake.investment());
+            betOfferStakes.add(betOfferStake);
+
+            if (return_remainder.compareTo(penny) <= 0){
+                return betOfferStakes;
+            }
+        }
+        return null;
+    }
+
+
+    public static BigDecimal max_stake_for_specific_odds(List<BetOffer> betOffers, BigDecimal target_odds,
+                                                         boolean is_list_sorted){
+
+        // Given a list of betOffers, find what the max stake you could place to receive the target odds.
+
+        if (!is_list_sorted) {
+            Collections.sort(betOffers, Collections.reverseOrder());
+        }
+
+        BigDecimal stake_total = null;
+        BigDecimal current_odds = null;
+
+        for (BetOffer betOffer: betOffers) {
+
+            // If odds in this offer are worse than target, it might end here
+            if (betOffer.odds.compareTo(target_odds) < 0) {
+
+                // If first offer is below target odds, then we can't make the target work
+                if (stake_total == null){
+                    return null;
+                }
+
+                BigDecimal stake_needed_for_max_odds = Bet.new_stake_needed_for_odds(
+                        stake_total, current_odds, betOffer.odds, target_odds);
+
+                if (stake_needed_for_max_odds.compareTo(betOffer.volume) <= 0){
+                    stake_total = stake_total.add(stake_needed_for_max_odds);
+                    return stake_total;
+                }
             }
 
-
-            BigDecimal input = new BigDecimal("44");
-            BigDecimal ret = backStake2LayStake(betOffers, input);
-            BigDecimal avg_odds = ret.divide(input, 12, RoundingMode.HALF_UP).add(BigDecimal.ONE);
-
-
-            print(String.format("\nReturned %s", BDString(ret, 12)));
-            print(String.format("\navg_odds %s", BDString(avg_odds, 12)));
-
-
+            // Apply the full volume of this offer to the running values
+            if (stake_total == null){
+                current_odds = betOffer.odds;
+                stake_total = betOffer.volume;
+            }
+            else{
+                current_odds = Bet.combine_odds(stake_total, current_odds, betOffer.volume, betOffer.odds);
+                stake_total = stake_total.add(betOffer.volume);
+            }
         }
-        catch (Exception e){
-            e.printStackTrace();
+
+        return null;
+    }
+
+
+
+    public static List<BetOffer> remove_stake(List<BetOffer> betOffers, Map<String, BigDecimal> site_stakes){
+        // Gives a new list of betOffers which represents what it would look like if
+        // the stakes given were removed from it.
+
+        List<BetOffer> new_betOffers = new ArrayList<BetOffer>(betOffers.size());
+        Map<String, BigDecimal> stakes = new HashMap<String, BigDecimal>(site_stakes.size());
+        stakes.putAll(site_stakes);
+
+        for (BetOffer betOffer: betOffers){
+
+            BigDecimal stake_rem = stakes.getOrDefault(betOffer.getSiteName(), BigDecimal.ZERO);
+
+            // No stake rem for this site, pass whole offer, no change stake remaining
+            if (stake_rem.signum() == 0){
+                new_betOffers.add(betOffer);
+            }
+
+            // Stake rem < vol of offer, pass reduced offer, change rem to 0
+            else if (stake_rem.compareTo(betOffer.volume) < 0){
+                new_betOffers.add(betOffer.removeVolume(stake_rem));
+                stakes.put(betOffer.getSiteName(), BigDecimal.ZERO);
+            }
+
+            // Stake rem >= vol of offer, pass no offer, reduce change rem by vol amount
+            else {
+                stakes.put(betOffer.getSiteName(), stake_rem.subtract(betOffer.volume));
+            }
         }
+
+        // Ensure all stakes are completed in full
+        for (BigDecimal stake_rem: stakes.values()){
+            if (stake_rem.signum() != 0){
+                return null;
+            }
+        }
+
+        return new_betOffers;
+    }
+
+    public static List<BetOffer> remove_stake(List<BetOffer> betOffers, String site, BigDecimal back_stake){
+        Map<String , BigDecimal> site_stake = new HashMap<String , BigDecimal>(1);
+        site_stake.put(site, back_stake);
+        return remove_stake(betOffers, site_stake);
     }
 
 }

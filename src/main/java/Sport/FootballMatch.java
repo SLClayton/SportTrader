@@ -92,12 +92,6 @@ public class FootballMatch extends Event {
     }
 
 
-    @Override
-    public String toString(){
-        return String.format("[%s @ %s]", name, start_time.toString());
-    }
-
-
     public static JSONArray list2JSON(Collection<FootballMatch> footballMatches){
         JSONArray j = new JSONArray();
         for (FootballMatch fm: footballMatches){

@@ -1,10 +1,8 @@
 package Bet;
 
-import SiteConnectors.BettingSite;
 import Trader.SportsTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import tools.printer.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,6 +10,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static tools.printer.*;
+import static tools.BigDecimalTools.*;
 
 public class ProfitReport implements Comparable<ProfitReport> {
 
@@ -21,21 +20,22 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    private List<ProfitReportItem> items;
+    private final List<MultiSiteBet> items;
 
     private BigDecimal total_investment;
     private BigDecimal min_return;
     private BigDecimal max_return;
 
-    public enum OutcomeState {ALL_SUCCESSFUL, NONE_SUCCESSFUL, MIX_STATES}
 
-    public ProfitReport(List<ProfitReportItem> items){
 
-        // All items must add up to a tautology for profit report to make sense
+    public ProfitReport(List<MultiSiteBet> items){
+
+        // Sort all items into a separate ItemSet for each EVENT/BET
+        // so that only one set wins in any eventuality.
         this.items = items;
 
         total_investment = BigDecimal.ZERO;
-        for (ProfitReportItem item: items){
+        for (MultiSiteBet item: items){
 
             total_investment = total_investment.add(item.getInvestment());
             BigDecimal item_return = item.getReturn();
@@ -48,7 +48,10 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
 
 
-    public static ProfitReport fromTautology(BetGroup tautology, MarketOddsReport marketOddsReport, BigDecimal returns){
+    public static ProfitReport fromTautologyTargetReturn(BetGroup tautology, MarketOddsReport marketOddsReport,
+                                                         BigDecimal target_return){
+
+
 
         return null;
     }
@@ -60,23 +63,15 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public List<ProfitReportItem> getItems(){
+    public List<MultiSiteBet> getItems(){
         return items;
     }
 
 
-    public List<BetOrder> getBetOrders(){
-        List<BetOrder> betOrders = new ArrayList<BetOrder>(items.size());
-        for (ProfitReportItem item: items){
-            betOrders.add((BetOrder) item);
-        }
-        return betOrders;
-    }
-
 
     public Class<?> getType(){
-        Set<Class<?>> item_types = new HashSet<>(1);
-        for (ProfitReportItem item: getItems()){
+        Set<Class<?>> item_types = new HashSet<>(2);
+        for (MultiSiteBet item: getItems()){
             item_types.add(item.getClass());
         }
 
@@ -86,35 +81,6 @@ public class ProfitReport implements Comparable<ProfitReport> {
         return null;
     }
 
-
-    public OutcomeState getPlacedBetsState(){
-        int successes = 0;
-
-        for (ProfitReportItem item: items){
-            try{
-                PlacedBet.State item_state  =  ((PlacedBet) item).getState();
-                if (item_state == PlacedBet.State.SUCCESS){
-                    successes += 1;
-                }
-            }
-            catch (ClassCastException e){
-                return null;
-            }
-        }
-
-        if (successes == items.size()){
-            return OutcomeState.ALL_SUCCESSFUL;
-        }
-        else if (successes > 0){
-            return OutcomeState.MIX_STATES;
-        }
-        return OutcomeState.NONE_SUCCESSFUL;
-    }
-
-
-    public boolean isValid(){
-        return minProfit() != null;
-    }
 
 
     public BigDecimal getTotalInvestment(){
@@ -140,21 +106,17 @@ public class ProfitReport implements Comparable<ProfitReport> {
         return getMaxReturn().subtract(getTotalInvestment());
     }
 
+    public boolean isValid(){
+        return minProfit() != null;
+    }
+
 
     public Set<String> sites_used() {
         Set<String> sites_used = new HashSet<>();
-        for (ProfitReportItem item: items){
+        for (MultiSiteBet item: items){
             sites_used.addAll(item.sites_used());
         }
         return sites_used;
-    }
-
-    public Set<Bet> bets_used(){
-        Set<Bet> bets_used = new HashSet<>();
-        for (ProfitReportItem item: items){
-            bets_used.add(item.getBet());
-        }
-        return bets_used;
     }
 
 
@@ -175,15 +137,9 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-
-    public BetGroup getBetGroup(){
-        ArrayList<Bet> bets = new ArrayList<>();
-        for (ProfitReportItem item: items){
-            bets.add(item.getBet());
-        }
-        return new BetGroup(bets);
+    public JSONObject toJSON(){
+        return toJSON(true);
     }
-
 
     public JSONObject toJSON(boolean include_items) {
         JSONObject j = new JSONObject();
@@ -195,7 +151,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
 
         JSONArray bet_ids = new JSONArray();
-        for (ProfitReportItem item: items){
+        for (MultiSiteBet item: items){
             bet_ids.add(item.getBet().id());
         }
         Collections.sort(bet_ids);
@@ -204,7 +160,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
         if (include_items){
             JSONArray j_items = new JSONArray();
-            for (ProfitReportItem item: items){
+            for (MultiSiteBet item: items){
                 j_items.add(item.toJSON());
             }
             j.put("items", j_items);

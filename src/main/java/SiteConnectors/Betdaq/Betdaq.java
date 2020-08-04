@@ -2,7 +2,6 @@ package SiteConnectors.Betdaq;
 
 import Bet.*;
 import Bet.Bet.BetType;
-import Bet.FootballBet.*;
 import SiteConnectors.*;
 import Sport.FootballMatch;
 import com.globalbettingexchange.externalapi.*;
@@ -30,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import static tools.printer.*;
+import static tools.BigDecimalTools.*;
 
 public class Betdaq extends BettingSite {
 
@@ -760,42 +760,42 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public PlaceOrdersWithReceiptRequestItem betOrder2BetdaqOrder(BetOrder betOrder, BigDecimal odds_buffer_ratio){
+    public PlaceOrdersWithReceiptRequestItem betOrder2BetdaqOrder(BetPlan betPlan, BigDecimal odds_buffer_ratio){
 
         // Get selection id from metadata
-        String selection_id_string = betOrder.betExchange.getMetadata(Betdaq.BETDAQ_SELECTION_ID);
-        String sequence_number_string = betOrder.betExchange.getMetadata(Betdaq.BETDAQ_SEQ_NUMBER);
-        String reset_count_string = betOrder.betExchange.getMetadata(Betdaq.BETDAQ_SELECTION_RESET_COUNT);
+        String selection_id_string = betPlan.betExchange.getMetadata(Betdaq.BETDAQ_SELECTION_ID);
+        String sequence_number_string = betPlan.betExchange.getMetadata(Betdaq.BETDAQ_SEQ_NUMBER);
+        String reset_count_string = betPlan.betExchange.getMetadata(Betdaq.BETDAQ_SELECTION_RESET_COUNT);
 
         // Log error and return null if any of the metadata was not found
-        if (betOrder.getSite() != this || selection_id_string == null || sequence_number_string == null ||
+        if (betPlan.getSite() != this || selection_id_string == null || sequence_number_string == null ||
                 reset_count_string == null){
 
             String msg = "BetOrder passed to betdaq is invalid: ";
             msg += String.format("site=%s  selectionID=%s  seq_num=%s  reset_count=%s",
-                    betOrder.getSite().getName(), selection_id_string, sequence_number_string, reset_count_string);
+                    betPlan.getSite().getName(), selection_id_string, sequence_number_string, reset_count_string);
             log.severe(msg);
             return null;
         }
 
         // Ensure stake is rounded
-        BigDecimal backers_stake = betOrder.getBackersStake().setScale(2, RoundingMode.HALF_UP);
+        BigDecimal backers_stake = betPlan.getBackersStake().setScale(2, RoundingMode.HALF_UP);
 
         // Put a buffer to the odds for slight changes in the market, and find nearest valid betdaq odds.
-        BigDecimal valid_buffered_odds = betOrder.getValidOddsWithBuffer(odds_buffer_ratio);
+        BigDecimal valid_buffered_odds = betPlan.getValidOddsWithBuffer(odds_buffer_ratio);
 
         PlaceOrdersWithReceiptRequestItem item = new PlaceOrdersWithReceiptRequestItem();
         item.setSelectionId(Long.valueOf(selection_id_string));
         item.setStake(backers_stake);
         item.setPrice(valid_buffered_odds);
-        item.setPolarity(betType2Polarity(betOrder.getBet().getType()));
+        item.setPolarity(betType2Polarity(betPlan.getBet().getType()));
         item.setExpectedSelectionResetCount(Short.valueOf(reset_count_string));
         item.setExpectedWithdrawalSequenceNumber(Short.valueOf(sequence_number_string));
         item.setKillType(KILLTYPE_FILLORKILL);
         item.setFillOrKillThreshold(backers_stake);
         item.setCancelOnInRunning(false);
         item.setCancelIfSelectionReset(true);
-        item.setPunterReferenceNumber(Long.parseLong(betOrder.getID()));
+        item.setPunterReferenceNumber(Long.parseLong(betPlan.getID()));
 
         return item;
     }
@@ -826,12 +826,12 @@ public class Betdaq extends BettingSite {
 
 
     @Override
-    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal odds_ratio_buffer)
+    public List<PlacedBet> placeBets(List<BetPlan> betPlans, BigDecimal odds_ratio_buffer)
             throws IOException, URISyntaxException {
 
         List<PlaceOrdersWithReceiptRequestItem> requestItems = new ArrayList<>();
-        for (BetOrder betOrder: betOrders){
-            PlaceOrdersWithReceiptRequestItem item = betOrder2BetdaqOrder(betOrder, odds_ratio_buffer);
+        for (BetPlan betPlan : betPlans){
+            PlaceOrdersWithReceiptRequestItem item = betOrder2BetdaqOrder(betPlan, odds_ratio_buffer);
             requestItems.add(item);
         }
 
@@ -848,7 +848,7 @@ public class Betdaq extends BettingSite {
         ReturnStatus ret_status = resp2.getReturnStatus();
 
 
-        List<PlacedBet> placedBets = new ArrayList<>(betOrders.size());
+        List<PlacedBet> placedBets = new ArrayList<>(betPlans.size());
 
         // Fail if return status is not 0;
         if (ret_status.getCode() != 0) {
@@ -862,7 +862,7 @@ public class Betdaq extends BettingSite {
             String id = resp_item.getPunterReferenceNumber().toString();
 
             PlacedBet pb = betdaqResp2PlacedBet(resp_item);
-            pb.betOrder = BetOrder.find(betOrders, id);
+            pb.betPlan = BetPlan.find(betPlans, id);
             pb.time_placed = time_placed;
 
             placedBets.add(pb);

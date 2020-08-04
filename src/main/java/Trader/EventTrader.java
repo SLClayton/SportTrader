@@ -421,18 +421,18 @@ public class EventTrader implements Runnable {
     }
 
 
-    public List<PlacedBet> placeBets(List<BetOrder> betOrders){
+    public List<PlacedBet> placeBets(List<BetPlan> betPlans){
 
         // Sort placed bets into lists depending on the site they're going to.
-        Map<String, List<BetOrder>> site_bets = BetOrder.splitListBySite(betOrders);
+        Map<String, List<BetPlan>> site_bets = BetPlan.splitListBySite(betPlans);
 
 
         // Send list of bets of to their respective Betting site objects to be placed
         ArrayList<PlaceBetsRunnable> placeBetsRunnables = new ArrayList<>();
-        for (Map.Entry<String, List<BetOrder>> entry: site_bets.entrySet()){
-            List<BetOrder> site_betOrders = entry.getValue();
+        for (Map.Entry<String, List<BetPlan>> entry: site_bets.entrySet()){
+            List<BetPlan> site_betPlans = entry.getValue();
 
-            PlaceBetsRunnable placeBetsRunnable = new PlaceBetsRunnable(site_betOrders);
+            PlaceBetsRunnable placeBetsRunnable = new PlaceBetsRunnable(site_betPlans);
             placeBetsRunnable.start();
             placeBetsRunnables.add(placeBetsRunnable);
         }
@@ -449,8 +449,8 @@ public class EventTrader implements Runnable {
                 e.printStackTrace();
 
                 ArrayList<PlacedBet> failedbets = new ArrayList<>();
-                while (failedbets.size() < placeBetsRunnable.betOrders.size()){
-                    BetOrder betOrder = placeBetsRunnable.betOrders.get(failedbets.size());
+                while (failedbets.size() < placeBetsRunnable.betPlans.size()){
+                    BetPlan betPlan = placeBetsRunnable.betPlans.get(failedbets.size());
 
                     PlacedBet generic_failbet = null;
 
@@ -466,14 +466,14 @@ public class EventTrader implements Runnable {
 
     public class PlaceBetsRunnable implements Runnable{
 
-        public List<BetOrder> betOrders;
+        public List<BetPlan> betPlans;
         public List<PlacedBet> placedBets;
         public BettingSite site;
         public Thread thread;
 
-        public PlaceBetsRunnable(List<BetOrder> betOrders){
-            this.betOrders = betOrders;
-            site = this.betOrders.get(0).getSite();
+        public PlaceBetsRunnable(List<BetPlan> betPlans){
+            this.betPlans = betPlans;
+            site = this.betPlans.get(0).getSite();
             thread = new Thread(this);
             thread.setName(String.format("%s-BetPlacer", site.getName()));
         }
@@ -485,12 +485,12 @@ public class EventTrader implements Runnable {
         @Override
         public void run() {
             try {
-                placedBets = site.placeBets(betOrders, config.ODDS_RATIO_BUFFER);
+                placedBets = site.placeBets(betPlans, config.ODDS_RATIO_BUFFER);
             } catch (IOException | URISyntaxException e) {
                 log.severe(String.format("Error while sending bets off to %s", site.getName()));
                 e.printStackTrace();
                 placedBets = new ArrayList<>();
-                while (placedBets.size() < betOrders.size()){
+                while (placedBets.size() < betPlans.size()){
                     placedBets.add(null);
                 }
             }

@@ -21,8 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Bet.Bet;
-import Bet.BetOffer;
-import Bet.BetOrder;
+import Bet.BetPlan;
 import Bet.PlacedBet;
 import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
@@ -501,7 +500,7 @@ public class Matchbook extends BettingSite {
 
 
     @Override
-    public List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal MIN_ODDS_RATIO)
+    public List<PlacedBet> placeBets(List<BetPlan> betPlans, BigDecimal MIN_ODDS_RATIO)
             throws IOException, URISyntaxException {
 
         return null;

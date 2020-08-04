@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static tools.printer.BDMax;
+import static tools.BigDecimalTools.*;
 import static tools.printer.pp;
 
 public class ProfitReportSet {
@@ -87,7 +87,7 @@ public class ProfitReportSet {
         tautologyLoop:
         for (BetGroup tautology : tautologies){
 
-            ProfitReport pr = ProfitReport.fromTautology(tautology, marketOddsReport, returns);
+            ProfitReport pr = ProfitReport.fromTautologyTargetReturn(tautology, marketOddsReport, returns);
             if (pr != null && pr.isValid()){
                 tautologyProfitReports.add(pr);
             }

@@ -2,25 +2,17 @@ package SiteConnectors;
 
 import Bet.Bet;
 import Bet.Bet.BetType;
-import Bet.BetOffer;
-import Bet.BetOrder;
+import Bet.BetPlan;
 import Bet.FootballBet.FootballBet;
-import Bet.FootballBet.FootballBetGenerator;
-import Bet.FootballBet.FootballOverUnderBet;
 import Bet.FootballBet.FootballResultBet;
 import Bet.PlacedBet;
-import Bet.MarketOddsReport;
 import SiteConnectors.Betdaq.Betdaq;
-import SiteConnectors.Betfair.Betfair;
-import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 import Trader.Config;
 import Trader.SportsTrader;
 import org.json.simple.parser.ParseException;
 import tools.Requester;
 
-import java.awt.event.HierarchyListener;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -96,7 +88,9 @@ public abstract class BettingSite {
     public abstract BigDecimal minBackersStake();
 
 
-    public abstract BigDecimal minLayersStake(BigDecimal odds);
+    public BigDecimal minLayersStake(BigDecimal odds) {
+        return Bet.backStake2LayStake(minBackersStake(), odds).setScale(2, RoundingMode.UP);
+    }
 
 
 
@@ -198,10 +192,13 @@ public abstract class BettingSite {
 
 
 
-    public PlacedBet placeBet(BetOrder betOrder, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException {
-        List<BetOrder> betOrders = new ArrayList<>();
-        betOrders.add(betOrder);
-        List<PlacedBet> placedBets = placeBets(betOrders, MIN_ODDS_RATIO);
+
+
+
+    public PlacedBet placeBet(BetPlan betPlan, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException {
+        List<BetPlan> betPlans = new ArrayList<>();
+        betPlans.add(betPlan);
+        List<PlacedBet> placedBets = placeBets(betPlans, MIN_ODDS_RATIO);
         if (placedBets.size() != 1){
             log.severe(String.format("SENT 1 BETORDER BUT GOT BACK %s PLACED BETS", placedBets.size()));
         }
@@ -209,13 +206,25 @@ public abstract class BettingSite {
     }
 
 
-    public abstract List<PlacedBet> placeBets(List<BetOrder> betOrders, BigDecimal odds_ratio_buffer)
+    public abstract List<PlacedBet> placeBets(List<BetPlan> betPlans, BigDecimal odds_ratio_buffer)
             throws IOException, URISyntaxException;
 
 
 
     public BigDecimal ROI(BetType betType, BigDecimal odds, BigDecimal investment){
         return Bet.ROI(betType, odds, investment, winCommissionRate(), lossCommissionRate());
+    }
+
+    public BigDecimal return2Investment(BetType betType, BigDecimal odds, BigDecimal target_return){
+        return Bet.return2Investment(betType, odds, target_return, winCommissionRate(), lossCommissionRate());
+    }
+
+    public BigDecimal return2Stake(BetType betType, BigDecimal odds, BigDecimal target_return){
+        return Bet.return2Stake(betType, odds, target_return, winCommissionRate(), lossCommissionRate());
+    }
+
+    public BigDecimal return2BackStake(BetType betType, BigDecimal odds, BigDecimal target_return){
+        return Bet.return2BackStake(betType, odds, target_return, winCommissionRate(), lossCommissionRate());
     }
 
 

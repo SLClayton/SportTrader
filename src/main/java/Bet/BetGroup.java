@@ -14,7 +14,7 @@ import java.util.*;
 public class BetGroup {
     // A grouping of bets. Usually used for tautologies.
 
-    public ArrayList<Bet> bets;
+    public final ArrayList<Bet> bets;
 
     public BetGroup(ArrayList<Bet> bets){
         this.bets = bets;

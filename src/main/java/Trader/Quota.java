@@ -136,10 +136,11 @@ public class Quota {
                 mors.size(), MOR.number_bets_with_offers()));
 
 
-        // Create profit report for each tautology where return is ONE
-        ProfitReportSet profitReports_returnOne = ProfitReportSet.fromTautologies(tautologies, MOR, BigDecimal.ONE);
-        profitReports_returnOne.sort_by_profit();
-        print(String.format("Created %s profit reports where return is 1.0.", profitReports_returnOne.size()));
+        toFile(MOR.toJSON());
+
+        // Find the profit Reports where each return is 0.01 and sort by profit ratio
+
+
 
 
 
@@ -149,42 +150,7 @@ public class Quota {
 
     }
 
-    /*
-    public static ProfitReport ensure_one_offer_from_site(ProfitReport profitReport, MarketOddsReport mor, String sitename){
 
-        List<ProfitReport> profitReports_with_newsite = new ArrayList<>();
-        for (Bet bet_to_swap: profitReport.bets_used()){
-
-
-            List<ProfitReportItem> items_with_swap = new ArrayList<>();
-            for (ProfitReportItem original_betOrder: profitReport.getItems()){
-
-                if (original_betOrder.getBet().equals(bet_to_swap)){
-                    BetOffer betOffer_newsite_equiv = mor.getBestValidOffer(bet_to_swap.id(), sitename);
-                    if (betOffer_newsite_equiv != null){
-                        items_with_swap.add(BetOrder.fromTargetReturn(betOffer_newsite_equiv, BigDecimal.ONE));
-                    }
-                }
-                else{
-                    items_with_swap.add(original_betOrder);
-                }
-
-            }
-            ProfitReport profitReport_with_newsite = new ProfitReport(items_with_swap);
-
-            if (profitReport_with_newsite.sites_used().contains(sitename)){
-                profitReports_with_newsite.add(profitReport_with_newsite);
-            }
-        }
-
-        Collections.sort(profitReports_with_newsite, Collections.reverseOrder());
-        if (profitReports_with_newsite.isEmpty()){
-            return null;
-        }
-        return profitReports_with_newsite.get(0);
-
-    }
-    */
 
 
 
