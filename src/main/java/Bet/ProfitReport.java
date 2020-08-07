@@ -15,7 +15,8 @@ import static tools.BigDecimalTools.*;
 public class ProfitReport implements Comparable<ProfitReport> {
 
     /*
-        A list of either BetOrders or PlacedBets representing a whole implemented tautology.
+        A list of Mulit-Site Bets representing a whole implemented tautology.
+        Then showing the financial implications of it.
      */
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
@@ -47,14 +48,6 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-
-    public static ProfitReport fromTautologyTargetReturn(BetGroup tautology, MarketOddsReport marketOddsReport,
-                                                         BigDecimal target_return){
-
-
-
-        return null;
-    }
 
 
     @Override

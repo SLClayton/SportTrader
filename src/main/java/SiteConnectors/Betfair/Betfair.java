@@ -524,8 +524,30 @@ public class Betfair extends BettingSite {
     }
 
 
-    public JSONArray getMarketCatalogue(JSONObject params) throws IOException, URISyntaxException {
+    public JSONArray getMarketCatalogue(Collection<String> event_ids, Collection<String> market_types)
+            throws IOException, URISyntaxException {
+
+
+        JSONArray marketProjection = new JSONArray();
+        marketProjection.add("MARKET_DESCRIPTION");
+        marketProjection.add("RUNNER_DESCRIPTION");
+
+        JSONArray marketTypeCodes = new JSONArray();
+        //marketTypeCodes.addAll(market_types);
+
+        JSONArray event_ids_jsonarray = new JSONArray();
+        event_ids_jsonarray.addAll(event_ids);
+
+        JSONObject filters = new JSONObject();
+        filters.put("marketTypeCodes", marketTypeCodes);
+        filters.put("eventIds", event_ids_jsonarray);
+
+        // Build params for market catalogue request
+        JSONObject params = new JSONObject();
         params.put("maxResults", 1000);
+        params.put("marketProjection", marketProjection);
+        params.put("filter", filters);
+
 
         JSONObject j = new JSONObject();
         j.put("id", 1);
@@ -746,6 +768,7 @@ public class Betfair extends BettingSite {
     public BigDecimal maxValidOdds() {
         return bf_max_odds;
     }
+
 
     public void testbet(String side, Double size, Double price, String market, String selection, Double handicap) throws IOException, URISyntaxException {
 

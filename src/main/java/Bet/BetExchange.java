@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.concurrent.Exchanger;
 import java.util.logging.Logger;
 
-import static Bet.Bet.penny;
 import static java.lang.System.exit;
 import static java.lang.System.in;
 import static tools.printer.*;
@@ -100,9 +99,20 @@ public class BetExchange {
         betOffers.add(i, betOffer);
     }
 
+
     public void addAll(Collection<BetOffer> new_betOffers){
         for (BetOffer new_betOffer: new_betOffers){
             add(new_betOffer);
+        }
+    }
+
+    public BigDecimal bestROIRatio(){
+        // returns the ROI ratio of the best bet offer in the exchange
+        try {
+            return betOffers.get(0).ROI_ratio();
+        }
+        catch (IndexOutOfBoundsException e){
+            return null;
         }
     }
 
@@ -271,7 +281,7 @@ public class BetExchange {
 
 
 
-    public static MultiSiteBet bestMultiSiteBet(List<BetExchange> betExchanges, BigDecimal target_inv){
+    public static MultiSiteBet bestMSB_targetInv(List<BetExchange> betExchanges, BigDecimal target_inv){
         // Returns the stake per site that would receive the best return from the given exchanges
 
         Map<String, BetExchange> betExchangeMap = BetExchange.list2Map(betExchanges);
@@ -292,17 +302,8 @@ public class BetExchange {
         while (true) {
 
 
-            psf("\n\nCurrent MSB: inv: %s  ret: %s",
-                    BDString(multiSiteBet.getInvestment(), 4), BDString(multiSiteBet.getReturn(), 4));
-            print(site_investments);
-            print(site_inv_reserved);
-            print(combine_map(site_investments, site_inv_reserved));
-            multiSiteBet.printBetOfferStakes();
-
-
             // From the current MSB, find the BetPlan with the worst roi that's also invalid (if any)
             BetPlan worst_invalid_betPlan = multiSiteBet.worstInvalidBetplan();
-            psf("Worst betplan is %s", worst_invalid_betPlan);
             if (worst_invalid_betPlan == null) {
                 break;
             }
@@ -317,10 +318,7 @@ public class BetExchange {
             MultiSiteBet msb_thisSiteRemoved = null;
             if (site_inv_thisSiteRemoved != null){
                 msb_thisSiteRemoved = MultiSiteBet.fromBetExchanges(betExchangeMap, site_inv_thisSiteRemoved);
-                psf("Removed site returns %s", BDString(msb_thisSiteRemoved.getReturn()));
             }
-
-
 
 
             // Find MSB from giving site min bet
@@ -332,7 +330,6 @@ public class BetExchange {
             if (site_inv_thisSiteEnhanced != null){
                 site_inv_thisSiteEnhanced.put(site_name, min_inv);
                 msb_thisSiteEnhanced = MultiSiteBet.fromBetExchanges(betExchangeMap, site_inv_thisSiteEnhanced);
-                psf("Enhancd site returns %s", BDString(msb_thisSiteEnhanced.getReturn()));
             }
 
 
@@ -368,10 +365,10 @@ public class BetExchange {
     }
 
 
+
+
     public static void main(String[] args){
         try {
-
-
 
 
             Bet bet = new FootballResultBet(BetType.BACK, FootballBet.TEAM_A, false);
@@ -412,7 +409,7 @@ public class BetExchange {
             print("\n\n");
 
 
-            MultiSiteBet msb = bestMultiSiteBet(betExchanges, new BigDecimal("7.50"));
+            MultiSiteBet msb = bestMSB_targetInv(betExchanges, new BigDecimal("7.50"));
 
             if (msb == null){
                 print("\n---- Could not create valid MSB ----");

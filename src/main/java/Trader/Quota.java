@@ -11,6 +11,7 @@ import SiteConnectors.Smarkets.Smarkets;
 import Sport.FootballMatch;
 import Bet.*;
 import org.json.simple.parser.ParseException;
+import tools.BigDecimalTools;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -138,19 +139,12 @@ public class Quota {
 
         toFile(MOR.toJSON());
 
-        // Find the profit Reports where each return is 0.01 and sort by profit ratio
+        // Find every tautology that when getting a return of 0.01, has a positive roi ratio
 
 
-
-
-
-
-
-
+        // TODO: check MOR for betfair
 
     }
-
-
 
 
 

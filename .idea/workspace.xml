@@ -25,33 +25,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOfferStake.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Bet/MultiSiteBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Bet/SiteBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/TestBetSite.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tools/BigDecimalTools.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/betfair/market_catalogue.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/betfair/market_catalogue_football_all.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/Bet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/Bet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetExchange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetExchange.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOrder.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetPlan.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetPlan.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/PlacedBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/ProfitReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReportItem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReportMultipleBetItem.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/ProfitReportSet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/Betfair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/BettingSite.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Matchbook/Matchbook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Smarkets/Smarkets.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Sport/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Sport/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Sport/FootballMatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Sport/FootballMatch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Trader/Quota.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/Quota.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tools/printer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/printer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/SportsTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/BigDecimalTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/BigDecimalTools.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,14 +112,7 @@
       <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.BetExchange">
-    <configuration name="Bet" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Bet.Bet" />
-      <module name="SportTrader" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Application.Quota">
     <configuration name="BetExchange" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Bet.BetExchange" />
       <module name="SportTrader" />
@@ -139,8 +120,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BetOffer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Bet.BetOffer" />
+    <configuration name="BetPlan" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Bet.BetPlan" />
       <module name="SportTrader" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -148,6 +129,13 @@
     </configuration>
     <configuration name="BigDecimalTools" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="tools.BigDecimalTools" />
+      <module name="SportTrader" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Quota" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Trader.Quota" />
       <module name="SportTrader" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -161,19 +149,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.BetOffer" />
       <item itemvalue="Application.BetExchange" />
       <item itemvalue="Application.printer" />
-      <item itemvalue="Application.Bet" />
       <item itemvalue="Application.BigDecimalTools" />
+      <item itemvalue="Application.BetPlan" />
+      <item itemvalue="Application.Quota" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Quota" />
+        <item itemvalue="Application.BetPlan" />
         <item itemvalue="Application.BetExchange" />
         <item itemvalue="Application.BigDecimalTools" />
         <item itemvalue="Application.printer" />
-        <item itemvalue="Application.Bet" />
-        <item itemvalue="Application.BetOffer" />
       </list>
     </recent_temporary>
   </component>
@@ -266,33 +254,33 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="469" y="458" key="FileChooserDialogImpl/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1592554820574" />
-    <state width="1391" height="648" key="GridCell.Tab.0.bottom" timestamp="1596524693868">
+    <state width="1374" height="379" key="GridCell.Tab.0.bottom" timestamp="1596815528391">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1337" height="588" key="GridCell.Tab.0.bottom/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594830979986" />
     <state width="1623" height="216" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
-    <state width="1391" height="648" key="GridCell.Tab.0.bottom/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596524693868" />
+    <state width="1374" height="379" key="GridCell.Tab.0.bottom/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596815528391" />
     <state width="1314" height="479" key="GridCell.Tab.0.bottom/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594917031100" />
-    <state width="1391" height="648" key="GridCell.Tab.0.center" timestamp="1596524693868">
+    <state width="1374" height="379" key="GridCell.Tab.0.center" timestamp="1596815528391">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1337" height="588" key="GridCell.Tab.0.center/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594830979986" />
     <state width="1623" height="216" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
-    <state width="1391" height="648" key="GridCell.Tab.0.center/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596524693868" />
+    <state width="1374" height="379" key="GridCell.Tab.0.center/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596815528391" />
     <state width="1314" height="479" key="GridCell.Tab.0.center/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594917031100" />
-    <state width="1391" height="648" key="GridCell.Tab.0.left" timestamp="1596524693868">
+    <state width="1374" height="379" key="GridCell.Tab.0.left" timestamp="1596815528391">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1337" height="588" key="GridCell.Tab.0.left/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594830979986" />
     <state width="1623" height="216" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
-    <state width="1391" height="648" key="GridCell.Tab.0.left/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596524693868" />
+    <state width="1374" height="379" key="GridCell.Tab.0.left/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596815528391" />
     <state width="1314" height="479" key="GridCell.Tab.0.left/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594917031100" />
-    <state width="1391" height="648" key="GridCell.Tab.0.right" timestamp="1596524693868">
+    <state width="1374" height="379" key="GridCell.Tab.0.right" timestamp="1596815528391">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1337" height="588" key="GridCell.Tab.0.right/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594830979986" />
     <state width="1623" height="216" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
-    <state width="1391" height="648" key="GridCell.Tab.0.right/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596524693868" />
+    <state width="1374" height="379" key="GridCell.Tab.0.right/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596815528391" />
     <state width="1314" height="479" key="GridCell.Tab.0.right/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594917031100" />
     <state width="1350" height="490" key="GridCell.Tab.1.bottom" timestamp="1595344877180">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -314,11 +302,11 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="252" y="187" key="SettingsEditor/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596525202235" />
-    <state x="1430" y="0" width="1137" height="1407" key="dock-window-1" timestamp="1596525217347">
+    <state x="1413" y="0" width="1154" height="1407" key="dock-window-1" timestamp="1596804562590">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1376" y="0" width="1191" height="1407" key="dock-window-1/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594829743274" />
-    <state x="1430" y="0" width="1137" height="1407" key="dock-window-1/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596525217347" />
+    <state x="1413" y="0" width="1154" height="1407" key="dock-window-1/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596804562590" />
     <state x="1353" y="0" width="1214" height="1407" key="dock-window-1/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594914325667" />
     <state x="-1107" y="380" width="1068" height="1013" key="dock-window-2" timestamp="1592926381493">
       <screen x="-1920" y="349" width="1920" height="1080" />
@@ -332,9 +320,9 @@
       <screen x="-1920" y="349" width="1920" height="1080" />
     </state>
     <state x="-824" y="429" key="run.anything.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590919997114" />
-    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup" timestamp="1595862550034">
+    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup" timestamp="1596699948793">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1595862550034" />
+    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596699948793" />
   </component>
 </project>

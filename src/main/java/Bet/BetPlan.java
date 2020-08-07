@@ -33,7 +33,7 @@ public class BetPlan implements SiteBet {
     // Values to be calculated once on first access, and stored.
     private List<BetOfferStake> betOfferStakes;
     private BigDecimal avg_odds;
-    private BigDecimal avg_roi_ratio;
+    private BigDecimal roi_ratio;
     private BigDecimal lay_stake;
     private BigDecimal investment;
     private BigDecimal potential_profit;
@@ -48,15 +48,10 @@ public class BetPlan implements SiteBet {
         // Setting null values to fields calculated on first access
         this.betOfferStakes = null;
         this.avg_odds = null;
-        this.avg_roi_ratio = null;
+        this.roi_ratio = null;
         this.lay_stake = null;
         this.investment = null;
         this.potential_profit = null;
-    }
-
-
-    public static BetPlan fromTargetReturn(BetExchange betExchange, BigDecimal target_return){
-        return null;
     }
 
 
@@ -88,6 +83,7 @@ public class BetPlan implements SiteBet {
     }
 
 
+
     public String getID(){
         return id;
     }
@@ -116,7 +112,6 @@ public class BetPlan implements SiteBet {
         return betExchange.site;
     }
 
-
     public String getSiteName(){
         return getSite().getName();
     }
@@ -128,7 +123,7 @@ public class BetPlan implements SiteBet {
 
 
     public boolean betterROIRatio(BetPlan betPlan){
-        return this.avgROIRatio().compareTo(betPlan.avgROIRatio()) > 0;
+        return this.ROIRatio().compareTo(betPlan.ROIRatio()) > 0;
     }
 
 
@@ -180,11 +175,11 @@ public class BetPlan implements SiteBet {
         return avg_odds;
     }
 
-    public BigDecimal avgROIRatio(){
-        if (avg_roi_ratio == null){
-            avg_roi_ratio = BetOfferStake.averageROIRatio(getBetOfferStakes());
+    public BigDecimal ROIRatio(){
+        if (roi_ratio == null){
+            roi_ratio = getReturn().divide(getInvestment(), 12, RoundingMode.HALF_UP);
         }
-        return avg_roi_ratio;
+        return roi_ratio;
     }
 
 
@@ -255,8 +250,8 @@ public class BetPlan implements SiteBet {
 
     @Override
     public String toString(){
-        return String.format("[BP for %s on %s with avg roi %s   %s %s]",
-                BDString(backers_stake, 4), getSiteName(), BDString(avgROIRatio(), 4), getEvent(), getBet());
+        return String.format("[BP for %s on %s with roi %s   %s %s]",
+                BDString(backers_stake, 4), getSiteName(), BDString(ROIRatio(), 4), getEvent(), getBet());
     }
 
 
@@ -318,7 +313,7 @@ public class BetPlan implements SiteBet {
     public static BetPlan bestROIRatio(Collection<BetPlan> betPlans){
         BetPlan best = null;
         for (BetPlan betPlan: betPlans){
-            if (best == null || betPlan.avgROIRatio().compareTo(best.avgROIRatio()) > 0){
+            if (best == null || betPlan.ROIRatio().compareTo(best.ROIRatio()) > 0){
                 best = betPlan;
             }
         }
@@ -333,6 +328,13 @@ public class BetPlan implements SiteBet {
             }
         }
         return best;
+    }
+
+
+
+    public static void main(String[] args){
+
+
     }
 
 

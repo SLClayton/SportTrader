@@ -74,27 +74,6 @@ public class ProfitReportSet {
 
 
 
-    public static ProfitReportSet fromTautologies(Collection<BetGroup> tautologies, MarketOddsReport marketOddsReport,
-                                                  BigDecimal returns){
-        /*
-        // Using a list of tautologies and the market odds report, generate a profit report
-        // for each tautology which
-         */
-
-        // Calculate profitReport for each tautology using the best ROI for each bet
-        Set<String> invalid_bets = new HashSet<String>();
-        ProfitReportSet tautologyProfitReports = new ProfitReportSet();
-        tautologyLoop:
-        for (BetGroup tautology : tautologies){
-
-            ProfitReport pr = ProfitReport.fromTautologyTargetReturn(tautology, marketOddsReport, returns);
-            if (pr != null && pr.isValid()){
-                tautologyProfitReports.add(pr);
-            }
-        }
-        return tautologyProfitReports;
-    }
-
 
     public JSONObject toJSON(boolean include_items){
         JSONObject j = new JSONObject();

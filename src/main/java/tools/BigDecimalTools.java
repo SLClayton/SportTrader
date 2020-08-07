@@ -16,6 +16,9 @@ public abstract class BigDecimalTools {
 
     public static Logger log = SportsTrader.log;
 
+    public static final BigDecimal penny = new BigDecimal("0.01");
+    public static final BigDecimal half = new BigDecimal("0.5");
+
 
     public static BigDecimal randomBD(){
         int integer = randomInt(0, 999999);
@@ -265,6 +268,11 @@ public abstract class BigDecimalTools {
         }
         return combined;
     }
+
+    public static boolean BDInteger(BigDecimal value){
+        return value.stripTrailingZeros().scale() <= 0;
+    }
+
 
 
     public static void main(String[] args){

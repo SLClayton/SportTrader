@@ -280,6 +280,7 @@ public class EventTrader implements Runnable {
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
+        /*
         // Generate profit report for each tautology and order by profit ratio
         ProfitReportSet tautologyProfitReports = ProfitReportSet.fromTautologies(tautologies, fullOddsReport, BigDecimal.ONE);
         tautologyProfitReports.sort_by_profit();
@@ -294,6 +295,8 @@ public class EventTrader implements Runnable {
         if (in_profit.size() > 0){
             profitFound(in_profit);
         }
+
+         */
     }
 
 

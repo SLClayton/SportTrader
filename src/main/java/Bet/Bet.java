@@ -18,7 +18,7 @@ import static tools.printer.*;
 
 public abstract class Bet {
 
-    public static final BigDecimal penny = new BigDecimal("0.01");
+
 
     public enum BetType {BACK, LAY}
 

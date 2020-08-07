@@ -13,11 +13,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.logging.Logger;
 
 import static java.lang.System.exit;
 import static tools.printer.*;
+import static tools.BigDecimalTools.*;
 
 public class MarketOddsReport {
     /*
@@ -75,42 +77,6 @@ public class MarketOddsReport {
         this(null, errorType);
     }
 
-
-
-    public BetOffer getBestValidOffer(String bet_id){
-        return getBestValidOffer(bet_id, null);
-    }
-
-
-    public BetOffer getBestValidOffer(String bet_id, String site_name){
-        // The best offer which volume is > min stake for that site
-
-        // Find the map of site betExchanges
-        Map<String, BetExchange> bet_betExchanges = bet_site_exchanges.get(bet_id);
-        if (bet_betExchanges == null){
-            return null;
-        }
-
-        // If site specified, find the betExchange with this site from map and return its best offer
-        if (site_name != null){
-            BetExchange betExchange = bet_betExchanges.get(site_name);
-            if (betExchange == null){
-                return null;
-            }
-            return betExchange.bestValidOffer();
-        }
-
-        // Find the best of each exchanges best valid offers and return the best of the best
-        BetOffer best_offer_currently = null;
-        for (BetExchange betExchange: bet_betExchanges.values()){
-
-            BetOffer this_best_offer = betExchange.bestValidOffer();
-            if (best_offer_currently == null || this_best_offer.largerROI(best_offer_currently)){
-                best_offer_currently = this_best_offer;
-            }
-        }
-        return best_offer_currently;
-    }
 
 
     public boolean timed_out(){
@@ -177,8 +143,55 @@ public class MarketOddsReport {
 
 
 
+    public BigDecimal maxROIRatio(Bet bet){
+        // returns the ROI ratio from the best single offer for
+        // a bet from any of the sites that offer that bet.
+
+        List<BetExchange> betExchanges = getBetExchanges(bet.id());
+        BigDecimal best_roi = null;
+        for (BetExchange betExchange: betExchanges){
+            best_roi = BDMax(best_roi, betExchange.bestROIRatio());
+        }
+        return best_roi;
+    }
+
+
+    public List<BetGroup> filterPositiveTauts(List<BetGroup> tautologies){
+        // Returns a list of tauts from those given, that would create a positive
+        // ROI ratio if used at their maximum odds only.
+
+        List<BetGroup> positive_tauts = new ArrayList<BetGroup>();
+        Map<String, BigDecimal> inv_cache = new HashMap<String, BigDecimal>();
+
+        for (BetGroup taut: tautologies){
+
+            BigDecimal total_inv = BigDecimal.ZERO;
+            for (Bet bet: taut.bets){
+
+                BigDecimal inv_needed_for_penny_ret = inv_cache.computeIfAbsent(bet.id(),
+                        k->penny.divide(maxROIRatio(bet), 12, RoundingMode.HALF_UP));
+                total_inv = total_inv.add(inv_needed_for_penny_ret);
+            }
+
+            BigDecimal taut_roir = penny.divide(total_inv, 12, RoundingMode.HALF_UP);
+            if (taut_roir.compareTo(BigDecimal.ONE) > 0){
+                positive_tauts.add(taut);
+            }
+        }
+
+        return positive_tauts;
+    }
+
+
+
+
     public List<BetExchange> getBetExchanges(String bet_id){
-        return (List<BetExchange>) bet_site_exchanges.get(bet_id).values();
+        try{
+            return (List<BetExchange>) bet_site_exchanges.get(bet_id).values();
+        }
+        catch (NullPointerException e){
+            return null;
+        }
     }
 
 

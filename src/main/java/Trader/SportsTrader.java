@@ -46,6 +46,8 @@ public class SportsTrader {
     public static final Config config = Config.getConfig("config.json");
 
 
+
+
     public Lock betlock = new ReentrantLock();
 
     public ArrayList<Class> siteClasses;

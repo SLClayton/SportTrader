@@ -18,7 +18,6 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
-import static Bet.Bet.penny;
 import static java.lang.System.exit;
 import static java.lang.System.in;
 import static tools.printer.*;
@@ -423,13 +422,10 @@ public class BetOffer implements Comparable<BetOffer> {
 
 
 
-
-
-    public static List<BetOfferStake> target_return(List<BetOffer> betOffers, BigDecimal target_return,
+    public static Map<String, BigDecimal> target_return(List<BetOffer> betOffers, BigDecimal target_return,
                                                   boolean is_list_sorted){
 
-        // Applies a certain investment to a list of offers to find what amount to place
-        // to fill each, on after the next until all back stake gone.
+        // 
 
         if (!is_list_sorted) {
             Collections.sort(betOffers, Collections.reverseOrder());
@@ -438,6 +434,7 @@ public class BetOffer implements Comparable<BetOffer> {
         BigDecimal return_remainder = target_return;
         BigDecimal inv_so_far = BigDecimal.ZERO;
         List<BetOfferStake> betOfferStakes = new ArrayList<BetOfferStake>();
+        Map<String, BigDecimal> site_investments = new HashMap<String, BigDecimal>();
 
         for (BetOffer betOffer: betOffers){
 
@@ -452,9 +449,11 @@ public class BetOffer implements Comparable<BetOffer> {
             return_remainder = return_remainder.subtract(betOfferStake.returns());
             inv_so_far = inv_so_far.add(betOfferStake.investment());
             betOfferStakes.add(betOfferStake);
+            site_investments.put(betOffer.getSiteName(),
+                    site_investments.getOrDefault(betOffer.getSiteName(), BigDecimal.ZERO).add(betOfferStake.investment()));
 
             if (return_remainder.compareTo(penny) <= 0){
-                return betOfferStakes;
+                return site_investments;
             }
         }
         return null;
