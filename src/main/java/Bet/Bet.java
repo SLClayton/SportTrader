@@ -29,9 +29,11 @@ public abstract class Bet {
     public enum Sport{FOOTBALL, TENNIS, RUGBY}
 
     public Bet(BetType bet_type) {
+        if (bet_type == null){
+            log.severe("Created BET with NULL bet type!!!");
+        }
         type = bet_type;
     }
-
 
     public Boolean isLay(){
         return type.equals(BetType.LAY);
@@ -44,6 +46,18 @@ public abstract class Bet {
     public abstract JSONObject toJSON();
 
     public abstract String id();
+
+    public String altId(){
+        String id = this.id();
+        if (id.endsWith("BACK")){
+            return id.substring(0, id.length()-4) + "LAY";
+        }
+        else if (id.endsWith("LAY")){
+            return id.substring(0, id.length()-3) + "BACK";
+        }
+        log.severe(sf("Getting alt ID for %s failed, ID doesn't end with BACK or LAY"));
+        return null;
+    }
 
     @Override
     public String toString(){
@@ -79,6 +93,7 @@ public abstract class Bet {
         // Back Profit to Back Stake
         return lay_stake.divide((odds.subtract(BigDecimal.ONE)), 12, RoundingMode.HALF_UP);
     }
+
 
 
 
@@ -198,7 +213,6 @@ public abstract class Bet {
 
 
     public static BigDecimal stake2Investment(BigDecimal stake, BigDecimal loss_commission_rate){
-        // Using 1% example
         // stake + (stake x loss_com)
         return stake.add(stake.multiply(loss_commission_rate));
     }

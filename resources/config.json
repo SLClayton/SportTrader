@@ -3,7 +3,7 @@
     "LOG_LEVEL": "INFO",
     "SSL_DIR": "B:/ssl/",
 
-    "MAX_MATCHES": 10,
+    "MAX_MATCHES": 20,
     "IN_PLAY": false,
     "HOURS_AHEAD": 48,
 
@@ -12,16 +12,17 @@
     "SM_TIME": "2020-03-08T14:00:00.000Z",
 
     "CHECK_MARKETS": true,
-    "RATE_LIMIT": 0,
+    "RATE_LIMIT": 500,
     "RATE_LOCKSTEP_INTERVAL": 0,
-    "REQUEST_TIMEOUT": 300,
-    "LIMIT_LOW_PROFIT": true,
+    "REQUEST_TIMEOUT": 500,
+    "LIMIT_LOW_PROFIT": false,
+    "PRINT_STATS_INT": 10,
 
     "PLACE_BETS": true,
     "END_ON_BET": true,
-    "MIN_PROFIT_RATIO": -0.01,
+    "MIN_PROFIT_RATIO": 0.00,
     "ODDS_RATIO_BUFFER": 0.10,
-    "TARGET_INVESTMENT": 20.00,
+    "TARGET_INVESTMENT": 1.00,
     "MAX_INVESTMENT": 50.00,
 
     "ACTIVE_SITES": {

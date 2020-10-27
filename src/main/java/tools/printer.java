@@ -46,7 +46,6 @@ public abstract class printer {
 
 
     public static String resource_path = "resources/";
-
     public static final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 
@@ -135,6 +134,13 @@ public abstract class printer {
 
     public static void pp(JSONObject j){
         print(jstring(j));
+    }
+
+
+    public static void pp(Map map){
+        for (Object obj: map.keySet()){
+            psf("%s: %s", stringValue(obj), stringValue(map.get(obj)));
+        }
     }
 
 
@@ -379,6 +385,18 @@ public abstract class printer {
         return  sum / list.size();
     }
 
+
+    public static int count_attribute(JSONArray array, String key, String string_value){
+        int count = 0;
+        for (Object json_obj: array){
+            JSONObject json = (JSONObject) json_obj;
+            Object value = json.get(key);
+            if (value != null && String.valueOf(value).equals(string_value)){
+                count++;
+            }
+        }
+        return count;
+    }
 
 
     public static String rndString(int length){

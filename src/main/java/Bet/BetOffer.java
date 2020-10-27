@@ -313,6 +313,7 @@ public class BetOffer implements Comparable<BetOffer> {
         return sb.toString();
     }
 
+
     public static void printList(List<BetOffer> betOffers){
         print(list2String(betOffers));
     }
@@ -330,21 +331,29 @@ public class BetOffer implements Comparable<BetOffer> {
     }
 
 
+    public static List<BetOfferStake> applyStake(List<BetOffer> betOffers, BigDecimal target_stake, boolean back_stake,
+                                                 boolean is_list_sorted){
 
-    public static List<BetOfferStake> apply_stake(List<BetOffer> betOffers, BigDecimal target_backers_stake,
-                                                  boolean is_list_sorted){
-
-        // Applys a certain back stake to a list of offers to find what amount to place
-        // to fill each, on after the next until all back stake gone.
+        // Applies a certain back stake to a list of offers to find what amount to place
+        // to fill each, one after the next, until all stake gone.
 
         if (!is_list_sorted) {
             Collections.sort(betOffers, Collections.reverseOrder());
         }
 
-        BigDecimal back_stake_remainder = target_backers_stake;
+        BigDecimal stake_remainder = target_stake;
         List<BetOfferStake> betOfferStakes = new ArrayList<BetOfferStake>();
 
         for (BetOffer betOffer: betOffers){
+
+            BigDecimal back_stake_remainder;
+            if (back_stake){
+                back_stake_remainder = stake_remainder;
+            }
+            else{
+                back_stake_remainder = betOffer.layStake2BackStake(stake_remainder);
+            }
+
             // Back stake is full amount or the filled offer
             BigDecimal back_stake_this_offer = BDMin(back_stake_remainder, betOffer.volume);
             betOfferStakes.add(new BetOfferStake(betOffer, back_stake_this_offer));
@@ -359,17 +368,27 @@ public class BetOffer implements Comparable<BetOffer> {
         return null;
     }
 
-    public static List<BetOfferStake> apply_stake(List<BetOffer> betOffers, BigDecimal target_backers_stake){
-        return apply_stake(betOffers, target_backers_stake, false);
-    }
-
 
     public static BigDecimal backStake2LayStake(List<BetOffer> betOffers, BigDecimal back_stake,
                                                 boolean is_list_sorted){
 
-        List<BetOfferStake> betOfferStakes = apply_stake(betOffers, back_stake, is_list_sorted);
+        List<BetOfferStake> betOfferStakes = applyStake(betOffers, back_stake, true, is_list_sorted);
+        if (betOfferStakes == null){
+            return null;
+        }
         return BetOfferStake.totalLayStake(betOfferStakes);
     }
+
+    public static BigDecimal layStake2BackStake(List<BetOffer> betOffers, BigDecimal lay_stake,
+                                                boolean is_list_sorted){
+
+        List<BetOfferStake> betOfferStakes = applyStake(betOffers, lay_stake, false, is_list_sorted);
+        if (betOfferStakes == null){
+            return null;
+        }
+        return BetOfferStake.totalBackStake(betOfferStakes);
+    }
+
 
 
     public static Map<String, BigDecimal> apply_investment(List<BetOffer> betOffers, BigDecimal target_investment,
@@ -425,11 +444,13 @@ public class BetOffer implements Comparable<BetOffer> {
     public static Map<String, BigDecimal> target_return(List<BetOffer> betOffers, BigDecimal target_return,
                                                   boolean is_list_sorted){
 
-        // 
+        // Takes betOffers from multiple sites and shows the best amount to placed on each
+        // site to get the least inv from a given return
 
         if (!is_list_sorted) {
             Collections.sort(betOffers, Collections.reverseOrder());
         }
+
 
         BigDecimal return_remainder = target_return;
         BigDecimal inv_so_far = BigDecimal.ZERO;
@@ -445,10 +466,13 @@ public class BetOffer implements Comparable<BetOffer> {
             BigDecimal back_stake_this_offer = BDMin(back_stake_remainder, betOffer.volume);
             BetOfferStake betOfferStake = new BetOfferStake(betOffer, back_stake_this_offer);
 
+
             // Remove the back stake we just made from target back stake
             return_remainder = return_remainder.subtract(betOfferStake.returns());
             inv_so_far = inv_so_far.add(betOfferStake.investment());
             betOfferStakes.add(betOfferStake);
+
+
             site_investments.put(betOffer.getSiteName(),
                     site_investments.getOrDefault(betOffer.getSiteName(), BigDecimal.ZERO).add(betOfferStake.investment()));
 
@@ -457,6 +481,10 @@ public class BetOffer implements Comparable<BetOffer> {
             }
         }
         return null;
+    }
+
+    public static Map<String, BigDecimal> target_return(List<BetOffer> betOffers, BigDecimal target_return){
+        return target_return(betOffers, target_return, false);
     }
 
 

@@ -10,18 +10,28 @@ public class FootballOverUnderBet extends FootballBet{
 
     public String side;
     public BigDecimal goals;
+    public boolean halftime;
 
 
-    public FootballOverUnderBet(BetType bet_type, String SIDE, BigDecimal GOALS){
+    public FootballOverUnderBet(BetType bet_type, String SIDE, BigDecimal GOALS, boolean halftime){
         super(bet_type);
 
         side = SIDE;
-        goals = GOALS.setScale(1);
+        goals = GOALS.setScale(1, RoundingMode.HALF_UP);
         category = "OVER-UNDER";
+        this.halftime = halftime;
+    }
+
+    public FootballOverUnderBet(BetType bet_type, String SIDE, BigDecimal GOALS){
+        this(bet_type, SIDE, GOALS, false);
     }
 
     public String id(){
-        return String.format("%s_%s_%s", side, goals.toString(), type);
+        String HT = "";
+        if (halftime){
+            HT = "_HT";
+        }
+        return String.format("%s_%s%s_%s", side, goals.toString(), HT, type);
     }
 
     @Override
@@ -41,6 +51,10 @@ public class FootballOverUnderBet extends FootballBet{
 
     public Boolean over(){
         return side == OVER;
+    }
+
+    public boolean isHalftime(){
+        return halftime;
     }
 
 }

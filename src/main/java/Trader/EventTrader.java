@@ -16,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static tools.BigDecimalTools.*;
 import static tools.printer.*;
 
 public class EventTrader implements Runnable {
@@ -124,9 +125,8 @@ public class EventTrader implements Runnable {
         ArrayList<Long> loop_times = new ArrayList<>();
         Set<String> site_ids = BettingSite.getIDs(sites.values());
         BigDecimal best_profit = null;
-        int loops_per_check = 100;
-        int secs_per_check = 20;
-        Instant next_check = Instant.now().plusSeconds(secs_per_check);
+        Instant last_check = Instant.now();
+        Instant next_check = last_check.plusSeconds(config.PRINT_STATS_INT);
         for (long i=0; !exit_flag; i++){
             try {
 
@@ -148,11 +148,14 @@ public class EventTrader implements Runnable {
                 }
 
                 // Calculate and print stats of last group of arb checks
-                if (Instant.now().isAfter(next_check)){
+                Instant now = Instant.now();
+                if (now.isAfter(next_check)){
                     String best = String.valueOf(best_profit);
                     if (best.length() > 8){ best = best.substring(0, 8);}
-                    log.info(String.format("%s ArbsChcks: avg=%dms OK%s TMT%s LMT%s NA%s Bst: %s",
-                            loop_times.size(), avg(loop_times),
+                    log.info(sf("%s ArbChcks in %sms: avg=%dms OK%s TMT%s LMT%s NA%s Bst: %s",
+                            loop_times.size(),
+                            now.toEpochMilli() - last_check.toEpochMilli(),
+                            avg(loop_times),
                             sum_map(ok_site_oddsReports),
                             sum_map(timeout_site_oddsReports),
                             sum_map(rateLimited_site_oddsReports),
@@ -165,7 +168,8 @@ public class EventTrader implements Runnable {
                     rateLimited_site_oddsReports.clear();
                     error_site_oddsReports.clear();
                     best_profit = null;
-                    next_check = Instant.now().plusSeconds(secs_per_check);
+                    last_check = next_check;
+                    next_check = Instant.now().plusSeconds(config.PRINT_STATS_INT);
                 }
 
 
@@ -226,7 +230,7 @@ public class EventTrader implements Runnable {
 
     private void checkArbs() throws InterruptedException {
 
-        // Send off requests to get marketOddsReports for each site event tracker
+        // Start threads to get Markets Odds Reports for this event for each site
         Map<SiteEventTracker, RequestHandler> requestHandlers = new HashMap<>();
         for (SiteEventTracker siteEventTracker: siteEventTrackers.values()){
             RequestHandler rh = requestMarketOddsReport(siteEventTracker, bets);
@@ -241,7 +245,7 @@ public class EventTrader implements Runnable {
             BettingSite site = entry.getKey().site;
             RequestHandler rh = entry.getValue();
 
-            // Wait for each marketOddsReport of timout
+            // Wait for each marketOddsReport or time-out
             MarketOddsReport mor;
             if (rh == null){
                 mor = MarketOddsReport.ERROR("Request handler is null");
@@ -267,11 +271,16 @@ public class EventTrader implements Runnable {
             }
             else if (mor.rate_limited()){ rateLimited_site_oddsReports.add(site.getID()); }
             else if (mor.timed_out()){ timeout_site_oddsReports.add(site.getID()); }
-            else{
+            else {
                 log.warning(String.format("Failed to get MarkerOddsReport from %s - %s",
                     site.getName(), mor.getErrorMessage()));
                 error_site_oddsReports.add(site.getID());
             }
+        }
+
+
+        if (marketOddsReports.isEmpty()){
+            return;
         }
 
 
@@ -280,223 +289,105 @@ public class EventTrader implements Runnable {
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
-        /*
-        // Generate profit report for each tautology and order by profit ratio
-        ProfitReportSet tautologyProfitReports = ProfitReportSet.fromTautologies(tautologies, fullOddsReport, BigDecimal.ONE);
-        tautologyProfitReports.sort_by_profit();
-        last_best_profit = tautologyProfitReports.best_profit();
+        // Create a profit report for each tautology, made of the best bets that return 0.01
+        ProfitReportSet penny_pPRs = fullOddsReport
+                .getTautologyProfitReportSet_targetReturn(tautologies, penny, false);
+        penny_pPRs.sort_by_profit();
 
-
-        // Create list of profit reports with profits over min_prof_margin
-        ProfitReportSet in_profit = tautologyProfitReports.filter_reports(config.MIN_PROFIT_RATIO);
-
-
-        // If any profit reports are found to be IN profit
+        // Filter these for those that have a profit over the configured amount
+        ProfitReportSet in_profit = penny_pPRs.filter_reports(config.MIN_PROFIT_RATIO);
         if (in_profit.size() > 0){
-            profitFound(in_profit);
+            log.info(sf("Found %s profit reports with return ratio > %s", in_profit.size(), config.MIN_PROFIT_RATIO));
+            profitFound(fullOddsReport, in_profit);
         }
 
-         */
+
+        last_best_profit = null;
+        if (!penny_pPRs.isEmpty()){
+            last_best_profit = penny_pPRs.get(0).minProfitRatio();
+        }
     }
 
 
-    public void profitFound(ProfitReportSet in_profit) {
+    public void profitFound(MarketOddsReport marketOddsReport, ProfitReportSet reports_in_profit){
 
-        /*
-        String profit_timeString = Instant.now().toString().replace(":", "-").substring(0, 18) + "0";
-        String report_timeString = Instant.now().truncatedTo(ChronoUnit.MILLIS).toString().replace(":", "-");
-        log.info(String.format("%s profit reports found to be over %s PROFIT RATIO.",
-                in_profit.size(), config.MIN_PROFIT_RATIO.toString()));
+        Instant time = Instant.now();
+        ProfitReport profitReport = null;
 
 
-        // Create profit folder if it does not exist
-        String profit_dir = "profit";
-        makeDirIfNotExists(profit_dir);
+
+        for (ProfitReport this_profitReport: reports_in_profit.profitReports()){
+
+            BigDecimal target_return = this_profitReport.getMinROI().multiply(config.TARGET_INVESTMENT);
+            log.info(sf("Using profReport with %s minProfRatio with target ret of %s",
+                    BDString(this_profitReport.minProfitRatio(), 4),
+                    BDString(target_return, 4)));
+
+            // Find the best profit report that returns the target
+            ProfitReport PR_targetReturn = marketOddsReport
+                    .getTautologyProfitReport_targetReturn(this_profitReport.getBets(), target_return, true);
 
 
-        // Get the best (first in list) profit report
-        ProfitReport best_ratio_profitReport = in_profit.get(0);
 
-
-        // Find profit reports for the lowest and highest possible through min bet size and max volume available
-        ProfitReport min_profit_report = best_ratio_profitReport.newProfitReportReturn(
-                best_ratio_profitReport.getMax_minStakeReturn().add(new BigDecimal("0.01")));
-        ProfitReport max_profit_report = best_ratio_profitReport.newProfitReportReturn(
-                best_ratio_profitReport.getMin_maxStakeReturn().subtract(new BigDecimal("0.01")));
-        ProfitReport target_profit_report = best_ratio_profitReport.newProfitReportInvestment(config.TARGET_INVESTMENT);
-
-        log.info(String.format("Profit reports generated. Investment( Min=%s  Target=%s  Max=%s )",
-                min_profit_report.getTotalInvestment().toString(),
-                target_profit_report.getTotalInvestment().toString(),
-                max_profit_report.getTotalInvestment().toString()));
-
-
-        ProfitReport profitReport;
-        // If target profit report between min and max
-        if (target_profit_report != null
-                && min_profit_report.smallerInvestment(target_profit_report)
-                && max_profit_report.largerInvestment(target_profit_report)) {
-
-            log.info(String.format("Target profit report used. Target investment of %s.",
-                    target_profit_report.getTotalInvestment().toString()));
-            profitReport = target_profit_report;
-        }
-        // If target profit report smaller than min and min smaller than max
-        else if ((target_profit_report == null || target_profit_report.smallerInvestment(min_profit_report))
-                && min_profit_report.smallerInvestment(max_profit_report)) {
-
-            log.info(String.format("Target profit report has total investment (%s) below minimum needed (%s). Using minimum.",
-                    target_profit_report.getTotalInvestment(), min_profit_report.getTotalInvestment()));
-            profitReport = min_profit_report;
-        }
-        else if (max_profit_report.largerInvestment(min_profit_report)) {
-            log.info(String.format("Target profit report has total investment above max of %s available volume. Using max.",
-                    max_profit_report.getTotalInvestment().toString()));
-            profitReport = min_profit_report;
-        }
-        else {
-            log.warning(String.format("Bet not possible with current offers. No bets placed."));
-            return;
-        }
-
-
-        // Ensure report investment is not over max investment
-        if (profitReport.getTotalInvestment().compareTo(config.MAX_INVESTMENT) == 1) {
-            log.warning(String.format("Profit report needs too high investment. Req: %s  MAX: %s.",
-                    profitReport.getTotalInvestment(), config.MAX_INVESTMENT.toString()));
-
-            // Try next best profit report if available
-            in_profit.remove(0);
-            if (in_profit.size() > 0) {
-                profitFound(in_profit);
+            // Break on first valid profit report.
+            if (PR_targetReturn == null){
+                log.warning(sf("Profit report NULL."));
             }
+            else if (PR_targetReturn.minProfitRatio().compareTo(config.MIN_PROFIT_RATIO) >= 0){
+                log.warning(sf("MinProfitRatio reduced to %s which is lower than min %s required.",
+                        BDString(PR_targetReturn.minProfitRatio(), 4),
+                        config.MIN_PROFIT_RATIO));
+            }
+            else if (PR_targetReturn.getTotalInvestment().compareTo(config.MAX_INVESTMENT) > 0){
+                log.warning(sf("Investment needed %s is higher than max investment %s.",
+                        BDString(PR_targetReturn.getTotalInvestment(), 4), config.MAX_INVESTMENT));
+            }
+            else{
+                profitReport = PR_targetReturn;
+                break;
+            }
+
+        }
+
+        if (profitReport == null){
+            log.warning("No profit report that was in profit, was valid after checking real values.");
             return;
         }
 
-
-        log.info(String.format("Chosen profit report of inv %s is below max inv %s.",
-                profitReport.getTotalInvestment(), config.MAX_INVESTMENT));
-
-
-
-
-
-        // If ending after bet, lock out all other threads.
-        if (config.END_ON_BET) {
+        // If ending after bet, lock out all other threads to prevent multiple bets being placed.
+        if (config.END_ON_BET){
             sportsTrader.betlock.lock();
         }
 
 
-        // Place bets if config allows it
-        if (config.PLACE_BETS) {
-            log.info("Attempting to place bets.");
+        if (config.PLACE_BETS){
+            List<PlacedBet> placedBets = profitReport.placeBets();
+            ProfitReport PR_placedBets = profitReport.fromPlacedBets(placedBets);
 
-            // Placed bets and generate profit report
-            List<PlacedBet> placeBets = placeBets(profitReport.getBetOrders());
-            ProfitReport placedOrderProfitReport = new ProfitReport(new ArrayList<ProfitReportItem>(placeBets));
+            log.info(sf("Placed %s on %s bets with %s return (%s prof) on %s from sites %s",
+                    BDString(PR_placedBets.getTotalInvestment(), 4),
+                    placedBets.size(),
+                    BDString(PR_placedBets.getMinReturn(), 4),
+                    BDString(PR_placedBets.minProfit(), 4),
+                    PR_placedBets.getBets().toString(),
+                    PR_placedBets.sites_used().toString()));
 
-            // Construct file paths for saved PlacedBetReport
-            String placedBetsDir = "placed_bets";
-            String placedBetsFilename = String.format("%s %s %s.json",
-                    report_timeString, match, placedOrderProfitReport.minProfit());
-            String placedBetsPath = placedBetsDir + "/" + placedBetsFilename;
-
-            // Make directory and save profit report
-            log.info(String.format("Saving PlacedOrderProfitReport to %s", placedBetsPath));
-            makeDirIfNotExists(placedBetsDir);
-            toFile(placedOrderProfitReport.toJSON(true), placedBetsPath);
+            String placed_dir = "placed_bets";
+            makeDirIfNotExists(placed_dir);
+            PR_placedBets.saveJSON(time, placed_dir);
         }
 
 
-        // Save profit report as json file
-        String profitString = profitReport.minProfitRatio().setScale(4, RoundingMode.HALF_UP).toPlainString();
-        String filename = String.format("%s - %s %s.json", profit_timeString, match.name, profitString);
-        toFile(profitReport.toJSON(true), profit_dir + "/" + filename);
+        // Save hypothetical profit reports in profit folder
+        String profit_dir = "profit";
+        makeDirIfNotExists(profit_dir);
+        for (ProfitReport pr: reports_in_profit.profitReports()){
+            pr.saveJSON(time, profit_dir);
+        }
 
 
         if (config.END_ON_BET){
-            log.info("END_ON_BET=true so exiting program.");
             sportsTrader.safe_exit();
-        }
-
-        */
-
-    }
-
-
-    public List<PlacedBet> placeBets(List<BetPlan> betPlans){
-
-        // Sort placed bets into lists depending on the site they're going to.
-        Map<String, List<BetPlan>> site_bets = BetPlan.splitListBySite(betPlans);
-
-
-        // Send list of bets of to their respective Betting site objects to be placed
-        ArrayList<PlaceBetsRunnable> placeBetsRunnables = new ArrayList<>();
-        for (Map.Entry<String, List<BetPlan>> entry: site_bets.entrySet()){
-            List<BetPlan> site_betPlans = entry.getValue();
-
-            PlaceBetsRunnable placeBetsRunnable = new PlaceBetsRunnable(site_betPlans);
-            placeBetsRunnable.start();
-            placeBetsRunnables.add(placeBetsRunnable);
-        }
-
-
-        // Wait for threads to finish and gather resulting placedBets
-        ArrayList<PlacedBet> placedBets = new ArrayList<>();
-        for (PlaceBetsRunnable placeBetsRunnable: placeBetsRunnables){
-            try {
-                placeBetsRunnable.thread.join();
-                placedBets.addAll(placeBetsRunnable.placedBets);
-            } catch (InterruptedException e) {
-                log.severe(String.format("Error with bets sent to %s.", placeBetsRunnable.site.getName()));
-                e.printStackTrace();
-
-                ArrayList<PlacedBet> failedbets = new ArrayList<>();
-                while (failedbets.size() < placeBetsRunnable.betPlans.size()){
-                    BetPlan betPlan = placeBetsRunnable.betPlans.get(failedbets.size());
-
-                    PlacedBet generic_failbet = null;
-
-                    failedbets.add(generic_failbet);
-                }
-                placedBets.addAll(failedbets);
-            }
-        }
-
-        return placedBets;
-    }
-
-
-    public class PlaceBetsRunnable implements Runnable{
-
-        public List<BetPlan> betPlans;
-        public List<PlacedBet> placedBets;
-        public BettingSite site;
-        public Thread thread;
-
-        public PlaceBetsRunnable(List<BetPlan> betPlans){
-            this.betPlans = betPlans;
-            site = this.betPlans.get(0).getSite();
-            thread = new Thread(this);
-            thread.setName(String.format("%s-BetPlacer", site.getName()));
-        }
-
-        public void start(){
-            thread.start();
-        }
-
-        @Override
-        public void run() {
-            try {
-                placedBets = site.placeBets(betPlans, config.ODDS_RATIO_BUFFER);
-            } catch (IOException | URISyntaxException e) {
-                log.severe(String.format("Error while sending bets off to %s", site.getName()));
-                e.printStackTrace();
-                placedBets = new ArrayList<>();
-                while (placedBets.size() < betPlans.size()){
-                    placedBets.add(null);
-                }
-            }
         }
     }
 
@@ -525,18 +416,21 @@ public class EventTrader implements Runnable {
 
     public static void main(String[] args){
 
-        Instant a = Instant.now();
+        List<BigDecimal> randoms = randomBDs(1000000);
+        BigDecimal x = BD("212.1233312312331932837");
 
-        for (int i=0; i<1000; i++){
-            Worker worker = new Worker();
-            worker.t = new Thread(worker);
-            worker.t.start();
+        for (RoundingMode roundingMode: RoundingMode.values()){
 
+            Instant start = Instant.now();
+
+            for (BigDecimal bd: randoms){
+                BigDecimal rounded_bd = bd.divide(x, 5, roundingMode);
+            }
+
+            Instant end = Instant.now();
+
+            print(sf("%sms  -  %s", end.toEpochMilli() - start.toEpochMilli(), roundingMode.toString()));
         }
-
-        Instant b = Instant.now();
-        print(b.toEpochMilli() - a.toEpochMilli());
-
 
 
     }

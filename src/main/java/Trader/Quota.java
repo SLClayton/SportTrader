@@ -27,6 +27,8 @@ import java.time.Instant;
 import java.util.*;
 
 import static java.lang.System.exit;
+import static tools.BigDecimalTools.BD;
+import static tools.BigDecimalTools.penny;
 import static tools.printer.*;
 
 public class Quota {
@@ -139,10 +141,35 @@ public class Quota {
 
         toFile(MOR.toJSON());
 
-        // Find every tautology that when getting a return of 0.01, has a positive roi ratio
+        // Find the profit reports whereby the return is a fiver and order by best
+
+        ProfitReportSet profitReportSet = MOR.getTautologyProfitReportSet_targetReturn(
+                tautologies, BD(5), true);
+        profitReportSet.sort_by_profit();
+
+        List<PlacedBet> placedBets = null;
+        Instant time = null;
+        for (ProfitReport pr: profitReportSet.profitReports()){
+            if (pr.uses_site(Betfair.name)){
+                print("Attempting to place bets...");
+                time = Instant.now();
+                placedBets = pr.placeBets();
+                break;
+            }
+        }
 
 
-        // TODO: check MOR for betfair
+        if (placedBets == null){
+            print("No valid bets found");
+        }
+
+
+
+        ProfitReport final_pr = ProfitReport.fromPlacedBets(placedBets);
+
+        String output_dir = "quota_placed_bets";
+        makeDirIfNotExists(output_dir);
+        final_pr.saveJSON(time, output_dir);
 
     }
 

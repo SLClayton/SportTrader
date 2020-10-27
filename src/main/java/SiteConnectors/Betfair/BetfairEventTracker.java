@@ -64,7 +64,7 @@ public class BetfairEventTracker extends SiteEventTracker {
     public Map<String, String> marketType_id_map;
 
 
-    public Map<String, Integer> betId_selectionId_map;
+    public Map<String, String> betId_marketSelId_map;
 
 
 
@@ -78,7 +78,7 @@ public class BetfairEventTracker extends SiteEventTracker {
         marketType_id_map = new HashMap<>();
         bet_blacklist = new HashSet<>();
 
-        betId_selectionId_map = new HashMap<>();
+        betId_marketSelId_map = new HashMap<>();
     }
 
 
@@ -113,18 +113,23 @@ public class BetfairEventTracker extends SiteEventTracker {
             String market_type = (String) ((JSONObject) market.get("description")).get("marketType");
             marketType_id_map.put(market_type, market_id);
 
+            // Result bets
             if (market_type.equals("MATCH_ODDS") || market_type.equals("HALF_TIME")){
                 setup_runners_matchOdds(market);
             }
+            // Scoreline bets
             else if (market_type.equals("CORRECT_SCORE") || market_type.equals("HALF_TIME_SCORE")){
                 setup_runners_correctScore(market);
             }
+            // Asian Handicap
             else if (market_type.equals("ASIAN_HANDICAP")){
                 setup_runners_asianHandicap(market);
             }
+            // Over under
             else if (OVERUNDER_marketTypePattern.matcher(market_type).matches()){
                 setup_runners_overUnder(market);
             }
+            // Handicap
             else if (HANDICAP_marketTypePattern.matcher(market_type).matches()){
                 setup_runners_handicap(market);
             }
@@ -139,9 +144,14 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         JSONArray runners = (JSONArray) market.get("runners");
         String market_type = (String) ((JSONObject) market.get("description")).get("marketType");
+        String market_id = (String) market.get("marketId");
+
 
         Boolean halftime = null;
-        if      (market_type.equals("HALF_TIME")){ halftime = true; }
+        if      (market_type.equals("HALF_TIME")){
+            halftime = true;
+
+        }
         else if (market_type.equals("MATCH_ODDS")){ halftime = false; }
         else {
             log.severe(sf("Invalid market type %s", market_type));
@@ -166,11 +176,11 @@ public class BetfairEventTracker extends SiteEventTracker {
 
             FootballResultBet back_bet = new FootballResultBet(Bet.BetType.BACK, outcome, halftime);
             FootballResultBet lay_bet = new FootballResultBet(Bet.BetType.LAY, outcome, halftime);
-            betId_selectionId_map.put(back_bet.id(), selectionId);
-            betId_selectionId_map.put(lay_bet.id(), selectionId);
 
+            String market_selection_id = market_sel_id(market_id, selectionId);
+            betId_marketSelId_map.put(back_bet.id(), market_selection_id);
+            betId_marketSelId_map.put(lay_bet.id(), market_selection_id);
         }
-
     }
 
 
@@ -178,6 +188,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         JSONArray runners = (JSONArray) market.get("runners");
         String market_type = (String) ((JSONObject) market.get("description")).get("marketType");
+        String market_id = (String) market.get("marketId");
 
         Boolean halftime = null;
         if      (market_type.equals("HALF_TIME_SCORE")){ halftime = true; }
@@ -204,8 +215,10 @@ public class BetfairEventTracker extends SiteEventTracker {
 
                 FootballScoreBet back_bet = new FootballScoreBet(Bet.BetType.BACK, score_a, score_b, halftime);
                 FootballScoreBet lay_bet = new FootballScoreBet(Bet.BetType.LAY, score_a, score_b, halftime);
-                betId_selectionId_map.put(back_bet.id(), selectionId);
-                betId_selectionId_map.put(lay_bet.id(), selectionId);
+
+                String mark_sel_id = market_sel_id(market_id, selectionId);
+                betId_marketSelId_map.put(back_bet.id(), mark_sel_id);
+                betId_marketSelId_map.put(lay_bet.id(), mark_sel_id);
             }
         }
 
@@ -222,16 +235,18 @@ public class BetfairEventTracker extends SiteEventTracker {
                 if      (runnerName.equals("Any Other Home Win")){ outcome = FootballBet.TEAM_A; }
                 else if (runnerName.equals("Any Other Away Win")){ outcome = FootballBet.TEAM_B; }
                 else if (runnerName.equals("Any Other Draw"))    { outcome = FootballBet.DRAW; }
-                else if (runnerName.contains("Any Unquoted"))    { outcome = FootballBet.ANY; }
+                else if (runnerName.trim().toLowerCase().equals("any unquoted"))    { outcome = FootballBet.ANY; }
                 else{
-                    log.severe(sf("invalid runnername %s", runnerName));
+                    log.severe(sf("invalid runnername '%s'", runnerName));
                     continue;
                 }
 
                 FootballOtherScoreBet back_bet = new FootballOtherScoreBet(Bet.BetType.BACK, max_score, outcome, halftime);
                 FootballOtherScoreBet lay_bet = new FootballOtherScoreBet(Bet.BetType.BACK, max_score, outcome, halftime);
-                betId_selectionId_map.put(back_bet.id(), selectionId);
-                betId_selectionId_map.put(lay_bet.id(), selectionId);
+
+                String mark_sel_id = market_sel_id(market_id, selectionId);
+                betId_marketSelId_map.put(back_bet.id(), mark_sel_id);
+                betId_marketSelId_map.put(lay_bet.id(), mark_sel_id);
             }
         }
     }
@@ -241,6 +256,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         JSONArray runners = (JSONArray) market.get("runners");
         String market_type = (String) ((JSONObject) market.get("description")).get("marketType");
+        String market_id = (String) market.get("marketId");
 
         // Find whether halftime or not
         Boolean halftime = null;
@@ -270,12 +286,13 @@ public class BetfairEventTracker extends SiteEventTracker {
                 continue;
             }
 
-            FootballOverUnderBet back_bet = new FootballOverUnderBet(Bet.BetType.BACK, over_under, goals);
-            FootballOverUnderBet lay_bet = new FootballOverUnderBet(Bet.BetType.LAY, over_under, goals);
-            betId_selectionId_map.put(back_bet.id(), selectionId);
-            betId_selectionId_map.put(lay_bet.id(), selectionId);
-        }
+            FootballOverUnderBet back_bet = new FootballOverUnderBet(Bet.BetType.BACK, over_under, goals, halftime);
+            FootballOverUnderBet lay_bet = new FootballOverUnderBet(Bet.BetType.LAY, over_under, goals, halftime);
 
+            String mark_sel_id = market_sel_id(market_id, selectionId);
+            betId_marketSelId_map.put(back_bet.id(), mark_sel_id);
+            betId_marketSelId_map.put(lay_bet.id(), mark_sel_id);
+        }
     }
 
 
@@ -283,6 +300,7 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         JSONArray runners = (JSONArray) market.get("runners");
         String market_type = (String) ((JSONObject) market.get("description")).get("marketType");
+        String market_id = (String) market.get("marketId");
 
         String[] type_parts = market_type.split("_");
         int handicap = Integer.parseInt(type_parts[type_parts.length-1]);
@@ -315,16 +333,18 @@ public class BetfairEventTracker extends SiteEventTracker {
 
             FootballHandicapBet back_bet = new FootballHandicapBet(Bet.BetType.BACK, a_handicap, outcome);
             FootballHandicapBet lay_bet = new FootballHandicapBet(Bet.BetType.LAY, a_handicap, outcome);
-            betId_selectionId_map.put(back_bet.id(), selectionId);
-            betId_selectionId_map.put(lay_bet.id(), selectionId);
-        }
 
+            String mark_sel_id = market_sel_id(market_id, selectionId);
+            betId_marketSelId_map.put(back_bet.id(), mark_sel_id);
+            betId_marketSelId_map.put(lay_bet.id(), mark_sel_id);
+        }
     }
 
 
     public void setup_runners_asianHandicap(JSONObject market){
 
         JSONArray runners = (JSONArray) market.get("runners");
+        String market_id = (String) market.get("marketId");
 
         for (Object runner_obj: runners) {
             JSONObject runner = (JSONObject) runner_obj;
@@ -351,8 +371,10 @@ public class BetfairEventTracker extends SiteEventTracker {
 
                 FootballHandicapBet back_bet = new FootballHandicapBet(Bet.BetType.BACK, a_handicap, outcome);
                 FootballHandicapBet lay_bet = new FootballHandicapBet(Bet.BetType.BACK, a_handicap, outcome);
-                betId_selectionId_map.put(back_bet.id(), selectionId);
-                betId_selectionId_map.put(lay_bet.id(), selectionId);
+
+                String mark_sel_id = market_sel_id(market_id, selectionId);
+                betId_marketSelId_map.put(back_bet.id(), mark_sel_id);
+                betId_marketSelId_map.put(lay_bet.id(), mark_sel_id);
             }
         }
     }
@@ -370,25 +392,30 @@ public class BetfairEventTracker extends SiteEventTracker {
 
         // get the raw data market odds
         JSONArray market_odds = betfair.getMarketOdds(marketType_id_map.values());
+        toFile(market_odds, 1);
+
+
+        // Check market odds were returned.
         if (market_odds == null){
             return MarketOddsReport.ERROR("Betfair market odds returned null.");
         }
-        MarketOddsReport new_marketOddsReport = new MarketOddsReport(event);
 
 
-        // Create map of all runners found with their selection Ids
-        Map<Integer, JSONObject> selectionId_runner_map = new HashMap<>();
-        for (Object market_obj: market_odds){
-            JSONObject market = (JSONObject) market_obj;
+        // Create map of market_sel_Ids -> Runner JSONs
+        Map<String, JSONObject> markSelId_runner_map = new HashMap<>();
+        for (JSONObject market: (List<JSONObject>) market_odds){
+            String market_id = (String) market.get("marketId");
+
             for (Object runner_obj: (JSONArray) market.get("runners")){
                 JSONObject runner = (JSONObject) runner_obj;
                 int selectionId = ((Long) runner.get("selectionId")).intValue();
+                String mark_sel_id = market_sel_id(market_id, selectionId);
 
-                selectionId_runner_map.put(selectionId, runner);
+                markSelId_runner_map.put(mark_sel_id, runner);
             }
         }
 
-
+        MarketOddsReport new_marketOddsReport = new MarketOddsReport(event);
         for (Bet abstract_bet: bets){
             if (bet_blacklist.contains(abstract_bet.id())){
                 continue;
@@ -396,14 +423,14 @@ public class BetfairEventTracker extends SiteEventTracker {
 
             FootballBet bet = (FootballBet) abstract_bet;
 
-
             //Get runner
-            Integer selection_id = betId_selectionId_map.get(bet.id());
+            String markSelId = betId_marketSelId_map.get(bet.id());
+            String marketId = null;
             JSONObject runner = null;
-            if (selection_id != null){
-                runner = selectionId_runner_map.get(selection_id);
+            if (markSelId != null){
+                runner = markSelId_runner_map.get(markSelId);
+                marketId = extractMarketId(markSelId);
             }
-
 
             // Ensure runner is valid
             if (runner == null){
@@ -442,8 +469,9 @@ public class BetfairEventTracker extends SiteEventTracker {
             // Create a new betExchange from the offers
             BetExchange betExchange = new BetExchange(site, event, bet);
             betExchange.addMetadata(Betfair.BETFAIR_SELECTION_ID, runner.get("selectionId"));
-            betExchange.addMetadata(Betfair.BETFAIR_MARKET_ID, runner.get("marketId"));
+            betExchange.addMetadata(Betfair.BETFAIR_MARKET_ID, marketId);
             betExchange.addMetadata(Betfair.BETFAIR_HANDICAP, runner.get("handicap"));
+
 
             for (int i=0; i<betfair_offers.size(); i++){
                 JSONObject bf_offer = (JSONObject) betfair_offers.get(i);
@@ -478,6 +506,13 @@ public class BetfairEventTracker extends SiteEventTracker {
     }
 
 
+    public static String market_sel_id(String market_id, int sel_id){
+        return String.format("%s_%s", market_id, sel_id);
+    }
+
+    public static String extractMarketId(String markSelId){
+        return markSelId.substring(0, markSelId.indexOf("_"));
+    }
 
 
 

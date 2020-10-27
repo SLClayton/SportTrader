@@ -4,24 +4,28 @@ import Bet.*;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
 import SiteConnectors.SiteEventTracker;
+import Sport.FootballMatch;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static tools.BigDecimalTools.isInteger;
 import static tools.printer.*;
 
 public class SmarketsEventTracker extends SiteEventTracker {
 
     public Smarkets smarkets;
     public String event_id;
+
     public Integer correct_score_max_goals;
-    public Integer half_time_correct_score_max_goals;
+    public Integer correct_score_max_goals_halftime;
 
 
     public static String[] market_type_names = new String[] {
@@ -35,9 +39,10 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
 
     public Map<String, JSONObject> id_market_map;
-    public ArrayList<String> market_ids;
+    public Map<String, String> betId_contract_map;
     public Map<String, String> fullname_contract_map;
     public Map<String, String> contract_market_map;
+    public Set<String> bet_blacklist;
 
     public JSONObject lastPrices;
 
@@ -48,6 +53,7 @@ public class SmarketsEventTracker extends SiteEventTracker {
         id_market_map = new HashMap<>();
         fullname_contract_map = new HashMap<>();
         contract_market_map = new HashMap<>();
+        bet_blacklist = new HashSet<>();
     }
 
 
@@ -63,13 +69,14 @@ public class SmarketsEventTracker extends SiteEventTracker {
     }
 
 
+
     @Override
     public boolean siteSpecificSetup() throws IOException, URISyntaxException, InterruptedException {
 
+        // Assign event id to this object
         event_id = event.metadata.get(Smarkets.SMARKETS_EVENT_ID);
 
         // Setup market data for this event
-        market_ids = new ArrayList<>();
         JSONArray markets = smarkets.getMarkets(event_id);
         for (Object market_obj: markets) {
 
@@ -80,73 +87,90 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
             // Add to list if type name appears in our whitelist
             if (Arrays.asList(market_type_names).contains(market_type_name)){
-                market_ids.add(market_id);
                 id_market_map.put(market_id, market);
             }
         }
 
-        // Build a smarkets 'fullname' for each possible contract and map to its id
-        JSONArray contracts = smarkets.getContracts(market_ids);
-        String correct_score_market_id = null;
-        String half_time_correct_score_market_id = null;
+        // Get contracts for the chosen markets
+        JSONArray contracts = smarkets.getContracts(id_market_map.keySet());
 
-        for (Object market_obj: markets) {
-            JSONObject market = (JSONObject) market_obj;
+        // Create betid -> contract id map
+        betId_contract_map = new HashMap<>();
+        for (int i=0; i<contracts.size(); i++){
 
-            // Extract names and ids etc
+            // Find corresponding market to this contract
+            JSONObject contract = (JSONObject) contracts.get(i);
+            String contract_id = (String) contract.get("id");
+            String market_id = (String) contract.get("market_id");
+            JSONObject market = id_market_map.get(market_id);
+            contract_market_map.put(contract_id, market_id);
+
+            // Extract names
             JSONObject market_type = (JSONObject) market.get("market_type");
-            String market_type_name = (String) market_type.get("name");
-            String market_id = (String) market.get("id");
-            String market_type_param = "";
-            if (market_type.containsKey("param")) {
-                market_type_param = (String) market_type.get("param");
-            }
-
-            if (market_type_name.equals("CORRECT_SCORE")){
-                correct_score_market_id = market_id;
-            }
-            else if (market_type_name.equals("HALF_TIME_CORRECT_SCORE")){
-                half_time_correct_score_market_id = market_id;
-            }
+            String market_name = (String) market_type.get("name");
+            String market_param = (String) market_type.getOrDefault("param", null);
+            JSONObject contract_type = (JSONObject) contract.get("contract_type");
+            String contract_name = (String) contract_type.get("name");
+            String contract_param = (String) contract_type.getOrDefault("param", null);
 
 
-            for (Object contract_obj : contracts) {
-                JSONObject contract = (JSONObject) contract_obj;
-                String contract_market_id = (String) contract.get("market_id");
+            Bet bet = null;
+            if (market_name.equals("HALF_TIME_CORRECT_SCORE") || market_name.equals("CORRECT_SCORE")) {
+                boolean halftime = market_name.equals("HALF_TIME_CORRECT_SCORE");
+                if (halftime && correct_score_max_goals_halftime == null) {
+                    correct_score_max_goals_halftime = max_correct_score_goals(contracts, market_id, halftime);
+                } else if (correct_score_max_goals == null) {
+                    correct_score_max_goals = max_correct_score_goals(contracts, market_id, halftime);
+                }
+                int max_goals = correct_score_max_goals;
+                if (halftime) {
+                    max_goals = correct_score_max_goals_halftime;
+                }
 
-                // If this contracts market id matches this market, then continue
-                if (contract_market_id.equals(market_id)) {
-
-                    JSONObject contract_type = (JSONObject) contract.get("contract_type");
-                    String contract_id = (String) contract.get("id");
-
-                    String contract_type_name = (String) contract_type.get("name");
-                    String contract_type_param = "";
-                    if (contract_type.containsKey("param")) {
-                        contract_type_param = (String) contract_type.get("param");
-                    }
-
-                    // Construct an original 'fullname' for this contract and add its ID to map
-                    String fullname = fullname(market_type_name, market_type_param,
-                            contract_type_name, contract_type_param);
-                    fullname_contract_map.put(fullname, contract_id);
-                    contract_market_map.put(contract_id, market_id);
+                if (contract_name.equals("SCORE")) {
+                    String[] scores = contract_param.split("-");
+                    bet = new FootballScoreBet(Bet.BetType.BACK, Integer.parseInt(scores[0]), Integer.parseInt(scores[1]), halftime);
+                } else if (contract_name.equals("ANY_OTHER_HOME_WIN")) {
+                    bet = new FootballOtherScoreBet(Bet.BetType.BACK, max_goals, FootballBet.TEAM_A, halftime);
+                } else if (contract_name.equals("ANY_OTHER_AWAY_WIN")) {
+                    bet = new FootballOtherScoreBet(Bet.BetType.BACK, max_goals, FootballBet.TEAM_B, halftime);
+                } else if (contract_name.equals("ANY_OTHER_DRAW")) {
+                    bet = new FootballOtherScoreBet(Bet.BetType.BACK, max_goals, FootballBet.DRAW, halftime);
+                } else if (contract_name.equals("ANY_OTHER_SCORE")) {
+                    bet = new FootballOtherScoreBet(Bet.BetType.BACK, max_goals, FootballBet.ANY, halftime);
                 }
             }
-        }
 
+            else if (market_name.equals("HALF_TIME_WINNER_3_WAY") || market_name.equals("WINNER_3_WAY")) {
+                boolean halftime = market_name.equals("HALF_TIME_WINNER_3_WAY");
+                String outcome = null;
+                if (contract_name.equals("HOME")) { outcome = FootballBet.TEAM_A;
+                } else if (contract_name.equals("AWAY")) { outcome = FootballBet.TEAM_B;
+                } else if (contract_name.equals("DRAW")) { outcome = FootballBet.DRAW;
+                }
+                bet = new FootballResultBet(Bet.BetType.BACK, outcome, halftime);
+            }
 
-        if (correct_score_market_id != null){
-            correct_score_max_goals = max_correct_score_goals(contracts, correct_score_market_id, 3);
-            if (correct_score_max_goals == null){
-                return false;
+            else if (market_name.equals("OVER_UNDER") || market_name.equals("FIRST_HALF_OVER_UNDER")){
+                boolean halftime = market_name.equals("FIRST_HALF_OVER_UNDER");
+                BigDecimal goals = new BigDecimal(market_param);
+                bet = new FootballOverUnderBet(Bet.BetType.BACK, contract_name.toUpperCase(), goals, halftime);
             }
-        }
-        if (half_time_correct_score_market_id != null){
-            half_time_correct_score_max_goals = max_correct_score_goals(contracts, half_time_correct_score_market_id, 1);
-            if (half_time_correct_score_max_goals == null){
-                return false;
+
+            else if (market_name.equals("ASIAN_HANDICAP")){
+                BigDecimal a_handicap = new BigDecimal(market_param);
+                if (isInteger(a_handicap)){
+                    continue;
+                }
+                String result;
+                if (contract_name.equals("HOME")){ result = FootballBet.TEAM_A; }
+                else if (contract_name.equals("AWAY")){ result = FootballBet.TEAM_B; }
+                else{ continue; }
+                bet = new FootballHandicapBet(Bet.BetType.BACK, a_handicap, result);
             }
+
+            betId_contract_map.put(bet.id(), contract_id);
+            betId_contract_map.put(bet.altId(), contract_id);
         }
 
         return true;
@@ -189,6 +213,23 @@ public class SmarketsEventTracker extends SiteEventTracker {
         return max_score;
     }
 
+    public Integer max_correct_score_goals(JSONArray all_contracts, String market_id, boolean halftime){
+
+        int total_market_contracts = count_attribute(all_contracts, "market_id", market_id);
+
+        int total_score_contracts = total_market_contracts - 3;
+        if (halftime){
+            total_score_contracts = total_market_contracts - 1;
+        }
+
+        double max_score = Math.sqrt(total_score_contracts);
+        if (Math.ceil(max_score) == Math.floor(max_score)){
+            return (int) Math.ceil(max_score);
+        }
+        log.severe(sf("Max score for correct goals returned not int %s", max_score));
+        return null;
+    }
+
 
     public static String fullname(String marketType, String market_type_param,
                                   String contractType, String contractType_param){
@@ -202,12 +243,13 @@ public class SmarketsEventTracker extends SiteEventTracker {
     public MarketOddsReport _getMarketOddsReport(Collection<Bet> bets) throws InterruptedException {
         lastMarketOddsReport_start_time = Instant.now();
 
+        // Ensure we have the event id
         if (event_id == null){
             return MarketOddsReport.ERROR(String.format("No event id for smarkets event %s", event));
         }
-        log.fine(String.format("%s Updating market odds report for smarkets.", event));
 
-        JSONObject lastPrices = smarkets.getPrices(market_ids);
+        // Get most up to date odds for the market ids chosen
+        JSONObject lastPrices = smarkets.getPrices(id_market_map.keySet());
         if (lastPrices == null){
             return MarketOddsReport.ERROR("Smarkets last prices returned null.");
         }
@@ -215,89 +257,16 @@ public class SmarketsEventTracker extends SiteEventTracker {
             return MarketOddsReport.RATE_LIMITED();
         }
 
-        MarketOddsReport new_marketOddsReport = new MarketOddsReport(event);
 
+        MarketOddsReport new_marketOddsReport = new MarketOddsReport(event);
         for (Bet bet: bets){
             if (bet_blacklist.contains(bet.id())){
                 continue;
             }
 
-            // Get smarkets marketname depending on bet type
-            String contract_fullname = null;
-            switch (bet.category){
 
-                case FootballBet.RESULT_HT:
-                case FootballBet.RESULT:
-                    FootballResultBet rb = (FootballResultBet) bet;
-
-                    String result = "NO-RESULT";
-                    if (rb.winnerA()){       result = "HOME"; }
-                    else if (rb.winnerB()) { result = "AWAY"; }
-                    else if (rb.isDraw()) {  result = "DRAW"; }
-
-                    String halftime = "";
-                    if (rb.halftime == true){ halftime = "HALF_TIME_"; }
-
-                    contract_fullname = String.format("%sWINNER_3_WAY_%s", halftime, result);
-                    break;
-
-                case FootballBet.CORRECT_SCORE_HT:
-                case FootballBet.CORRECT_SCORE:
-                    FootballScoreBet sb = (FootballScoreBet) bet;
-                    String cs_halftime = "";
-                    if (sb.halftime){ cs_halftime = "HALF_TIME_"; }
-                    contract_fullname = String.format("%sCORRECT_SCORE_SCORE%d-%d", cs_halftime, sb.score_a, sb.score_b);
-                    break;
-
-                case FootballBet.ANY_OVER_HT:
-                case FootballBet.ANY_OVER:
-                    FootballOtherScoreBet osb = (FootballOtherScoreBet) bet;
-                    String osb_halftime;
-                    if (osb.halftime && half_time_correct_score_max_goals != null){
-                        osb_halftime = "HALF_TIME_";
-                        if (osb.over_score != half_time_correct_score_max_goals){ continue; }
-                    }
-                    else if (correct_score_max_goals != null) {
-                        osb_halftime = "";
-                        if (osb.over_score != correct_score_max_goals){ continue; }
-                    }
-                    else{
-                        continue;
-                    }
-                    String osb_result = null;
-                    if (osb.winnerA()){ osb_result = "HOME_WIN"; }
-                    if (osb.winnerB()){ osb_result = "AWAY_WIN"; }
-                    if (osb.isDraw()){ osb_result = "DRAW"; }
-                    if (osb.isAnyResult()){ osb_result = "SCORE"; }
-
-                    contract_fullname = String.format("%sCORRECT_SCORE_ANY_OTHER_%s", osb_halftime, osb_result);
-                    break;
-
-                case FootballBet.OVER_UNDER:
-                    FootballOverUnderBet oub = (FootballOverUnderBet) bet;
-                    contract_fullname = String.format("OVER_UNDER%s_%s", oub.goals.toString(), oub.side.toUpperCase());
-                    break;
-
-                case FootballBet.HANDICAP:
-                    FootballHandicapBet hb = (FootballHandicapBet) bet;
-                    String hc_result;
-                    if (hb.winnerB()){      hc_result = "AWAY"; }
-                    else if (hb.winnerA()){ hc_result = "HOME"; }
-                    else{ continue; }
-                    contract_fullname = String.format("ASIAN_HANDICAP%s_%s", hb.a_handicap.toString(), hc_result);
-                    break;
-
-                default:
-                    log.fine(String.format("Bet '%s' not currently valid for smarkets config. Blacklisting.", bet));
-                    bet_blacklist.add(bet.id());
-                    continue;
-            }
-
-            if (contract_fullname == null){
-                log.warning(String.format("Failed to create mapping fullname for smarket bet %s", bet));
-            }
-
-            String contract_id = fullname_contract_map.get(contract_fullname);
+            // Find the contract id from the map
+            String contract_id = betId_contract_map.get(bet.id());
             if (contract_id == null){
                 bet_blacklist.add(bet.id());
                 continue;
@@ -324,7 +293,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
             BetExchange betExchange = new BetExchange(site, event, bet);
             betExchange.addMetadata(Smarkets.CONTRACT_ID, contract_id);
             betExchange.addMetadata(Smarkets.MARKET_ID, contract_market_map.get(contract_id));
-            betExchange.addMetadata(Smarkets.FULLNAME, contract_fullname);
 
             for (Object s_offer_obj: offers){
                 JSONObject s_offer = (JSONObject) s_offer_obj;
@@ -350,7 +318,24 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception {
+
+        FootballMatch match = FootballMatch.parse("2020-10-17T11:30:00.00Z", "Everton vs Liverpool");
+
+        print(match);
+
+
+        Smarkets s = new Smarkets();
+        SiteEventTracker set = s.getEventTracker();
+        set.setupMatch(match);
+
+
+        List<Bet> fbb = FootballBetGenerator._getAllBets();
+        MarketOddsReport mor = set._getMarketOddsReport(fbb);
+
+        toFile(mor.toJSON());
+
+
 
     }
 }

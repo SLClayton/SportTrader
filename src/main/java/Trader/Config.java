@@ -38,6 +38,7 @@ public class Config {
     public long RATE_LOCKSTEP_INTERVAL;
     public long REQUEST_TIMEOUT;
     public boolean LIMIT_LOW_PROFIT;
+    public int PRINT_STATS_INT;
 
     public boolean PLACE_BETS;
     public boolean END_ON_BET;
@@ -98,6 +99,7 @@ public class Config {
         RATE_LOCKSTEP_INTERVAL = getLong("RATE_LOCKSTEP_INTERVAL");
         LOG_LEVEL = getString("LOG_LEVEL");
         LIMIT_LOW_PROFIT = getBoolean("LIMIT_LOW_PROFIT");
+        PRINT_STATS_INT = getInt("PRINT_STATS_INT");
 
     }
 

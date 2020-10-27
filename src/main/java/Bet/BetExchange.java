@@ -45,6 +45,7 @@ public class BetExchange {
 
     private BigDecimal min_stake;
     private BigDecimal min_investment;
+    private BigDecimal min_return;
 
 
     public BetExchange(BettingSite site, Event event, Bet bet){
@@ -177,10 +178,24 @@ public class BetExchange {
         return min_investment;
     }
 
+    public BigDecimal minReturn(){
+        if (min_return == null){
+            BetPlan min_back_stake_betplan = applyBackStake(minBackStake());
+            min_return = min_back_stake_betplan.getReturn();
+        }
+        return min_return;
+    }
+
 
     public BigDecimal backStake2LayStake(BigDecimal back_stake){
         return BetOffer.backStake2LayStake(betOffers, back_stake, true);
     }
+
+    public BigDecimal layStake2BackStake(BigDecimal lay_stake){
+        return BetOffer.layStake2BackStake(betOffers, lay_stake, true);
+    }
+
+
 
 
     public BetPlan applyBackStake(BigDecimal back_stake){
@@ -233,7 +248,7 @@ public class BetExchange {
         // largest back stake possible which results in the same ROI ratio.
 
         // Find what offers are used when applying this back stake
-        List<BetOfferStake> betOfferStakes = BetOffer.apply_stake(betOffers, back_stake, true);
+        List<BetOfferStake> betOfferStakes = BetOffer.applyStake(betOffers, back_stake, true, true);
         if (betOfferStakes == null || betOfferStakes.isEmpty()){
             return null;
         }
@@ -258,7 +273,11 @@ public class BetExchange {
 
     @Override
     public String toString() {
-        return String.format("[%s exchange]", site.getName());
+        List<String> offer_strings = new ArrayList<>();
+        for (BetOffer betOffer: betOffers){
+            offer_strings.add(betOffer.toString() + "\n");
+        }
+        return offer_strings.toString();
     }
 
 
@@ -279,90 +298,6 @@ public class BetExchange {
         return betOffers;
     }
 
-
-
-    public static MultiSiteBet bestMSB_targetInv(List<BetExchange> betExchanges, BigDecimal target_inv){
-        // Returns the stake per site that would receive the best return from the given exchanges
-
-        Map<String, BetExchange> betExchangeMap = BetExchange.list2Map(betExchanges);
-
-        // Get betOffers from all sites in order best to worst
-        List<BetOffer> all_betOffers = BetExchange.getAllBetOffers(betExchanges);
-        Collections.sort(all_betOffers, Collections.reverseOrder());
-
-        // Get the bet amounts per site, ignoring any min bet requirements
-        Map<String, BigDecimal> site_investments = BetOffer.apply_investment(all_betOffers, target_inv, true);
-        if (site_investments == null){
-            return null;
-        }
-        MultiSiteBet multiSiteBet = MultiSiteBet.fromBetExchanges(betExchangeMap, site_investments);
-
-
-        Map<String, BigDecimal> site_inv_reserved = new HashMap<String, BigDecimal>();
-        while (true) {
-
-
-            // From the current MSB, find the BetPlan with the worst roi that's also invalid (if any)
-            BetPlan worst_invalid_betPlan = multiSiteBet.worstInvalidBetplan();
-            if (worst_invalid_betPlan == null) {
-                break;
-            }
-            String site_name = worst_invalid_betPlan.getSiteName();
-            List<BetOffer> betOffers_thisSiteRemoved = BetOffer.removeSite(all_betOffers, site_name);
-            BetExchange betExchange = betExchangeMap.get(site_name);
-
-
-            // Find MSB from removing this site
-            Map<String, BigDecimal> site_inv_thisSiteRemoved =
-                    BetOffer.apply_investment(betOffers_thisSiteRemoved, target_inv, true);
-            MultiSiteBet msb_thisSiteRemoved = null;
-            if (site_inv_thisSiteRemoved != null){
-                msb_thisSiteRemoved = MultiSiteBet.fromBetExchanges(betExchangeMap, site_inv_thisSiteRemoved);
-            }
-
-
-            // Find MSB from giving site min bet
-            BigDecimal min_inv = betExchange.minInvestment();
-            BigDecimal reduced_target_inv = target_inv.subtract(min_inv);
-            Map<String, BigDecimal> site_inv_thisSiteEnhanced =
-                    BetOffer.apply_investment(betOffers_thisSiteRemoved, reduced_target_inv, true);
-            MultiSiteBet msb_thisSiteEnhanced = null;
-            if (site_inv_thisSiteEnhanced != null){
-                site_inv_thisSiteEnhanced.put(site_name, min_inv);
-                msb_thisSiteEnhanced = MultiSiteBet.fromBetExchanges(betExchangeMap, site_inv_thisSiteEnhanced);
-            }
-
-
-
-            // Both failed, no result so return null.
-            if (msb_thisSiteRemoved == null && msb_thisSiteEnhanced == null) {
-                return null;
-            }
-
-            // Site inv enhanced to minimum investment has better return
-            else if (msb_thisSiteRemoved == null ||
-                    (msb_thisSiteEnhanced != null && msb_thisSiteEnhanced.largerReturn(msb_thisSiteRemoved))) {
-
-                site_inv_reserved.put(site_name, min_inv);
-                site_inv_thisSiteEnhanced.remove(site_name);
-                site_investments = site_inv_thisSiteEnhanced;
-
-                target_inv = target_inv.subtract(min_inv);
-                all_betOffers = BetOffer.remove_stake(all_betOffers, site_name, betExchange.minBackStake());
-            }
-
-            // Removing site altogether has better return
-            else {
-                all_betOffers = betOffers_thisSiteRemoved;
-                site_investments = site_inv_thisSiteRemoved;
-            }
-
-            // Create new MSB from what we have just computed and the reserved investments
-            multiSiteBet = MultiSiteBet.fromBetExchanges(betExchangeMap, combine_map(site_investments, site_inv_reserved));
-        }
-
-        return multiSiteBet;
-    }
 
 
 
@@ -394,11 +329,10 @@ public class BetExchange {
 
             BettingSite t1 = new TestBetSite(1, "0.05", "0.05", "2.00");
             List<BetOffer> t1_betOffers = new ArrayList<>();
-            t1_betOffers.add(new BetOffer(t1, event, bet, new BigDecimal("3.47"), new BigDecimal("0.50")));
+            t1_betOffers.add(new BetOffer(t1, event, bet, new BigDecimal("3.47"), new BigDecimal("3.00")));
             t1_betOffers.add(new BetOffer(t1, event, bet, new BigDecimal("2.90"), new BigDecimal("6.00")));
             t1_betOffers.add(new BetOffer(t1, event, bet, new BigDecimal("1.01"), new BigDecimal("50.534")));
             BetExchange t1_betExchange = BetExchange.fromOffers(t1_betOffers);
-            print(t1_betExchange);
             betExchanges.add(t1_betExchange);
 
 
@@ -409,17 +343,19 @@ public class BetExchange {
             print("\n\n");
 
 
-            MultiSiteBet msb = bestMSB_targetInv(betExchanges, new BigDecimal("7.50"));
+
+            MultiSiteBet msb = MultiSiteBet.fromTargetReturn(betExchanges, BD("22"), true);
 
             if (msb == null){
                 print("\n---- Could not create valid MSB ----");
             }
             else{
-                psf("\n\nFinal MSB: inv %s  ret: %s",
-                        BDString(msb.getInvestment(), 4), BDString(msb.getReturn(), 4));
+                psf("\n\nFinal MSB: inv %s  ret: %s  -> %s",
+                        BDString(msb.getInvestment(), 4),
+                        BDString(msb.getReturn(), 4),
+                        msb.inv_per_site());
                 msb.printBetOfferStakes();
             }
-
 
 
 

@@ -5,9 +5,7 @@ import Trader.SportsTrader;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static tools.printer.*;
@@ -25,6 +23,16 @@ public abstract class BigDecimalTools {
         int decimal = randomInt(0, 999999);
         return new BigDecimal(String.format("%s.%s", integer, decimal));
     }
+
+
+    public static List<BigDecimal> randomBDs(int n){
+        List<BigDecimal> randoms = new ArrayList<>();
+        for (int i=0; i<n; i++){
+            randoms.add(randomBD());
+        }
+        return randoms;
+    }
+
 
     public static BigDecimal sumBD(Collection<BigDecimal> items){
         return items.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -273,6 +281,23 @@ public abstract class BigDecimalTools {
         return value.stripTrailingZeros().scale() <= 0;
     }
 
+
+    public static BigDecimal BD(String bd){
+        return new BigDecimal(bd);
+    }
+
+    public static BigDecimal BD(int bd){
+        return new BigDecimal(bd);
+    }
+
+    public static BigDecimal BD(double bd){
+        return new BigDecimal(bd);
+    }
+
+
+    public static boolean isInteger(BigDecimal bd){
+        return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+    }
 
 
     public static void main(String[] args){

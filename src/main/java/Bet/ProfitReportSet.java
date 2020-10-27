@@ -18,8 +18,14 @@ public class ProfitReportSet {
 
 
     public ProfitReportSet(){
-        profitReports = new ArrayList<>();
+        this.profitReports = new ArrayList<>();
     }
+
+    public ProfitReportSet(Collection<ProfitReport> profitReports){
+        this.profitReports = new ArrayList<>();
+        this.profitReports.addAll(profitReports);
+    }
+
 
 
     public List<ProfitReport> profitReports(){
@@ -31,6 +37,9 @@ public class ProfitReportSet {
         return profitReports.add(profitReport);
     }
 
+    public boolean isEmpty(){
+        return profitReports.isEmpty();
+    }
 
     public BigDecimal best_profit(){
         BigDecimal best_profit = null;
@@ -72,6 +81,9 @@ public class ProfitReportSet {
         return filtered;
     }
 
+    public ProfitReportSet filter_positive(){
+        return filter_reports(BigDecimal.ONE);
+    }
 
 
 

@@ -13,7 +13,7 @@ public class FootballOtherScoreBet extends FootballBet {
     public Boolean halftime;
 
 
-    public FootballOtherScoreBet(BetType bet_type, int OVER_SCORE, String RESULT, Boolean HALFTIME){
+    public FootballOtherScoreBet(BetType bet_type, int OVER_SCORE, String RESULT, boolean HALFTIME){
         super(bet_type);
         over_score = OVER_SCORE;
         result = RESULT;

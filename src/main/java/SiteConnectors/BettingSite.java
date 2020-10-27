@@ -193,8 +193,6 @@ public abstract class BettingSite {
 
 
 
-
-
     public PlacedBet placeBet(BetPlan betPlan, BigDecimal MIN_ODDS_RATIO) throws IOException, URISyntaxException {
         List<BetPlan> betPlans = new ArrayList<>();
         betPlans.add(betPlan);

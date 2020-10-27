@@ -1,0 +1,225 @@
+{
+  "total_investment": "5.037759",
+  "max_return": "5",
+  "min_return": "4.9955",
+  "prof_ratio": "-0.008388452088",
+  "bets": [
+    "OVER_0.5_LAY",
+    "UNDER_0.5_LAY"
+  ],
+  "items": [
+    {
+      "bet": "UNDER_0.5_LAY",
+      "bet_plans": [
+        {
+          "raw_request": {
+            "side": "sell",
+            "quantity": 49518,
+            "contract_id": "38992234",
+            "price": 118,
+            "market_id": "11145200",
+            "label": "1ykYOlSvNLay",
+            "minimum_accepted_quantity": 49518,
+            "type": "immediate_or_cancel"
+          },
+          "tot_inv": "4.934759",
+          "pot_returns": "5",
+          "bet_id": "202846848034942988",
+          "backersProfit_layersStake": "4.8859",
+          "type": "LAY",
+          "backersStake_layersProfit": "0.0659",
+          "avg_odds": "75.187969924812",
+          "betOrder": {
+            "stake": "4.885940257508727342588596",
+            "pot_profit": "0.06520033989117",
+            "back_stake": "0.065858929183",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "UNDER_0.5_LAY",
+                  "volume": "32.52337977",
+                  "site": "smarkets",
+                  "roi_ratio": "1.013212358025",
+                  "metadata": "{CONTRACT_ID=38992234, SMARKETS_PRICE=133, MARKET_ID=11145200}",
+                  "created": "2020-10-27T07:37:33.199401400Z",
+                  "odds": "75.187969924812",
+                  "event": "[2020-10-27T20:00:00Z : Liverpool v FC Midtjylland]"
+                },
+                {
+                  "bet": "UNDER_0.5_LAY",
+                  "volume": "31.6893325",
+                  "site": "smarkets",
+                  "roi_ratio": "1.012407569871",
+                  "metadata": "{CONTRACT_ID=38992234, SMARKETS_PRICE=125, MARKET_ID=11145200}",
+                  "created": "2020-10-27T07:37:33.199401400Z",
+                  "odds": "80",
+                  "event": "[2020-10-27T20:00:00Z : Liverpool v FC Midtjylland]"
+                },
+                {
+                  "bet": "UNDER_0.5_LAY",
+                  "volume": "32.300723",
+                  "site": "smarkets",
+                  "roi_ratio": "1.00900171761",
+                  "metadata": "{CONTRACT_ID=38992234, SMARKETS_PRICE=91, MARKET_ID=11145200}",
+                  "created": "2020-10-27T07:37:33.199401400Z",
+                  "odds": "109.89010989011",
+                  "event": "[2020-10-27T20:00:00Z : Liverpool v FC Midtjylland]"
+                }
+              ],
+              "site": "smarkets",
+              "event": "Liverpool v FC Midtjylland"
+            },
+            "investment": "4.93479966008381461601448196",
+            "pot_return": "4.99999999997498461601448196",
+            "pot_prof_b4_com": "0.065858929183"
+          },
+          "comission": {
+            "win_com": "0.000659",
+            "loss_com": "0.048859",
+            "win_com_rate": "0.01",
+            "loss_com_rate": "0.01"
+          },
+          "timings": {
+            "time_sent": "2020-10-27T07:37:33.274780200Z"
+          },
+          "state": "SUCCESS",
+          "pot_prof": "0.065241",
+          "raw_response": {
+            "available_quantity": 0,
+            "orig_price": 118,
+            "side": "sell",
+            "quantity": 49518,
+            "exposure": "-42.35",
+            "contract_id": "38992234",
+            "price": 133,
+            "executed_avg_price": 133,
+            "market_id": "11145200",
+            "available_balance": "174.69",
+            "order_id": "202846848034942988",
+            "total_executed_quantity": 49518
+          },
+          "pot_prof_b4_com": "0.0659"
+        }
+      ],
+      "event": "[2020-10-27T20:00:00Z : Liverpool v FC Midtjylland]"
+    },
+    {
+      "bet": "OVER_0.5_LAY",
+      "bet_plans": [
+        {
+          "raw_request": [
+            {
+              "method": "SportsAPING/v1.0/placeOrders",
+              "id": 1,
+              "jsonrpc": "2.0",
+              "params": {
+                "instructions": [
+                  {
+                    "orderType": "LIMIT",
+                    "side": "LAY",
+                    "selectionId": 5851483,
+                    "customerOrderRef": "4oFODqSbgghI",
+                    "handicap": 0.0,
+                    "limitOrder": {
+                      "size": 5.15,
+                      "persistenceType": "PERSIST",
+                      "price": "1.03",
+                      "minFillSize": 5.15,
+                      "timeInForce": "FILL_OR_KILL"
+                    }
+                  }
+                ],
+                "marketId": "1.174555455"
+              }
+            }
+          ],
+          "tot_inv": "0.103",
+          "pot_returns": "4.9955",
+          "bet_id": "215036537889",
+          "backersProfit_layersStake": "null",
+          "type": "LAY",
+          "backersStake_layersProfit": "5.15",
+          "avg_odds": "1.02",
+          "betOrder": {
+            "stake": "0.103092783505",
+            "pot_profit": "4.8969072164875",
+            "back_stake": "5.15463917525",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "OVER_0.5_LAY",
+                  "volume": "962.36",
+                  "site": "betfair",
+                  "roi_ratio": "48.5",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=5851483, BETFAIR_MARKET_ID=1.174555455}",
+                  "created": "2020-10-27T07:37:33.000355700Z",
+                  "odds": "1.02",
+                  "event": "[2020-10-27T20:00:00Z : Liverpool v FC Midtjylland]"
+                },
+                {
+                  "bet": "OVER_0.5_LAY",
+                  "volume": "8473.93",
+                  "site": "betfair",
+                  "roi_ratio": "32.666666666666",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=5851483, BETFAIR_MARKET_ID=1.174555455}",
+                  "created": "2020-10-27T07:37:33.000355700Z",
+                  "odds": "1.03",
+                  "event": "[2020-10-27T20:00:00Z : Liverpool v FC Midtjylland]"
+                },
+                {
+                  "bet": "OVER_0.5_LAY",
+                  "volume": "7913.24",
+                  "site": "betfair",
+                  "roi_ratio": "24.75",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=5851483, BETFAIR_MARKET_ID=1.174555455}",
+                  "created": "2020-10-27T07:37:33.000355700Z",
+                  "odds": "1.04",
+                  "event": "[2020-10-27T20:00:00Z : Liverpool v FC Midtjylland]"
+                }
+              ],
+              "site": "betfair",
+              "event": "Liverpool v FC Midtjylland"
+            },
+            "investment": "0.103092783505",
+            "pot_return": "4.9999999999925",
+            "pot_prof_b4_com": "5.15463917525"
+          },
+          "comission": {
+            "win_com": "0.2575",
+            "win_com_rate": "0.05"
+          },
+          "timings": {
+            "time_sent": "2020-10-27T07:37:33.274780200Z",
+            "time_placed": "2020-10-27T07:37:38Z",
+            "sent_to_placed": 4726
+          },
+          "state": "SUCCESS",
+          "pot_prof": "4.8925",
+          "raw_response": {
+            "sizeMatched": 5.15,
+            "instruction": {
+              "orderType": "LIMIT",
+              "side": "LAY",
+              "selectionId": 5851483,
+              "customerOrderRef": "4oFODqSbgghI",
+              "handicap": 0.0,
+              "limitOrder": {
+                "size": 5.15,
+                "price": 1.03,
+                "minFillSize": 5.15,
+                "timeInForce": "FILL_OR_KILL"
+              }
+            },
+            "betId": "215036537889",
+            "orderStatus": "EXECUTION_COMPLETE",
+            "placedDate": "2020-10-27T07:37:38.000Z",
+            "status": "SUCCESS",
+            "averagePriceMatched": 1.02
+          },
+          "pot_prof_b4_com": "5.15"
+        }
+      ],
+      "event": "[2020-10-27T20:00:00Z : Liverpool v FC Midtjylland]"
+    }
+  ]
+}

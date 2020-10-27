@@ -198,6 +198,11 @@ public class SportsTrader {
     }
 
 
+    public BettingSite getSite(String site_name){
+        return siteObjects.get(site_name);
+    }
+
+
     public class ConfigException extends Exception {
         public ConfigException(List<String> fields){
             super(String.join(", ", fields));
@@ -211,7 +216,6 @@ public class SportsTrader {
             super();
         }
     }
-
 
 
     public Map<String, BettingSite> getSiteObjects(ArrayList<Class> siteClasses){
@@ -380,6 +384,11 @@ public class SportsTrader {
             safe_exit();
             return;
         }
+
+
+        print("\n\n\n##########################################################");
+        print("# Setup for matches complete, starting up event traders. #");
+        print("##########################################################\n\n\n");
 
 
         // Run all event traders

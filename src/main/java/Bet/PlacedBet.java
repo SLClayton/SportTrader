@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -359,6 +360,15 @@ public class PlacedBet implements SiteBet {
         j.put("timings", time_info);
         j.put("comission", com_info);
 
+        return j;
+    }
+
+
+    public static JSONArray list2JSON(List<PlacedBet> placedBets){
+        JSONArray j = new JSONArray();
+        for (PlacedBet pb: placedBets){
+            j.add(pb.toJSON());
+        }
         return j;
     }
 

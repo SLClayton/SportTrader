@@ -567,7 +567,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public JSONObject betOrder2PlaceInstruction(BetPlan betPlan, BigDecimal odds_buffer_ratio){
+    public JSONObject betPlan2PlaceInstruction(BetPlan betPlan, BigDecimal odds_buffer_ratio){
         Long selection_id = betPlan.betExchange.getMetadataLong(Betfair.BETFAIR_SELECTION_ID);
         BigDecimal handicap = betPlan.betExchange.getMetadataBD(Betfair.BETFAIR_HANDICAP);
 
@@ -584,6 +584,7 @@ public class Betfair extends BettingSite {
         BigDecimal valid_odds_with_buffer = betPlan.getValidOddsWithBuffer(odds_buffer_ratio);
         if (valid_odds_with_buffer == null){
             log.severe("Could not create BF place instruction, couldn't find valid odds.");
+            return null;
         }
 
         BigDecimal valid_stake = getValidStake(betPlan.getBackersStake(), RoundingMode.HALF_UP);
@@ -607,7 +608,7 @@ public class Betfair extends BettingSite {
     }
 
 
-    public JSONArray betOrders2RPCArray(List<BetPlan> betPlans, BigDecimal odds_buffer_ratio){
+    public JSONArray betPlans2RPCArray(List<BetPlan> betPlans, BigDecimal odds_buffer_ratio){
 
         // Bets in each market go in a different RPC request, so split betOrders by their market
         Map<String, List<BetPlan>> betOrders_by_market = BetPlan.splitListByMetadata(betPlans, BETFAIR_MARKET_ID);
@@ -619,7 +620,7 @@ public class Betfair extends BettingSite {
             // Create instruction list for each betOrder
             JSONArray instruction_list = new JSONArray();
             for (BetPlan betPlan : market_betPlans){
-                instruction_list.add(betOrder2PlaceInstruction(betPlan, odds_buffer_ratio));
+                instruction_list.add(betPlan2PlaceInstruction(betPlan, odds_buffer_ratio));
             }
 
             // Wrap each set of instructions for a market into a RPC request
@@ -673,7 +674,7 @@ public class Betfair extends BettingSite {
     public List<PlacedBet> placeBets(List<BetPlan> betPlans, BigDecimal odds_buffer_ratio)
             throws IOException, URISyntaxException {
 
-        JSONArray RPCs = betOrders2RPCArray(betPlans, odds_buffer_ratio);
+        JSONArray RPCs = betPlans2RPCArray(betPlans, odds_buffer_ratio);
 
         // Send off request to place bets on betfair exchange
         Instant time_sent = Instant.now();
@@ -718,10 +719,14 @@ public class Betfair extends BettingSite {
     @Override
     public BigDecimal getValidOdds(BigDecimal odds, RoundingMode roundingMode) {
 
-        if (odds.compareTo(minValidOdds()) < 0 || odds.compareTo(maxValidOdds()) > 0){
+        if (odds.compareTo(BigDecimal.ONE) < 0 || odds.compareTo(maxValidOdds()) > 0){
             log.severe(String.format("Could not return valid BF odds for input %s, outside valid range %s-%s",
                     BDString(odds), BDString(minValidOdds()), BDString(maxValidOdds())));
             return null;
+        }
+
+        if (odds.compareTo(minValidOdds()) <= 0){
+            return minValidOdds();
         }
 
         String increment;

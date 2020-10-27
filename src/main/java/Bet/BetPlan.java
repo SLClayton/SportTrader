@@ -3,11 +3,16 @@ package Bet;
 import Bet.Bet.BetType;
 import SiteConnectors.BettingSite;
 import Sport.Event;
+import Trader.Config;
+import Trader.EventTrader;
+import Trader.SportsTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.*;
 
@@ -23,6 +28,8 @@ public class BetPlan implements SiteBet {
          If odds improve at time of bet, Bets should be placed as to
          RETURN THE SAME and STAKE LESS.
      */
+
+    private static final Config config = SportsTrader.config;
 
     // Final immutable values for this object
     public final Instant time_created;
@@ -55,18 +62,22 @@ public class BetPlan implements SiteBet {
     }
 
 
+    public static BetPlan fromTargetReturn(BetExchange betExchange, BigDecimal target_return){
+        return null;
+    }
+
     public static BetPlan fromTargetInvestment(BetExchange betExchange, BigDecimal target_investment){
+
         BigDecimal stake = Bet.investment2Stake(target_investment, betExchange.site.lossCommissionRate());
+
         BigDecimal back_stake;
         if (betExchange.isLay()){
-            back_stake = betExchange.backStake2LayStake(stake);
+            back_stake = betExchange.layStake2BackStake(stake);
         }
-        else if (betExchange.isBack()){
+        else {
             back_stake = stake;
         }
-        else{
-            return null;
-        }
+
         return BetPlan.fromBackersStake(betExchange, back_stake);
     }
 
@@ -75,13 +86,15 @@ public class BetPlan implements SiteBet {
 
         // Check stake is smaller than offer volume
         if ((backers_stake.compareTo(betExchange.volume()) > 0)){
-            log.warning(String.format("Invalid back stake size for new betOrder %s. siteMin: %s    volume: %s",
-                    BDString(backers_stake), BDString(betExchange.minBackStake()), BDString(betExchange.volume())));
+            log.warning(String.format("Back stake size %s too large for new betOrder. Total exchange volume: %s",
+                    BDString(backers_stake),
+                    BDString(betExchange.volume())));
+
+            return null;
         }
 
         return new BetPlan(betExchange, backers_stake);
     }
-
 
 
     public String getID(){
@@ -130,7 +143,7 @@ public class BetPlan implements SiteBet {
 
     public List<BetOfferStake> getBetOfferStakes(){
         if (betOfferStakes == null){
-            betOfferStakes = BetOffer.apply_stake(betExchange.getBetOffers(), getBackersStake());
+            betOfferStakes = BetOffer.applyStake(betExchange.getBetOffers(), getBackersStake(), true, true);
         }
         return betOfferStakes;
     }
@@ -229,7 +242,10 @@ public class BetPlan implements SiteBet {
             return null;
         }
 
-        return getWorstValueOffer().odds.multiply(multiplier);
+        return getWorstValueOffer().odds
+                .subtract(BigDecimal.ONE)
+                .multiply(multiplier)
+                .add(BigDecimal.ONE);
     }
 
     public BigDecimal getValidOddsWithBuffer(BigDecimal buffer_ratio){
@@ -310,24 +326,78 @@ public class BetPlan implements SiteBet {
     }
 
 
-    public static BetPlan bestROIRatio(Collection<BetPlan> betPlans){
-        BetPlan best = null;
-        for (BetPlan betPlan: betPlans){
-            if (best == null || betPlan.ROIRatio().compareTo(best.ROIRatio()) > 0){
-                best = betPlan;
+    public static List<PlacedBet> placeBets(List<BetPlan> betPlans){
+
+        // Sort placed bets into lists depending on the site they're going to.
+        Map<String, List<BetPlan>> site_bets = BetPlan.splitListBySite(betPlans);
+
+
+        // Send list of bets of to their respective Betting site objects to be placed
+        ArrayList<PlaceBetsRunnable> placeBetsRunnables = new ArrayList<>();
+        for (Map.Entry<String, List<BetPlan>> entry: site_bets.entrySet()){
+            List<BetPlan> site_betPlans = entry.getValue();
+
+            PlaceBetsRunnable placeBetsRunnable = new PlaceBetsRunnable(site_betPlans);
+            placeBetsRunnable.start();
+            placeBetsRunnables.add(placeBetsRunnable);
+        }
+
+
+        // Wait for threads to finish and gather resulting placedBets
+        ArrayList<PlacedBet> placedBets = new ArrayList<>();
+        for (PlaceBetsRunnable placeBetsRunnable: placeBetsRunnables){
+            try {
+                placeBetsRunnable.thread.join();
+                placedBets.addAll(placeBetsRunnable.placedBets);
+            } catch (InterruptedException e) {
+                log.severe(String.format("Error with bets sent to %s.", placeBetsRunnable.site.getName()));
+                e.printStackTrace();
+
+                ArrayList<PlacedBet> failedbets = new ArrayList<>();
+
+                while (failedbets.size() < placeBetsRunnable.betPlans.size()){
+                    BetPlan betPlan = placeBetsRunnable.betPlans.get(failedbets.size());
+                    PlacedBet generic_failbet = null;
+                    failedbets.add(generic_failbet);
+                }
+                placedBets.addAll(failedbets);
             }
         }
-        return best;
+
+        return placedBets;
     }
 
-    public static BetPlan bestOdds(Collection<BetPlan> betPlans){
-        BetPlan best = null;
-        for (BetPlan betPlan: betPlans){
-            if (best == null || betPlan.avgOdds().compareTo(best.avgOdds()) > 0){
-                best = betPlan;
+    public static class PlaceBetsRunnable implements Runnable{
+
+        public List<BetPlan> betPlans;
+        public List<PlacedBet> placedBets;
+        public BettingSite site;
+        public Thread thread;
+
+        public PlaceBetsRunnable(List<BetPlan> betPlans){
+            this.betPlans = betPlans;
+            site = this.betPlans.get(0).getSite();
+            thread = new Thread(this);
+            thread.setName(String.format("%s-BetPlacer", site.getName()));
+        }
+
+        public void start(){
+            thread.start();
+        }
+
+        @Override
+        public void run() {
+            try {
+                placedBets = site.placeBets(betPlans, config.ODDS_RATIO_BUFFER);
+            } catch (IOException | URISyntaxException e) {
+                log.severe(String.format("Error while sending bets off to %s", site.getName()));
+                e.printStackTrace();
+                placedBets = new ArrayList<>();
+                while (placedBets.size() < betPlans.size()){
+                    placedBets.add(null);
+                }
             }
         }
-        return best;
     }
 
 

@@ -116,6 +116,14 @@ public class BetOfferStake implements Comparable<BetOfferStake> {
         return lay_stake_total;
     }
 
+    public static BigDecimal totalBackStake(List<BetOfferStake> betOfferStakes){
+        BigDecimal back_stake_total = BigDecimal.ZERO;
+        for (BetOfferStake betOfferStake: betOfferStakes){
+            back_stake_total = back_stake_total.add(betOfferStake.backStake());
+        }
+        return back_stake_total;
+    }
+
     public static BigDecimal averageOdds(List<BetOfferStake> betOfferStakes){
         if (betOfferStakes.isEmpty()){
             return null;

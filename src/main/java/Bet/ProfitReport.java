@@ -1,11 +1,16 @@
 package Bet;
 
+import SiteConnectors.BettingSite;
+import Sport.Event;
 import Trader.SportsTrader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import tools.BigDecimalTools;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -21,7 +26,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
-    private final List<MultiSiteBet> items;
+    private final Collection<MultiSiteBet> items;
 
     private BigDecimal total_investment;
     private BigDecimal min_return;
@@ -29,7 +34,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
 
 
-    public ProfitReport(List<MultiSiteBet> items){
+    public ProfitReport(Collection<MultiSiteBet> items){
 
         // Sort all items into a separate ItemSet for each EVENT/BET
         // so that only one set wins in any eventuality.
@@ -47,7 +52,15 @@ public class ProfitReport implements Comparable<ProfitReport> {
         }
     }
 
+    public static ProfitReport fromPlacedBets(Collection<PlacedBet> placedBets){
+        Map<String, MultiSiteBet> multiSiteBetMap = new HashMap<>();
 
+        for (PlacedBet placedBet: placedBets){
+            multiSiteBetMap.computeIfAbsent(placedBet.getBet().id(), k-> new MultiSiteBet()).add(placedBet);
+        }
+
+        return new ProfitReport(multiSiteBetMap.values());
+    }
 
 
     @Override
@@ -56,7 +69,7 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public List<MultiSiteBet> getItems(){
+    public Collection<MultiSiteBet> getItems(){
         return items;
     }
 
@@ -75,6 +88,22 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
+    public BetGroup getBets(){
+        BetGroup bets = new BetGroup();
+        for (MultiSiteBet msb: getItems()){
+            bets.add(msb.getBet());
+        }
+        return bets;
+    }
+
+    public Map<String, Map<String, BigDecimal>> breakdown(){
+        Map<String, Map<String, BigDecimal>> breakdown = new HashMap<>();
+        for (MultiSiteBet msb: getItems()){
+            breakdown.put(msb.getBet().id(), msb.inv_per_site());
+        }
+        return breakdown;
+    }
+
 
     public BigDecimal getTotalInvestment(){
         return total_investment;
@@ -90,6 +119,10 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
+    public BigDecimal getMinROI(){
+        return getMinReturn().divide(getTotalInvestment(), 12, RoundingMode.HALF_UP);
+    }
+
 
     public BigDecimal minProfit(){
         return getMinReturn().subtract(getTotalInvestment());
@@ -104,14 +137,23 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
-    public Set<String> sites_used() {
-        Set<String> sites_used = new HashSet<>();
+    public Set<BettingSite> sites_used() {
+        Set<BettingSite> sites_used = new HashSet<>();
         for (MultiSiteBet item: items){
             sites_used.addAll(item.sites_used());
         }
         return sites_used;
     }
 
+
+    public boolean uses_site(String site_name){
+        for (BettingSite bs: sites_used()){
+            if (bs.getName().equals(site_name)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public BigDecimal minProfitRatio(){
         BigDecimal total_investment = getTotalInvestment();
@@ -127,6 +169,11 @@ public class ProfitReport implements Comparable<ProfitReport> {
             return null;
         }
         return maxProfit().divide(total_investment, 12, RoundingMode.HALF_UP);
+    }
+
+
+    public boolean inProfit(){
+        return minProfitRatio().compareTo(BigDecimal.ONE) > 0;
     }
 
 
@@ -163,5 +210,25 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
+    public List<PlacedBet> placeBets(){
+        List<BetPlan> betPlans = new ArrayList<>();
+        for (MultiSiteBet msb: items){
+            betPlans.addAll(msb.getBetPlans());
+        }
+        return BetPlan.placeBets(betPlans);
+    }
+
+
+    public void saveJSON(Instant time, String output_dir){
+
+        String time_string =  time.truncatedTo(ChronoUnit.MILLIS)
+                .toString().replace(":", "-").substring(0, 18);
+        String name = this.getItems().iterator().next().getEvent().name;
+        String profit_ratio_string = BDString(this.minProfitRatio(), 5);
+
+        String filepath = sf("%s/%s %s %s.json", output_dir, time_string, name, profit_ratio_string);
+        toFile(this.toJSON(), filepath);
+        log.info(sf("Saved profit report to %s", filepath));
+    }
 
 }

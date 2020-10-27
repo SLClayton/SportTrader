@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="SportTrader:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
+      <change beforePath="$PROJECT_DIR$/.idea/SportTrader (1).iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SportTrader (1).iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/SportTrader.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SportTrader.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts (1)/SportTrader_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/vTrader_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound (1).json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound (1).json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_greyhound.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/racer_data_horse_jumps (1).json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_horse_jumps (1).json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/racer_data_horse_jumps.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/racer_data_horse_jumps.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/v_config_cars (1).json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/v_config_cars (1).json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vtrader_data/v_config_cars.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vtrader_data/v_config_cars.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="isMigrated" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1OaYuNHPzsaDFnulTZLzJck6p7J" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
+    <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
+    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="sporttrader" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="diff.external" />
+  </component>
+  <component name="RecentsManager">
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="Sport" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\resources\vtrader_data" />
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\resources" />
+      <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\BETDAQ_SOAP\src\betdaqsoap\com\globalbettingexchange\externalapi" />
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main\java" />
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader\src\main" />
+    </key>
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="Bet" />
+      <recent name="SiteConnectors" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="B:\GoogleDrive\Work\Programming\SportTrader\resources\betdaq" />
+      <recent name="B:\GoogleDrive\Work\Programming\SportTrader\resources\betfair" />
+      <recent name="B:\GoogleDrive\Work\Programming\SportTrader\resources\smarkets" />
+      <recent name="C:\Users\Sam\GoogleDrive\Work\Programming\SportTrader\resources\vtrader_data" />
+      <recent name="E:\GoogleDrive\Work\Programming\SportTrader" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Quota">
+    <configuration name="BetExchange" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Bet.BetExchange" />
+      <module name="SportTrader" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BetPlan" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Bet.BetPlan" />
+      <module name="SportTrader" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BigDecimalTools" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="tools.BigDecimalTools" />
+      <module name="SportTrader" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Quota" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Trader.Quota" />
+      <module name="SportTrader" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="printer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="tools.printer" />
+      <module name="SportTrader" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.BetExchange" />
+      <item itemvalue="Application.printer" />
+      <item itemvalue="Application.BigDecimalTools" />
+      <item itemvalue="Application.BetPlan" />
+      <item itemvalue="Application.Quota" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Quota" />
+        <item itemvalue="Application.BetPlan" />
+        <item itemvalue="Application.BetExchange" />
+        <item itemvalue="Application.BigDecimalTools" />
+        <item itemvalue="Application.printer" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="" />
+      <created>1562351845199</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1562351845199</updated>
+      <workItem from="1568969695986" duration="265000" />
+      <workItem from="1568970036928" duration="610000" />
+      <workItem from="1568970666240" duration="1711000" />
+      <workItem from="1568972402366" duration="808000" />
+      <workItem from="1569005058590" duration="1542000" />
+      <workItem from="1569504363004" duration="1155000" />
+      <workItem from="1579706898497" duration="212000" />
+      <workItem from="1579707123685" duration="3707000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="started matchbook site and tracker" />
+    <option name="LAST_COMMIT_MESSAGE" value="started matchbook site and tracker" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="229" y="298" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591084761445">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="229" y="298" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1591084761445" />
+    <state x="476" y="503" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1591095061741">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="476" y="503" key="#com.intellij.fileTypes.FileTypeChooser/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1591095061741" />
+    <state x="488" y="413" key="#com.intellij.ide.util.MemberChooser" timestamp="1596178678955">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="488" y="413" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596178678955" />
+    <state x="488" y="413" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594888058944" />
+    <state x="487" y="625" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1590399767812">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="487" y="625" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590399767812" />
+    <state x="268" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1594134688937">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="268" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1594134688937" />
+    <state x="348" y="450" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1593774007336">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="348" y="450" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1593774007336" />
+    <state x="313" y="347" key="#com.intellij.tools.ToolEditorDialog" timestamp="1596525167756">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="313" y="347" key="#com.intellij.tools.ToolEditorDialog/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596525167756" />
+    <state x="469" y="458" key="FileChooserDialogImpl" timestamp="1592554820574">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="469" y="458" key="FileChooserDialogImpl/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1592554820574" />
+    <state width="1374" height="379" key="GridCell.Tab.0.bottom" timestamp="1596816040232">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1337" height="588" key="GridCell.Tab.0.bottom/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594830979986" />
+    <state width="1623" height="216" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
+    <state width="1374" height="379" key="GridCell.Tab.0.bottom/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596816040232" />
+    <state width="1314" height="479" key="GridCell.Tab.0.bottom/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594917031100" />
+    <state width="1374" height="379" key="GridCell.Tab.0.center" timestamp="1596816040232">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1337" height="588" key="GridCell.Tab.0.center/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594830979986" />
+    <state width="1623" height="216" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
+    <state width="1374" height="379" key="GridCell.Tab.0.center/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596816040232" />
+    <state width="1314" height="479" key="GridCell.Tab.0.center/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594917031100" />
+    <state width="1374" height="379" key="GridCell.Tab.0.left" timestamp="1596816040232">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1337" height="588" key="GridCell.Tab.0.left/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594830979986" />
+    <state width="1623" height="216" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
+    <state width="1374" height="379" key="GridCell.Tab.0.left/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596816040232" />
+    <state width="1314" height="479" key="GridCell.Tab.0.left/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594917031100" />
+    <state width="1374" height="379" key="GridCell.Tab.0.right" timestamp="1596816040232">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1337" height="588" key="GridCell.Tab.0.right/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594830979986" />
+    <state width="1623" height="216" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588234510480" />
+    <state width="1374" height="379" key="GridCell.Tab.0.right/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596816040232" />
+    <state width="1314" height="479" key="GridCell.Tab.0.right/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594917031100" />
+    <state width="1350" height="490" key="GridCell.Tab.1.bottom" timestamp="1595344877180">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1350" height="490" key="GridCell.Tab.1.bottom/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1595344877180" />
+    <state width="1350" height="490" key="GridCell.Tab.1.center" timestamp="1595344877180">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1350" height="490" key="GridCell.Tab.1.center/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1595344877180" />
+    <state width="1350" height="490" key="GridCell.Tab.1.left" timestamp="1595344877180">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1350" height="490" key="GridCell.Tab.1.left/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1595344877180" />
+    <state width="1350" height="490" key="GridCell.Tab.1.right" timestamp="1595344877180">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1350" height="490" key="GridCell.Tab.1.right/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1595344877180" />
+    <state x="252" y="187" width="922" height="849" key="SettingsEditor" timestamp="1596525202235">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="252" y="187" key="SettingsEditor/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596525202235" />
+    <state x="1413" y="0" width="1154" height="1407" key="dock-window-1" timestamp="1596804562590">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1376" y="0" width="1191" height="1407" key="dock-window-1/-1920.363.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1594829743274" />
+    <state x="1413" y="0" width="1154" height="1407" key="dock-window-1/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596804562590" />
+    <state x="1353" y="0" width="1214" height="1407" key="dock-window-1/0.0.2560.1400/-1920.363.1920.1080@0.0.2560.1400" timestamp="1594914325667" />
+    <state x="-1107" y="380" width="1068" height="1013" key="dock-window-2" timestamp="1592926381493">
+      <screen x="-1920" y="349" width="1920" height="1080" />
+    </state>
+    <state x="-1107" y="380" width="1068" height="1013" key="dock-window-2/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1592926381493" />
+    <state x="413" y="318" width="820" height="722" key="find.popup" timestamp="1594198156496">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="413" y="318" width="820" height="722" key="find.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1594198156496" />
+    <state x="-824" y="429" key="run.anything.popup" timestamp="1590919997114">
+      <screen x="-1920" y="349" width="1920" height="1080" />
+    </state>
+    <state x="-824" y="429" key="run.anything.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1590919997114" />
+    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup" timestamp="1596699948793">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/-1920.349.1920.1080@0.0.2560.1400" timestamp="1596699948793" />
+  </component>
+</project>

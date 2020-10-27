@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.ProviderNotFoundException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -23,7 +24,7 @@ import static tools.BigDecimalTools.*;
 
 public class MarketOddsReport {
     /*
-        BetExchanges, made up of BetOffers, sorted by bet and then site.
+        BetExchanges, made up of BetExchanges, sorted by Bet->Site->Exchanges in map
 
         eg.
         SCORE_1-1_BACK
@@ -147,7 +148,7 @@ public class MarketOddsReport {
         // returns the ROI ratio from the best single offer for
         // a bet from any of the sites that offer that bet.
 
-        List<BetExchange> betExchanges = getBetExchanges(bet.id());
+        Collection<BetExchange> betExchanges = getBetExchanges(bet.id());
         BigDecimal best_roi = null;
         for (BetExchange betExchange: betExchanges){
             best_roi = BDMax(best_roi, betExchange.bestROIRatio());
@@ -185,14 +186,15 @@ public class MarketOddsReport {
 
 
 
-    public List<BetExchange> getBetExchanges(String bet_id){
+    public Collection<BetExchange> getBetExchanges(String bet_id){
         try{
-            return (List<BetExchange>) bet_site_exchanges.get(bet_id).values();
+            return bet_site_exchanges.get(bet_id).values();
         }
         catch (NullPointerException e){
             return null;
         }
     }
+
 
 
     public int bets_size(){
@@ -234,9 +236,11 @@ public class MarketOddsReport {
         MarketOddsReport combined = null;
         for (MarketOddsReport mor: marketOddsReports){
 
+            // Initialise the combined MOR with event of first MOR
             if (combined == null){
                 combined = new MarketOddsReport(mor.event);
             }
+            // Check subsequent MORs are of the same event
             else if (!mor.event.equals(combined.event)){
                 log.severe(String.format("Attemping to combine market odds reports of different event types %s and %s",
                         combined.event, mor.event));
@@ -255,10 +259,13 @@ public class MarketOddsReport {
 
                 // Add each new exchange from the adding MOR to the combined
                 for (BetExchange betExchange: adding_site_exchanges.values()){
+
+                    // Check this bet does not contain an exchange from the same site already
                     if (combined_site_exchanges.containsKey(betExchange.site.getName())){
                         log.severe("Attempting to combine Market Odds Reports which have odds from the same site.");
                         return null;
                     }
+
                     combined_site_exchanges.put(betExchange.site.getName(), betExchange);
                 }
             }
@@ -308,6 +315,55 @@ public class MarketOddsReport {
     @Override
     public String toString() {
         return String.format("[MOR with %s bets from sites %s]", bets_size(), sites_used.toString());
+    }
+
+
+    public MultiSiteBet getMultiSiteBet_targetReturn(String bet_id, BigDecimal target_return, boolean use_min_bets){
+        // Gets the best (least inv)) Multi-site bet available from the market odds report given a bet and a target return
+
+        Collection<BetExchange> betExchanges = getBetExchanges(bet_id);
+        if (betExchanges == null){
+            return null;
+        }
+        return MultiSiteBet.fromTargetReturn(betExchanges, target_return, use_min_bets);
+    }
+
+
+    public ProfitReport getTautologyProfitReport_targetReturn(BetGroup tautology, BigDecimal target_return,
+                                                              boolean use_min_bets){
+
+        // Finds the profit report of a tautology of bets for this MOR and target return
+
+        List<MultiSiteBet> multiSiteBets = new ArrayList<>(tautology.size());
+
+        for (Bet bet: tautology.bets){
+
+            MultiSiteBet msb = getMultiSiteBet_targetReturn(bet.id(), target_return, use_min_bets);
+
+            // If any of the bets in taut are invalid, then taut is invalid
+            if (msb == null){
+                return null;
+            }
+
+            multiSiteBets.add(msb);
+        }
+
+        return new ProfitReport(multiSiteBets);
+    }
+
+    public ProfitReportSet getTautologyProfitReportSet_targetReturn(Collection<BetGroup> tautologies,
+                                                                 BigDecimal target_return, boolean use_min_bets){
+
+        ProfitReportSet profitReportSet = new ProfitReportSet();
+
+        for (BetGroup tautology: tautologies){
+            ProfitReport pr = getTautologyProfitReport_targetReturn(tautology, target_return, use_min_bets);
+            if (pr != null) {
+                profitReportSet.add(pr);
+            }
+        }
+
+        return profitReportSet;
     }
 
 
