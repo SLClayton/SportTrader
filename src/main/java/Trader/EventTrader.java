@@ -132,29 +132,24 @@ public class EventTrader implements Runnable {
 
                 // RATE LIMITER: Sleeps until minimum wait period between calls is done.
                 sleepUntil(wait_until, config.RATE_LOCKSTEP_INTERVAL);
-                wait_until = Instant.now().plus(config.RATE_LIMIT, ChronoUnit.MILLIS);
+                wait_until = Instant.now().plusMillis(config.RATE_LIMIT);
 
                 // Check arbs and time how long it takes
                 Instant start = Instant.now();
                 checkArbs();
+                Instant end = Instant.now();
                 loop_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
 
                 // Update best profit found in check interval
-                if (last_best_profit != null && best_profit != null) {
-                    best_profit = best_profit.max(last_best_profit);
-                }
-                else if (last_best_profit != null){
-                    best_profit = last_best_profit;
-                }
+                last_best_profit = BDMax(last_best_profit, best_profit);
 
                 // Calculate and print stats of last group of arb checks
-                Instant now = Instant.now();
-                if (now.isAfter(next_check)){
+                if (end.isAfter(next_check)){
                     String best = String.valueOf(best_profit);
                     if (best.length() > 8){ best = best.substring(0, 8);}
                     log.info(sf("%s ArbChcks in %sms: avg=%dms OK%s TMT%s LMT%s NA%s Bst: %s",
                             loop_times.size(),
-                            now.toEpochMilli() - last_check.toEpochMilli(),
+                            secs_since(last_check),
                             avg(loop_times),
                             sum_map(ok_site_oddsReports),
                             sum_map(timeout_site_oddsReports),
@@ -278,7 +273,6 @@ public class EventTrader implements Runnable {
             }
         }
 
-
         if (marketOddsReports.isEmpty()){
             return;
         }
@@ -287,6 +281,7 @@ public class EventTrader implements Runnable {
         // Combine all odds reports into one.
         MarketOddsReport fullOddsReport = MarketOddsReport.combine(marketOddsReports);
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
+
 
 
         // Create a profit report for each tautology, made of the best bets that return 0.01

@@ -833,12 +833,9 @@ public class Betfair extends BettingSite {
     public static void main(String[] args){
         try {
 
-            URIBuilder builder = new URIBuilder("https://apache.org/shindig")
-                    .addParameter("hello world", "foo&bar")
-                    .setFragment("foo");
-            String s = builder.toString();
-            print(s);
+            Betfair b = new Betfair();
 
+            print(b.winCommissionRate());
 
         } catch (Exception e) {
             e.printStackTrace();

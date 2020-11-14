@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
+import static tools.printer.sf;
+
 public class MarketOddsReportWorker implements Runnable {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
@@ -116,7 +118,7 @@ public class MarketOddsReportWorker implements Runnable {
             catch (Exception e){
                 status = "exception";
                 waiting = false;
-                log.severe("Exception %s in market odds report worker");
+                log.severe(sf("Exception %s in market odds report worker", e.toString()));
                 e.printStackTrace();
                 if (requestHandler != null){
                     requestHandler.setResponse(MarketOddsReport.ERROR(

@@ -4,13 +4,18 @@ import Bet.*;
 import Bet.Bet.BetType;
 import SiteConnectors.*;
 import Sport.FootballMatch;
+import Trader.Config;
+import Trader.SportsTrader;
 import com.globalbettingexchange.externalapi.*;
+import org.apache.commons.collections.buffer.BoundedFifoBuffer;
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import tools.Requester;
 
 
+import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,9 +25,12 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +41,16 @@ import static tools.BigDecimalTools.*;
 
 public class Betdaq extends BettingSite {
 
+    public static final Config config = SportsTrader.config;
+
     public final static String name = "betdaq";
     public final static String id = "BD";
+
+    public static final String extra_regex = "\\(i\\/r\\)";
+    public static final String time_regex = "\\d\\d:\\d\\d";
+    public static final Pattern time_pattern = Pattern.compile(time_regex);
+    public static final List<String> days_of_week_prefixs =
+            Arrays.asList("(mon)", "(tue)", "(wed)", "(thurs)", "(fri)", "(sat)", "(sun)");
 
     public static final long FOOTBALL_ID = 100003;
     public static final long HORSE_RACING_ID = 100004;
@@ -83,6 +99,7 @@ public class Betdaq extends BettingSite {
     public static final short ORDER_DEAD = 6;
 
 
+
     public static final String BETDAQ_EVENT_ID = "betdaq_event_id";
     public static final String BETDAQ_SELECTION_ID = "betdaq_selection_id";
     public static final String BETDAQ_SELECTION_RESET_COUNT = "betdaq_selection_reset_count";
@@ -103,7 +120,13 @@ public class Betdaq extends BettingSite {
 
     public GetPricesRequestHandler getPricesRequestHandler;
 
-    public int getPriceReqs;
+    public CircularFifoBuffer req_history;
+    public Instant request_blackout_end;
+    public static final int MARKET_REQ_LIMIT = 2000;
+    public static final int MARKET_REQ_WINDOW = 60;
+    public static final int MARKET_IDS_PER_REQ_MAX = 50;
+
+    public final GetPricesResponse RATE_LIMITED_RESPONSE = ratelimitResponse();
 
 
     public Betdaq() throws IOException, ParseException, InterruptedException, URISyntaxException {
@@ -115,32 +138,44 @@ public class Betdaq extends BettingSite {
 
         requester = Requester.SOAPRequester();
 
+        getPricesRequestHandler = new GetPricesRequestHandler();
         login();
-
-        getPriceReqs = 0;
     }
 
 
     public class GetPricesRequestHandler implements Runnable{
 
-        public int MAX_BATCH_SIZE = 10;
-        public int REQUEST_THREADS = 10;
-        public long MAX_WAIT_TIME = 20;
+        public static final int REQUEST_THREADS = 5;
+        public final long MAX_WAIT_TIME_MS = config.BETDAQ_RH_WAIT;
 
         public Thread thread;
         public BlockingQueue<RequestHandler> request_queue;
         public BlockingQueue<List<RequestHandler>> batch_queue;
         public List<GetPricesRequestSender> requestSenders;
 
+
         public GetPricesRequestHandler(){
             exit_flag = false;
             request_queue = new LinkedBlockingQueue<>();
             batch_queue = new LinkedBlockingQueue<>();
             thread = new Thread(this);
+            request_blackout_end = null;
+            req_history = new CircularFifoBuffer(MARKET_REQ_LIMIT - MARKET_IDS_PER_REQ_MAX - 1);
         }
 
-        public void start(){
-            thread.start();
+
+        public boolean start(){
+            try {
+                thread.start();
+                return true;
+            }
+            catch (IllegalThreadStateException e){
+                return false;
+            }
+        }
+
+        public boolean isRunning(){
+            return thread.isAlive();
         }
 
         public void safe_exit(){
@@ -156,18 +191,60 @@ public class Betdaq extends BettingSite {
             return request_queue.add(requestHandler);
         }
 
+
+        public void send_batch(List<RequestHandler> requestHandlers, int batch_size){
+            // Decide if requests should be rate limited and not sent
+
+            Instant now = Instant.now();
+            boolean LIMIT = false;
+
+            // If we are within a blackout
+            if (request_blackout_end != null && now.isBefore(request_blackout_end)){
+                LIMIT = true;
+            }
+
+            // If the limit of requests sent was within the last 60 second window
+            else if (req_history.isFull()){
+                Instant oldest_time = (Instant) req_history.get();
+                if (oldest_time.isAfter(now.minusSeconds(MARKET_REQ_WINDOW + 1))){
+                    LIMIT = true;
+                }
+            }
+
+            // Rate limit responses and don't send off.
+            if (LIMIT) {
+                for (RequestHandler rh : requestHandlers) {
+                    rh.setResponse(RATE_LIMITED_RESPONSE);
+                }
+                return;
+            }
+
+
+            // Send off batch
+            batch_queue.add(requestHandlers);
+            now = Instant.now();
+
+            // Add a timing into the history queue for each market requested.
+            for (int i=0; i<batch_size; i++){
+                req_history.add(now);
+            }
+        }
+
+
         @Override
         public void run() {
             log.info("Running getPrice handler for betdaq.");
 
             Instant wait_until = null;
             RequestHandler new_handler = null;
-            List<RequestHandler> requestHandlers = new ArrayList<>(MAX_BATCH_SIZE);
+            int batch_size = 0;
+            List<RequestHandler> requestHandlers = new ArrayList<>();
 
             // Start batch senders
             requestSenders = new ArrayList<>(REQUEST_THREADS);
             for (int i=1; i<=REQUEST_THREADS; i++){
                 GetPricesRequestSender worker = new GetPricesRequestSender(batch_queue);
+                log.info("Created new RS " + i);
                 worker.thread.setName("BD RS-" + i);
                 worker.start();
                 requestSenders.add(worker);
@@ -178,29 +255,41 @@ public class Betdaq extends BettingSite {
                 try {
                     new_handler = null;
 
-                    // Collect next request from queue (wait or timeout)
+                    // Wait forever until next handler (new batch)
                     if (wait_until == null){
                         new_handler = request_queue.take();
-                        wait_until = Instant.now().plus(MAX_WAIT_TIME, ChronoUnit.MILLIS);
+                        wait_until = Instant.now().plusMillis(MAX_WAIT_TIME_MS);
                     }
+                    // Wait until timeout for next handler (batch in process)
                     else{
                         long milliseconds_to_wait = wait_until.toEpochMilli() - Instant.now().toEpochMilli();
                         new_handler = request_queue.poll(milliseconds_to_wait, TimeUnit.MILLISECONDS);
                     }
 
-                    // If a new handler has been taken out, then add to next batch
+                    // If not a timeout then we have a new handler to deal with
                     if (new_handler != null){
+                        int handler_size = ((Collection<Long>) new_handler.request).size();
+
+                        // If new handler puts us over max size, then send off old batch first
+                        if (batch_size + handler_size > MARKET_IDS_PER_REQ_MAX){
+                            send_batch(requestHandlers, batch_size);
+                            wait_until = Instant.now().plusMillis(MAX_WAIT_TIME_MS);
+                            requestHandlers = new ArrayList<>();
+                            batch_size = 0;
+                        }
+
+                        // Add new handler into list
                         requestHandlers.add(new_handler);
+                        batch_size += handler_size;
                     }
 
-                    // send batch off if conditions met.
-                    // new_handler = null means its timed out
-                    if ((requestHandlers.size() >= MAX_BATCH_SIZE || !Instant.now().isBefore(wait_until))
-                        && !exit_flag){
+                    // Send off batch if due
+                    if (Instant.now().isAfter(wait_until) && !exit_flag){
 
-                        batch_queue.add(requestHandlers);
+                        send_batch(requestHandlers, batch_size);
                         wait_until = null;
                         requestHandlers = new ArrayList<>();
+                        batch_size = 0;
                     }
 
                 } catch (InterruptedException e) {
@@ -253,27 +342,11 @@ public class Betdaq extends BettingSite {
                     }
 
                     // Send off for prices
-                    List<MarketTypeWithPrices> market_prices = _getPrices(market_ids);
-
-                    // Create id map of results
-                    Map<Long, MarketTypeWithPrices> marketId_Prices_map = new HashMap<>();
-                    for (MarketTypeWithPrices mtwp: market_prices){
-                        marketId_Prices_map.put(mtwp.getId(), mtwp);
-                    }
+                    GetPricesResponse response = _getPrices(market_ids);
 
                     // Send results back to each request handler
                     for (RequestHandler rh: request_handler_batch){
-
-                        // Extract the market_ids this request handler wanted
-                        Collection<Long> rh_market_ids = (Collection<Long>) rh.request;
-
-                        // Create a list of responses from these IDs
-                        List<MarketTypeWithPrices> responses = new ArrayList<>(rh_market_ids.size());
-                        for (Long market_id: rh_market_ids){
-                            responses.add(marketId_Prices_map.get(market_id));
-                        }
-
-                        rh.setResponse(responses);
+                        rh.setResponse(response);
                     }
 
                 } catch (InterruptedException e) {
@@ -347,7 +420,9 @@ public class Betdaq extends BettingSite {
 
     @Override
     public void safe_exit() {
-        getPricesRequestHandler.safe_exit();
+        if (getPricesRequestHandler != null) {
+            getPricesRequestHandler.safe_exit();
+        }
     }
 
 
@@ -451,7 +526,6 @@ public class Betdaq extends BettingSite {
             GetEventSubTreeWithSelectionsResponse r = (GetEventSubTreeWithSelectionsResponse)
                     requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), body,
                             GetEventSubTreeWithSelectionsResponse.class, false);
-
             rs = r.getGetEventSubTreeWithSelectionsResult().getReturnStatus();
             events = r.getGetEventSubTreeWithSelectionsResult().getEventClassifiers();
         }
@@ -484,11 +558,6 @@ public class Betdaq extends BettingSite {
         // by checking all nested events for ones with markets.
         List<EventClassifierType> events = getNestedEventsWithMarkets(football.getEventClassifiers());
 
-        // Compile string regex for parts of name to remove
-        String time_regex = "\\d\\d:\\d\\d";
-        String day_regex = "\\((mon|tue|wed|thur|fri|sat|sun)\\)";
-        String extra_regex = "\\(i\\/r\\)";
-        Pattern illegal_front_words = Pattern.compile(String.format("(%s)|(%s)|(%s)", time_regex, day_regex, extra_regex));
 
         List<FootballMatch> footballMatches = new ArrayList<>();
         for (EventClassifierType event: events){
@@ -512,18 +581,8 @@ public class Betdaq extends BettingSite {
                 continue;
             }
 
-            // Find first and last words in name and remove if illegal add-ons
-            String[] words = event.getName().split("\\s");
-            if (illegal_front_words.matcher(words[0].toLowerCase()).matches()){
-                words[0] = "";
-            }
-            if (words[words.length-1].toLowerCase().equals("(live)")){
-                words[words.length-1] = "";
-            }
-            String name = String.join(" ", words).trim();
-
             try {
-                FootballMatch fm = FootballMatch.parse(starttime, name);
+                FootballMatch fm = FootballMatch.parse(starttime, scrub_event_name(event.getName()));
                 fm.metadata.put(BETDAQ_EVENT_ID, String.valueOf(event.getId()));
                 footballMatches.add(fm);
             }
@@ -534,6 +593,9 @@ public class Betdaq extends BettingSite {
 
         return footballMatches;
     }
+
+
+
 
 
     public static List<EventClassifierType> getNestedEventsWithMarkets(List<EventClassifierType> eventClassifierTypes){
@@ -563,8 +625,6 @@ public class Betdaq extends BettingSite {
 
         String soap_body = "<ext:GetOddsLadder><ext:getOddsLadderRequest PriceFormat=\"1\"/></ext:GetOddsLadder>";
 
-        print(getSOAPHeader());
-
         GetOddsLadderResponse2 r = ((GetOddsLadderResponse)
                 requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), soap_body, GetOddsLadderResponse.class))
                 .getGetOddsLadderResult();
@@ -585,35 +645,34 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public List<MarketTypeWithPrices> getPrices(Collection<Long> market_ids) throws InterruptedException, IOException, URISyntaxException {
-        if (getPricesRequestHandler == null) {
-            getPricesRequestHandler = new GetPricesRequestHandler();
+    public GetPricesResponse getPrices(Collection<Long> market_ids) throws InterruptedException, IOException, URISyntaxException {
+        // Start request handler if not already started.
+        if (!getPricesRequestHandler.isRunning()){
             getPricesRequestHandler.start();
         }
 
         RequestHandler rh = new RequestHandler();
         rh.request = market_ids;
         getPricesRequestHandler.addToQueue(rh);
-        List<MarketTypeWithPrices> result = (List<MarketTypeWithPrices>) rh.getResponse();
-        return result;
+        return (GetPricesResponse) rh.getResponse();
     }
 
 
-    public MarketTypeWithPrices getPrices(long market_id) throws InterruptedException, IOException, URISyntaxException {
+    public GetPricesResponse getPrices(long market_id) throws InterruptedException, IOException, URISyntaxException {
         List<Long> market_ids = new ArrayList<>(1);
         market_ids.add(market_id);
-        return getPrices(market_ids).get(0);
+        return getPrices(market_ids);
     }
 
 
-    public MarketTypeWithPrices _getPrices(long market_id) throws IOException, URISyntaxException {
+    public GetPricesResponse _getPrices(long market_id) throws IOException, URISyntaxException {
         List<Long> market_ids = new ArrayList<>(1);
         market_ids.add(market_id);
-        return _getPrices(market_ids).get(0);
+        return _getPrices(market_ids);
     }
 
 
-    public List<MarketTypeWithPrices> _getPrices(Collection<Long> marketIds) throws IOException, URISyntaxException {
+    public GetPricesResponse _getPrices(Collection<Long> marketIds) throws IOException, URISyntaxException {
 
         // Create xml tags for each market id
         String market_ids_xml = "";
@@ -632,18 +691,18 @@ public class Betdaq extends BettingSite {
         GetPricesResponse r = (GetPricesResponse)
                 requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), body, GetPricesResponse.class, false);
 
-        getPriceReqs += 1;
-
         // Check return status of request
         ReturnStatus rs = r.getGetPricesResult().getReturnStatus();
+        if (rs.getCode() == 406){
+            log.severe(sf("401 REQ LIMIT HIT. Setting blackout time +%s seconds.", MARKET_REQ_WINDOW));
+            request_blackout_end = Instant.now().plusSeconds(MARKET_REQ_WINDOW + 1);
+        }
         if (rs.getCode() != 0){
             log.severe(String.format("Error getting Betdaq prices %s %s - for market ids: %s",
                     rs.getCode(), rs.getDescription(), marketIds.toString()));
-            print("TOTAL REQS = " + String.valueOf(getPriceReqs));
-            return null;
         }
 
-        return r.getGetPricesResult().getMarketPrices();
+        return r;
     }
 
     @Override
@@ -698,24 +757,14 @@ public class Betdaq extends BettingSite {
 
 
     public static Short betType2Polarity(BetType bet_type){
-        if (bet_type == BetType.BACK){
-            return 1;
-        }
-        else{
-            return 2;
-        }
+        if (bet_type == BetType.BACK){ return 1; }
+        else{ return 2; }
     }
 
     public static BetType polarity2BetType(short polarity){
-        if (polarity == 1){
-            return BetType.BACK;
-        }
-        else if (polarity == 2){
-            return BetType.LAY;
-        }
-        else{
-            return null;
-        }
+        if (polarity == 1){ return BetType.BACK; }
+        else if (polarity == 2){ return BetType.LAY; }
+        return null;
     }
 
 
@@ -868,7 +917,6 @@ public class Betdaq extends BettingSite {
             placedBets.add(pb);
         }
 
-        //TODO: Need to test all this stuff when un-banned
 
         return placedBets;
     }
@@ -940,6 +988,29 @@ public class Betdaq extends BettingSite {
         return j;
     }
 
+    public static JSONObject marketJSON(MarketTypeWithPrices m){
+        JSONArray selections = new JSONArray();
+        for (SelectionTypeWithPrices selection: m.getSelections()){
+            selections.add(selection.getName());
+
+        }
+
+        JSONObject j = new JSONObject();
+        j.put("id", m.getId());
+        j.put("name", m.getName());
+        j.put("type", m.getType());
+        j.put("play_market", m.isIsPlayMarket());
+        j.put("status", getMarketStatus(m.getStatus()));
+        j.put("time", stringValue(m.getStartTime()));
+        j.put("currently_in_running", m.isIsCurrentlyInRunning());
+        j.put("event_id", m.getId());
+        j.put("place_payout", m.getPlacePayout());
+        if (selections.size() > 0){
+            j.put("selections", selections);
+        }
+        return j;
+    }
+
 
     public static JSONObject selectionJSON(SelectionType s){
         JSONObject j = new JSONObject();
@@ -981,6 +1052,17 @@ public class Betdaq extends BettingSite {
     }
 
 
+    public static GetPricesResponse ratelimitResponse(){
+        GetPricesResponse resp = new GetPricesResponse();
+        GetPricesResponse2 resp2 = new GetPricesResponse2();
+        ReturnStatus r_status = new ReturnStatus();
+        r_status.setCode(406);
+        resp2.setReturnStatus(r_status);
+        resp.setGetPricesResult(resp2);
+        return resp;
+    }
+
+
     public static PlaceOrdersWithReceiptRequestItem testBetItem(String type, long sel_id, String back_stake, String price) throws IOException, URISyntaxException {
         PlaceOrdersWithReceiptRequestItem item = new PlaceOrdersWithReceiptRequestItem();
         item.setSelectionId(sel_id);
@@ -997,27 +1079,56 @@ public class Betdaq extends BettingSite {
 
     public void testBet() throws IOException, URISyntaxException {
         List<PlaceOrdersWithReceiptRequestItem> items = new ArrayList<>();
-        items.add(testBetItem("LAY", 122440972, "2.50", "2.93"));
-
+        items.add(testBetItem("BACK", 133575139, "1.50", "1.16"));
         PlaceOrdersWithReceiptResponse resp = placeOrders(items);
         ppxs(resp);
     }
 
 
+    public static String scrub_event_name(String event_name){
+
+        // Removes the extra shit betdaq puts in event names at the start and end
+
+        // eg '19:45 Switzerland v Spain (Live)' -> 'Switzerland v Spain'
 
 
-
-
-    public static void main(String[] args){
-        try {
-            Betdaq b = new Betdaq();
-
+        // Check if name starts with day of week, remove it if so
+        for (String day_prefix: days_of_week_prefixs) {
+            if (event_name.toLowerCase().startsWith(day_prefix)) {
+                event_name = event_name.substring(0, day_prefix.length());
+            }
         }
-        catch (Exception e){
-            e.printStackTrace();
+
+        // Check if name starts with time and remove it if so
+        if (event_name.substring(0, 5).matches(Betdaq.time_regex)){
+            event_name = event_name.substring(5);
         }
 
-        print("END");
+        // Check if name ends with (live) and remove if so
+        if (event_name.toLowerCase().endsWith("(live)")){
+            event_name = event_name.substring(0, event_name.length()-6);
+        }
+
+        return event_name;
+    }
+
+
+
+
+    public static void main(String[] args) throws Exception {
+
+        Betdaq b = new Betdaq();
+
+
+
+
+        GetPricesResponse resp = b.getPrices(23713123);
+
+        toFile(marketJSON(resp.getGetPricesResult().getMarketPrices().get(0)));
+
+        b.safe_exit();
+
+
     }
 
 

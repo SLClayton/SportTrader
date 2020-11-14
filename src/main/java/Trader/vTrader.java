@@ -313,7 +313,8 @@ public class vTrader {
             try {
 
                 // Get betdaq exchange prices for each horse
-                MarketTypeWithPrices betdaq_prices = betdaq._getPrices(market.getId());
+                MarketTypeWithPrices betdaq_prices =
+                        betdaq._getPrices(market.getId()).getGetPricesResult().getMarketPrices().get(0);
                 Map<String, BigDecimal> horse_prices = new HashMap<>();
                 for (SelectionTypeWithPrices selection: betdaq_prices.getSelections()){
                     String horse_name = runner2name(selection.getName());

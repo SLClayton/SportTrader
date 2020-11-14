@@ -52,6 +52,9 @@ public class Config {
     public int MIN_SITES_PER_MATCH;
 
 
+    public long BETDAQ_RH_WAIT;
+
+
 
     private Config(String file_path) throws FileNotFoundException, ParseException, ConfigException {
         this.file_path = file_path;
@@ -100,6 +103,8 @@ public class Config {
         LOG_LEVEL = getString("LOG_LEVEL");
         LIMIT_LOW_PROFIT = getBoolean("LIMIT_LOW_PROFIT");
         PRINT_STATS_INT = getInt("PRINT_STATS_INT");
+
+        BETDAQ_RH_WAIT = getLong("BETDAQ_RH_WAIT");
 
     }
 

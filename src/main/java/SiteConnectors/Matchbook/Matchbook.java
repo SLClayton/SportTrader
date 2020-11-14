@@ -42,12 +42,7 @@ public class Matchbook extends BettingSite {
     public final static String MATCHBOOK_EVENT_ID = "MATCHBOOK_EVENT_ID";
 
     public static String baseurl = "https://api.matchbook.com/edge/rest";
-    public static String[] marketTypes = new String[]{
-            "one_x_two",
-            "total",
-            "handicap",
-            "both_to_score",
-            "correct_score"};
+
     public final static String FOOTBALL_ID = "15";
     public final static String RUNNER_ID = "RUNNER_ID";
     public final static String MARKET_ID = "MARKET_ID";

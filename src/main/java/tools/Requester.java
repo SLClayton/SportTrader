@@ -151,7 +151,7 @@ public class Requester {
 
         if (print){
             print("\nvv Request vv");
-            ppx (soap_xml);
+            ppx(soap_xml);
         }
 
 
@@ -190,6 +190,7 @@ public class Requester {
             print("\nvv Response vv");
             ppx(response_body);
         }
+
 
         try {
 

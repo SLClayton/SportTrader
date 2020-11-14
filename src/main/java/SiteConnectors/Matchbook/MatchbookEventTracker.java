@@ -4,17 +4,17 @@ import Bet.Bet;
 import Bet.BetOffer;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
+import SiteConnectors.Betdaq.Betdaq;
+import SiteConnectors.BettingSite;
 import SiteConnectors.SiteEventTracker;
+import Sport.FootballMatch;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static tools.printer.*;
@@ -23,13 +23,19 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
     public Matchbook matchbook;
     public String event_id;
-    public Map<String, String> market_name_id_map;
+    public Map<String, Long> bet_runner_map;
+
+    public static Set<String> valid_market_types = new HashSet<>(Arrays.asList(
+            "one_x_two",
+            "total",
+            "handicap",
+            "both_to_score",
+            "correct_score"));
 
 
     public MatchbookEventTracker(Matchbook matchbook) {
         super(matchbook);
         this.matchbook = matchbook;
-        market_name_id_map = new HashMap<>();
     }
 
     @Override
@@ -44,12 +50,35 @@ public class MatchbookEventTracker extends SiteEventTracker {
         if (event_id == null){
             log.severe(String.format("No event id found in metadata for event %s md:%s", event, event.metadata));
         }
+
+        // Collect market data for this event from server
+        JSONObject event = null;
+        try {
+            event = matchbook.getMarketDataFromHandler(event_id);
+        } catch (InterruptedException e) {
+            log.severe("matchbook site setup was interrupted.");
+        }
+
+
+        JSONArray markets = (JSONArray) event.get("markets");
+
+        bet_runner_map = new HashMap<>();
+
+        for (Object market_obj: markets){
+            JSONObject market = (JSONObject) market_obj;
+
+            String market_type = (String) market.get("market-type");
+
+            // Skip if invalid market type
+            if (!valid_market_types.contains(market_type)){
+                continue;
+            }
+
+
+            JSONArray runners = (JSONArray) market.get("runners");
+        }
+
         return true;
-    }
-
-
-    public JSONObject getMarketData() throws InterruptedException {
-        return matchbook.getMarketDataFromHandler(event_id);
     }
 
 
@@ -62,7 +91,7 @@ public class MatchbookEventTracker extends SiteEventTracker {
         }
 
         // Update the raw odds for this event
-        JSONObject eventMarketData = getMarketData();
+        JSONObject eventMarketData = matchbook.getMarketDataFromHandler(event_id);
         MarketOddsReport new_marketOddsReport = new MarketOddsReport(event);
 
 
@@ -410,15 +439,17 @@ public class MatchbookEventTracker extends SiteEventTracker {
 
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception {
 
-        try {
+        FootballMatch event = FootballMatch.parse("2020-11-11T18:30:00.0Z", "Denmark vs Sweden");
+
+        BettingSite mb = new Matchbook();
+        SiteEventTracker set = mb.getEventTracker();
+        set.setupMatch(event);
 
 
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //MarketOddsReport mor = set.getMarketOddsReport(FootballBetGenerator._getAllBets());
+        //toFile(mor.toJSON());
 
     }
 }

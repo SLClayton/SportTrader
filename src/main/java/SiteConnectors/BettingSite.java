@@ -10,6 +10,7 @@ import SiteConnectors.Betdaq.Betdaq;
 import Sport.FootballMatch;
 import Trader.Config;
 import Trader.SportsTrader;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import tools.Requester;
 
@@ -49,6 +50,12 @@ public abstract class BettingSite {
     public Lock balanceLock = new ReentrantLock();
     public BigDecimal balance_buffer = new BigDecimal("10.00");
 
+
+    public JSONObject RATE_LIMITED_JSON;
+    public final static String RATE_LIMITED = "RATE_LIMITED";
+
+
+
     public BettingSite() {
         exit_flag = false;
 
@@ -60,6 +67,9 @@ public abstract class BettingSite {
         ssldir = config.SSL_DIR;
 
         balance = new BigDecimal("0.00");
+
+        RATE_LIMITED_JSON = new JSONObject();
+        RATE_LIMITED_JSON.put(RATE_LIMITED, RATE_LIMITED);
     }
 
 
@@ -264,7 +274,7 @@ public abstract class BettingSite {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 
         try {
             testBetOrder();

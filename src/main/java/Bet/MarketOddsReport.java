@@ -80,6 +80,7 @@ public class MarketOddsReport {
 
 
 
+
     public boolean timed_out(){
         return errorType.equals(ErrorType.TIMED_OUT);
     }

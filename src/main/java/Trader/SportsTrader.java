@@ -386,9 +386,9 @@ public class SportsTrader {
         }
 
 
-        print("\n\n\n##########################################################");
-        print("# Setup for matches complete, starting up event traders. #");
-        print("##########################################################\n\n\n");
+        String divider = "##########################################################";
+        print(sf("\n\n%s\n# Setup for matches complete, starting up event traders. #\n%s\n\n",
+                divider, divider));
 
 
         // Run all event traders

@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <soap:Body>
+        <GetPricesResponse xmlns="http://www.GlobalBettingExchange.com/ExternalAPI/">
+            <GetPricesResult>
+                <ReturnStatus Code="0" Description="Success" CallId="f8d8d07c-3826-4b7a-b949-0cead5b72510" />
+                <Timestamp>2020-11-02T16:07:33.4324838+00:00</Timestamp>
+                <MarketPrices Id="20783328" Name="Asian Handicap (-0.5)" Type="10" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="6" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132635775" Name="Fulham (-0.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="2.51" Stake="138.78" />
+                        <ForSidePrices Price="2.5" Stake="193.35" />
+                        <ForSidePrices Price="2.47" Stake="193.35" />
+                        <AgainstSidePrices Price="2.73" Stake="127.59" />
+                        <AgainstSidePrices Price="2.74" Stake="329.74" />
+                    </Selections>
+                    <Selections Id="132635776" Name="West Brom (+0.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="1.61" Stake="216.36" />
+                        <ForSidePrices Price="1.6" Stake="193.35" />
+                        <ForSidePrices Price="1.58" Stake="193.35" />
+                        <AgainstSidePrices Price="1.7" Stake="270.12" />
+                        <AgainstSidePrices Price="1.71" Stake="718.57" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782421" Name="Under/Over - Goals (1.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="41" IsEnabledForMultiples="true" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="421" MatchedMarketForStake="175.95" MatchedMarketAgainstStake="245.94">
+                    <Selections Id="132633911" Name="Under (1.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="79.98" SelectionOpenInterest="576.09" MarketWinnings="273.85" MarketPositiveWinnings="136.97" MatchedSelectionAgainstStake="208.01" LastMatchedOccurredAt="2020-11-02T14:20:26.6300000+00:00" LastMatchedPrice="3.7" LastMatchedForSideAmount="15.40" LastMatchedAgainstSideAmount="41.58" MatchedForSideAmountAtSamePrice="15.40" MatchedAgainstSideAmountAtSamePrice="41.58" FirstMatchAtSamePriceOccurredAt="2020-11-02T14:20:26.6300000+00:00" NumberOrders="12" NumberPunters="6">
+                        <ForSidePrices Price="3.7" Stake="10.47" />
+                        <ForSidePrices Price="3.65" Stake="321.10" />
+                        <ForSidePrices Price="3.6" Stake="88.31" />
+                        <AgainstSidePrices Price="3.8" Stake="33.35" />
+                        <AgainstSidePrices Price="3.85" Stake="395.34" />
+                        <AgainstSidePrices Price="3.9" Stake="19.18" />
+                    </Selections>
+                    <Selections Id="132633912" Name="Over (1.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="95.97" SelectionOpenInterest="267.79" MarketWinnings="103.32" MarketPositiveWinnings="51.64" MatchedSelectionAgainstStake="37.93" LastMatchedOccurredAt="2020-11-02T15:48:37.7330000+00:00" LastMatchedPrice="1.37" LastMatchedForSideAmount="8.16" LastMatchedAgainstSideAmount="3.02" MatchedForSideAmountAtSamePrice="8.16" MatchedAgainstSideAmountAtSamePrice="3.02" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:48:37.7330000+00:00" NumberOrders="24" NumberPunters="7">
+                        <ForSidePrices Price="1.36" Stake="1019.29" />
+                        <ForSidePrices Price="1.35" Stake="728.06" />
+                        <ForSidePrices Price="1.34" Stake="263.67" />
+                        <AgainstSidePrices Price="1.38" Stake="419.72" />
+                        <AgainstSidePrices Price="1.39" Stake="365.80" />
+                        <AgainstSidePrices Price="1.4" Stake="30" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782420" Name="Under/Over - Goals (2.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="40" IsEnabledForMultiples="true" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="6165" MatchedMarketForStake="2952.97" MatchedMarketAgainstStake="3212.52">
+                    <Selections Id="132633909" Name="Under (2.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="838.71" SelectionOpenInterest="2389.05" MarketWinnings="2625.54" MarketPositiveWinnings="1312.60" MatchedSelectionAgainstStake="746.93" LastMatchedOccurredAt="2020-11-02T15:56:03.3900000+00:00" LastMatchedPrice="1.92" LastMatchedForSideAmount="5.85" LastMatchedAgainstSideAmount="5.38" MatchedForSideAmountAtSamePrice="10.00" MatchedAgainstSideAmountAtSamePrice="9.20" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:56:02.3430000+00:00" NumberOrders="72" NumberPunters="15">
+                        <ForSidePrices Price="1.9" Stake="309.34" />
+                        <ForSidePrices Price="1.89" Stake="553.14" />
+                        <ForSidePrices Price="1.88" Stake="143.77" />
+                        <AgainstSidePrices Price="1.91" Stake="94.15" />
+                        <AgainstSidePrices Price="1.92" Stake="161.03" />
+                        <AgainstSidePrices Price="1.93" Stake="328.79" />
+                    </Selections>
+                    <Selections Id="132633910" Name="Over (2.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="2114.26" SelectionOpenInterest="6572.89" MarketWinnings="3024.37" MarketPositiveWinnings="1512.40" MatchedSelectionAgainstStake="2465.59" LastMatchedOccurredAt="2020-11-02T16:06:53.3500000+00:00" LastMatchedPrice="2.1" LastMatchedForSideAmount="2.68" LastMatchedAgainstSideAmount="2.95" MatchedForSideAmountAtSamePrice="7.54" MatchedAgainstSideAmountAtSamePrice="8.30" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:59:37.3670000+00:00" NumberOrders="116" NumberPunters="28">
+                        <ForSidePrices Price="2.1" Stake="66.86" />
+                        <ForSidePrices Price="2.09" Stake="146.72" />
+                        <ForSidePrices Price="2.08" Stake="617.81" />
+                        <AgainstSidePrices Price="2.11" Stake="186.96" />
+                        <AgainstSidePrices Price="2.12" Stake="333.09" />
+                        <AgainstSidePrices Price="2.13" Stake="401.69" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20783410" Name="Under/Over - Goals (0.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="50" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="222" MatchedMarketForStake="88.18" MatchedMarketAgainstStake="133.85">
+                    <Selections Id="132635939" Name="Under (0.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="12.35" SelectionOpenInterest="278.76" MarketWinnings="351.66" MarketPositiveWinnings="175.83" MatchedSelectionAgainstStake="127.03" LastMatchedOccurredAt="2020-11-02T16:01:35.6300000+00:00" LastMatchedPrice="12.5" LastMatchedForSideAmount="2.35" LastMatchedAgainstSideAmount="27.03" MatchedForSideAmountAtSamePrice="2.35" MatchedAgainstSideAmountAtSamePrice="27.03" FirstMatchAtSamePriceOccurredAt="2020-11-02T16:01:35.6300000+00:00" NumberOrders="4" NumberPunters="4">
+                        <ForSidePrices Price="12" Stake="63.64" />
+                        <ForSidePrices Price="11.5" Stake="76.44" />
+                        <ForSidePrices Price="11" Stake="22.91" />
+                        <AgainstSidePrices Price="13.5" Stake="2.88" />
+                        <AgainstSidePrices Price="15" Stake="2.88" />
+                        <AgainstSidePrices Price="16.5" Stake="2.88" />
+                    </Selections>
+                    <Selections Id="132635940" Name="Over (0.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="75.83" SelectionOpenInterest="165.30" MarketWinnings="33.64" MarketPositiveWinnings="16.82" MatchedSelectionAgainstStake="6.82" LastMatchedOccurredAt="2020-11-02T12:59:08.7970000+00:00" LastMatchedPrice="1.09" LastMatchedForSideAmount="25.83" LastMatchedAgainstSideAmount="2.32" MatchedForSideAmountAtSamePrice="75.83" MatchedAgainstSideAmountAtSamePrice="6.82" FirstMatchAtSamePriceOccurredAt="2020-11-02T10:59:30.7670000+00:00" NumberOrders="4" NumberPunters="3">
+                        <ForSidePrices Price="1.08" Stake="1694.59" />
+                        <ForSidePrices Price="1.05" Stake="1000" />
+                        <ForSidePrices Price="1.02" Stake="1000" />
+                        <AgainstSidePrices Price="1.1" Stake="559.55" />
+                        <AgainstSidePrices Price="1.11" Stake="716.38" />
+                        <AgainstSidePrices Price="1.14" Stake="716.38" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20783371" Name="Asian Handicap (-2.5)" Type="10" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="22" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132635861" Name="Fulham (-2.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="12" Stake="4.84" />
+                        <ForSidePrices Price="11" Stake="27.97" />
+                        <AgainstSidePrices Price="18" Stake="81.78" />
+                    </Selections>
+                    <Selections Id="132635862" Name="West Brom (+2.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="1.06" Stake="1390.89" />
+                        <AgainstSidePrices Price="1.09" Stake="53.22" />
+                        <AgainstSidePrices Price="1.1" Stake="340.98" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20783393" Name="Asian Handicap (-3.5)" Type="10" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="30" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132635905" Name="Fulham (-3.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                    <Selections Id="132635906" Name="West Brom (+3.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                </MarketPrices>
+                <MarketPrices Id="20783331" Name="Asian Handicap (+0.5)" Type="10" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="7" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132635780" Name="Fulham (+0.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="1.43" Stake="243.42" />
+                        <ForSidePrices Price="1.42" Stake="148.61" />
+                        <ForSidePrices Price="1.4" Stake="193.35" />
+                        <AgainstSidePrices Price="1.52" Stake="291.49" />
+                    </Selections>
+                    <Selections Id="132635782" Name="West Brom (-0.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="3.1" Stake="305.72" />
+                        <ForSidePrices Price="3.05" Stake="193.35" />
+                        <ForSidePrices Price="2.94" Stake="32.18" />
+                        <AgainstSidePrices Price="3.4" Stake="158.9" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20783350" Name="Asian Handicap (-1.5)" Type="10" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="14" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132635819" Name="Fulham (-1.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="5.4" Stake="257.85" />
+                        <ForSidePrices Price="5.3" Stake="207.87" />
+                        <AgainstSidePrices Price="6.2" Stake="118.61" />
+                    </Selections>
+                    <Selections Id="132635820" Name="West Brom (+1.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="1.19" Stake="595.49" />
+                        <ForSidePrices Price="1.18" Stake="193.35" />
+                        <ForSidePrices Price="1.16" Stake="193.35" />
+                        <AgainstSidePrices Price="1.26" Stake="297.47" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782209" Name="Match Odds" Type="3" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="1" IsEnabledForMultiples="true" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="63667" MatchedMarketForStake="22751.69" MatchedMarketAgainstStake="40915.80">
+                    <Selections Id="132632677" Name="Fulham" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="15138.27" SelectionOpenInterest="38633.07" MarketWinnings="20811.73" MarketPositiveWinnings="10409.35" MatchedSelectionAgainstStake="23505.34" LastMatchedOccurredAt="2020-11-02T16:06:57.0230000+00:00" LastMatchedPrice="2.54" LastMatchedForSideAmount="10.00" LastMatchedAgainstSideAmount="15.40" MatchedForSideAmountAtSamePrice="10.00" MatchedAgainstSideAmountAtSamePrice="15.40" FirstMatchAtSamePriceOccurredAt="2020-11-02T16:06:57.0230000+00:00" NumberOrders="352" NumberPunters="83">
+                        <ForSidePrices Price="2.54" Stake="878.13" />
+                        <ForSidePrices Price="2.53" Stake="104.12" />
+                        <ForSidePrices Price="2.52" Stake="1762.87" />
+                        <AgainstSidePrices Price="2.56" Stake="931.17" />
+                        <AgainstSidePrices Price="2.57" Stake="145.53" />
+                        <AgainstSidePrices Price="2.58" Stake="996.77" />
+                    </Selections>
+                    <Selections Id="132632678" Name="Draw" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="3102.47" SelectionOpenInterest="20592.66" MarketWinnings="16788.76" MarketPositiveWinnings="8392.09" MatchedSelectionAgainstStake="7455.59" LastMatchedOccurredAt="2020-11-02T16:06:51.5700000+00:00" LastMatchedPrice="3.4" LastMatchedForSideAmount="4.70" LastMatchedAgainstSideAmount="11.28" MatchedForSideAmountAtSamePrice="19.20" MatchedAgainstSideAmountAtSamePrice="46.08" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:58:54.6000000+00:00" NumberOrders="92" NumberPunters="48">
+                        <ForSidePrices Price="3.4" Stake="51.78" />
+                        <ForSidePrices Price="3.35" Stake="1179.93" />
+                        <ForSidePrices Price="3.3" Stake="1814.55" />
+                        <AgainstSidePrices Price="3.45" Stake="239.53" />
+                        <AgainstSidePrices Price="3.5" Stake="1658.56" />
+                        <AgainstSidePrices Price="3.55" Stake="415.56" />
+                    </Selections>
+                    <Selections Id="132632679" Name="West Brom" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="4510.95" SelectionOpenInterest="19526.64" MarketWinnings="14157.65" MarketPositiveWinnings="7076.56" MatchedSelectionAgainstStake="9954.87" LastMatchedOccurredAt="2020-11-02T16:06:14.0770000+00:00" LastMatchedPrice="3.2" LastMatchedForSideAmount="47.20" LastMatchedAgainstSideAmount="103.84" MatchedForSideAmountAtSamePrice="976.23" MatchedAgainstSideAmountAtSamePrice="2147.70" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:34:46.2730000+00:00" NumberOrders="103" NumberPunters="35">
+                        <ForSidePrices Price="3.15" Stake="1183.62" />
+                        <ForSidePrices Price="3.1" Stake="2051.52" />
+                        <ForSidePrices Price="3.05" Stake="1339.17" />
+                        <AgainstSidePrices Price="3.2" Stake="159.82" />
+                        <AgainstSidePrices Price="3.25" Stake="1739.11" />
+                        <AgainstSidePrices Price="3.3" Stake="1247.87" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20783352" Name="Asian Handicap (+1.5)" Type="10" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="15" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132635823" Name="Fulham (+1.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="1.12" Stake="793.91" />
+                        <ForSidePrices Price="1.11" Stake="193.35" />
+                        <ForSidePrices Price="1.1" Stake="193.35" />
+                        <AgainstSidePrices Price="1.17" Stake="55.93" />
+                        <AgainstSidePrices Price="1.18" Stake="317.86" />
+                    </Selections>
+                    <Selections Id="132635825" Name="West Brom (-1.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="7.4" Stake="240.42" />
+                        <ForSidePrices Price="7.3" Stake="193.35" />
+                        <ForSidePrices Price="7.2" Stake="116.01" />
+                        <AgainstSidePrices Price="8.5" Stake="103.40" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20783467" Name="Under/Over - Goals (9.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="68" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132636053" Name="Under (9.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                    <Selections Id="132636054" Name="Over (9.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                </MarketPrices>
+                <MarketPrices Id="20782426" Name="Half Time Score" Type="1" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="46" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="403" MatchedMarketForStake="20.15" MatchedMarketAgainstStake="382.91">
+                    <Selections Id="132633938" Name="Fulham (H/T) 1-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="34.80" MarketPositiveWinnings="17.40" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="4.9" Stake="46.61" />
+                        <ForSidePrices Price="4.7" Stake="10" />
+                        <ForSidePrices Price="4.4" Stake="13.3" />
+                        <AgainstSidePrices Price="5.7" Stake="181.79" />
+                        <AgainstSidePrices Price="5.8" Stake="19.18" />
+                        <AgainstSidePrices Price="6.1" Stake="25.51" />
+                    </Selections>
+                    <Selections Id="132633939" Name="Fulham (H/T) 2-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="1.00" SelectionOpenInterest="33.02" MarketWinnings="26.22" MarketPositiveWinnings="13.11" MatchedSelectionAgainstStake="15.51" LastMatchedOccurredAt="2020-11-02T15:51:55.1000000+00:00" LastMatchedPrice="16.5" LastMatchedForSideAmount="0.25" LastMatchedAgainstSideAmount="3.88" MatchedForSideAmountAtSamePrice="1.00" MatchedAgainstSideAmountAtSamePrice="15.51" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:51:55.1000000+00:00" NumberOrders="3" NumberPunters="3">
+                        <ForSidePrices Price="16.5" Stake="44.91" />
+                        <ForSidePrices Price="15" Stake="43.61" />
+                        <ForSidePrices Price="13.5" Stake="58" />
+                        <AgainstSidePrices Price="21" Stake="168.65" />
+                        <AgainstSidePrices Price="23" Stake="22.73" />
+                        <AgainstSidePrices Price="26" Stake="26.6" />
+                    </Selections>
+                    <Selections Id="132633940" Name="Fulham (H/T) 2-1" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="2.20" SelectionOpenInterest="132.40" MarketWinnings="120.10" MarketPositiveWinnings="60.05" MatchedSelectionAgainstStake="64.00" LastMatchedOccurredAt="2020-11-02T15:51:44.4100000+00:00" LastMatchedPrice="29" LastMatchedForSideAmount="0.36" LastMatchedAgainstSideAmount="10.08" MatchedForSideAmountAtSamePrice="1.00" MatchedAgainstSideAmountAtSamePrice="28.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:51:44.4100000+00:00" NumberOrders="5" NumberPunters="5">
+                        <ForSidePrices Price="29" Stake="6.78" />
+                        <ForSidePrices Price="28" Stake="13.01" />
+                        <ForSidePrices Price="25" Stake="17.3" />
+                        <AgainstSidePrices Price="38" Stake="93.82" />
+                        <AgainstSidePrices Price="42" Stake="12.2" />
+                        <AgainstSidePrices Price="45" Stake="15.11" />
+                    </Selections>
+                    <Selections Id="132633941" Name="Draw (H/T) 0-0 (Fulh - West)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="7.00" SelectionOpenInterest="42.70" MarketWinnings="55.00" MarketPositiveWinnings="27.50" MatchedSelectionAgainstStake="14.35" LastMatchedOccurredAt="2020-11-02T15:49:38.4530000+00:00" LastMatchedPrice="3.05" LastMatchedForSideAmount="6.20" LastMatchedAgainstSideAmount="12.71" MatchedForSideAmountAtSamePrice="7.00" MatchedAgainstSideAmountAtSamePrice="14.35" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:48:37.7170000+00:00" NumberOrders="3" NumberPunters="2">
+                        <ForSidePrices Price="2.96" Stake="50.94" />
+                        <ForSidePrices Price="2.94" Stake="103.09" />
+                        <ForSidePrices Price="2.93" Stake="67.75" />
+                        <AgainstSidePrices Price="3.2" Stake="200" />
+                        <AgainstSidePrices Price="3.4" Stake="208.33" />
+                        <AgainstSidePrices Price="3.55" Stake="260.78" />
+                    </Selections>
+                    <Selections Id="132633942" Name="Draw (H/T) 1-1 (Fulh - West)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="4.00" SelectionOpenInterest="70.40" MarketWinnings="63.60" MarketPositiveWinnings="31.80" MatchedSelectionAgainstStake="31.20" LastMatchedOccurredAt="2020-11-02T15:51:12.9530000+00:00" LastMatchedPrice="8.8" LastMatchedForSideAmount="1.00" LastMatchedAgainstSideAmount="7.80" MatchedForSideAmountAtSamePrice="4.00" MatchedAgainstSideAmountAtSamePrice="31.20" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:51:12.9530000+00:00" NumberOrders="3" NumberPunters="3">
+                        <ForSidePrices Price="8.8" Stake="67.31" />
+                        <ForSidePrices Price="8.5" Stake="56.75" />
+                        <ForSidePrices Price="8.2" Stake="75.48" />
+                        <AgainstSidePrices Price="9.5" Stake="3.00" />
+                        <AgainstSidePrices Price="9.7" Stake="81.55" />
+                        <AgainstSidePrices Price="9.9" Stake="16.84" />
+                    </Selections>
+                    <Selections Id="132633943" Name="Draw (H/T) 2-2 (Fulh - West)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="1.50" SelectionOpenInterest="282.00" MarketWinnings="282.70" MarketPositiveWinnings="141.35" MatchedSelectionAgainstStake="139.50" LastMatchedOccurredAt="2020-11-02T15:56:03.3600000+00:00" LastMatchedPrice="102" LastMatchedForSideAmount="0.50" LastMatchedAgainstSideAmount="50.50" MatchedForSideAmountAtSamePrice="0.50" MatchedAgainstSideAmountAtSamePrice="50.50" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:56:03.3600000+00:00" NumberOrders="4" NumberPunters="4">
+                        <ForSidePrices Price="90" Stake="1.04" />
+                        <ForSidePrices Price="68" Stake="10" />
+                        <ForSidePrices Price="62" Stake="13.3" />
+                        <AgainstSidePrices Price="110" Stake="2.50" />
+                        <AgainstSidePrices Price="124" Stake="6.04" />
+                        <AgainstSidePrices Price="194" Stake="10" />
+                    </Selections>
+                    <Selections Id="132633944" Name="West Brom (H/T) 1-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="34.80" MarketPositiveWinnings="17.40" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="5.5" Stake="40.40" />
+                        <ForSidePrices Price="5.4" Stake="113.64" />
+                        <ForSidePrices Price="5.1" Stake="162.2" />
+                        <AgainstSidePrices Price="6.5" Stake="181.79" />
+                        <AgainstSidePrices Price="6.6" Stake="89.29" />
+                        <AgainstSidePrices Price="6.9" Stake="112.71" />
+                    </Selections>
+                    <Selections Id="132633945" Name="West Brom (H/T) 2-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="1.40" SelectionOpenInterest="56.00" MarketWinnings="49.20" MarketPositiveWinnings="24.60" MatchedSelectionAgainstStake="26.60" LastMatchedOccurredAt="2020-11-02T15:52:11.9430000+00:00" LastMatchedPrice="20" LastMatchedForSideAmount="0.49" LastMatchedAgainstSideAmount="9.31" MatchedForSideAmountAtSamePrice="1.40" MatchedAgainstSideAmountAtSamePrice="26.60" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:52:11.9270000+00:00" NumberOrders="3" NumberPunters="3">
+                        <ForSidePrices Price="20" Stake="9.08" />
+                        <ForSidePrices Price="19" Stake="10" />
+                        <ForSidePrices Price="17.5" Stake="13.3" />
+                        <AgainstSidePrices Price="28" Stake="129.56" />
+                        <AgainstSidePrices Price="30" Stake="15.4" />
+                        <AgainstSidePrices Price="33" Stake="20.48" />
+                    </Selections>
+                    <Selections Id="132633946" Name="West Brom (H/T) 2-1" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="2.05" SelectionOpenInterest="141.60" MarketWinnings="129.30" MarketPositiveWinnings="64.65" MatchedSelectionAgainstStake="68.75" LastMatchedOccurredAt="2020-11-02T15:51:38.1900000+00:00" LastMatchedPrice="33" LastMatchedForSideAmount="0.39" LastMatchedAgainstSideAmount="12.48" MatchedForSideAmountAtSamePrice="1.00" MatchedAgainstSideAmountAtSamePrice="32.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:51:38.1900000+00:00" NumberOrders="5" NumberPunters="5">
+                        <ForSidePrices Price="33" Stake="2.22" />
+                        <ForSidePrices Price="30" Stake="17.24" />
+                        <ForSidePrices Price="27" Stake="23.7" />
+                        <AgainstSidePrices Price="44" Stake="93.35" />
+                        <AgainstSidePrices Price="47" Stake="14.46" />
+                        <AgainstSidePrices Price="50" Stake="18.05" />
+                    </Selections>
+                    <Selections Id="132633947" Name="Any Other Score (H/T) - (Fulh - West)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="1.00" SelectionOpenInterest="48.00" MarketWinnings="41.20" MarketPositiveWinnings="20.60" MatchedSelectionAgainstStake="23.00" LastMatchedOccurredAt="2020-11-02T15:51:32.1130000+00:00" LastMatchedPrice="24" LastMatchedForSideAmount="0.41" LastMatchedAgainstSideAmount="9.43" MatchedForSideAmountAtSamePrice="1.00" MatchedAgainstSideAmountAtSamePrice="23.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:51:32.1130000+00:00" NumberOrders="3" NumberPunters="3">
+                        <ForSidePrices Price="24" Stake="8.29" />
+                        <ForSidePrices Price="21" Stake="21.36" />
+                        <ForSidePrices Price="19" Stake="28.41" />
+                        <AgainstSidePrices Price="31" Stake="118.36" />
+                        <AgainstSidePrices Price="34" Stake="15.15" />
+                        <AgainstSidePrices Price="37" Stake="18.47" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20783374" Name="Asian Handicap (+2.5)" Type="10" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="23" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132635867" Name="Fulham (+2.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                    <Selections Id="132635868" Name="West Brom (-2.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                </MarketPrices>
+                <MarketPrices Id="20783396" Name="Asian Handicap (+3.5)" Type="10" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="31" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132635911" Name="Fulham (+3.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                    <Selections Id="132635912" Name="West Brom (-3.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                </MarketPrices>
+                <MarketPrices Id="20783461" Name="Under/Over - Goals (7.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="66" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132636041" Name="Under (7.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                    <Selections Id="132636042" Name="Over (7.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                </MarketPrices>
+                <MarketPrices Id="20783464" Name="Under/Over - Goals (8.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="67" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132636047" Name="Under (8.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                    <Selections Id="132636048" Name="Over (8.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                </MarketPrices>
+                <MarketPrices Id="20783458" Name="Under/Over - Goals (6.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="65" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132636035" Name="Under (6.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                    <Selections Id="132636036" Name="Over (6.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0" />
+                </MarketPrices>
+                <MarketPrices Id="20782422" Name="Under/Over - Goals (3.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="42" IsEnabledForMultiples="true" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="516" MatchedMarketForStake="307.81" MatchedMarketAgainstStake="208.91">
+                    <Selections Id="132633913" Name="Under (3.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="268.90" SelectionOpenInterest="721.78" MarketWinnings="106.46" MarketPositiveWinnings="53.20" MatchedSelectionAgainstStake="92.17" LastMatchedOccurredAt="2020-11-02T15:56:03.3730000+00:00" LastMatchedPrice="1.35" LastMatchedForSideAmount="5.65" LastMatchedAgainstSideAmount="1.98" MatchedForSideAmountAtSamePrice="51.98" MatchedAgainstSideAmountAtSamePrice="18.20" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:50:41.2800000+00:00" NumberOrders="24" NumberPunters="4">
+                        <ForSidePrices Price="1.34" Stake="564.75" />
+                        <ForSidePrices Price="1.33" Stake="166.94" />
+                        <ForSidePrices Price="1.32" Stake="76.65" />
+                        <AgainstSidePrices Price="1.36" Stake="242.13" />
+                        <AgainstSidePrices Price="1.37" Stake="788.42" />
+                        <AgainstSidePrices Price="1.38" Stake="200" />
+                    </Selections>
+                    <Selections Id="132633914" Name="Over (3.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="38.91" SelectionOpenInterest="311.15" MarketWinnings="304.17" MarketPositiveWinnings="152.16" MatchedSelectionAgainstStake="116.74" LastMatchedOccurredAt="2020-11-02T15:45:23.8770000+00:00" LastMatchedPrice="3.8" LastMatchedForSideAmount="0.50" LastMatchedAgainstSideAmount="1.40" MatchedForSideAmountAtSamePrice="0.50" MatchedAgainstSideAmountAtSamePrice="1.40" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:45:23.8770000+00:00" NumberOrders="14" NumberPunters="3">
+                        <ForSidePrices Price="3.85" Stake="93.51" />
+                        <ForSidePrices Price="3.8" Stake="68.91" />
+                        <ForSidePrices Price="3.75" Stake="193.18" />
+                        <AgainstSidePrices Price="3.95" Stake="221.93" />
+                        <AgainstSidePrices Price="4" Stake="30.40" />
+                        <AgainstSidePrices Price="4.1" Stake="12.57" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782423" Name="Under/Over - Goals (4.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="43" IsEnabledForMultiples="true" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="364" MatchedMarketForStake="77.18" MatchedMarketAgainstStake="287.24">
+                    <Selections Id="132633915" Name="Under (4.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="40.00" SelectionOpenInterest="91.12" MarketWinnings="31.06" MarketPositiveWinnings="15.54" MatchedSelectionAgainstStake="5.60" LastMatchedOccurredAt="2020-11-02T15:31:10.3570000+00:00" LastMatchedPrice="1.14" LastMatchedForSideAmount="40.00" LastMatchedAgainstSideAmount="5.60" MatchedForSideAmountAtSamePrice="40.00" MatchedAgainstSideAmountAtSamePrice="5.60" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:31:10.3570000+00:00" NumberOrders="2" NumberPunters="2">
+                        <ForSidePrices Price="1.13" Stake="1099.81" />
+                        <ForSidePrices Price="1.12" Stake="621.98" />
+                        <ForSidePrices Price="1.1" Stake="1000" />
+                        <AgainstSidePrices Price="1.15" Stake="616.29" />
+                        <AgainstSidePrices Price="1.16" Stake="729.54" />
+                        <AgainstSidePrices Price="1.19" Stake="706.94" />
+                    </Selections>
+                    <Selections Id="132633916" Name="Over (4.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="37.18" SelectionOpenInterest="260.86" MarketWinnings="229.88" MarketPositiveWinnings="114.88" MatchedSelectionAgainstStake="281.64" LastMatchedOccurredAt="2020-11-02T14:25:48.8500000+00:00" LastMatchedPrice="8.4" LastMatchedForSideAmount="2.02" LastMatchedAgainstSideAmount="14.95" MatchedForSideAmountAtSamePrice="26.35" MatchedAgainstSideAmountAtSamePrice="195.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T14:20:40.4400000+00:00" NumberOrders="8" NumberPunters="3">
+                        <ForSidePrices Price="8.1" Stake="24.88" />
+                        <ForSidePrices Price="8" Stake="3.87" />
+                        <ForSidePrices Price="7.9" Stake="94.85" />
+                        <AgainstSidePrices Price="8.7" Stake="13.16" />
+                        <AgainstSidePrices Price="8.8" Stake="117.58" />
+                        <AgainstSidePrices Price="9.1" Stake="37.04" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782424" Name="Under/Over - Goals (5.5)" Type="4" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="44" IsEnabledForMultiples="true" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="656" MatchedMarketForStake="555.21" MatchedMarketAgainstStake="101.54">
+                    <Selections Id="132633917" Name="Under (5.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="551.21" SelectionOpenInterest="1157.58" MarketWinnings="63.16" MarketPositiveWinnings="31.58" MatchedSelectionAgainstStake="27.58" LastMatchedOccurredAt="2020-11-02T14:11:11.1530000+00:00" LastMatchedPrice="1.05" LastMatchedForSideAmount="0.50" LastMatchedAgainstSideAmount="0.03" MatchedForSideAmountAtSamePrice="551.21" MatchedAgainstSideAmountAtSamePrice="27.58" FirstMatchAtSamePriceOccurredAt="2020-11-02T10:46:15.0900000+00:00" NumberOrders="69" NumberPunters="3">
+                        <ForSidePrices Price="1.05" Stake="613.51" />
+                        <ForSidePrices Price="1.04" Stake="2000.00" />
+                        <AgainstSidePrices Price="1.08" Stake="97.52" />
+                    </Selections>
+                    <Selections Id="132633918" Name="Over (5.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="4.00" SelectionOpenInterest="155.97" MarketWinnings="1250.38" MarketPositiveWinnings="625.21" MatchedSelectionAgainstStake="73.96" LastMatchedOccurredAt="2020-11-02T15:43:28.3130000+00:00" LastMatchedPrice="19.5" LastMatchedForSideAmount="4.00" LastMatchedAgainstSideAmount="73.96" MatchedForSideAmountAtSamePrice="4.00" MatchedAgainstSideAmountAtSamePrice="73.96" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:43:28.3130000+00:00" NumberOrders="2" NumberPunters="2">
+                        <ForSidePrices Price="17" Stake="9.43" />
+                        <ForSidePrices Price="16.5" Stake="20.75" />
+                        <AgainstSidePrices Price="23" Stake="3.36" />
+                        <AgainstSidePrices Price="24" Stake="17.20" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782429" Name="1st Half Under Over - Goals (2.5)" Type="13" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="49" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132633952" Name="Under (2.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="1.1" Stake="95.81" />
+                        <ForSidePrices Price="1.07" Stake="95.81" />
+                        <ForSidePrices Price="1.04" Stake="95.81" />
+                        <AgainstSidePrices Price="1.14" Stake="69" />
+                        <AgainstSidePrices Price="1.17" Stake="69" />
+                        <AgainstSidePrices Price="1.2" Stake="69" />
+                    </Selections>
+                    <Selections Id="132633953" Name="Over (2.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="9.7" Stake="10.44" />
+                        <ForSidePrices Price="9.4" Stake="10.44" />
+                        <ForSidePrices Price="9.1" Stake="10.44" />
+                        <AgainstSidePrices Price="12" Stake="10" />
+                        <AgainstSidePrices Price="13.5" Stake="10" />
+                        <AgainstSidePrices Price="15" Stake="10" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782425" Name="Correct Score" Type="1" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="45" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="3987" MatchedMarketForStake="217.66" MatchedMarketAgainstStake="3769.90">
+                    <Selections Id="132633919" Name="Fulham 1-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="62.89" SelectionOpenInterest="1180.94" MarketWinnings="1270.65" MarketPositiveWinnings="635.32" MatchedSelectionAgainstStake="527.58" LastMatchedOccurredAt="2020-11-02T14:14:25.7430000+00:00" LastMatchedPrice="9.6" LastMatchedForSideAmount="10.00" LastMatchedAgainstSideAmount="86.00" MatchedForSideAmountAtSamePrice="10.00" MatchedAgainstSideAmountAtSamePrice="86.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T14:14:25.7430000+00:00" NumberOrders="13" NumberPunters="7">
+                        <ForSidePrices Price="9.7" Stake="13.37" />
+                        <ForSidePrices Price="9.6" Stake="171.94" />
+                        <ForSidePrices Price="9.5" Stake="13.37" />
+                        <AgainstSidePrices Price="10.5" Stake="133.54" />
+                        <AgainstSidePrices Price="11" Stake="56.17" />
+                        <AgainstSidePrices Price="12" Stake="45.45" />
+                    </Selections>
+                    <Selections Id="132633920" Name="Fulham 2-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="368.17" MarketPositiveWinnings="184.08" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="14.5" Stake="45.68" />
+                        <ForSidePrices Price="14" Stake="84.26" />
+                        <ForSidePrices Price="13.5" Stake="40" />
+                        <AgainstSidePrices Price="16" Stake="55.16" />
+                        <AgainstSidePrices Price="16.5" Stake="42.65" />
+                        <AgainstSidePrices Price="17" Stake="18.01" />
+                    </Selections>
+                    <Selections Id="132633921" Name="Fulham 2-1" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="8.96" SelectionOpenInterest="212.38" MarketWinnings="527.95" MarketPositiveWinnings="263.97" MatchedSelectionAgainstStake="97.23" LastMatchedOccurredAt="2020-11-02T15:37:30.6430000+00:00" LastMatchedPrice="12" LastMatchedForSideAmount="7.30" LastMatchedAgainstSideAmount="80.30" MatchedForSideAmountAtSamePrice="7.30" MatchedAgainstSideAmountAtSamePrice="80.30" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:37:30.6430000+00:00" NumberOrders="6" NumberPunters="5">
+                        <ForSidePrices Price="10.5" Stake="141.40" />
+                        <ForSidePrices Price="10" Stake="49.49" />
+                        <ForSidePrices Price="9.9" Stake="69.07" />
+                        <AgainstSidePrices Price="12" Stake="87.91" />
+                        <AgainstSidePrices Price="12.5" Stake="87.93" />
+                        <AgainstSidePrices Price="14" Stake="38.46" />
+                    </Selections>
+                    <Selections Id="132633922" Name="Fulham 3-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="9.35" SelectionOpenInterest="602.70" MarketWinnings="857.31" MarketPositiveWinnings="428.65" MatchedSelectionAgainstStake="292.00" LastMatchedOccurredAt="2020-11-02T15:20:39.3800000+00:00" LastMatchedPrice="30" LastMatchedForSideAmount="1.00" LastMatchedAgainstSideAmount="29.00" MatchedForSideAmountAtSamePrice="1.00" MatchedAgainstSideAmountAtSamePrice="29.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:20:39.3800000+00:00" NumberOrders="16" NumberPunters="3">
+                        <ForSidePrices Price="31" Stake="13.59" />
+                        <ForSidePrices Price="30" Stake="1.71" />
+                        <ForSidePrices Price="29" Stake="35.68" />
+                        <AgainstSidePrices Price="35" Stake="36.18" />
+                        <AgainstSidePrices Price="40" Stake="12.82" />
+                        <AgainstSidePrices Price="43" Stake="15.83" />
+                    </Selections>
+                    <Selections Id="132633923" Name="Fulham 3-1" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="9.99" SelectionOpenInterest="519.71" MarketWinnings="778.14" MarketPositiveWinnings="389.21" MatchedSelectionAgainstStake="249.71" LastMatchedOccurredAt="2020-11-02T15:56:03.3730000+00:00" LastMatchedPrice="26" LastMatchedForSideAmount="5.00" LastMatchedAgainstSideAmount="125.00" MatchedForSideAmountAtSamePrice="9.99" MatchedAgainstSideAmountAtSamePrice="249.71" FirstMatchAtSamePriceOccurredAt="2020-11-02T06:31:20.9130000+00:00" NumberOrders="4" NumberPunters="4">
+                        <ForSidePrices Price="24" Stake="35.95" />
+                        <ForSidePrices Price="23" Stake="32.63" />
+                        <ForSidePrices Price="22" Stake="52.48" />
+                        <AgainstSidePrices Price="28" Stake="56.60" />
+                        <AgainstSidePrices Price="33" Stake="15.62" />
+                        <AgainstSidePrices Price="36" Stake="19" />
+                    </Selections>
+                    <Selections Id="132633924" Name="Fulham 3-2" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="368.17" MarketPositiveWinnings="184.08" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="39" Stake="12.90" />
+                        <ForSidePrices Price="37" Stake="14.06" />
+                        <ForSidePrices Price="36" Stake="21.30" />
+                        <AgainstSidePrices Price="46" Stake="9.70" />
+                        <AgainstSidePrices Price="48" Stake="10.64" />
+                        <AgainstSidePrices Price="52" Stake="13.04" />
+                    </Selections>
+                    <Selections Id="132633925" Name="Draw 0-0 (Fulh - West)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="5.50" SelectionOpenInterest="121.50" MarketWinnings="471.25" MarketPositiveWinnings="235.62" MatchedSelectionAgainstStake="55.25" LastMatchedOccurredAt="2020-11-02T15:43:27.7370000+00:00" LastMatchedPrice="12" LastMatchedForSideAmount="1.50" LastMatchedAgainstSideAmount="16.50" MatchedForSideAmountAtSamePrice="2.00" MatchedAgainstSideAmountAtSamePrice="22.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:16:12.6100000+00:00" NumberOrders="6" NumberPunters="5">
+                        <ForSidePrices Price="11.5" Stake="65.89" />
+                        <ForSidePrices Price="11" Stake="72.34" />
+                        <ForSidePrices Price="10.5" Stake="78.85" />
+                        <AgainstSidePrices Price="12.5" Stake="156.34" />
+                        <AgainstSidePrices Price="13" Stake="25.13" />
+                        <AgainstSidePrices Price="13.5" Stake="45.59" />
+                    </Selections>
+                    <Selections Id="132633926" Name="Draw 1-1 (Fulh - West)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="5.28" SelectionOpenInterest="66.34" MarketWinnings="405.69" MarketPositiveWinnings="202.84" MatchedSelectionAgainstStake="31.99" LastMatchedOccurredAt="2020-11-02T15:16:12.6230000+00:00" LastMatchedPrice="7.2" LastMatchedForSideAmount="0.57" LastMatchedAgainstSideAmount="3.53" MatchedForSideAmountAtSamePrice="1.57" MatchedAgainstSideAmountAtSamePrice="9.73" FirstMatchAtSamePriceOccurredAt="2020-11-02T13:57:01.6370000+00:00" NumberOrders="6" NumberPunters="5">
+                        <ForSidePrices Price="7" Stake="176.26" />
+                        <ForSidePrices Price="6.9" Stake="117.47" />
+                        <ForSidePrices Price="6.8" Stake="47.48" />
+                        <AgainstSidePrices Price="7.6" Stake="217.57" />
+                        <AgainstSidePrices Price="7.8" Stake="73.53" />
+                        <AgainstSidePrices Price="7.9" Stake="45.02" />
+                    </Selections>
+                    <Selections Id="132633927" Name="Draw 2-2 (Fulh - West)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="45.00" SelectionOpenInterest="1225.02" MarketWinnings="1431.89" MarketPositiveWinnings="715.94" MatchedSelectionAgainstStake="737.51" LastMatchedOccurredAt="2020-11-02T15:56:02.3600000+00:00" LastMatchedPrice="17" LastMatchedForSideAmount="10.00" LastMatchedAgainstSideAmount="160.00" MatchedForSideAmountAtSamePrice="10.00" MatchedAgainstSideAmountAtSamePrice="160.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:56:02.3600000+00:00" NumberOrders="7" NumberPunters="3">
+                        <ForSidePrices Price="16.5" Stake="22.35" />
+                        <ForSidePrices Price="16" Stake="43.31" />
+                        <ForSidePrices Price="15.5" Stake="84.32" />
+                        <AgainstSidePrices Price="18" Stake="90.89" />
+                        <AgainstSidePrices Price="18.5" Stake="37.04" />
+                        <AgainstSidePrices Price="20" Stake="26.32" />
+                    </Selections>
+                    <Selections Id="132633928" Name="Draw 3-3 (Fulh - West)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="5.86" SelectionOpenInterest="973.20" MarketWinnings="1236.03" MarketPositiveWinnings="618.01" MatchedSelectionAgainstStake="480.74" LastMatchedOccurredAt="2020-11-02T14:35:31.4900000+00:00" LastMatchedPrice="76" LastMatchedForSideAmount="1.10" LastMatchedAgainstSideAmount="82.50" MatchedForSideAmountAtSamePrice="2.44" MatchedAgainstSideAmountAtSamePrice="183.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T14:35:21.5500000+00:00" NumberOrders="10" NumberPunters="2">
+                        <ForSidePrices Price="74" Stake="4.83" />
+                        <ForSidePrices Price="64" Stake="10.84" />
+                        <ForSidePrices Price="49" Stake="10" />
+                        <AgainstSidePrices Price="90" Stake="3.60" />
+                        <AgainstSidePrices Price="92" Stake="6.46" />
+                        <AgainstSidePrices Price="100" Stake="2.00" />
+                    </Selections>
+                    <Selections Id="132633929" Name="West Brom 1-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="15.00" SelectionOpenInterest="300.00" MarketWinnings="518.17" MarketPositiveWinnings="259.08" MatchedSelectionAgainstStake="135.00" LastMatchedOccurredAt="2020-11-02T11:06:10.1270000+00:00" LastMatchedPrice="10" LastMatchedForSideAmount="10.00" LastMatchedAgainstSideAmount="90.00" MatchedForSideAmountAtSamePrice="15.00" MatchedAgainstSideAmountAtSamePrice="135.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T10:28:37.9300000+00:00" NumberOrders="4" NumberPunters="3">
+                        <ForSidePrices Price="11" Stake="24.97" />
+                        <ForSidePrices Price="10.5" Stake="112.28" />
+                        <ForSidePrices Price="10" Stake="39.57" />
+                        <AgainstSidePrices Price="12" Stake="93.11" />
+                        <AgainstSidePrices Price="12.5" Stake="60.01" />
+                        <AgainstSidePrices Price="13.5" Stake="47.29" />
+                    </Selections>
+                    <Selections Id="132633930" Name="West Brom 2-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="368.17" MarketPositiveWinnings="184.08" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="19" Stake="30.71" />
+                        <ForSidePrices Price="18.5" Stake="48.17" />
+                        <ForSidePrices Price="18" Stake="26.01" />
+                        <AgainstSidePrices Price="23" Stake="131.50" />
+                        <AgainstSidePrices Price="27" Stake="19.23" />
+                        <AgainstSidePrices Price="30" Stake="22.93" />
+                    </Selections>
+                    <Selections Id="132633931" Name="West Brom 2-1" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="38.86" SelectionOpenInterest="1043.65" MarketWinnings="1132.91" MarketPositiveWinnings="566.44" MatchedSelectionAgainstStake="482.97" LastMatchedOccurredAt="2020-11-02T15:10:21.4930000+00:00" LastMatchedPrice="13" LastMatchedForSideAmount="0.54" LastMatchedAgainstSideAmount="6.48" MatchedForSideAmountAtSamePrice="0.54" MatchedAgainstSideAmountAtSamePrice="6.48" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:10:21.4930000+00:00" NumberOrders="10" NumberPunters="7">
+                        <ForSidePrices Price="12.5" Stake="69.44" />
+                        <ForSidePrices Price="12" Stake="112.04" />
+                        <ForSidePrices Price="11.5" Stake="59.51" />
+                        <AgainstSidePrices Price="14" Stake="137.93" />
+                        <AgainstSidePrices Price="14.5" Stake="11.24" />
+                        <AgainstSidePrices Price="15" Stake="40.05" />
+                    </Selections>
+                    <Selections Id="132633932" Name="West Brom 3-0" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="1.00" SelectionOpenInterest="100.00" MarketWinnings="459.95" MarketPositiveWinnings="229.97" MatchedSelectionAgainstStake="49.00" LastMatchedOccurredAt="2020-11-02T15:10:21.4930000+00:00" LastMatchedPrice="50" LastMatchedForSideAmount="1.00" LastMatchedAgainstSideAmount="49.00" MatchedForSideAmountAtSamePrice="1.00" MatchedAgainstSideAmountAtSamePrice="49.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T15:10:21.4930000+00:00" NumberOrders="2" NumberPunters="2">
+                        <ForSidePrices Price="47" Stake="11.31" />
+                        <ForSidePrices Price="46" Stake="17.53" />
+                        <ForSidePrices Price="44" Stake="13.65" />
+                        <AgainstSidePrices Price="60" Stake="68.27" />
+                        <AgainstSidePrices Price="86" Stake="10" />
+                        <AgainstSidePrices Price="92" Stake="13.3" />
+                    </Selections>
+                    <Selections Id="132633933" Name="West Brom 3-1" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="368.17" MarketPositiveWinnings="184.08" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="32" Stake="6.45" />
+                        <ForSidePrices Price="31" Stake="23.02" />
+                        <ForSidePrices Price="30" Stake="15.38" />
+                        <AgainstSidePrices Price="37" Stake="11.50" />
+                        <AgainstSidePrices Price="38" Stake="9.95" />
+                        <AgainstSidePrices Price="41" Stake="10" />
+                    </Selections>
+                    <Selections Id="132633934" Name="West Brom 3-2" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="2.16" SelectionOpenInterest="224.70" MarketWinnings="532.71" MarketPositiveWinnings="266.38" MatchedSelectionAgainstStake="110.16" LastMatchedOccurredAt="2020-11-02T12:11:31.1600000+00:00" LastMatchedPrice="52" LastMatchedForSideAmount="0.64" LastMatchedAgainstSideAmount="32.64" MatchedForSideAmountAtSamePrice="2.16" MatchedAgainstSideAmountAtSamePrice="110.16" FirstMatchAtSamePriceOccurredAt="2020-11-02T12:05:06.6030000+00:00" NumberOrders="5" NumberPunters="2">
+                        <ForSidePrices Price="45" Stake="17.72" />
+                        <ForSidePrices Price="43" Stake="6.58" />
+                        <ForSidePrices Price="42" Stake="26.02" />
+                        <AgainstSidePrices Price="56" Stake="58.06" />
+                        <AgainstSidePrices Price="60" Stake="10" />
+                        <AgainstSidePrices Price="66" Stake="13.3" />
+                    </Selections>
+                    <Selections Id="132633935" Name="Any Other Home Win" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0.56" SelectionOpenInterest="24.64" MarketWinnings="343.53" MarketPositiveWinnings="171.76" MatchedSelectionAgainstStake="11.76" LastMatchedOccurredAt="2020-11-02T14:06:05.1100000+00:00" LastMatchedPrice="22" LastMatchedForSideAmount="0.56" LastMatchedAgainstSideAmount="11.76" MatchedForSideAmountAtSamePrice="0.56" MatchedAgainstSideAmountAtSamePrice="11.76" FirstMatchAtSamePriceOccurredAt="2020-11-02T14:06:05.1100000+00:00" NumberOrders="2" NumberPunters="2">
+                        <ForSidePrices Price="21" Stake="30.24" />
+                        <ForSidePrices Price="19" Stake="27.78" />
+                        <ForSidePrices Price="18" Stake="19.55" />
+                        <AgainstSidePrices Price="26" Stake="120.69" />
+                        <AgainstSidePrices Price="30" Stake="17.24" />
+                        <AgainstSidePrices Price="33" Stake="20.78" />
+                    </Selections>
+                    <Selections Id="132633936" Name="Any Other Away Win" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="6.25" SelectionOpenInterest="412.50" MarketWinnings="675.33" MarketPositiveWinnings="337.66" MatchedSelectionAgainstStake="200.00" LastMatchedOccurredAt="2020-11-02T08:44:12.1670000+00:00" LastMatchedPrice="33" LastMatchedForSideAmount="3.73" LastMatchedAgainstSideAmount="119.36" MatchedForSideAmountAtSamePrice="6.25" MatchedAgainstSideAmountAtSamePrice="200.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T08:44:11.5900000+00:00" NumberOrders="4" NumberPunters="2">
+                        <ForSidePrices Price="29" Stake="15.93" />
+                        <ForSidePrices Price="28" Stake="38.65" />
+                        <ForSidePrices Price="27" Stake="7.94" />
+                        <AgainstSidePrices Price="38" Stake="98.48" />
+                        <AgainstSidePrices Price="40" Stake="12.82" />
+                        <AgainstSidePrices Price="43" Stake="15.83" />
+                    </Selections>
+                    <Selections Id="132633937" Name="Any Other Draw" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="1.00" SelectionOpenInterest="620.00" MarketWinnings="984.17" MarketPositiveWinnings="492.08" MatchedSelectionAgainstStake="309.00" LastMatchedOccurredAt="2020-11-02T09:37:06.1670000+00:00" LastMatchedPrice="310" LastMatchedForSideAmount="1.00" LastMatchedAgainstSideAmount="309.00" MatchedForSideAmountAtSamePrice="1.00" MatchedAgainstSideAmountAtSamePrice="309.00" FirstMatchAtSamePriceOccurredAt="2020-11-02T09:37:06.1670000+00:00" NumberOrders="2" NumberPunters="2">
+                        <ForSidePrices Price="260" Stake="4.51" />
+                        <ForSidePrices Price="198" Stake="10" />
+                        <ForSidePrices Price="192" Stake="13.3" />
+                        <AgainstSidePrices Price="665" Stake="10" />
+                        <AgainstSidePrices Price="680" Stake="13.3" />
+                        <AgainstSidePrices Price="695" Stake="17.69" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782427" Name="1st Half Under Over - Goals (0.5)" Type="13" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="47" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="58" MatchedMarketForStake="30.05" MatchedMarketAgainstStake="28.74">
+                    <Selections Id="132633948" Name="Under (0.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="10.15" SelectionOpenInterest="59.68" MarketWinnings="79.19" MarketPositiveWinnings="39.59" MatchedSelectionAgainstStake="19.69" LastMatchedOccurredAt="2020-11-02T14:30:27.1130000+00:00" LastMatchedPrice="2.94" LastMatchedForSideAmount="10.15" LastMatchedAgainstSideAmount="19.69" MatchedForSideAmountAtSamePrice="10.15" MatchedAgainstSideAmountAtSamePrice="19.69" FirstMatchAtSamePriceOccurredAt="2020-11-02T14:30:27.1130000+00:00" NumberOrders="2" NumberPunters="2">
+                        <ForSidePrices Price="2.95" Stake="15.25" />
+                        <ForSidePrices Price="2.92" Stake="15.25" />
+                        <ForSidePrices Price="2.89" Stake="92.59" />
+                        <AgainstSidePrices Price="3.4" Stake="10" />
+                        <AgainstSidePrices Price="3.55" Stake="10" />
+                        <AgainstSidePrices Price="3.7" Stake="10" />
+                    </Selections>
+                    <Selections Id="132633949" Name="Over (0.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="19.90" SelectionOpenInterest="57.89" MarketWinnings="38.40" MarketPositiveWinnings="19.20" MatchedSelectionAgainstStake="9.05" LastMatchedOccurredAt="2020-11-02T14:54:30.6100000+00:00" LastMatchedPrice="1.46" LastMatchedForSideAmount="5.12" LastMatchedAgainstSideAmount="2.33" MatchedForSideAmountAtSamePrice="19.90" MatchedAgainstSideAmountAtSamePrice="9.05" FirstMatchAtSamePriceOccurredAt="2020-11-02T14:54:30.6100000+00:00" NumberOrders="3" NumberPunters="3">
+                        <ForSidePrices Price="1.46" Stake="16.9" />
+                        <ForSidePrices Price="1.45" Stake="77.34" />
+                        <ForSidePrices Price="1.43" Stake="94.24" />
+                        <AgainstSidePrices Price="1.55" Stake="61.33" />
+                        <AgainstSidePrices Price="1.58" Stake="61.33" />
+                        <AgainstSidePrices Price="1.61" Stake="61.33" />
+                    </Selections>
+                </MarketPrices>
+                <MarketPrices Id="20782428" Name="1st Half Under Over - Goals (1.5)" Type="13" IsPlayMarket="false" Status="2" NumberOfWinningSelections="1" StartTime="2020-11-02T17:30:00.0000000+00:00" WithdrawalSequenceNumber="0" DisplayOrder="48" IsEnabledForMultiples="false" IsInRunningAllowed="true" IsManagedWhenInRunning="true" IsCurrentlyInRunning="false" InRunningDelaySeconds="8" TotalMatchedAmount="0" MatchedMarketForStake="0" MatchedMarketAgainstStake="0">
+                    <Selections Id="132633950" Name="Under (1.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="1.42" Stake="78.21" />
+                        <ForSidePrices Price="1.39" Stake="78.21" />
+                        <ForSidePrices Price="1.38" Stake="77.34" />
+                        <AgainstSidePrices Price="1.51" Stake="50.67" />
+                        <AgainstSidePrices Price="1.54" Stake="50.67" />
+                        <AgainstSidePrices Price="1.57" Stake="50.67" />
+                    </Selections>
+                    <Selections Id="132633951" Name="Over (1.5)" Status="2" ResetCount="0" DeductionFactor="0.00" MatchedSelectionForStake="0" SelectionOpenInterest="0" MarketWinnings="0" MarketPositiveWinnings="0" MatchedSelectionAgainstStake="0">
+                        <ForSidePrices Price="3.2" Stake="77.34" />
+                        <ForSidePrices Price="3.15" Stake="62.18" />
+                        <ForSidePrices Price="3" Stake="23.51" />
+                        <AgainstSidePrices Price="3.6" Stake="10" />
+                        <AgainstSidePrices Price="3.75" Stake="10" />
+                        <AgainstSidePrices Price="3.9" Stake="10" />
+                    </Selections>
+                </MarketPrices>
+            </GetPricesResult>
+        </GetPricesResponse>
+    </soap:Body>
+</soap:Envelope>

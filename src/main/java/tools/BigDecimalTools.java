@@ -5,6 +5,7 @@ import Trader.SportsTrader;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -16,6 +17,7 @@ public abstract class BigDecimalTools {
 
     public static final BigDecimal penny = new BigDecimal("0.01");
     public static final BigDecimal half = new BigDecimal("0.5");
+    public static final BigDecimal thousand = new BigDecimal(1000);
 
 
     public static BigDecimal randomBD(){
@@ -297,6 +299,20 @@ public abstract class BigDecimalTools {
 
     public static boolean isInteger(BigDecimal bd){
         return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+    }
+
+
+    public static BigDecimal secs(Instant from, Instant too){
+        long millis = too.toEpochMilli() - from.toEpochMilli();
+        return BD(millis).divide(thousand, 3, RoundingMode.HALF_UP);
+    }
+
+    public static BigDecimal secs_until(Instant until){
+        return secs(Instant.now(), until);
+    }
+
+    public static BigDecimal secs_since(Instant from){
+        return secs(from, Instant.now());
     }
 
 
