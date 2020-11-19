@@ -302,17 +302,17 @@ public abstract class BigDecimalTools {
     }
 
 
-    public static BigDecimal secs(Instant from, Instant too){
+    public static BigDecimal secs_between(Instant from, Instant too){
         long millis = too.toEpochMilli() - from.toEpochMilli();
         return BD(millis).divide(thousand, 3, RoundingMode.HALF_UP);
     }
 
     public static BigDecimal secs_until(Instant until){
-        return secs(Instant.now(), until);
+        return secs_between(Instant.now(), until);
     }
 
     public static BigDecimal secs_since(Instant from){
-        return secs(from, Instant.now());
+        return secs_between(from, Instant.now());
     }
 
 

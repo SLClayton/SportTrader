@@ -3,6 +3,7 @@ package Trader;
 import Bet.Bet;
 import Bet.FootballBet.FootballBetGenerator;
 import Bet.MarketOddsReport;
+import SiteConnectors.Betdaq.Betdaq;
 import SiteConnectors.Betfair.Betfair;
 import SiteConnectors.BettingSite;
 import SiteConnectors.Matchbook.Matchbook;
@@ -48,12 +49,11 @@ public class Quota {
         // Create site objects
         Betfair betfair = new Betfair();
         List<BettingSite> sites = new ArrayList<>();
-        //sites.add(new Matchbook());
-        Smarkets sm = new Smarkets();
-        sites.add(sm);
+        sites.add(new Smarkets());
+        sites.add(new Betdaq());
 
         // Get football matches
-        List<FootballMatch> matches = sm.getFootballMatches(Instant.now(), Instant.now().plusSeconds(60*60*24*7));
+        List<FootballMatch> matches = betfair.getFootballMatches(Instant.now(), Instant.now().plusSeconds(60*60*24*7));
         print(String.format("Found %s matches.", matches.size()));
 
 
@@ -123,7 +123,7 @@ public class Quota {
             MarketOddsReport mor = siteEventTracker.getMarketOddsReport(bets);
             if (mor.noError()){
                 print(String.format("Found MOR from %s with %s bets with offers.",
-                        siteEventTracker.site.getName(), mor.bets_size()));
+                        siteEventTracker.site.getName(), mor.number_bets_with_offers()));
                 mors.add(mor);
             }
             else{
@@ -159,10 +159,10 @@ public class Quota {
         }
 
 
-        if (placedBets == null){
+        if (placedBets == null) {
             print("No valid bets found");
+            return;
         }
-
 
 
         ProfitReport final_pr = ProfitReport.fromPlacedBets(placedBets);
@@ -172,6 +172,9 @@ public class Quota {
         final_pr.saveJSON(time, output_dir);
 
     }
+
+
+
 
 
 

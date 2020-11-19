@@ -164,8 +164,11 @@ public class BetExchange {
                 min_stake = minBackStake();
             }
             else if (isLay()) {
-                min_stake = backStake2LayStake(minBackStake()).setScale(2, RoundingMode.UP);
+                min_stake = backStake2LayStake(minBackStake());
             }
+        }
+        if (min_stake != null){
+            min_stake = min_stake.setScale(2, RoundingMode.UP);
         }
         return min_stake;
     }
@@ -173,14 +176,25 @@ public class BetExchange {
 
     public BigDecimal minInvestment(){
         if (min_investment == null){
-            min_investment = Bet.stake2Investment(minStake(), site.lossCommissionRate()).setScale(2, RoundingMode.UP);
+            BigDecimal min_stake = minStake();
+            if (min_stake == null){
+                return null;
+            }
+            min_investment = Bet.stake2Investment(minStake(), site.lossCommissionRate())
+                    .setScale(2, RoundingMode.UP);
         }
         return min_investment;
     }
 
     public BigDecimal minReturn(){
         if (min_return == null){
+            if (minBackStake().compareTo(volume()) > 0){
+                return null;
+            }
             BetPlan min_back_stake_betplan = applyBackStake(minBackStake());
+            if (min_back_stake_betplan == null){
+                return null;
+            }
             min_return = min_back_stake_betplan.getReturn();
         }
         return min_return;
@@ -188,11 +202,11 @@ public class BetExchange {
 
 
     public BigDecimal backStake2LayStake(BigDecimal back_stake){
-        return BetOffer.backStake2LayStake(betOffers, back_stake, true);
+        return BetOffer.backStake2LayStake(getBetOffers(), back_stake, true);
     }
 
     public BigDecimal layStake2BackStake(BigDecimal lay_stake){
-        return BetOffer.layStake2BackStake(betOffers, lay_stake, true);
+        return BetOffer.layStake2BackStake(getBetOffers(), lay_stake, true);
     }
 
 

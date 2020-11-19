@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static tools.BigDecimalTools.secs_since;
 import static tools.printer.*;
 
 public class BetdaqEventTracker extends SiteEventTracker {
@@ -445,97 +446,6 @@ public class BetdaqEventTracker extends SiteEventTracker {
 
 
 
-
-    public String bet_to_betdaq_selection_name(Bet bet) {
-
-        if (bet instanceof FootballBet) {
-            return football_bet_to_betdaq_selection_name((FootballBet) bet, (FootballMatch) event);
-        }
-
-        log.severe(String.format("Cannot find betdaq selection name for bet %s as sport instance is not supported.",
-                    bet.toString()));
-        return null;
-    }
-
-
-    public String football_bet_to_betdaq_selection_name(FootballBet bet, FootballMatch footballMatch) {
-
-        // Event Odds
-        if (bet instanceof FootballResultBet) {
-            FootballResultBet fbrb = (FootballResultBet) bet;
-            String market_name = "match odds";
-            if (fbrb.halftime){market_name = "first-half result";}
-            String selection_name = null;
-            if      (fbrb.winnerA()) { selection_name = footballMatch.team_a.name.toLowerCase();}
-            else if (fbrb.winnerA()) { selection_name = footballMatch.team_b.name.toLowerCase();}
-            else if (fbrb.isDraw())  { selection_name = "draw";}
-            return String.format("%s_%s", market_name, selection_name);
-        }
-
-        // Correct Score
-        else if (bet instanceof FootballScoreBet) {
-            FootballScoreBet fbsb = (FootballScoreBet) bet;
-            String marketName = "correct_score";
-            String halftime_brackets = "";
-            if (fbsb.halftime){
-                marketName = "half time score";
-                halftime_brackets = "(h/t) ";
-            }
-            if      (fbsb.winA()){ return String.format("%s_%s %s%s-%s",
-                    marketName, footballMatch.team_a.name.toLowerCase(), halftime_brackets, fbsb.score_a, fbsb.score_b);}
-            else if (fbsb.winB()){ return String.format("%s_%s %s%s-%s",
-                    marketName, footballMatch.team_b.name.toLowerCase(), halftime_brackets, fbsb.score_b, fbsb.score_a);}
-            else if (fbsb.isDraw()){ return String.format("%s_draw %s%s-%s",
-                    marketName, halftime_brackets, fbsb.score_a, fbsb.score_b);}
-        }
-
-        // Correct score (any other score)
-        else if (bet instanceof FootballOtherScoreBet) {
-            FootballOtherScoreBet fbosb = (FootballOtherScoreBet) bet;
-            if (fbosb.halftime && fbosb.over_score == correct_score_max_ht){
-                if (fbosb.isAnyResult()){ return "half time score_any other score (h/t)";}
-            }
-            else if (!fbosb.halftime && fbosb.over_score == correct_score_max){
-                if (fbosb.winnerA()){ return "correct score_any other home win";}
-                if (fbosb.winnerB()){ return "correct score_any other away win";}
-                if (fbosb.isDraw()){ return "correct score_any other draw";}
-            }
-            else {
-                return null;
-            }
-        }
-
-        // Over Under
-        else if (bet instanceof FootballOverUnderBet){
-            FootballOverUnderBet fboub = (FootballOverUnderBet) bet;
-            return String.format("under/over - goals (%1$s)_%2$s (%1$s)", fboub.goals.toString(), fboub.side.toLowerCase());
-        }
-
-        // Handicap bet
-        else if (bet instanceof FootballHandicapBet){
-            FootballHandicapBet fbhb = (FootballHandicapBet) bet;
-            if (fbhb.a_handicap.compareTo(BigDecimal.ZERO) == 1){
-                if (fbhb.winnerA()){ return String.format("asian handicap (+%1$s)_%2$s (+%1$s)",
-                            fbhb.a_handicap.toString(), footballMatch.team_a.name.toLowerCase());}
-                else if (fbhb.winnerB()){ return String.format("asian handicap (+%1$s)_%2$s (-%1$s)",
-                            fbhb.a_handicap.toString(), footballMatch.team_b.name.toLowerCase()); }
-            }
-            else if (fbhb.a_handicap.compareTo(BigDecimal.ZERO) == -1){
-                if (fbhb.winnerA()){ return String.format("asian handicap (%1$s)_%2$s (%1$s)",
-                        fbhb.a_handicap.toString(), footballMatch.team_a.name.toLowerCase());}
-                else if (fbhb.winnerB()){ return String.format("asian handicap (%1$s)_%2$s (+%3$s)",
-                        fbhb.a_handicap.toString(), footballMatch.team_b.name.toLowerCase(),
-                        fbhb.a_handicap.multiply(new BigDecimal(-1)));}
-            }
-            return null;
-        }
-
-
-        log.severe(String.format("Could not generate betdaq selection name for bet %s", bet.toString()));
-        return null;
-    }
-
-
     public static void main1(String[] args) throws Exception {
 
         FootballMatch event = FootballMatch.parse("2020-11-11T20:10:00.0Z", "France v Finland");
@@ -551,14 +461,15 @@ public class BetdaqEventTracker extends SiteEventTracker {
 
     public static void main(String[] args) throws Exception {
 
-        String s = "AEK Athens v  Leicester";
+        Betdaq b = new Betdaq();
 
-        String[] words = extract_team_names(s);
+        Instant start = Instant.now();
+        List<FootballMatch> fms = b.getFootballMatches(Instant.now(), Instant.now().plusSeconds(60*60*48));
+        print(secs_since(start));
 
-        for (String w: words){
-            print(sf("'%s'", w));
+        for (FootballMatch fm: fms){
+            print(fm.toString());
         }
-
     }
 
 

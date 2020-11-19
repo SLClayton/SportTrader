@@ -34,6 +34,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 
 import static tools.printer.*;
@@ -50,7 +52,7 @@ public class Betdaq extends BettingSite {
     public static final String time_regex = "\\d\\d:\\d\\d";
     public static final Pattern time_pattern = Pattern.compile(time_regex);
     public static final List<String> days_of_week_prefixs =
-            Arrays.asList("(mon)", "(tue)", "(wed)", "(thurs)", "(fri)", "(sat)", "(sun)");
+            Arrays.asList("(mon)", "(tue)", "(wed)", "(thur)", "(fri)", "(sat)", "(sun)");
 
     public static final long FOOTBALL_ID = 100003;
     public static final long HORSE_RACING_ID = 100004;
@@ -118,15 +120,19 @@ public class Betdaq extends BettingSite {
     static BigDecimal betdaq_min_back_stake = new BigDecimal("0.50");
     static BigDecimal betdaq_min_lay_stake = new BigDecimal("0.50");
 
-    public GetPricesRequestHandler getPricesRequestHandler;
+    public GetPricesRequestHandler getPricesRequestHandler = new GetPricesRequestHandler();
 
     public CircularFifoBuffer req_history;
     public Instant request_blackout_end;
-    public static final int MARKET_REQ_LIMIT = 2000;
+    public static final int MARKET_REQ_LIMIT = 1950;
     public static final int MARKET_REQ_WINDOW = 60;
     public static final int MARKET_IDS_PER_REQ_MAX = 50;
 
     public final GetPricesResponse RATE_LIMITED_RESPONSE = ratelimitResponse();
+
+    public List<FootballMatch> all_football_events;
+    public Lock football_events_lock = new ReentrantLock();
+    public Instant football_events_update_time;
 
 
     public Betdaq() throws IOException, ParseException, InterruptedException, URISyntaxException {
@@ -138,7 +144,9 @@ public class Betdaq extends BettingSite {
 
         requester = Requester.SOAPRequester();
 
-        getPricesRequestHandler = new GetPricesRequestHandler();
+        football_events_update_time = null;
+        all_football_events = null;
+
         login();
     }
 
@@ -180,9 +188,11 @@ public class Betdaq extends BettingSite {
 
         public void safe_exit(){
             exit_flag = true;
-            for (GetPricesRequestSender worker: requestSenders){
-                worker.safe_exit();
-                worker.thread.interrupt();
+            if (requestSenders != null) {
+                for (GetPricesRequestSender worker : requestSenders) {
+                    worker.safe_exit();
+                    worker.thread.interrupt();
+                }
             }
             thread.interrupt();
         }
@@ -551,46 +561,58 @@ public class Betdaq extends BettingSite {
     public List<FootballMatch> getFootballMatches(Instant from, Instant until)
             throws IOException, URISyntaxException {
 
-        // Get event tree of all football events
-        EventClassifierType football = getEventTree(FOOTBALL_ID, false);
+        // Wait turn to access local events
+        football_events_lock.lock();
 
-        // From all event types returned, find the lowest level events which should be singular matches
-        // by checking all nested events for ones with markets.
-        List<EventClassifierType> events = getNestedEventsWithMarkets(football.getEventClassifiers());
+        // Update local football events if none exist or enough time has passed for a refresh.
+        if (football_events_update_time == null || all_football_events == null ||
+                Instant.now().isAfter(football_events_update_time)){
 
+            // Get event tree of all football events, extract lowest level events from result
+            EventClassifierType top_level_football = getEventTree(FOOTBALL_ID, false);
+            List<EventClassifierType> events = getNestedEventsWithMarkets(top_level_football.getEventClassifiers());
 
-        List<FootballMatch> footballMatches = new ArrayList<>();
-        for (EventClassifierType event: events){
+            // Build new list of all football events.
+            all_football_events = new ArrayList<>();
+            for (EventClassifierType event: events){
 
-            // Check event has a Event odds Market (ensures its a event)
-            MarketType matchOddsMarket = null;
-            for (MarketType market: event.getMarkets()){
-                if (market.getType() == MATCH_ODDS_TYPE){
-                    matchOddsMarket = market;
-                    break;
+                // Check event has a Event odds Market (ensures its a event)
+                MarketType matchOddsMarket = null;
+                for (MarketType market: event.getMarkets()){
+                    if (market.getType() == MATCH_ODDS_TYPE){
+                        matchOddsMarket = market;
+                        break;
+                    }
+                }
+                if (matchOddsMarket == null){
+                    continue;
+                }
+
+                try {
+                    FootballMatch fm = FootballMatch.parse(
+                            matchOddsMarket.getStartTime().toGregorianCalendar().toInstant(),
+                            scrub_event_name(event.getName()));
+                    fm.metadata.put(BETDAQ_EVENT_ID, String.valueOf(event.getId()));
+                    all_football_events.add(fm);
+                }
+                catch (java.text.ParseException e){
+                    // If we cannot parse a valid match name then skip.
                 }
             }
-            if (matchOddsMarket == null){
-                continue;
-            }
 
-            // Start time of event odds market is start time of event
-            // Check event time falls between paramters, skip if not
-            Instant starttime = matchOddsMarket.getStartTime().toGregorianCalendar().toInstant();
-            if (starttime.isBefore(from) || starttime.isAfter(until)){
-                continue;
-            }
+            football_events_update_time = Instant.now().plusSeconds(60*10);
+        }
 
-            try {
-                FootballMatch fm = FootballMatch.parse(starttime, scrub_event_name(event.getName()));
-                fm.metadata.put(BETDAQ_EVENT_ID, String.valueOf(event.getId()));
+
+        // Filter matches for ones which fall into time window.
+        List<FootballMatch> footballMatches = new ArrayList<>();
+        for (FootballMatch fm: all_football_events){
+            if (fm.starts_within(from, until)){
                 footballMatches.add(fm);
-            }
-            catch (java.text.ParseException e){
-                continue;
             }
         }
 
+        football_events_lock.unlock();
         return footballMatches;
     }
 
@@ -694,7 +716,7 @@ public class Betdaq extends BettingSite {
         // Check return status of request
         ReturnStatus rs = r.getGetPricesResult().getReturnStatus();
         if (rs.getCode() == 406){
-            log.severe(sf("401 REQ LIMIT HIT. Setting blackout time +%s seconds.", MARKET_REQ_WINDOW));
+            log.severe(sf("Code:406 REQ LIMIT HIT. Setting blackout time +%s seconds.", MARKET_REQ_WINDOW));
             request_blackout_end = Instant.now().plusSeconds(MARKET_REQ_WINDOW + 1);
         }
         if (rs.getCode() != 0){
@@ -1088,19 +1110,17 @@ public class Betdaq extends BettingSite {
     public static String scrub_event_name(String event_name){
 
         // Removes the extra shit betdaq puts in event names at the start and end
-
         // eg '19:45 Switzerland v Spain (Live)' -> 'Switzerland v Spain'
-
 
         // Check if name starts with day of week, remove it if so
         for (String day_prefix: days_of_week_prefixs) {
             if (event_name.toLowerCase().startsWith(day_prefix)) {
-                event_name = event_name.substring(0, day_prefix.length());
+                event_name = event_name.substring(day_prefix.length());
             }
         }
 
         // Check if name starts with time and remove it if so
-        if (event_name.substring(0, 5).matches(Betdaq.time_regex)){
+        if (event_name.length() >= 5 && event_name.substring(0, 5).matches(Betdaq.time_regex)){
             event_name = event_name.substring(5);
         }
 
@@ -1109,7 +1129,7 @@ public class Betdaq extends BettingSite {
             event_name = event_name.substring(0, event_name.length()-6);
         }
 
-        return event_name;
+        return event_name.trim();
     }
 
 

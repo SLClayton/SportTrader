@@ -1,0 +1,235 @@
+{
+  "total_investment": "5.045629",
+  "max_return": "5.000008",
+  "min_return": "4.996575",
+  "prof_ratio": "-0.009722078258",
+  "bets": [
+    "CORRECT-SCORE_0-0_BACK",
+    "OVER_0.5_BACK"
+  ],
+  "items": [
+    {
+      "bet": "OVER_0.5_BACK",
+      "bet_plans": [
+        {
+          "raw_request": [
+            {
+              "method": "SportsAPING/v1.0/placeOrders",
+              "id": 1,
+              "jsonrpc": "2.0",
+              "params": {
+                "instructions": [
+                  {
+                    "orderType": "LIMIT",
+                    "side": "BACK",
+                    "selectionId": 5851483,
+                    "customerOrderRef": "uQbyCLF5e4e3",
+                    "handicap": 0.0,
+                    "limitOrder": {
+                      "size": 4.77,
+                      "persistenceType": "PERSIST",
+                      "price": "1.04",
+                      "minFillSize": 4.77,
+                      "timeInForce": "FILL_OR_KILL"
+                    }
+                  }
+                ],
+                "marketId": "1.174988234"
+              }
+            }
+          ],
+          "tot_inv": "4.77",
+          "pot_returns": "4.996575",
+          "bet_id": "216908619933",
+          "backersProfit_layersStake": "null",
+          "type": "BACK",
+          "backersStake_layersProfit": "4.77",
+          "avg_odds": "1.05",
+          "betOrder": {
+            "stake": "4.773269689737",
+            "pot_profit": "0.2267303102625075",
+            "back_stake": "4.773269689737",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "OVER_0.5_BACK",
+                  "volume": "10554.49",
+                  "site": "betfair",
+                  "roi_ratio": "1.0475",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=5851483, BETFAIR_MARKET_ID=1.174988234}",
+                  "created": "2020-11-17T11:16:17.097239500Z",
+                  "odds": "1.05",
+                  "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+                },
+                {
+                  "bet": "OVER_0.5_BACK",
+                  "volume": "26706.24",
+                  "site": "betfair",
+                  "roi_ratio": "1.038",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=5851483, BETFAIR_MARKET_ID=1.174988234}",
+                  "created": "2020-11-17T11:16:17.097239500Z",
+                  "odds": "1.04",
+                  "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+                },
+                {
+                  "bet": "OVER_0.5_BACK",
+                  "volume": "21127.95",
+                  "site": "betfair",
+                  "roi_ratio": "1.0285",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=5851483, BETFAIR_MARKET_ID=1.174988234}",
+                  "created": "2020-11-17T11:16:17.097239500Z",
+                  "odds": "1.03",
+                  "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+                }
+              ],
+              "site": "betfair",
+              "event": "Newcastle United v Chelsea"
+            },
+            "investment": "4.773269689737",
+            "pot_return": "4.9999999999995075",
+            "pot_prof_b4_com": "0.23866348448685"
+          },
+          "comission": {
+            "win_com": "0.011925",
+            "win_com_rate": "0.05"
+          },
+          "timings": {
+            "time_sent": "2020-11-17T11:16:17.523995Z",
+            "time_placed": "2020-11-17T11:16:18Z",
+            "sent_to_placed": 477
+          },
+          "state": "SUCCESS",
+          "pot_prof": "0.226575",
+          "raw_response": {
+            "sizeMatched": 4.77,
+            "instruction": {
+              "orderType": "LIMIT",
+              "side": "BACK",
+              "selectionId": 5851483,
+              "customerOrderRef": "uQbyCLF5e4e3",
+              "handicap": 0.0,
+              "limitOrder": {
+                "size": 4.77,
+                "price": 1.04,
+                "minFillSize": 4.77,
+                "timeInForce": "FILL_OR_KILL"
+              }
+            },
+            "betId": "216908619933",
+            "orderStatus": "EXECUTION_COMPLETE",
+            "placedDate": "2020-11-17T11:16:18.000Z",
+            "status": "SUCCESS",
+            "averagePriceMatched": 1.05
+          },
+          "pot_prof_b4_com": "0.2385"
+        }
+      ],
+      "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+    },
+    {
+      "bet": "CORRECT-SCORE_0-0_BACK",
+      "bet_plans": [
+        {
+          "raw_request": {
+            "side": "buy",
+            "quantity": 50450,
+            "contract_id": "39940955",
+            "price": 606,
+            "market_id": "11437495",
+            "label": "pMUdxIVMVlRy",
+            "minimum_accepted_quantity": 50450,
+            "type": "immediate_or_cancel"
+          },
+          "tot_inv": "0.275629",
+          "pot_returns": "5.000008",
+          "bet_id": "202854333556912134",
+          "backersProfit_layersStake": "4.7721",
+          "type": "BACK",
+          "backersStake_layersProfit": "0.2729",
+          "avg_odds": "18.484288354898",
+          "betOrder": {
+            "stake": "0.272934025641",
+            "pot_profit": "4.72433663410866475554022182",
+            "back_stake": "0.272934025641",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "CORRECT-SCORE_0-0_BACK",
+                  "volume": "9.0805768",
+                  "site": "smarkets",
+                  "roi_ratio": "18.138064823118",
+                  "metadata": "{CONTRACT_ID=39940955, SMARKETS_PRICE=541, MARKET_ID=11437495}",
+                  "created": "2020-11-17T11:16:17.397067400Z",
+                  "odds": "18.484288354898",
+                  "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+                },
+                {
+                  "bet": "CORRECT-SCORE_0-0_BACK",
+                  "volume": "2.85412036",
+                  "site": "smarkets",
+                  "roi_ratio": "17.649262768003",
+                  "metadata": "{CONTRACT_ID=39940955, SMARKETS_PRICE=556, MARKET_ID=11437495}",
+                  "created": "2020-11-17T11:16:17.397067400Z",
+                  "odds": "17.985611510791",
+                  "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+                },
+                {
+                  "bet": "CORRECT-SCORE_0-0_BACK",
+                  "volume": "4.36174338",
+                  "site": "smarkets",
+                  "roi_ratio": "17.186142081809",
+                  "metadata": "{CONTRACT_ID=39940955, SMARKETS_PRICE=571, MARKET_ID=11437495}",
+                  "created": "2020-11-17T11:16:17.397067400Z",
+                  "odds": "17.513134851138",
+                  "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+                },
+                {
+                  "bet": "CORRECT-SCORE_0-0_BACK",
+                  "volume": "25.00000042",
+                  "site": "smarkets",
+                  "roi_ratio": "14.715424465985",
+                  "metadata": "{CONTRACT_ID=39940955, SMARKETS_PRICE=667, MARKET_ID=11437495}",
+                  "created": "2020-11-17T11:16:17.398066800Z",
+                  "odds": "14.992503748126",
+                  "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+                }
+              ],
+              "site": "smarkets",
+              "event": "Newcastle United v Chelsea"
+            },
+            "investment": "0.27566336589741",
+            "pot_return": "5.00000000000607475554022182",
+            "pot_prof_b4_com": "4.772057206170368439939618"
+          },
+          "comission": {
+            "win_com": "0.047721",
+            "loss_com": "0.002729",
+            "win_com_rate": "0.01",
+            "loss_com_rate": "0.01"
+          },
+          "timings": {
+            "time_sent": "2020-11-17T11:16:17.530991200Z"
+          },
+          "state": "SUCCESS",
+          "pot_prof": "4.724379",
+          "raw_response": {
+            "available_quantity": 0,
+            "orig_price": 606,
+            "side": "buy",
+            "quantity": 50450,
+            "exposure": "-0.28",
+            "contract_id": "39940955",
+            "price": 541,
+            "executed_avg_price": 541,
+            "market_id": "11437495",
+            "available_balance": "214.41",
+            "order_id": "202854333556912134",
+            "total_executed_quantity": 50450
+          },
+          "pot_prof_b4_com": "4.7721"
+        }
+      ],
+      "event": "[2020-11-21T12:30:00Z : Newcastle United v Chelsea]"
+    }
+  ]
+}

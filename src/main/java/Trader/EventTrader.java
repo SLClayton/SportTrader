@@ -6,6 +6,7 @@ import SiteConnectors.BettingSite;
 import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
+import tools.BigDecimalTools;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -34,7 +35,7 @@ public class EventTrader implements Runnable {
 
     public FootballBetGenerator footballBetGenerator;
     public Collection<Bet> bets;
-    public Collection<BetGroup> tautologies;
+    public Map<Integer, BetGroup> tautologies;
 
     public ArrayList<String> ok_site_oddsReports;
     public ArrayList<String> timeout_site_oddsReports;
@@ -53,8 +54,15 @@ public class EventTrader implements Runnable {
         this.sites = sites;
         this.footballBetGenerator = footballBetGenerator;
         bets = (Collection<Bet>) (Object) footballBetGenerator.getAllBets();
-        tautologies = (ArrayList<BetGroup>) this.footballBetGenerator.getAllTautologies().clone();
         siteEventTrackers = new HashMap<>();
+
+        // Build tautology map
+        tautologies = new HashMap<Integer, BetGroup>();
+        Instant milli_ago = Instant.now().minusMillis(1);
+        for (BetGroup tautology: this.footballBetGenerator.getAllTautologies()){
+            tautology.next_usage = milli_ago;
+            tautologies.put(tautology.id, tautology);
+        }
 
         ok_site_oddsReports = new ArrayList<>();
         timeout_site_oddsReports = new ArrayList<>();
@@ -126,7 +134,7 @@ public class EventTrader implements Runnable {
         Set<String> site_ids = BettingSite.getIDs(sites.values());
         BigDecimal best_profit = null;
         Instant last_check = Instant.now();
-        Instant next_check = last_check.plusSeconds(config.PRINT_STATS_INT);
+        Instant next_check = last_check.plusSeconds(config.PRINT_STATS_INTERVAL);
         for (long i=0; !exit_flag; i++){
             try {
 
@@ -141,13 +149,11 @@ public class EventTrader implements Runnable {
                 loop_times.add(Instant.now().toEpochMilli() - start.toEpochMilli());
 
                 // Update best profit found in check interval
-                last_best_profit = BDMax(last_best_profit, best_profit);
+                best_profit = BDMax(last_best_profit, best_profit);
 
                 // Calculate and print stats of last group of arb checks
                 if (end.isAfter(next_check)){
-                    String best = String.valueOf(best_profit);
-                    if (best.length() > 8){ best = best.substring(0, 8);}
-                    log.info(sf("%s ArbChcks in %sms: avg=%dms OK%s TMT%s LMT%s NA%s Bst: %s",
+                    log.info(sf("%s ArbChcks in %ss: avg=%dms OK%s TMT%s LMT%s NA%s Bst: %s",
                             loop_times.size(),
                             secs_since(last_check),
                             avg(loop_times),
@@ -155,7 +161,7 @@ public class EventTrader implements Runnable {
                             sum_map(timeout_site_oddsReports),
                             sum_map(rateLimited_site_oddsReports),
                             sum_map(error_site_oddsReports),
-                            best));
+                            BDString(best_profit, 4)));
 
                     loop_times.clear();
                     ok_site_oddsReports.clear();
@@ -164,7 +170,7 @@ public class EventTrader implements Runnable {
                     error_site_oddsReports.clear();
                     best_profit = null;
                     last_check = next_check;
-                    next_check = Instant.now().plusSeconds(config.PRINT_STATS_INT);
+                    next_check = Instant.now().plusSeconds(config.PRINT_STATS_INTERVAL);
                 }
 
 
@@ -185,18 +191,18 @@ public class EventTrader implements Runnable {
     }
 
 
-    public static long getSleepTime(BigDecimal prev_profit){
-        if (prev_profit == null || prev_profit.compareTo(new BigDecimal("-0.08")) == -1) {
+    public static long getSleepTime(BigDecimal profit_ratio){
+        if (profit_ratio == null || profit_ratio.compareTo(new BigDecimal("-0.08")) == -1) {
             return 10000;
-        } else if (prev_profit.compareTo(new BigDecimal("-0.05")) == -1){
+        } else if (profit_ratio.compareTo(new BigDecimal("-0.05")) == -1){
             return 6000;
-        } else if (prev_profit.compareTo(new BigDecimal("-0.03")) == -1){
+        } else if (profit_ratio.compareTo(new BigDecimal("-0.03")) == -1){
             return 5000;
-        } else if (prev_profit.compareTo(new BigDecimal("-0.02")) == -1){
+        } else if (profit_ratio.compareTo(new BigDecimal("-0.02")) == -1){
             return 3000;
-        } else if (prev_profit.compareTo(new BigDecimal("-0.01")) == -1){
+        } else if (profit_ratio.compareTo(new BigDecimal("-0.01")) == -1){
             return 2000;
-        } else if (prev_profit.compareTo(new BigDecimal("-0.005")) == -1){
+        } else if (profit_ratio.compareTo(new BigDecimal("-0.005")) == -1){
             return 1000;
         } else {
             return 0;
@@ -225,17 +231,29 @@ public class EventTrader implements Runnable {
 
     private void checkArbs() throws InterruptedException {
 
+        Instant now = Instant.now();
+
+        // Collect every bet for the tautologies that are due for a test
+        Set<Bet> bets_to_request = new HashSet<>();
+        Set<Integer> used_tautology_ids = new HashSet<>();
+        for (BetGroup tautology: tautologies.values()) {
+            if (now.isAfter(tautology.next_usage)) {
+                bets_to_request.addAll(tautology.getBets());
+                used_tautology_ids.add(tautology.id);
+            }
+        }
+
         // Start threads to get Markets Odds Reports for this event for each site
         Map<SiteEventTracker, RequestHandler> requestHandlers = new HashMap<>();
         for (SiteEventTracker siteEventTracker: siteEventTrackers.values()){
-            RequestHandler rh = requestMarketOddsReport(siteEventTracker, bets);
+            RequestHandler rh = requestMarketOddsReport(siteEventTracker, bets_to_request);
             requestHandlers.put(siteEventTracker, rh);
         }
 
         // Wait for results to be generated in each thread and collect them all
         // Use null if time-out occurs for any site
         ArrayList<MarketOddsReport> marketOddsReports = new ArrayList<>();
-        Instant timeout = Instant.now().plusMillis(config.REQUEST_TIMEOUT);
+        Instant timeout = now.plusMillis(config.REQUEST_TIMEOUT);
         for (Map.Entry<SiteEventTracker, RequestHandler> entry: requestHandlers.entrySet()){
             BettingSite site = entry.getKey().site;
             RequestHandler rh = entry.getValue();
@@ -283,10 +301,9 @@ public class EventTrader implements Runnable {
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
-
         // Create a profit report for each tautology, made of the best bets that return 0.01
         ProfitReportSet penny_pPRs = fullOddsReport
-                .getTautologyProfitReportSet_targetReturn(tautologies, penny, false);
+                .getTautologyProfitReportSet_targetReturn(tautologies.values(), penny, false);
         penny_pPRs.sort_by_profit();
 
         // Filter these for those that have a profit over the configured amount
@@ -297,9 +314,23 @@ public class EventTrader implements Runnable {
         }
 
 
+        // Update the best profit for the last round of arbs checked.
         last_best_profit = null;
         if (!penny_pPRs.isEmpty()){
             last_best_profit = penny_pPRs.get(0).minProfitRatio();
+        }
+
+
+        // Update sleep times for certain tautologies based on profit ratio of last check
+        Map<Integer, BigDecimal> latest_profit_ratios = new HashMap<>();
+        for (ProfitReport profitReport: penny_pPRs.profitReports()){
+            latest_profit_ratios.put(profitReport.getBets().id, profitReport.minProfitRatio());
+        }
+        for (BetGroup tautology: tautologies.values()){
+            if (used_tautology_ids.contains(tautology.id)){
+                BigDecimal latest_roi = latest_profit_ratios.get(tautology.id);
+                tautology.next_usage = now.plusMillis(getSleepTime(latest_roi));
+            }
         }
     }
 

@@ -1,0 +1,266 @@
+{
+  "total_investment": "5.45",
+  "max_return": "5.00643",
+  "min_return": "5.00129",
+  "prof_ratio": "-0.082332110092",
+  "bets": [
+    "OVER_2.5_BACK",
+    "UNDER_2.5_BACK"
+  ],
+  "items": [
+    {
+      "bet": "UNDER_2.5_BACK",
+      "bet_plans": [
+        {
+          "raw_request": [
+            {
+              "method": "SportsAPING/v1.0/placeOrders",
+              "id": 1,
+              "jsonrpc": "2.0",
+              "params": {
+                "instructions": [
+                  {
+                    "orderType": "LIMIT",
+                    "side": "BACK",
+                    "selectionId": 47973,
+                    "customerOrderRef": "ayUpOdv0lege",
+                    "handicap": 0.0,
+                    "limitOrder": {
+                      "size": 2.59,
+                      "persistenceType": "PERSIST",
+                      "price": "1.88",
+                      "minFillSize": 2.59,
+                      "timeInForce": "FILL_OR_KILL"
+                    }
+                  },
+                  {
+                    "orderType": "LIMIT",
+                    "side": "BACK",
+                    "selectionId": 47972,
+                    "customerOrderRef": "5bBJEx663flt",
+                    "handicap": 0.0,
+                    "limitOrder": {
+                      "size": 2.86,
+                      "persistenceType": "PERSIST",
+                      "price": "1.71",
+                      "minFillSize": 2.86,
+                      "timeInForce": "FILL_OR_KILL"
+                    }
+                  }
+                ],
+                "marketId": "1.175713763"
+              }
+            }
+          ],
+          "tot_inv": "2.86",
+          "pot_returns": "5.00643",
+          "bet_id": "217003491433",
+          "backersProfit_layersStake": "null",
+          "type": "BACK",
+          "backersStake_layersProfit": "2.86",
+          "avg_odds": "1.79",
+          "betOrder": {
+            "stake": "2.856326763782",
+            "pot_profit": "2.143673236218391",
+            "back_stake": "2.856326763782",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "UNDER_2.5_BACK",
+                  "volume": "20.42",
+                  "site": "betfair",
+                  "roi_ratio": "1.7505",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=47972, BETFAIR_MARKET_ID=1.175713763}",
+                  "created": "2020-11-18T15:21:53.797204100Z",
+                  "odds": "1.79",
+                  "event": "[2020-11-19T01:05:00Z : Cancun FC v Celaya]"
+                },
+                {
+                  "bet": "UNDER_2.5_BACK",
+                  "volume": "25.61",
+                  "site": "betfair",
+                  "roi_ratio": "1.19",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=47972, BETFAIR_MARKET_ID=1.175713763}",
+                  "created": "2020-11-18T15:21:53.797204100Z",
+                  "odds": "1.2",
+                  "event": "[2020-11-19T01:05:00Z : Cancun FC v Celaya]"
+                },
+                {
+                  "bet": "UNDER_2.5_BACK",
+                  "volume": "27.11",
+                  "site": "betfair",
+                  "roi_ratio": "1.1805",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=47972, BETFAIR_MARKET_ID=1.175713763}",
+                  "created": "2020-11-18T15:21:53.798203100Z",
+                  "odds": "1.19",
+                  "event": "[2020-11-19T01:05:00Z : Cancun FC v Celaya]"
+                }
+              ],
+              "site": "betfair",
+              "event": "Cancun FC v Celaya"
+            },
+            "investment": "2.856326763782",
+            "pot_return": "5.000000000000391",
+            "pot_prof_b4_com": "2.25649814338778"
+          },
+          "comission": {
+            "win_com": "0.11297",
+            "win_com_rate": "0.05"
+          },
+          "timings": {
+            "time_sent": "2020-11-18T15:21:54.064553300Z",
+            "time_placed": "2020-11-18T15:21:56Z",
+            "sent_to_placed": 1936
+          },
+          "state": "SUCCESS",
+          "pot_prof": "2.14643",
+          "raw_response": {
+            "sizeMatched": 2.86,
+            "instruction": {
+              "orderType": "LIMIT",
+              "side": "BACK",
+              "selectionId": 47972,
+              "customerOrderRef": "5bBJEx663flt",
+              "handicap": 0.0,
+              "limitOrder": {
+                "size": 2.86,
+                "price": 1.71,
+                "minFillSize": 2.86,
+                "timeInForce": "FILL_OR_KILL"
+              }
+            },
+            "betId": "217003491433",
+            "orderStatus": "EXECUTION_COMPLETE",
+            "placedDate": "2020-11-18T15:21:56.000Z",
+            "status": "SUCCESS",
+            "averagePriceMatched": 1.79
+          },
+          "pot_prof_b4_com": "2.2594"
+        }
+      ],
+      "event": "[2020-11-19T01:05:00Z : Cancun FC v Celaya]"
+    },
+    {
+      "bet": "OVER_2.5_BACK",
+      "bet_plans": [
+        {
+          "raw_request": [
+            {
+              "method": "SportsAPING/v1.0/placeOrders",
+              "id": 1,
+              "jsonrpc": "2.0",
+              "params": {
+                "instructions": [
+                  {
+                    "orderType": "LIMIT",
+                    "side": "BACK",
+                    "selectionId": 47973,
+                    "customerOrderRef": "ayUpOdv0lege",
+                    "handicap": 0.0,
+                    "limitOrder": {
+                      "size": 2.59,
+                      "persistenceType": "PERSIST",
+                      "price": "1.88",
+                      "minFillSize": 2.59,
+                      "timeInForce": "FILL_OR_KILL"
+                    }
+                  },
+                  {
+                    "orderType": "LIMIT",
+                    "side": "BACK",
+                    "selectionId": 47972,
+                    "customerOrderRef": "5bBJEx663flt",
+                    "handicap": 0.0,
+                    "limitOrder": {
+                      "size": 2.86,
+                      "persistenceType": "PERSIST",
+                      "price": "1.71",
+                      "minFillSize": 2.86,
+                      "timeInForce": "FILL_OR_KILL"
+                    }
+                  }
+                ],
+                "marketId": "1.175713763"
+              }
+            }
+          ],
+          "tot_inv": "2.59",
+          "pot_returns": "5.00129",
+          "bet_id": "217003491432",
+          "backersProfit_layersStake": "null",
+          "type": "BACK",
+          "backersStake_layersProfit": "2.59",
+          "avg_odds": "1.98",
+          "betOrder": {
+            "stake": "2.589331952356",
+            "pot_profit": "2.410668047643436",
+            "back_stake": "2.589331952356",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "OVER_2.5_BACK",
+                  "volume": "16.46",
+                  "site": "betfair",
+                  "roi_ratio": "1.931",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=47973, BETFAIR_MARKET_ID=1.175713763}",
+                  "created": "2020-11-18T15:21:53.797204100Z",
+                  "odds": "1.98",
+                  "event": "[2020-11-19T01:05:00Z : Cancun FC v Celaya]"
+                },
+                {
+                  "bet": "OVER_2.5_BACK",
+                  "volume": "4",
+                  "site": "betfair",
+                  "roi_ratio": "1.0095",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=47973, BETFAIR_MARKET_ID=1.175713763}",
+                  "created": "2020-11-18T15:21:53.797204100Z",
+                  "odds": "1.01",
+                  "event": "[2020-11-19T01:05:00Z : Cancun FC v Celaya]"
+                }
+              ],
+              "site": "betfair",
+              "event": "Cancun FC v Celaya"
+            },
+            "investment": "2.589331952356",
+            "pot_return": "4.999999999999436",
+            "pot_prof_b4_com": "2.53754531330888"
+          },
+          "comission": {
+            "win_com": "0.12691",
+            "win_com_rate": "0.05"
+          },
+          "timings": {
+            "time_sent": "2020-11-18T15:21:54.064553300Z",
+            "time_placed": "2020-11-18T15:21:56Z",
+            "sent_to_placed": 1936
+          },
+          "state": "SUCCESS",
+          "pot_prof": "2.41129",
+          "raw_response": {
+            "sizeMatched": 2.59,
+            "instruction": {
+              "orderType": "LIMIT",
+              "side": "BACK",
+              "selectionId": 47973,
+              "customerOrderRef": "ayUpOdv0lege",
+              "handicap": 0.0,
+              "limitOrder": {
+                "size": 2.59,
+                "price": 1.88,
+                "minFillSize": 2.59,
+                "timeInForce": "FILL_OR_KILL"
+              }
+            },
+            "betId": "217003491432",
+            "orderStatus": "EXECUTION_COMPLETE",
+            "placedDate": "2020-11-18T15:21:56.000Z",
+            "status": "SUCCESS",
+            "averagePriceMatched": 1.98
+          },
+          "pot_prof_b4_com": "2.5382"
+        }
+      ],
+      "event": "[2020-11-19T01:05:00Z : Cancun FC v Celaya]"
+    }
+  ]
+}

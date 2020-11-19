@@ -168,7 +168,7 @@ public class MarketOddsReport {
         for (BetGroup taut: tautologies){
 
             BigDecimal total_inv = BigDecimal.ZERO;
-            for (Bet bet: taut.bets){
+            for (Bet bet: taut.getBets()){
 
                 BigDecimal inv_needed_for_penny_ret = inv_cache.computeIfAbsent(bet.id(),
                         k->penny.divide(maxROIRatio(bet), 12, RoundingMode.HALF_UP));
@@ -337,7 +337,7 @@ public class MarketOddsReport {
 
         List<MultiSiteBet> multiSiteBets = new ArrayList<>(tautology.size());
 
-        for (Bet bet: tautology.bets){
+        for (Bet bet: tautology.getBets()){
 
             MultiSiteBet msb = getMultiSiteBet_targetReturn(bet.id(), target_return, use_min_bets);
 

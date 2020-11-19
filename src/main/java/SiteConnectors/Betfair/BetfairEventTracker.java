@@ -446,7 +446,8 @@ public class BetfairEventTracker extends SiteEventTracker {
             if (!(runner_status.equals("ACTIVE"))){
                 if (!((runner_status.equals("WINNER")
                         || runner_status.equals("LOSER")
-                        || runner_status.equals("CLOSED")))){
+                        || runner_status.equals("CLOSED")
+                        || runner_status.equals("REMOVED")))){
 
                     log.warning(String.format("Runner status is %s in bet %s for %s in betfair.",
                             runner_status, bet, event));

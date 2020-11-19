@@ -173,12 +173,9 @@ public class Requester {
         int status_code = response.getStatusLine().getStatusCode();
         if (status_code < 200 || status_code >= 300) {
             String response_body = EntityUtils.toString(response.getEntity());
-            String msg = String.format("ERROR %d in HTTP SOAP request - %s\n%s\n%s\n%s",
+            String msg = String.format("ERROR %d in HTTP SOAP request - %s",
                     status_code,
-                    response.toString(),
-                    response_body,
-                    response.getStatusLine().toString(),
-                    xmlstring(soap_xml));
+                    response.getStatusLine().toString());
             log.severe(msg);
             throw new IOException();
         }
@@ -196,7 +193,7 @@ public class Requester {
 
             // Find corresponding object in xml response
             XMLStreamReader xml_reader = xmlInputFactory.createXMLStreamReader(
-                    new ByteArrayInputStream(response_body.getBytes()));
+                    new ByteArrayInputStream(response_body.getBytes()), "ISO8859-1");
             xml_reader.nextTag();
             while (!xml_reader.getLocalName().equals(return_class.getSimpleName())) {
                 xml_reader.nextTag();
@@ -209,8 +206,9 @@ public class Requester {
             return return_object;
         }
         catch (XMLStreamException | JAXBException e) {
-            String msg = String.format("Could not turn SOAP response into object of type %s\n%s",
-                    return_class.getSimpleName(), response_body);
+            e.printStackTrace();
+            String msg = String.format("Could not turn SOAP response into object of type %s\n%s\n%s",
+                    return_class.getSimpleName(), e.toString(), response_body.substring(0, 200));
             log.severe(msg);
             throw new IOException(msg);
         }

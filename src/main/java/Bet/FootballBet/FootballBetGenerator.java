@@ -90,6 +90,7 @@ public class FootballBetGenerator {
         log.info("Saving football bets to file in resources.");
         JSONObject bet_cat = new JSONObject();
         for (FootballBet fb: getAllBets()){
+
             BetGroup current = (BetGroup) bet_cat.get(fb.category);
             if (current == null){
                 current = new BetGroup();
@@ -214,10 +215,10 @@ public class FootballBetGenerator {
     // ------------------------------------------------------------------------
 
 
-    public ArrayList<BetGroup> getAllTautologies(){
+    public List<BetGroup> getAllTautologies(){
 
         if (allTautologies != null){
-            return allTautologies;
+            return BetGroup.copyList(allTautologies);
         }
 
         ArrayList<Bet[]> tauts = new ArrayList<Bet[]>();

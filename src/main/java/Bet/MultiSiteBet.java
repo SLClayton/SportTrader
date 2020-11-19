@@ -166,10 +166,13 @@ public class MultiSiteBet {
             // Find MSB if that sites bet was raised to a min bet.
             BigDecimal min_inv = betExchange.minInvestment();
             BigDecimal min_return = betExchange.minReturn();
-            BigDecimal reduced_target_return = target_return.subtract(min_return);
+            BigDecimal reduced_target_return = null;
+            if (min_return != null){
+                reduced_target_return = target_return.subtract(min_return);
+            }
             MultiSiteBet msb_thisSiteEnhanced = null;
             Map<String, BigDecimal> site_inv_thisSiteEnhanced = null;
-            if (reduced_target_return.signum() >= 0){
+            if (reduced_target_return != null && reduced_target_return.signum() >= 0){
                 site_inv_thisSiteEnhanced = BetOffer.target_return(betOffers_thisSiteRemoved, reduced_target_return, true);
             }
             if (site_inv_thisSiteEnhanced != null){

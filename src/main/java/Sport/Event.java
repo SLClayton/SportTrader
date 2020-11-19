@@ -69,6 +69,11 @@ public abstract class Event {
     public abstract Boolean same_match(Event event);
 
 
+    public boolean starts_within(Instant start, Instant end){
+        return !start_time.isBefore(start) && !start_time.isAfter(end);
+    }
+
+
     @Override
     public String toString() {
         return String.format("[%s : %s]", start_time.toString(), name);

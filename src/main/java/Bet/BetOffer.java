@@ -18,8 +18,7 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
-import static java.lang.System.exit;
-import static java.lang.System.in;
+import static java.lang.System.*;
 import static tools.printer.*;
 import static tools.BigDecimalTools.*;
 
