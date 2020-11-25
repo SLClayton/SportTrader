@@ -3,7 +3,7 @@
     "LOG_LEVEL": "INFO",
     "SSL_DIR": "B:/ssl/",
 
-    "MAX_MATCHES": 50,
+    "MAX_MATCHES": 5,
     "IN_PLAY": false,
     "HOURS_AHEAD": 48,
 
@@ -22,13 +22,13 @@
     "END_ON_BET": true,
     "MIN_PROFIT_RATIO": 0.00,
     "ODDS_RATIO_BUFFER": 0.10,
-    "TARGET_INVESTMENT": 1.00,
+    "TARGET_INVESTMENT": 5.00,
     "MAX_INVESTMENT": 50.00,
 
     "ACTIVE_SITES": {
-        "betfair": true,
+        "betfair": false,
     	"matchbook": false,
-        "smarkets": true,
+        "smarkets": false,
         "betdaq": true
     },
     "EVENT_SOURCE": "betdaq",

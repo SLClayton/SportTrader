@@ -168,8 +168,7 @@ public class vTrader {
     public EventClassifierType getNextRace(){
         List<EventClassifierType> races = null;
         try {
-            races = Betdaq.getNestedEventsWithMarkets(
-                    betdaq.getEventTree(event_id, true).getEventClassifiers());
+            races = Betdaq.getNestedMatchEvents(betdaq.getEventTree(event_id).getEventClassifiers());
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return null;

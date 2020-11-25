@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -107,52 +108,32 @@ public class Requester {
 
 
 
-
-
-    public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class)
-            throws IOException, URISyntaxException {
-        return SOAPRequest(url, soap_header, soap_body, return_class, false);
-    }
-
-
-    public Object SOAPRequest(String url, String soap_header, Object soap_java_obj, Class<?> return_class)
-            throws IOException, URISyntaxException {
-
-        String xml_body = null;
-        try {
-            xml_body = SOAP2XML(soap_java_obj);
-        }
-        catch (JAXBException e){
-            log.severe(String.format("Error trying to convert soap java obj of type %s to XML",
-                    return_class.getSimpleName()));
-            return null;
-        }
-        return SOAPRequest(url, soap_header, xml_body, return_class, false);
-    }
-
-
     public Object SOAPRequest(String url, String soap_header, Object soap_java_obj, Class<?> return_class, boolean print)
             throws IOException, URISyntaxException, JAXBException {
         return SOAPRequest(url, soap_header, SOAP2XML(soap_java_obj), return_class, print);
     }
 
 
-    public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class, boolean print)
+    public Object SOAPRequest(String url, String soap_header, String soap_body, Class<?> return_class)
+            throws IOException, URISyntaxException {
+
+        String response_body = SOAPRequestRaw(url, soap_header, soap_body);
+        return XML2SOAP(response_body, return_class);
+    }
+
+
+    public String SOAPRequestRaw(String url, String soap_header, String soap_body)
             throws IOException, URISyntaxException {
 
         // Build soap xml
-        String soap_xml =
-                "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ext=\"http://www.GlobalBettingExchange.com/ExternalAPI/\">" +
-                soap_header +
-                "<soapenv:Body>" +
-                soap_body +
-                "</soapenv:Body>" +
-                "</soapenv:Envelope>";
-
-        if (print){
-            print("\nvv Request vv");
-            ppx(soap_xml);
-        }
+        String soap_xml = "<soapenv:Envelope " +
+                        "xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
+                        "xmlns:ext=\"http://www.GlobalBettingExchange.com/ExternalAPI/\">" +
+                        soap_header +
+                        "<soapenv:Body>" +
+                        soap_body +
+                        "</soapenv:Body>" +
+                        "</soapenv:Envelope>";
 
 
         // Create new http POST object
@@ -165,7 +146,7 @@ public class Requester {
         }
         headerLock.unlock();
 
-        // Pass in JSON as string to body entity then send request
+        // Pass in XML as string to body entity then send request
         httpPost.setEntity(new StringEntity(soap_xml));
         HttpResponse response = httpClient.execute(httpPost);
 
@@ -173,27 +154,25 @@ public class Requester {
         int status_code = response.getStatusLine().getStatusCode();
         if (status_code < 200 || status_code >= 300) {
             String response_body = EntityUtils.toString(response.getEntity());
-            String msg = String.format("ERROR %d in HTTP SOAP request - %s",
+            String msg = String.format("ERROR %d in HTTP SOAP request - %s\n%s",
                     status_code,
-                    response.getStatusLine().toString());
+                    response.getStatusLine().toString(),
+                    response_body.substring(0, Math.min(response_body.length(), 100)));
             log.severe(msg);
             throw new IOException();
         }
 
         // Convert body to json and return
         String response_body = EntityUtils.toString(response.getEntity());
-
-        if (print){
-            print("\nvv Response vv");
-            ppx(response_body);
-        }
+        return response_body;
+    }
 
 
+    public Object XML2SOAP(String raw_soap_xml, Class<?> return_class) throws IOException {
         try {
-
             // Find corresponding object in xml response
             XMLStreamReader xml_reader = xmlInputFactory.createXMLStreamReader(
-                    new ByteArrayInputStream(response_body.getBytes()), "ISO8859-1");
+                    new ByteArrayInputStream(raw_soap_xml.getBytes()), "ISO8859-1");
             xml_reader.nextTag();
             while (!xml_reader.getLocalName().equals(return_class.getSimpleName())) {
                 xml_reader.nextTag();
@@ -208,7 +187,7 @@ public class Requester {
         catch (XMLStreamException | JAXBException e) {
             e.printStackTrace();
             String msg = String.format("Could not turn SOAP response into object of type %s\n%s\n%s",
-                    return_class.getSimpleName(), e.toString(), response_body.substring(0, 200));
+                    return_class.getSimpleName(), e.toString(), raw_soap_xml.substring(0, 200));
             log.severe(msg);
             throw new IOException(msg);
         }
@@ -325,7 +304,20 @@ public class Requester {
         }
         headerLock.unlock();
 
-        HttpResponse response = httpClient.execute(httpGet);
+        HttpResponse response = null;
+        try {
+            response = httpClient.execute(httpGet);
+        }
+        catch (Exception e){
+            log.severe(sf("%s exception when getting http client response."));
+            return null;
+        }
+
+
+        if (response == null){
+            log.severe("HttpResponse object returned is null.");
+            return "null";
+        }
 
         // Check response code is valid
         int status_code = response.getStatusLine().getStatusCode();

@@ -130,9 +130,11 @@ public class Betdaq extends BettingSite {
 
     public final GetPricesResponse RATE_LIMITED_RESPONSE = ratelimitResponse();
 
-    public List<FootballMatch> all_football_events;
-    public Lock football_events_lock = new ReentrantLock();
-    public Instant football_events_update_time;
+
+    public GetEventSubTreeWithSelectionsResponse getEventSubTreeWithSelectionsResponse;
+    public Lock event_tree_lock = new ReentrantLock();
+    public Instant event_tree_update_time;
+    public static final int MINS_BETWEEN_EVENT_TREE_UPDATE = 10;
 
 
     public Betdaq() throws IOException, ParseException, InterruptedException, URISyntaxException {
@@ -144,8 +146,8 @@ public class Betdaq extends BettingSite {
 
         requester = Requester.SOAPRequester();
 
-        football_events_update_time = null;
-        all_football_events = null;
+        getEventSubTreeWithSelectionsResponse = null;
+        event_tree_update_time = null;
 
         login();
     }
@@ -496,16 +498,23 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public EventClassifierType getEventTree(long event_id, boolean with_selections)
+    public EventClassifierType getEventTree(long event_id)
             throws IOException, URISyntaxException {
+
         // Add single id into a list and call other function
         Collection<Long> ids = new ArrayList<>(1);
         ids.add(event_id);
-        return getEventTree(ids, with_selections).get(0);
+        List<EventClassifierType> eventClassifierTypes = getEventTree(ids);
+
+        if (eventClassifierTypes.size() != 1){
+            log.warning(sf("Betdaq event tree for %s returned %s results.", event_id, eventClassifierTypes.size()));
+            return null;
+        }
+        return eventClassifierTypes.get(0);
     }
 
 
-    public List<EventClassifierType> getEventTree(Collection<Long> event_ids, boolean with_selections)
+    public List<EventClassifierType> getEventTree_depr(Collection<Long> event_ids, boolean with_selections)
             throws IOException, URISyntaxException {
 
         // Create argument xml tags for each id
@@ -535,14 +544,14 @@ public class Betdaq extends BettingSite {
         if (with_selections) {
             GetEventSubTreeWithSelectionsResponse r = (GetEventSubTreeWithSelectionsResponse)
                     requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), body,
-                            GetEventSubTreeWithSelectionsResponse.class, false);
+                            GetEventSubTreeWithSelectionsResponse.class);
             rs = r.getGetEventSubTreeWithSelectionsResult().getReturnStatus();
             events = r.getGetEventSubTreeWithSelectionsResult().getEventClassifiers();
         }
         else {
             GetEventSubTreeNoSelectionsResponse r = (GetEventSubTreeNoSelectionsResponse)
                     requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), body,
-                            GetEventSubTreeNoSelectionsResponse.class, false);
+                            GetEventSubTreeNoSelectionsResponse.class);
             rs = r.getGetEventSubTreeNoSelectionsResult().getReturnStatus();
             events = r.getGetEventSubTreeNoSelectionsResult().getEventClassifiers();
         }
@@ -557,89 +566,173 @@ public class Betdaq extends BettingSite {
         return events;
     }
 
+
+    public List<EventClassifierType> getEventTree(Collection<Long> event_ids)
+            throws IOException, URISyntaxException {
+
+        event_tree_lock.lock();
+
+        // Update event tree if it needs updating
+        if (event_tree_update_time == null ||
+                Instant.now().isAfter(event_tree_update_time) ||
+                getEventSubTreeWithSelectionsResponse == null){
+
+            log.info("Betdaq is updating cached events.");
+            getEventSubTreeWithSelectionsResponse = getCompleteEventTreeResponse();
+            event_tree_update_time = Instant.now().plus(MINS_BETWEEN_EVENT_TREE_UPDATE, ChronoUnit.MINUTES);
+            log.info("Betdaq cached events have been updated.");
+        }
+
+        // Get all the events that match one of the given ids
+        List<EventClassifierType> full_event_tree = getEventSubTreeWithSelectionsResponse
+                .getGetEventSubTreeWithSelectionsResult().getEventClassifiers();
+        List<EventClassifierType> matching_events = getNestedEventsByID(full_event_tree, event_ids);
+
+        event_tree_lock.unlock();
+        return matching_events;
+    }
+
+    public GetEventSubTreeWithSelectionsResponse getCompleteEventTreeResponse()
+            throws IOException, URISyntaxException {
+
+        // Gets the entire event tree, to be cached and looked back at.
+
+        List<Long> sport_ids_to_include = Arrays.asList(FOOTBALL_ID);
+
+        // Create argument xml tags for each id
+        String xml_id_args = "";
+        for (Long id: sport_ids_to_include){
+            xml_id_args += String.format("<ext:EventClassifierIds>%s</ext:EventClassifierIds>", id);
+        }
+
+        // Construct xml request
+        String body = "<ext:GetEventSubTreeWithSelections>" +
+                        "<ext:getEventSubTreeWithSelectionsRequest " +
+                        "WantDirectDescendentsOnly=\"false\" WantPlayMarkets=\"false\">" +
+                        xml_id_args +
+                        "</ext:getEventSubTreeWithSelectionsRequest>" +
+                        "</ext:GetEventSubTreeWithSelections>";
+
+
+        // Send request and get back response object
+        String raw_response = requester.SOAPRequestRaw(readOnlyUrl, getSOAPHeader(), body);
+        GetEventSubTreeWithSelectionsResponse response = (GetEventSubTreeWithSelectionsResponse)
+                requester.XML2SOAP(raw_response, GetEventSubTreeWithSelectionsResponse.class);
+
+        toFile(raw_response, "output.xml");
+
+        // Check response is successful
+        ReturnStatus rs = response.getGetEventSubTreeWithSelectionsResult().getReturnStatus();
+        if (rs.getCode() != 0){
+            log.severe(String.format("Could not get event tree from betdaq for ids %s. Error %s - '%s'",
+                    sport_ids_to_include.toString(), rs.getCode(), rs.getDescription()));
+            return null;
+        }
+
+        return response;
+    }
+
     @Override
     public List<FootballMatch> getFootballMatches(Instant from, Instant until)
             throws IOException, URISyntaxException {
 
-        // Wait turn to access local events
-        football_events_lock.lock();
+        // Get all bottom level football events
+        EventClassifierType all_football_events_tree = getEventTree(FOOTBALL_ID);
+        if (all_football_events_tree == null){
+            return null;
+        }
+        List<EventClassifierType>  all_football_matches =
+                getNestedMatchEvents(all_football_events_tree.getEventClassifiers());
 
-        // Update local football events if none exist or enough time has passed for a refresh.
-        if (football_events_update_time == null || all_football_events == null ||
-                Instant.now().isAfter(football_events_update_time)){
 
-            // Get event tree of all football events, extract lowest level events from result
-            EventClassifierType top_level_football = getEventTree(FOOTBALL_ID, false);
-            List<EventClassifierType> events = getNestedEventsWithMarkets(top_level_football.getEventClassifiers());
+        List<FootballMatch> footballMatches = new ArrayList<>();
+        for (EventClassifierType event: all_football_matches){
 
-            // Build new list of all football events.
-            all_football_events = new ArrayList<>();
-            for (EventClassifierType event: events){
-
-                // Check event has a Event odds Market (ensures its a event)
-                MarketType matchOddsMarket = null;
-                for (MarketType market: event.getMarkets()){
-                    if (market.getType() == MATCH_ODDS_TYPE){
-                        matchOddsMarket = market;
-                        break;
-                    }
-                }
-                if (matchOddsMarket == null){
-                    continue;
-                }
-
-                try {
-                    FootballMatch fm = FootballMatch.parse(
-                            matchOddsMarket.getStartTime().toGregorianCalendar().toInstant(),
-                            scrub_event_name(event.getName()));
-                    fm.metadata.put(BETDAQ_EVENT_ID, String.valueOf(event.getId()));
-                    all_football_events.add(fm);
-                }
-                catch (java.text.ParseException e){
-                    // If we cannot parse a valid match name then skip.
-                }
+            // Check event has a Event odds Market (ensures its a event)
+            MarketType matchOddsMarket = extractMatchOddsMarket(event);
+            if (matchOddsMarket == null){
+                continue;
             }
 
-            football_events_update_time = Instant.now().plusSeconds(60*10);
-        }
+            // Ensure event is within parameterised time limits
+            Instant time = matchOddsMarket.getStartTime().toGregorianCalendar().toInstant();
+            if (time.isBefore(from) || time.isAfter(until)){
+                continue;
+            }
 
-
-        // Filter matches for ones which fall into time window.
-        List<FootballMatch> footballMatches = new ArrayList<>();
-        for (FootballMatch fm: all_football_events){
-            if (fm.starts_within(from, until)){
+            // Extract event name, parse to FootballMatch obj and add to list
+            String event_name = scrub_event_name(event.getName());
+            try {
+                FootballMatch fm = FootballMatch.parse(time, event_name);
+                fm.addMetaData(BETDAQ_EVENT_ID, String.valueOf(event.getId()));
                 footballMatches.add(fm);
             }
+            catch (java.text.ParseException e){
+                log.severe(sf("Could not parse betdaq football event name '%s'", event_name));
+            }
         }
 
-        football_events_lock.unlock();
         return footballMatches;
     }
 
 
 
+    public static List<EventClassifierType> getNestedEventsByID(List<EventClassifierType> eventClassifierTypes,
+                                                            Collection<Long> ids){
 
-
-    public static List<EventClassifierType> getNestedEventsWithMarkets(List<EventClassifierType> eventClassifierTypes){
-
-        // Through the layers of nested Events, find the events that have markets
-        List<EventClassifierType> with_markets = new ArrayList<>();
+        // Through the layers of nested Events, find the events that match the given ids
+        List<EventClassifierType> matches = new ArrayList<>();
         for (EventClassifierType event: eventClassifierTypes){
 
-            List<EventClassifierType> child_events = event.getEventClassifiers();
-            List<MarketType> markets = event.getMarkets();
+            // If event id appears in whitelist, add in to matches.
+            if (ids.contains(event.getId())){
+                matches.add(event);
+            }
 
             // If this event has nested events, recurse this function and add them to markets.
+            List<EventClassifierType> child_events = event.getEventClassifiers();
             if (child_events != null && child_events.size() > 0){
-                with_markets.addAll(getNestedEventsWithMarkets(child_events));
-            }
-            // Add to list if event has any markets
-            else if (markets != null && markets.size() > 0){
-                with_markets.add(event);
+                matches.addAll(getNestedEventsByID(child_events, ids));
             }
         }
 
-        return with_markets;
+        return matches;
+    }
+
+    public static List<EventClassifierType> getNestedMatchEvents(List<EventClassifierType> eventClassifierTypes){
+
+        // Recursively checks all nested events in tree and extracts the singular matches
+        // By checking if it contains a match odds market.
+
+        List<EventClassifierType> match_events = new ArrayList<>();
+        for (EventClassifierType event: eventClassifierTypes){
+
+            // Check if event contains 'match odds' market
+            if (extractMatchOddsMarket(event) != null){
+                match_events.add(event);
+            }
+
+            List<EventClassifierType> child_events = event.getEventClassifiers();
+            // If this event has nested events, recurse this function and add them to markets.
+            if (child_events != null && child_events.size() > 0){
+                match_events.addAll(getNestedMatchEvents(child_events));
+            }
+        }
+
+        return match_events;
+    }
+
+    public static MarketType extractMatchOddsMarket(EventClassifierType eventClassifierType){
+        MarketType matchOddsMarket = null;
+        if (eventClassifierType.getMarkets() != null){
+            for (MarketType marketType: eventClassifierType.getMarkets()){
+                if (marketType.getType() == MATCH_ODDS_TYPE){
+                    matchOddsMarket = marketType;
+                    break;
+                }
+            }
+        }
+        return matchOddsMarket;
     }
 
 
@@ -711,7 +804,7 @@ public class Betdaq extends BettingSite {
 
         // Send SOAP request and return object response
         GetPricesResponse r = (GetPricesResponse)
-                requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), body, GetPricesResponse.class, false);
+                requester.SOAPRequest(readOnlyUrl, getSOAPHeader(), body, GetPricesResponse.class);
 
         // Check return status of request
         ReturnStatus rs = r.getGetPricesResult().getReturnStatus();
@@ -1140,13 +1233,18 @@ public class Betdaq extends BettingSite {
         Betdaq b = new Betdaq();
 
 
+        Instant start = Instant.now();
+        List<FootballMatch> fm1 = b.getFootballMatches(Instant.now().minusSeconds(999999999), Instant.now().plusSeconds(60*60*24*2*1000000));
+        print(secs_since(start));
+
+        print(sf("fm1 has %s matches", fm1.size()));
 
 
-        GetPricesResponse resp = b.getPrices(23713123);
+        start = Instant.now();
+        EventClassifierType event = b.getEventTree(7795413);
+        print(secs_since(start));
 
-        toFile(marketJSON(resp.getGetPricesResult().getMarketPrices().get(0)));
-
-        b.safe_exit();
+        print(event);
 
 
     }

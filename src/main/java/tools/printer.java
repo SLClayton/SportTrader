@@ -173,6 +173,13 @@ public abstract class printer {
     }
 
 
+    public static void exit(int code){
+        System.exit(code);
+    }
+
+    public static void exit(){
+        System.exit(0);
+    }
 
 
     public static void toFile(JSONObject j, String filename){

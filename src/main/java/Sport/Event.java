@@ -45,6 +45,9 @@ public abstract class Event {
         return id;
     }
 
+    public String addMetaData(String key, String value){
+        return metadata.put(key, value);
+    }
 
     public void updateMetaData(Map<String, String> new_metadata){
         metadata.putAll(new_metadata);

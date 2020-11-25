@@ -25,31 +25,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee17ce35-c07f-4c02-aa85-57f3d266a264" name="Default Changelist" comment="started matchbook site and tracker">
-      <change afterPath="$PROJECT_DIR$/JAR_Manifests/SportTrader/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SportTrader.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/vTrader_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/SportTrader_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SportTrader.jar" beforeDir="false" afterPath="$PROJECT_DIR$/SportTrader.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/football_aliases.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_aliases.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/football_bets.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_bets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/football_ids_flashscores.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_ids_flashscores.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/football_tautologies.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/football_tautologies.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetExchange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetExchange.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetGroup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/BetOffer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/FootballBet/FootballBetGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/MarketOddsReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Bet/MultiSiteBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bet/MultiSiteBet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/Betdaq.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/BetdaqEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betdaq/BetdaqEventTracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/Betfair/BetfairEventTracker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SiteConnectors/FlashScores.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SiteConnectors/FlashScores.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Sport/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Sport/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/EventTrader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/Quota.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/Quota.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tools/BigDecimalTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/BigDecimalTools.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Trader/vTrader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Trader/vTrader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/globalbettingexchange/externalapi/EventClassifierType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/globalbettingexchange/externalapi/EventClassifierType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tools/Requester.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/Requester.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tools/printer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/printer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,19 +156,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.SportsTrader" />
       <item itemvalue="Application.BetdaqEventTracker" />
       <item itemvalue="Application.Betdaq" />
-      <item itemvalue="Application.Quota" />
       <item itemvalue="Application.EventTrader" />
+      <item itemvalue="Application.Quota" />
+      <item itemvalue="Application.SportsTrader" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.SportsTrader" />
-        <item itemvalue="Application.EventTrader" />
-        <item itemvalue="Application.Quota" />
-        <item itemvalue="Application.BetdaqEventTracker" />
         <item itemvalue="Application.Betdaq" />
+        <item itemvalue="Application.Quota" />
+        <item itemvalue="Application.EventTrader" />
+        <item itemvalue="Application.BetdaqEventTracker" />
       </list>
     </recent_temporary>
   </component>
@@ -273,29 +263,29 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1755" y="458" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1605686298243" />
-    <state width="1335" height="315" key="GridCell.Tab.0.bottom" timestamp="1605794596935">
+    <state width="1373" height="417" key="GridCell.Tab.0.bottom" timestamp="1606301845875">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1123" height="376" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1603384071628" />
-    <state width="1335" height="315" key="GridCell.Tab.0.bottom/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1605794596935" />
+    <state width="1373" height="417" key="GridCell.Tab.0.bottom/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1606301845875" />
     <state width="1367" height="453" key="GridCell.Tab.0.bottom/2560.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1602607612894" />
-    <state width="1335" height="315" key="GridCell.Tab.0.center" timestamp="1605794596935">
+    <state width="1373" height="417" key="GridCell.Tab.0.center" timestamp="1606301845875">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1123" height="376" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1603384071628" />
-    <state width="1335" height="315" key="GridCell.Tab.0.center/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1605794596935" />
+    <state width="1373" height="417" key="GridCell.Tab.0.center/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1606301845875" />
     <state width="1367" height="453" key="GridCell.Tab.0.center/2560.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1602607612894" />
-    <state width="1335" height="315" key="GridCell.Tab.0.left" timestamp="1605794596935">
+    <state width="1373" height="417" key="GridCell.Tab.0.left" timestamp="1606301845875">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1123" height="376" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1603384071628" />
-    <state width="1335" height="315" key="GridCell.Tab.0.left/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1605794596935" />
+    <state width="1373" height="417" key="GridCell.Tab.0.left/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1606301845875" />
     <state width="1367" height="453" key="GridCell.Tab.0.left/2560.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1602607612894" />
-    <state width="1335" height="315" key="GridCell.Tab.0.right" timestamp="1605794596935">
+    <state width="1373" height="417" key="GridCell.Tab.0.right" timestamp="1606301845875">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1123" height="376" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1603384071628" />
-    <state width="1335" height="315" key="GridCell.Tab.0.right/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1605794596935" />
+    <state width="1373" height="417" key="GridCell.Tab.0.right/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1606301845875" />
     <state width="1367" height="453" key="GridCell.Tab.0.right/2560.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1602607612894" />
     <state width="1452" height="185" key="GridCell.Tab.1.bottom" timestamp="1605364059318">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -317,19 +307,19 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="236" y="274" key="SettingsEditor/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1605686321466" />
-    <state x="1374" y="0" width="1193" height="1407" key="dock-window-1" timestamp="1605771314425">
+    <state x="1412" y="0" width="1155" height="1407" key="dock-window-1" timestamp="1606293923136">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1088" y="0" width="839" height="1047" key="dock-window-1/0.0.1920.1040@0.0.1920.1040" timestamp="1603372302334" />
-    <state x="1374" y="0" width="1193" height="1407" key="dock-window-1/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1605771314425" />
+    <state x="1412" y="0" width="1155" height="1407" key="dock-window-1/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1606293923136" />
     <state x="1406" y="0" width="1161" height="1407" key="dock-window-1/2560.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1602600021815" />
-    <state x="413" y="318" width="820" height="722" key="find.popup" timestamp="1605712565276">
+    <state x="413" y="318" width="820" height="722" key="find.popup" timestamp="1606131078595">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="413" y="318" width="820" height="722" key="find.popup/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1605712565276" />
-    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup" timestamp="1604315501381">
+    <state x="413" y="318" width="820" height="722" key="find.popup/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1606131078595" />
+    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup" timestamp="1606231381161">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1604315501381" />
+    <state x="1583" y="320" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/2560.0.1920.1080@0.0.2560.1400" timestamp="1606231381161" />
   </component>
 </project>

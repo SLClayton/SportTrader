@@ -200,7 +200,7 @@ public class BetdaqEventTracker extends SiteEventTracker {
 
         // Get the Betdaq specific event ID from the parent class event metadata and get details from betdaq
         event_id = Long.parseLong(event.metadata.get(Betdaq.BETDAQ_EVENT_ID));
-        EventClassifierType betdaq_event =  betdaq.getEventTree(event_id, true);
+        EventClassifierType betdaq_event =  betdaq.getEventTree(event_id);
 
         // Create list of market ids for specific market types in this event
         List<String> all_market_names = new ArrayList<>();
@@ -288,12 +288,15 @@ public class BetdaqEventTracker extends SiteEventTracker {
                         }
 
                         // Betdaq displays scores by winner first, so swap if needed for our format
-                        String selector_name_a = sf("%s %s%s-%s", team_a, halftime_str, scores[0], scores[1]);
-                        String selector_name_b = sf("%s %s%s-%s", team_b, halftime_str, scores[0], scores[1]);
-                        if (scores[0] == scores[1] || sel_name.equals(selector_name_a)){
+                        String selector_name_a = sf("%s %s%s-%s", team_a, halftime_str, scores[0], scores[1])
+                                .replaceAll("\\s+", " ");
+                        String selector_name_b = sf("%s %s%s-%s", team_b, halftime_str, scores[0], scores[1])
+                                .replaceAll("\\s+", " ");
+                        String sel_name_edit = sel_name.replaceAll("\\s+", " ");
+                        if (sel_name_edit.equals(selector_name_a) || scores[0] == scores[1]){
                             bet = new FootballScoreBet(Bet.BetType.BACK, scores[0], scores[1], halftime);
                         }
-                        else if (sel_name.equals(selector_name_b)){
+                        else if (sel_name_edit.equals(selector_name_b)){
                             bet = new FootballScoreBet(Bet.BetType.BACK, scores[1], scores[0], halftime);
                         }
                         else{

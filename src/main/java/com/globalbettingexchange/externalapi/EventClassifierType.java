@@ -208,4 +208,18 @@ public class EventClassifierType {
         this.parentId = value;
     }
 
+
+    @Override
+    public String toString(){
+        String markets_size = "null";
+        if (getMarkets() != null){
+            markets_size = String.valueOf(getMarkets().size());
+        }
+        String children_size = "null";
+        if (getEventClassifiers() != null){
+            children_size = String.valueOf(getEventClassifiers().size());
+        }
+        return String.format("[%s: '%s' mkts:%s, chld:%s]", getId(), getName(), markets_size, children_size);
+    }
+
 }

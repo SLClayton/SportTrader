@@ -425,6 +425,7 @@ public class FlashScores implements SportData {
                         teams[i].normal_name(), possible_teams[i]));
             }
         }
+        // Unable to verify match if either teams possibilities are empty.
         if (possible_teams_a.size() == 0 || possible_teams_b.size() == 0){
             return false;
         }
