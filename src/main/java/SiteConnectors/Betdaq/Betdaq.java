@@ -5,17 +5,15 @@ import Bet.Bet.BetType;
 import SiteConnectors.*;
 import Sport.FootballMatch;
 import Trader.Config;
+import Trader.RequestHistory;
 import Trader.SportsTrader;
 import com.globalbettingexchange.externalapi.*;
-import org.apache.commons.collections.buffer.BoundedFifoBuffer;
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import tools.Requester;
 
 
-import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,12 +23,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -100,6 +96,10 @@ public class Betdaq extends BettingSite {
     public static final short ORDER_VOID = 5;
     public static final short ORDER_DEAD = 6;
 
+    public static final short HEARTBEAT_CANCEL_ORDERS = 1;
+    public static final short HEARTBEAT_SUSPEND_ORDERS = 2;
+
+    public boolean heartbeat_registered;
 
 
     public static final String BETDAQ_EVENT_ID = "betdaq_event_id";
@@ -122,11 +122,10 @@ public class Betdaq extends BettingSite {
 
     public GetPricesRequestHandler getPricesRequestHandler = new GetPricesRequestHandler();
 
-    public CircularFifoBuffer req_history;
     public Instant request_blackout_end;
     public static final int MARKET_REQ_LIMIT = 1950;
-    public static final int MARKET_REQ_WINDOW = 60;
-    public static final int MARKET_IDS_PER_REQ_MAX = 50;
+    public static final int MARKET_REQ_WINDOW = 61;
+    public static final int MARKET_IDS_PER_REQ_MAX = 49;
 
     public final GetPricesResponse RATE_LIMITED_RESPONSE = ratelimitResponse();
 
@@ -148,6 +147,7 @@ public class Betdaq extends BettingSite {
 
         getEventSubTreeWithSelectionsResponse = null;
         event_tree_update_time = null;
+        heartbeat_registered = false;
 
         login();
     }
@@ -163,14 +163,17 @@ public class Betdaq extends BettingSite {
         public BlockingQueue<List<RequestHandler>> batch_queue;
         public List<GetPricesRequestSender> requestSenders;
 
+        public RequestHistory req_history;
+
 
         public GetPricesRequestHandler(){
             exit_flag = false;
             request_queue = new LinkedBlockingQueue<>();
             batch_queue = new LinkedBlockingQueue<>();
             thread = new Thread(this);
+            thread.setName("BD-Rq-hndlr");
             request_blackout_end = null;
-            req_history = new CircularFifoBuffer(MARKET_REQ_LIMIT - MARKET_IDS_PER_REQ_MAX - 1);
+            req_history = new RequestHistory(MARKET_REQ_LIMIT, MARKET_REQ_WINDOW);
         }
 
 
@@ -208,37 +211,24 @@ public class Betdaq extends BettingSite {
             // Decide if requests should be rate limited and not sent
 
             Instant now = Instant.now();
-            boolean LIMIT = false;
 
-            // If we are within a blackout
+            int req_space = req_history.reqLimitUnused();
+
+            // If we are within a blackout, or hit request limit, dont send
             if (request_blackout_end != null && now.isBefore(request_blackout_end)){
-                LIMIT = true;
-            }
-
-            // If the limit of requests sent was within the last 60 second window
-            else if (req_history.isFull()){
-                Instant oldest_time = (Instant) req_history.get();
-                if (oldest_time.isAfter(now.minusSeconds(MARKET_REQ_WINDOW + 1))){
-                    LIMIT = true;
-                }
-            }
-
-            // Rate limit responses and don't send off.
-            if (LIMIT) {
                 for (RequestHandler rh : requestHandlers) {
                     rh.setResponse(RATE_LIMITED_RESPONSE);
                 }
-                return;
             }
-
-
-            // Send off batch
-            batch_queue.add(requestHandlers);
-            now = Instant.now();
-
-            // Add a timing into the history queue for each market requested.
-            for (int i=0; i<batch_size; i++){
-                req_history.add(now);
+            else if (req_space < batch_size){
+                for (RequestHandler rh : requestHandlers) {
+                    rh.setResponse(RATE_LIMITED_RESPONSE);
+                }
+            }
+            else {
+                // Send off batch
+                batch_queue.add(requestHandlers);
+                req_history.addItem(batch_size);
             }
         }
 
@@ -461,6 +451,7 @@ public class Betdaq extends BettingSite {
     public SiteEventTracker getEventTracker() {
         return new BetdaqEventTracker(this);
     }
+
 
 
     public List<MarketType> getMarketInfo(Collection<Long> market_ids) throws IOException, URISyntaxException {
@@ -813,8 +804,8 @@ public class Betdaq extends BettingSite {
             request_blackout_end = Instant.now().plusSeconds(MARKET_REQ_WINDOW + 1);
         }
         if (rs.getCode() != 0){
-            log.severe(String.format("Error getting Betdaq prices %s %s - for market ids: %s",
-                    rs.getCode(), rs.getDescription(), marketIds.toString()));
+            log.severe(String.format("Error getting Betdaq prices %s %s - for %s market ids: %s",
+                    rs.getCode(), rs.getDescription(), marketIds.size(), marketIds.toString()));
         }
 
         return r;
@@ -1226,26 +1217,73 @@ public class Betdaq extends BettingSite {
     }
 
 
+    public RegisterHeartbeatResponse registerHeartbeat(long threshold, Short action) throws IOException, URISyntaxException {
 
+        // 'CancelOrders' or 'SuspendOrders'
+        String xml_body = "<ext:RegisterHeartbeat>" +
+                "<ext:registerHeartbeatRequest " +
+                sf("ThresholdMs=\"%s\" ", threshold)  +
+                sf("HeartbeatAction=\"%s\"/>", action) +
+                "</ext:RegisterHeartbeat>";
+
+        RegisterHeartbeatResponse resp = (RegisterHeartbeatResponse)
+                requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), xml_body, RegisterHeartbeatResponse.class);
+
+        return resp;
+    }
+
+    public PulseResponse pulse() throws IOException, URISyntaxException {
+
+        String xml_body = "<ext:Pulse><ext:pulseRequest/></ext:Pulse>";
+
+        PulseResponse resp = (PulseResponse)
+                requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), xml_body, PulseResponse.class);
+
+        return resp;
+    }
+
+
+    @Override
+    public boolean sendHeartbeat() throws URISyntaxException, IOException {
+
+        // If we think heartbeat is registered, try sending a pulse
+        if (heartbeat_registered) {
+            PulseResponse2 pulse_resp = pulse().getPulseResult();
+            ReturnStatus rs = pulse_resp.getReturnStatus();
+
+            // Un-flag as registered if it's found not to be
+            if (rs.getCode() == 462){
+                log.info("Betdaq heartbeat not yet registered. Registering now.");
+                heartbeat_registered = false;
+            }
+            else if (rs.getCode() != 0){
+                log.severe(sf("Betdaq pulse return code %s: %s Trying to re-register",
+                        rs.getCode(), rs.getDescription()));
+                heartbeat_registered = false;
+            }
+        }
+
+        // If heartbeat not registered, register it.
+        if (!heartbeat_registered){
+            RegisterHeartbeatResponse2 reg_resp =
+                    registerHeartbeat(10000, HEARTBEAT_CANCEL_ORDERS).getRegisterHeartbeatResult();
+            ReturnStatus rs = reg_resp.getReturnStatus();
+
+
+            if (rs.getCode() != 463 && rs.getCode() != 0){
+                log.severe(sf("Betdaq register heartbeat return code %s: %s", rs.getCode(), rs.getDescription()));
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public static void main(String[] args) throws Exception {
 
         Betdaq b = new Betdaq();
 
-
-        Instant start = Instant.now();
-        List<FootballMatch> fm1 = b.getFootballMatches(Instant.now().minusSeconds(999999999), Instant.now().plusSeconds(60*60*24*2*1000000));
-        print(secs_since(start));
-
-        print(sf("fm1 has %s matches", fm1.size()));
-
-
-        start = Instant.now();
-        EventClassifierType event = b.getEventTree(7795413);
-        print(secs_since(start));
-
-        print(event);
-
+        b.sendHeartbeat();
 
     }
 

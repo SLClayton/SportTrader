@@ -48,7 +48,7 @@ public class BetPlan implements SiteBet {
 
     private BetPlan(BetExchange betExchange, BigDecimal backers_stake) {
         time_created = Instant.now();
-        id = rndString(12);
+        id = rndStringNumber(12);
         this.betExchange = betExchange;
         this.backers_stake = backers_stake;
 
@@ -279,13 +279,26 @@ public class BetPlan implements SiteBet {
     public JSONObject toJSON(){
         JSONObject j = new JSONObject();
 
-        j.put("betExchange", betExchange.toJSON());
+
+        j.put("event", stringValue(getEvent()));
+        j.put("site", getSite().getName());
+        j.put("bet", stringValue(getBet()));
+
+
         j.put("back_stake", BDString(getBackersStake()));
         j.put("stake", BDString(getStake()));
         j.put("investment", BDString(getInvestment()));
         j.put("pot_return", BDString(getReturn()));
         j.put("pot_prof_b4_com", BDString(getProfitB4Comm()));
         j.put("pot_profit", BDString(getProfit()));
+        j.put("exp_avg_odds", BDString(avgOdds()));
+
+
+        JSONObject exchange = betExchange.toJSON();
+        exchange.remove("event");
+        exchange.remove("site");
+        exchange.remove("bet");
+        j.put("betExchange", exchange);
 
         return j;
     }

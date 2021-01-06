@@ -98,6 +98,7 @@ public class TestBetSite extends BettingSite {
         return null;
     }
 
+
     @Override
     public List<FootballMatch> getFootballMatches(Instant from, Instant until) throws IOException, URISyntaxException, InterruptedException {
         return null;

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -46,8 +47,6 @@ public class SportsTrader {
     public static final Config config = Config.getConfig("config.json");
 
 
-
-
     public Lock betlock = new ReentrantLock();
 
     public ArrayList<Class> siteClasses;
@@ -61,14 +60,16 @@ public class SportsTrader {
     public SportDataFileSaver sportDataFileSaver;
     public SessionsUpdater sessionsUpdater;
     public SiteAccountInfoUpdater siteAccountInfoUpdater;
+    public HeartBeater heartBeater;
 
     public List<MarketOddsReportWorker> marketOddsReportWorkers;
     public BlockingQueue<RequestHandler> marketOddsReportRequestQueue;
+    public AtomicInteger MORW_id;
 
     public boolean exit_flag;
 
 
-    public SportsTrader() throws IOException, ConfigException, org.json.simple.parser.ParseException {
+    public SportsTrader() throws IOException, ConfigException {
         Thread.currentThread().setName("Main");
         exit_flag = false;
 
@@ -101,6 +102,7 @@ public class SportsTrader {
 
         marketOddsReportWorkers = new ArrayList<>();
         marketOddsReportRequestQueue = new LinkedBlockingQueue<>();
+        MORW_id = new AtomicInteger(0);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -112,15 +114,16 @@ public class SportsTrader {
 
 
     public void newMarketOddsReportWorker(){
-        MarketOddsReportWorker morw = new MarketOddsReportWorker(marketOddsReportRequestQueue);
+        MarketOddsReportWorker morw =
+                new MarketOddsReportWorker(this, MORW_id.addAndGet(1), marketOddsReportRequestQueue);
 
         if (morw == null){
             log.severe("Adding null MORW to list of MORWs???");
         }
 
-        marketOddsReportWorkers.add(morw);
-        morw.thread.setName("MORW-" + marketOddsReportWorkers.size());
+
         morw.start();
+        marketOddsReportWorkers.add(morw);
         log.info(String.format("Created new MORW '%s'", morw.thread.getName()));
     }
 
@@ -149,21 +152,13 @@ public class SportsTrader {
         }
 
         if (n_null > 0){
-            log.severe(String.format("%s/%s MarketOddsReportWorkers found to be null.",
-                    n_null, marketOddsReportWorkers.size()));
-
-            safe_exit();
 
             List<String> workernames = new ArrayList<>();
             for (MarketOddsReportWorker morw: marketOddsReportWorkers){
-                if (morw == null){
-                    workernames.add("null");
-                }
-                else{
-                    workernames.add(morw.thread.getName());
-                }
+                workernames.add(stringValue(morw));
             }
-            print(workernames);
+            log.severe(String.format("%s/%s MarketOddsReportWorkers found to be null - %s",
+                    n_null, marketOddsReportWorkers.size(), workernames));
         }
 
 
@@ -298,11 +293,13 @@ public class SportsTrader {
             return;
         }
 
-        // Begin thread to update site details periodically.
+        // Begin background task threads
+        heartBeater = new HeartBeater(this);
+        heartBeater.start();
+
         siteAccountInfoUpdater = new SiteAccountInfoUpdater(siteObjects);
         siteAccountInfoUpdater.start();
 
-        // Begin thread to update site sessions periodically
         sessionsUpdater = new SessionsUpdater(siteObjects);
         sessionsUpdater.start();
 
@@ -413,31 +410,45 @@ public class SportsTrader {
 
 
     public void safe_exit(){
+        // Begins a safe close down of the program. Setting into motion
+        // all lower safe_exit routines.
+
         log.info("Master safe exit triggered. Closing down program.");
-
         exit_flag = true;
-        if (sessionsUpdater != null){ sessionsUpdater.exit_flag = true;}
-        if (sportDataFileSaver != null){ sportDataFileSaver.exit_flag = true;}
-        if (siteAccountInfoUpdater != null){ siteAccountInfoUpdater.exit_flag = true;}
-
+        if (sessionsUpdater != null){
+            sessionsUpdater.safe_exit();
+        }
+        if (sportDataFileSaver != null){
+            sportDataFileSaver.safe_exit();
+        }
+        if (siteAccountInfoUpdater != null){
+            siteAccountInfoUpdater.safe_exit();
+        }
         if (eventTraderSpawns != null) {
             for (EventTraderSpawn ets : eventTraderSpawns) {
-                ets.exit_flag = true;
+                ets.safe_exit();
             }
         }
-
         if (siteObjects != null) {
             for (Map.Entry<String, BettingSite> entry : siteObjects.entrySet()) {
                 entry.getValue().safe_exit();
             }
         }
-
         if (eventTraders != null){
             for (EventTrader eventTrader: eventTraders){
                 eventTrader.safe_exit();
             }
         }
-
+        if (marketOddsReportWorkers != null){
+            for (MarketOddsReportWorker marketOddsReportWorker: marketOddsReportWorkers){
+                if (marketOddsReportWorker != null){
+                    marketOddsReportWorker.safe_exit();
+                }
+            }
+        }
+        if (heartBeater != null){
+            heartBeater.safe_exit();
+        }
     }
 
 
@@ -447,6 +458,7 @@ public class SportsTrader {
         public Thread thread;
         public boolean exit_flag;
         public Map<String, BettingSite> siteObjects;
+        public Instant next_update;
 
         public SiteAccountInfoUpdater(Map<String, BettingSite> siteObjects){
             this.siteObjects = siteObjects;
@@ -460,27 +472,32 @@ public class SportsTrader {
             thread.start();
         }
 
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
         @Override
         public void run() {
+
+            next_update = Instant.now().plusSeconds(seconds_sleep);
+
             mainloop:
             while (!exit_flag){
                 try {
-
-                    Instant next_update = Instant.now().plus(seconds_sleep, ChronoUnit.SECONDS);
-                    while (Instant.now().isBefore(next_update)){
-                        if (exit_flag){
-                            break mainloop;
-                        }
-                        Thread.sleep(1000);
-                    }
+                    sleepUntil(next_update);
 
                     // Update each sites account info
                     for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
                         entry.getValue().updateAccountInfo();
                     }
+                    next_update = Instant.now().plusSeconds(seconds_sleep);
 
-                } catch (InterruptedException | IOException | URISyntaxException e) {
-                    e.printStackTrace();
+                }
+                catch (InterruptedException e){
+                    log.warning("Account updater interrupted.");
+                }
+                catch (IOException | URISyntaxException e) {
                     log.severe(e.toString());
                 }
 
@@ -513,39 +530,45 @@ public class SportsTrader {
             thread.start();
         }
 
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
         @Override
         public void run() {
 
-            while (!exit_flag){
-
-                // Get event from queue, break and finish if anything goes wrong.
-                FootballMatch footballMatch = null;
+            while (!exit_flag) {
                 try {
-                    footballMatch = match_queue.poll(0, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
+                    // Get event from queue, break and finish if anything goes wrong.
+                    FootballMatch footballMatch = null;
+                    footballMatch = match_queue.poll(0, TimeUnit.SECONDS);
+
+                    if (footballMatch == null || exit_flag) {
+                        break;
+                    }
+
+                    log.info(String.format("Attempting to verify and setup %s.", footballMatch));
+
+                    // Attempt to setup site event trackers for all sites for this event, try queue again if fails
+                    EventTrader eventTrader = new EventTrader(sportsTrader, footballMatch, siteObjects, footballBetGenerator);
+
+                    int successful_site_connections = eventTrader.setupMatch();
+                    if (successful_site_connections < config.MIN_SITES_PER_MATCH) {
+                        log.warning(String.format("%s Only %d/%d sites connected. MIN_SITES_PER_MATCH=%d.",
+                                footballMatch, successful_site_connections, siteObjects.size(), config.MIN_SITES_PER_MATCH));
+                        continue;
+                    }
+
+                    // Set result and break loop
+                    log.info(String.format("EventTraderSetup complete for event %s.", footballMatch));
+                    result = eventTrader;
                     break;
                 }
-                if (footballMatch == null || exit_flag){
-                    break;
+                catch (InterruptedException e){
+                    log.warning("Event trader spawner interrupted.");
                 }
-
-                log.info(String.format("Attempting to verify and setup %s.", footballMatch));
-
-                // Attempt to setup site event trackers for all sites for this event, try queue again if fails
-                EventTrader eventTrader = new EventTrader(sportsTrader, footballMatch, siteObjects, footballBetGenerator);
-
-                int successful_site_connections = eventTrader.setupMatch();
-                if (successful_site_connections < config.MIN_SITES_PER_MATCH){
-                    log.warning(String.format("%s Only %d/%d sites connected. MIN_SITES_PER_MATCH=%d.",
-                            footballMatch, successful_site_connections, siteObjects.size(), config.MIN_SITES_PER_MATCH));
-                    continue;
-                }
-
-                // Set result and break loop
-                log.info(String.format("EventTraderSetup complete for event %s.", footballMatch));
-                result = eventTrader;
-                break;
             }
 
             if (exit_flag) {
@@ -560,6 +583,7 @@ public class SportsTrader {
         public boolean exit_flag;
         public Thread thread;
         public Map<String, BettingSite> siteObjects;
+        public Instant next_update;
 
         public SessionsUpdater(Map<String, BettingSite> siteObjects){
             this.siteObjects = siteObjects;
@@ -573,27 +597,32 @@ public class SportsTrader {
             thread.start();
         }
 
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
         @Override
         public void run() {
             log.info("Session updater started.");
+            next_update = Instant.now().plus(session_Update_interval_hours, ChronoUnit.HOURS);
 
-            mainloop:
             while (!exit_flag){
+
+                // Sleep until next update or when interrupted
                 try {
-                    // Sleep in 1 second intervals until next update time has arrived.
-                    Instant sleep_until = Instant.now().plus(session_Update_interval_hours, ChronoUnit.HOURS);
-                    while (Instant.now().isBefore(sleep_until) && !exit_flag){
-                        Thread.sleep(1000);
-                    }
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    sleepUntil(next_update);
+                }
+                catch (InterruptedException e) {
+                    continue;
                 }
 
+                // Break if necessary
                 if (exit_flag){
-                    break mainloop;
+                    break;
                 }
 
+                // Update sessions
                 for (Map.Entry<String, BettingSite> entry: siteObjects.entrySet()){
                     String site_name = entry.getKey();
                     BettingSite bet_site = entry.getValue();
@@ -610,8 +639,8 @@ public class SportsTrader {
                         String msg = String.format("Error while trying to refresh session for %s.", site_name);
                         log.severe(msg);
                     }
-
                 }
+                next_update = Instant.now().plus(session_Update_interval_hours, ChronoUnit.HOURS);
             }
             log.info("Exiting session updater.");
         }
@@ -638,6 +667,11 @@ public class SportsTrader {
             thread.start();
         }
 
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
         @Override
         public void run() {
 
@@ -646,10 +680,7 @@ public class SportsTrader {
             mainloop:
             while (!exit_flag){
                 try{
-                    // Wait for a save request
-                    while (sportData.save_requests_queue.poll(1, TimeUnit.SECONDS) == null
-                            && !exit_flag){}
-
+                    sportData.save_requests_queue.take();
 
                     // Wait until at least the minimum time until next save is reached
                     while (min_next_save != null && Instant.now().isBefore(min_next_save)
@@ -664,11 +695,72 @@ public class SportsTrader {
                     min_next_save = Instant.now().plus(min_save_interval_secs, ChronoUnit.SECONDS);
                 }
                 catch (InterruptedException e) {
-                    e.printStackTrace();
+                    continue;
                 }
             }
             log.info("Exiting File saver.");
         }
+    }
+
+
+    public class HeartBeater implements Runnable{
+
+        boolean exit_flag;
+        Thread thread;
+        SportsTrader sportsTrader;
+
+        public HeartBeater(SportsTrader sportsTrader){
+            exit_flag = false;
+            this.sportsTrader = sportsTrader;
+            thread = new Thread(this);
+        }
+
+        public void start(){
+            thread.start();
+        }
+
+        public void safe_exit(){
+            exit_flag = true;
+            thread.interrupt();
+        }
+
+        @Override
+        public void run() {
+
+            Instant next_heartbeat = Instant.now();
+
+            while (!exit_flag){
+                try{
+
+                    // Wait for next heartbeat time, then calculate the NEXT next time.
+                    sleepUntil(next_heartbeat);
+                    next_heartbeat = next_heartbeat.plusMillis(config.HEARTBEAT_INTERVAL);
+
+                    // Send heartbeat to each site
+                    for (BettingSite site: sportsTrader.siteObjects.values()){
+
+                        boolean result = false;
+                        try {
+                            result = site.sendHeartbeat();
+                        } catch (Exception e){
+                            log.severe(sf("Exception while sending heartbeat to %s: %s", site.getName(), e.toString()));
+                            result = false;
+                        }
+
+                        if (!result){
+                            log.severe(sf("Unable to send heartbeat for %s", site.getName()));
+                        }
+                        else{
+                            log.info(sf("Heartbeat sent to %s successfully", site.getName()));
+                        }
+                    }
+                }
+                catch (InterruptedException e){
+                    log.info("HeartBeater interuppted.");
+                }
+            }
+        }
+
     }
 
 
@@ -702,8 +794,25 @@ public class SportsTrader {
         List<FootballMatch> fms = site.getFootballMatches(from, until);
 
         return fms;
-     }
+    }
 
+
+    public static void printThreads() {
+        try {
+            while (true) {
+                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+                String s = "";
+                for (Thread thread : threadSet) {
+                    s += thread.getName() + "\n";
+                }
+                print(s);
+                sleep(10000);
+            }
+        }
+        catch (Exception e) {
+            print(sf("Thread printer ending due to exception %s.", e.toString()));
+        }
+    }
 
 
     public static void main(String[] args){
@@ -718,6 +827,7 @@ public class SportsTrader {
         }
 
         st.run();
+        //printThreads();
     }
 
 }

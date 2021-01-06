@@ -1,0 +1,192 @@
+{
+  "total_investment": "5.214",
+  "max_return": "5.0034",
+  "min_return": "4.9932",
+  "prof_ratio": "-0.042347525892",
+  "bets": [
+    "RESULT_TEAM-A_BACK",
+    "RESULT_TEAM-A_LAY"
+  ],
+  "items": [
+    {
+      "bet": "RESULT_TEAM-A_LAY",
+      "bet_plans": [
+        {
+          "raw_request": [
+            {
+              "method": "SportsAPING/v1.0/placeOrders",
+              "id": 1,
+              "jsonrpc": "2.0",
+              "params": {
+                "instructions": [
+                  {
+                    "orderType": "LIMIT",
+                    "side": "LAY",
+                    "selectionId": 44793,
+                    "customerOrderRef": "570155679729",
+                    "handicap": 0.0,
+                    "limitOrder": {
+                      "size": 2.28,
+                      "persistenceType": "PERSIST",
+                      "price": "2.38",
+                      "minFillSize": 2.28,
+                      "timeInForce": "FILL_OR_KILL"
+                    }
+                  }
+                ],
+                "marketId": "1.175731882"
+              }
+            }
+          ],
+          "tot_inv": "2.8272",
+          "pot_returns": "4.9932",
+          "bet_id": "217649214122",
+          "backersProfit_layersStake": "null",
+          "type": "LAY",
+          "backersStake_layersProfit": "2.28",
+          "avg_odds": "2.24",
+          "betOrder": {
+            "stake": "2.83105022831044",
+            "pot_profit": "2.16894977168945",
+            "back_stake": "2.283105022831",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "RESULT_TEAM-A_LAY",
+                  "volume": "26.75",
+                  "site": "betfair",
+                  "roi_ratio": "1.766129032258",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=44793, BETFAIR_MARKET_ID=1.175731882}",
+                  "created": "2020-11-25T13:19:35.600519500Z",
+                  "odds": "2.24",
+                  "event": "[2020-11-29T14:00:00Z : Lens v Angers]"
+                },
+                {
+                  "bet": "RESULT_TEAM-A_LAY",
+                  "volume": "148.59",
+                  "site": "betfair",
+                  "roi_ratio": "1.7421875",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=44793, BETFAIR_MARKET_ID=1.175731882}",
+                  "created": "2020-11-25T13:19:35.600519500Z",
+                  "odds": "2.28",
+                  "event": "[2020-11-29T14:00:00Z : Lens v Angers]"
+                }
+              ],
+              "site": "betfair",
+              "event": "Lens v Angers"
+            },
+            "investment": "2.83105022831044",
+            "pot_return": "4.99999999999989",
+            "pot_prof_b4_com": "2.283105022831"
+          },
+          "comission": {
+            "win_com": "0.114",
+            "win_com_rate": "0.05"
+          },
+          "timings": {
+            "time_sent": "2020-11-25T13:19:36.106287700Z",
+            "time_placed": "2020-11-25T13:19:36Z",
+            "sent_to_placed": -106
+          },
+          "state": "SUCCESS",
+          "pot_prof": "2.166",
+          "raw_response": {
+            "sizeMatched": 2.28,
+            "instruction": {
+              "orderType": "LIMIT",
+              "side": "LAY",
+              "selectionId": 44793,
+              "customerOrderRef": "570155679729",
+              "handicap": 0.0,
+              "limitOrder": {
+                "size": 2.28,
+                "price": 2.38,
+                "minFillSize": 2.28,
+                "timeInForce": "FILL_OR_KILL"
+              }
+            },
+            "betId": "217649214122",
+            "orderStatus": "EXECUTION_COMPLETE",
+            "placedDate": "2020-11-25T13:19:36.000Z",
+            "status": "SUCCESS",
+            "averagePriceMatched": 2.24
+          },
+          "pot_prof_b4_com": "2.28"
+        }
+      ],
+      "event": "[2020-11-29T14:00:00Z : Lens v Angers]"
+    },
+    {
+      "bet": "RESULT_TEAM-A_BACK",
+      "bet_plans": [
+        {
+          "tot_inv": "2.3868",
+          "pot_returns": "5.0034",
+          "bet_id": "7020267818",
+          "backersProfit_layersStake": "2.67",
+          "type": "BACK",
+          "backersStake_layersProfit": "2.34",
+          "avg_odds": "2.141025641025641025641025641",
+          "betOrder": {
+            "stake": "2.339509638779",
+            "pot_profit": "2.6137001684438988",
+            "back_stake": "2.339509638779",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "RESULT_TEAM-A_BACK",
+                  "volume": "337.55",
+                  "site": "betdaq",
+                  "roi_ratio": "2.095294117647",
+                  "metadata": "{betdaq_selection_id=134676621, betdaq_event_id=21140176, betdaq_selection_reset_count=0, betdaq_seq_number=0}",
+                  "created": "2020-11-25T13:19:36.069308900Z",
+                  "odds": "2.14",
+                  "event": "[2020-11-29T14:00:00Z : Lens v Angers]"
+                },
+                {
+                  "bet": "RESULT_TEAM-A_BACK",
+                  "volume": "135.02",
+                  "site": "betdaq",
+                  "roi_ratio": "2.08568627451",
+                  "metadata": "{betdaq_selection_id=134676621, betdaq_event_id=21140176, betdaq_selection_reset_count=0, betdaq_seq_number=0}",
+                  "created": "2020-11-25T13:19:36.069308900Z",
+                  "odds": "2.13",
+                  "event": "[2020-11-29T14:00:00Z : Lens v Angers]"
+                },
+                {
+                  "bet": "RESULT_TEAM-A_BACK",
+                  "volume": "88.26",
+                  "site": "betdaq",
+                  "roi_ratio": "2.066470588236",
+                  "metadata": "{betdaq_selection_id=134676621, betdaq_event_id=21140176, betdaq_selection_reset_count=0, betdaq_seq_number=0}",
+                  "created": "2020-11-25T13:19:36.069308900Z",
+                  "odds": "2.11",
+                  "event": "[2020-11-29T14:00:00Z : Lens v Angers]"
+                }
+              ],
+              "site": "betdaq",
+              "event": "Lens v Angers"
+            },
+            "investment": "2.38629983155458",
+            "pot_return": "4.9999999999984788",
+            "pot_prof_b4_com": "2.66704098820806"
+          },
+          "comission": {
+            "win_com": "0.0534",
+            "loss_com": "0.0468",
+            "win_com_rate": "0.02",
+            "loss_com_rate": "0.02"
+          },
+          "timings": {
+            "time_placed": "2020-11-25T13:19:36.326Z"
+          },
+          "state": "null",
+          "pot_prof": "2.6166",
+          "raw_response": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><PlaceOrdersWithReceiptResponse xmlns=\"http://www.GlobalBettingExchange.com/ExternalAPI/\"><PlaceOrdersWithReceiptResult><Orders><Order Status=\"2\" MatchedAgainstStake=\"2.67\" MatchedStake=\"2.34\" MatchedPrice=\"2.141025641025641025641025641\" UnmatchedStake=\"0.00\" Polarity=\"1\" SequenceNumber=\"157\" SelectionId=\"134676621\" PunterReferenceNumber=\"724778604883\" OrderHandle=\"7020267818\"/></Orders></PlaceOrdersWithReceiptResult></PlaceOrdersWithReceiptResponse>",
+          "pot_prof_b4_com": "2.67"
+        }
+      ],
+      "event": "[2020-11-29T14:00:00Z : Lens v Angers]"
+    }
+  ]
+}

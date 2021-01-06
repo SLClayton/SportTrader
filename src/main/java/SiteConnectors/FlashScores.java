@@ -57,7 +57,7 @@ public class FlashScores implements SportData {
         String response = null;
         try {
             response = requester.getRaw("https://s.livesport.services/search/", params).trim();
-        } catch (IOException | URISyntaxException e) {
+        } catch (NullPointerException | IOException | URISyntaxException e) {
             e.printStackTrace();
             log.severe(String.format("%s while getting response from flashscores for team '%s' query.",
                     e.toString(), query));
@@ -156,8 +156,11 @@ public class FlashScores implements SportData {
         String raw = null;
         try {
             raw = requester.getRaw(url);
+            if (raw == null){
+                throw new NullPointerException();
+            }
         }
-        catch (IOException | URISyntaxException e){
+        catch (NullPointerException | IOException | URISyntaxException e){
             log.severe(String.format("Failed to get fixtures for " + team.name + " in flashscores."));
             if (e instanceof HttpResponseException){
                 log.warning(String.format("Flashscores 404'd when trying to get team fixtures for %s", team.id));

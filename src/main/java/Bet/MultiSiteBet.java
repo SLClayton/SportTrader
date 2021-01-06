@@ -16,8 +16,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static tools.BigDecimalTools.combine_map;
-import static tools.printer.print;
-import static tools.printer.sf;
+import static tools.printer.*;
 
 public class MultiSiteBet {
 
@@ -337,15 +336,18 @@ public class MultiSiteBet {
     }
 
     public JSONObject toJSON() {
+        JSONObject j = new JSONObject();
+        j.put("event", stringValue(event));
+        j.put("bet", bet.id());
+
         JSONArray siteBets_array = new JSONArray();
         for (SiteBet siteBet: site_bets.values()){
-            siteBets_array.add(siteBet.toJSON());
+            JSONObject siteBet_json = siteBet.toJSON();
+            siteBet_json.remove("event");
+            siteBets_array.add(siteBet_json);
         }
 
-        JSONObject j = new JSONObject();
-        j.put("event", event.toString());
-        j.put("bet", bet.id());
-        j.put("bet_plans", siteBets_array);
+        j.put("site_bets", siteBets_array);
         return j;
     }
 

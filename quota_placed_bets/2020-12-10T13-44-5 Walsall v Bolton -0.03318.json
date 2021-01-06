@@ -1,0 +1,215 @@
+{
+  "total_investment": "5.17162",
+  "max_return": "5.0049200000000005757",
+  "min_return": "5.000033",
+  "prof_ratio": "-0.033178578473",
+  "bets": [
+    "RESULT_TEAM-A_BACK",
+    "RESULT_TEAM-A_LAY"
+  ],
+  "items": [
+    {
+      "bet": "RESULT_TEAM-A_LAY",
+      "bet_plans": [
+        {
+          "raw_request": {
+            "side": "sell",
+            "quantity": 49907,
+            "contract_id": "41148577",
+            "price": 3817,
+            "market_id": "11812471",
+            "label": "323498201791",
+            "minimum_accepted_quantity": 49907,
+            "type": "immediate_or_cancel"
+          },
+          "tot_inv": "2.99162",
+          "pot_returns": "5.000033",
+          "bet_id": "202862509642149891",
+          "backersProfit_layersStake": "2.962",
+          "type": "LAY",
+          "backersStake_layersProfit": "2.0287",
+          "avg_odds": "2.460024600246",
+          "betOrder": {
+            "stake": "2.961961132681693656319018",
+            "pot_profit": "2.00841925599117",
+            "back_stake": "2.028706319183",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "RESULT_TEAM-A_LAY",
+                  "volume": "28.028175",
+                  "site": "smarkets",
+                  "roi_ratio": "1.671357194692",
+                  "metadata": "{CONTRACT_ID=41148577, SMARKETS_PRICE=4065, MARKET_ID=11812471}",
+                  "created": "2020-12-10T13:44:51.299411900Z",
+                  "odds": "2.460024600246",
+                  "event": "[2020-12-12T15:00:00Z : Walsall v Bolton]"
+                },
+                {
+                  "bet": "RESULT_TEAM-A_LAY",
+                  "volume": "15.24469236",
+                  "site": "smarkets",
+                  "roi_ratio": "1.597712507889",
+                  "metadata": "{CONTRACT_ID=41148577, SMARKETS_PRICE=3788, MARKET_ID=11812471}",
+                  "created": "2020-12-10T13:44:51.299411900Z",
+                  "odds": "2.639915522703",
+                  "event": "[2020-12-12T15:00:00Z : Walsall v Bolton]"
+                }
+              ],
+              "site": "smarkets",
+              "event": "Walsall v Bolton"
+            },
+            "investment": "2.99158074400851059288220818",
+            "pot_return": "4.99999999999968059288220818",
+            "pot_prof_b4_com": "2.028706319183"
+          },
+          "comission": {
+            "win_com": "0.020287",
+            "loss_com": "0.02962",
+            "win_com_rate": "0.01",
+            "loss_com_rate": "0.01"
+          },
+          "timings": {
+            "time_sent": "2020-12-10T13:44:51.848288800Z"
+          },
+          "state": "SUCCESS",
+          "pot_prof": "2.008413",
+          "raw_response": {
+            "available_quantity": 0,
+            "orig_price": 3817,
+            "side": "sell",
+            "quantity": 49907,
+            "exposure": "-2.97",
+            "contract_id": "41148577",
+            "price": 4065,
+            "executed_avg_price": 4065,
+            "market_id": "11812471",
+            "available_balance": "210.78",
+            "order_id": "202862509642149891",
+            "total_executed_quantity": 49907
+          },
+          "pot_prof_b4_com": "2.0287"
+        }
+      ],
+      "event": "[2020-12-12T15:00:00Z : Walsall v Bolton]"
+    },
+    {
+      "bet": "RESULT_TEAM-A_BACK",
+      "bet_plans": [
+        {
+          "raw_request": [
+            {
+              "method": "SportsAPING/v1.0/placeOrders",
+              "id": 1,
+              "jsonrpc": "2.0",
+              "params": {
+                "instructions": [
+                  {
+                    "orderType": "LIMIT",
+                    "side": "BACK",
+                    "selectionId": 55213,
+                    "customerOrderRef": "424016053570",
+                    "handicap": 0.0,
+                    "limitOrder": {
+                      "size": 2.18,
+                      "persistenceType": "PERSIST",
+                      "price": "2.22",
+                      "minFillSize": 2.18,
+                      "timeInForce": "FILL_OR_KILL"
+                    }
+                  }
+                ],
+                "marketId": "1.176490183"
+              }
+            }
+          ],
+          "tot_inv": "2.18",
+          "pot_returns": "5.0049200000000005757",
+          "bet_id": "219035592957",
+          "backersProfit_layersStake": "null",
+          "type": "BACK",
+          "backersStake_layersProfit": "2.18",
+          "avg_odds": "2.3640366972477067",
+          "betOrder": {
+            "stake": "2.1815008726",
+            "pot_profit": "2.8184991273992",
+            "back_stake": "2.1815008726",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "RESULT_TEAM-A_BACK",
+                  "volume": "9.48",
+                  "site": "betfair",
+                  "roi_ratio": "2.292",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=55213, BETFAIR_MARKET_ID=1.176490183}",
+                  "created": "2020-12-10T13:44:51.125511200Z",
+                  "odds": "2.36",
+                  "event": "[2020-12-12T15:00:00Z : Walsall v Bolton]"
+                },
+                {
+                  "bet": "RESULT_TEAM-A_BACK",
+                  "volume": "25.16",
+                  "site": "betfair",
+                  "roi_ratio": "2.216",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=55213, BETFAIR_MARKET_ID=1.176490183}",
+                  "created": "2020-12-10T13:44:51.126510500Z",
+                  "odds": "2.28",
+                  "event": "[2020-12-12T15:00:00Z : Walsall v Bolton]"
+                },
+                {
+                  "bet": "RESULT_TEAM-A_BACK",
+                  "volume": "5.28",
+                  "site": "betfair",
+                  "roi_ratio": "1.019",
+                  "metadata": "{BETFAIR_HANDICAP=0.0, BETFAIR_SELECTION_ID=55213, BETFAIR_MARKET_ID=1.176490183}",
+                  "created": "2020-12-10T13:44:51.126510500Z",
+                  "odds": "1.02",
+                  "event": "[2020-12-12T15:00:00Z : Walsall v Bolton]"
+                }
+              ],
+              "site": "betfair",
+              "event": "Walsall v Bolton"
+            },
+            "investment": "2.1815008726",
+            "pot_return": "4.9999999999992",
+            "pot_prof_b4_com": "2.966841186736"
+          },
+          "comission": {
+            "win_com": "0.1486800000000000303",
+            "win_com_rate": "0.05"
+          },
+          "timings": {
+            "time_sent": "2020-12-10T13:44:51.836295100Z",
+            "time_placed": "2020-12-10T13:44:52Z",
+            "sent_to_placed": 164
+          },
+          "state": "SUCCESS",
+          "pot_prof": "2.8249200000000005757",
+          "raw_response": {
+            "sizeMatched": 2.18,
+            "instruction": {
+              "orderType": "LIMIT",
+              "side": "BACK",
+              "selectionId": 55213,
+              "customerOrderRef": "424016053570",
+              "handicap": 0.0,
+              "limitOrder": {
+                "size": 2.18,
+                "price": 2.22,
+                "minFillSize": 2.18,
+                "timeInForce": "FILL_OR_KILL"
+              }
+            },
+            "betId": "219035592957",
+            "orderStatus": "EXECUTION_COMPLETE",
+            "placedDate": "2020-12-10T13:44:52.000Z",
+            "status": "SUCCESS",
+            "averagePriceMatched": 2.3640366972477067
+          },
+          "pot_prof_b4_com": "2.973600000000000606"
+        }
+      ],
+      "event": "[2020-12-12T15:00:00Z : Walsall v Bolton]"
+    }
+  ]
+}

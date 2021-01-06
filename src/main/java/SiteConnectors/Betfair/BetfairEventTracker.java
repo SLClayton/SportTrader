@@ -62,8 +62,6 @@ public class BetfairEventTracker extends SiteEventTracker {
 
     public Instant lastMarketDataUpdate;
     public Map<String, String> marketType_id_map;
-
-
     public Map<String, String> betId_marketSelId_map;
 
 
@@ -72,12 +70,10 @@ public class BetfairEventTracker extends SiteEventTracker {
         super(betfair);
         this.betfair = betfair;
 
-
         event = null;
         lastMarketDataUpdate = null;
         marketType_id_map = new HashMap<>();
         bet_blacklist = new HashSet<>();
-
         betId_marketSelId_map = new HashMap<>();
     }
 
@@ -112,6 +108,7 @@ public class BetfairEventTracker extends SiteEventTracker {
             String market_id = (String) market.get("marketId");
             String market_type = (String) ((JSONObject) market.get("description")).get("marketType");
             marketType_id_map.put(market_type, market_id);
+
 
             // Result bets
             if (market_type.equals("MATCH_ODDS") || market_type.equals("HALF_TIME")){
@@ -390,12 +387,21 @@ public class BetfairEventTracker extends SiteEventTracker {
             return MarketOddsReport.ERROR("NULL event in betfair event tracker");
         }
 
-        // get the raw data market odds
-        JSONArray market_odds = betfair.getMarketOdds(marketType_id_map.values());
-        toFile(market_odds, 1);
+
+        // Establish from the given bets, which markets to ask for prices in
+        Set<String> market_ids = new HashSet<>();
+        for (Bet bet: bets){
+            String market_sel_id = betId_marketSelId_map.get(bet.id());
+            if (market_sel_id == null){
+                continue;
+            }
+            String market_id = extractMarketId(market_sel_id);
+            market_ids.add(market_id);
+        }
 
 
-        // Check market odds were returned.
+        // Get the raw data market odds
+        JSONArray market_odds = betfair.getMarketOdds(market_ids);
         if (market_odds == null){
             return MarketOddsReport.ERROR("Betfair market odds returned null.");
         }
@@ -514,7 +520,6 @@ public class BetfairEventTracker extends SiteEventTracker {
     public static String extractMarketId(String markSelId){
         return markSelId.substring(0, markSelId.indexOf("_"));
     }
-
 
 
     public static void main(String[] args){

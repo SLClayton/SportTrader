@@ -19,6 +19,10 @@ public class MarketOddsReportWorker implements Runnable {
 
     public static final Logger log = Logger.getLogger(SportsTrader.class.getName());
 
+    public final SportsTrader sportsTrader;
+    public final int id;
+    public final Instant created_time;
+    public final String name;
     public Thread thread;
     public BlockingQueue<RequestHandler> queue;
     public boolean waiting;
@@ -30,11 +34,16 @@ public class MarketOddsReportWorker implements Runnable {
     private boolean exit_flag;
 
 
-    public MarketOddsReportWorker(BlockingQueue<RequestHandler> queue){
+    public MarketOddsReportWorker(SportsTrader sportsTrader, int id, BlockingQueue<RequestHandler> queue){
+        created_time = Instant.now();
+        this.sportsTrader = sportsTrader;
+        this.id = id;
+        name = sf("MORW-%s", id);
         waiting = false;
         exit_flag = false;
         this.queue = queue;
         thread = new Thread(this);
+        thread.setName(name);
     }
 
 
@@ -43,6 +52,10 @@ public class MarketOddsReportWorker implements Runnable {
         if (interrupt){
             thread.interrupt();
         }
+    }
+
+    public void safe_exit(){
+        safe_exit(true);
     }
 
 
@@ -66,7 +79,7 @@ public class MarketOddsReportWorker implements Runnable {
 
         RequestHandler requestHandler = null;
 
-        while (!exit_flag){
+        while (!exit_flag && !sportsTrader.exit_flag){
             try{
                 status = "newloop";
                 this.siteEventTracker = null;
@@ -128,5 +141,10 @@ public class MarketOddsReportWorker implements Runnable {
         }
 
         log.info(String.format("Ending MarketOddsReport worker."));
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

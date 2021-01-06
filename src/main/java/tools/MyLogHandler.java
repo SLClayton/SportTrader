@@ -80,8 +80,8 @@ public class MyLogHandler extends Handler {
         LocalTime time = datetime.atZone(ZoneOffset.UTC).toLocalTime();
 
         String log_no_datetime = new StringBuilder()
-                .append(String.format(" [%s] ", threadname))
-                .append(String.format("[%s] ", record.getLevel().toString()))
+                .append(String.format(" [%s] ", record.getLevel().toString()))
+                .append(String.format("[%s] ", threadname))
                 //.append(record.getSourceMethodName())
                 .append(record.getMessage())
                 .toString();

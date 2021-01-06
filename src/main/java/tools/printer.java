@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.awt.event.WindowStateListener;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -47,6 +48,7 @@ public abstract class printer {
 
     public static String resource_path = "resources/";
     public static final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    public static final String digits = "0123456789";
 
 
     public static String jstring(JSONArray j){
@@ -162,6 +164,10 @@ public abstract class printer {
         print(sf(args));
     }
 
+    public static void printf(Object... args){
+        psf(args);
+    }
+
 
     public static String stringValue(Object obj){
         if (obj == null){
@@ -170,6 +176,10 @@ public abstract class printer {
         else{
             return String.valueOf(obj);
         }
+    }
+
+    public static String sv(Object obj){
+        return stringValue(obj);
     }
 
 
@@ -406,13 +416,38 @@ public abstract class printer {
     }
 
 
-    public static String rndString(int length){
+    public static String rndString(int length, String alphabet){
         Random r = new Random();
         StringBuffer sb = new StringBuffer();
         while(sb.length() < length){
             sb.append(alphabet.charAt(r.nextInt(alphabet.length())));
         }
         return sb.toString();
+    }
+
+    public static String rndString(int length){
+        return rndString(length, alphabet);
+    }
+
+    public static String rndStringNumber(int length){
+        return rndString(length, digits);
+    }
+
+
+    public static List<String> rndStringList(int word_length, int list_length){
+        List<String> list = new ArrayList<>();
+        for (int i=0; i<list_length; i++){
+            list.add(rndString(word_length));
+        }
+        return list;
+    }
+
+    public static List<List<String>> rndStringListList(int word_length, int list_length, int list_list_length){
+        List<List<String>> list = new ArrayList<>();
+        for (int i=0; i<list_list_length; i++){
+            list.add(rndStringList(word_length, list_length));
+        }
+        return list;
     }
 
 

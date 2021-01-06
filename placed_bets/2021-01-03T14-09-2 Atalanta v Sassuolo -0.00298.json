@@ -1,0 +1,195 @@
+{
+  "total_investment": "5.025861",
+  "max_return": "5.010924",
+  "Site_Bets": 2,
+  "min_return": "5.010873",
+  "prof_ratio": "-0.002982175591",
+  "bets": [
+    "UNDER_0.5_BACK",
+    "UNDER_0.5_LAY"
+  ],
+  "items": [
+    {
+      "bet": "UNDER_0.5_BACK",
+      "site_bets": [
+        {
+          "tot_inv": "0.159378",
+          "pot_returns": "5.010873",
+          "bet_id": "202871009130205190",
+          "type": "BACK",
+          "backers_stake": "0.1578",
+          "avg_odds": "32.051282051282",
+          "layers_stake": "4.9005",
+          "comission": {
+            "win_com": "0.049005",
+            "loss_com": "0.001578",
+            "win_com_rate": "0.01",
+            "loss_com_rate": "0.01"
+          },
+          "timings": {
+            "time_sent": "2021-01-03T14:09:22.899982900Z"
+          },
+          "state": "SUCCESS",
+          "pot_prof": "4.851495",
+          "raws": {
+            "request": {
+              "side": "buy",
+              "quantity": 50583,
+              "contract_id": "42159323",
+              "price": 357,
+              "market_id": "12137144",
+              "label": "745995890010",
+              "minimum_accepted_quantity": 50583,
+              "type": "immediate_or_cancel"
+            },
+            "response": {
+              "available_quantity": 0,
+              "orig_price": 357,
+              "side": "buy",
+              "quantity": 50583,
+              "exposure": "-0.16",
+              "contract_id": "42159323",
+              "price": 312,
+              "executed_avg_price": 312,
+              "market_id": "12137144",
+              "available_balance": "209.36",
+              "order_id": "202871009130205190",
+              "total_executed_quantity": 50583
+            }
+          },
+          "betPlan": {
+            "bet": "UNDER_0.5_BACK",
+            "stake": "0.157820392345",
+            "exp_avg_odds": "32.051282051282",
+            "pot_profit": "4.8515202609870958337339271",
+            "site": "smarkets",
+            "back_stake": "0.157820392345",
+            "betExchange": {
+              "offers": [
+                {
+                  "volume": "0.65999856",
+                  "roi_ratio": "31.43640517898",
+                  "metadata": "{CONTRACT_ID=42159323, SMARKETS_PRICE=312, MARKET_ID=12137144}",
+                  "odds": "32.051282051282"
+                },
+                {
+                  "volume": "2.26465785",
+                  "roi_ratio": "21.56261560222",
+                  "metadata": "{CONTRACT_ID=42159323, SMARKETS_PRICE=455, MARKET_ID=12137144}",
+                  "odds": "21.978021978022"
+                },
+                {
+                  "volume": "2.527885",
+                  "roi_ratio": "19.623762376238",
+                  "metadata": "{CONTRACT_ID=42159323, SMARKETS_PRICE=500, MARKET_ID=12137144}",
+                  "odds": "20"
+                },
+                {
+                  "volume": "2.81125276",
+                  "roi_ratio": "17.649262768003",
+                  "metadata": "{CONTRACT_ID=42159323, SMARKETS_PRICE=556, MARKET_ID=12137144}",
+                  "odds": "17.985611510791"
+                }
+              ],
+              "created": "2021-01-03T14:09:22.886990800Z"
+            },
+            "investment": "0.15939859626845",
+            "event": "[2021-01-03T14:00:00Z : Atalanta v Sassuolo]",
+            "pot_return": "5.0109188572555458337339271",
+            "pot_prof_b4_com": "4.90052551614858165023629"
+          },
+          "pot_prof_b4_com": "4.9005"
+        }
+      ],
+      "event": "[2021-01-03T14:00:00Z : Atalanta v Sassuolo]"
+    },
+    {
+      "bet": "UNDER_0.5_LAY",
+      "site_bets": [
+        {
+          "tot_inv": "4.866483",
+          "pot_returns": "5.010924",
+          "bet_id": "202871009130987526",
+          "type": "LAY",
+          "backers_stake": "0.1459",
+          "avg_odds": "34.013605442177",
+          "layers_stake": "4.8183",
+          "comission": {
+            "win_com": "0.001459",
+            "loss_com": "0.048183",
+            "win_com_rate": "0.01",
+            "loss_com_rate": "0.01"
+          },
+          "timings": {
+            "time_sent": "2021-01-03T14:09:22.899982900Z"
+          },
+          "state": "SUCCESS",
+          "pot_prof": "0.144441",
+          "raws": {
+            "request": {
+              "side": "sell",
+              "quantity": 49642,
+              "contract_id": "42159323",
+              "price": 263,
+              "market_id": "12137144",
+              "label": "526962888055",
+              "minimum_accepted_quantity": 49642,
+              "type": "immediate_or_cancel"
+            },
+            "response": {
+              "available_quantity": 0,
+              "orig_price": 263,
+              "side": "sell",
+              "quantity": 49642,
+              "exposure": "-0.02",
+              "contract_id": "42159323",
+              "price": 294,
+              "executed_avg_price": 294,
+              "market_id": "12137144",
+              "available_balance": "209.51",
+              "order_id": "202871009130987526",
+              "total_executed_quantity": 49642
+            }
+          },
+          "betPlan": {
+            "bet": "UNDER_0.5_LAY",
+            "stake": "4.818248488081399816325167",
+            "exp_avg_odds": "34.013605442177",
+            "pot_profit": "0.14448788429229",
+            "site": "smarkets",
+            "back_stake": "0.145947357871",
+            "betExchange": {
+              "offers": [
+                {
+                  "volume": "15.55701588",
+                  "roi_ratio": "1.029690729221",
+                  "metadata": "{CONTRACT_ID=42159323, SMARKETS_PRICE=294, MARKET_ID=12137144}",
+                  "odds": "34.013605442177"
+                },
+                {
+                  "volume": "27.58255952",
+                  "roi_ratio": "1.028028702891",
+                  "metadata": "{CONTRACT_ID=42159323, SMARKETS_PRICE=278, MARKET_ID=12137144}",
+                  "odds": "35.971223021583"
+                },
+                {
+                  "volume": "27.5825575",
+                  "roi_ratio": "1.025133282559",
+                  "metadata": "{CONTRACT_ID=42159323, SMARKETS_PRICE=250, MARKET_ID=12137144}",
+                  "odds": "40"
+                }
+              ],
+              "created": "2021-01-03T14:09:22.886990800Z"
+            },
+            "investment": "4.86643097296221381448841867",
+            "event": "[2021-01-03T14:00:00Z : Atalanta v Sassuolo]",
+            "pot_return": "5.01091885725450381448841867",
+            "pot_prof_b4_com": "0.145947357871"
+          },
+          "pot_prof_b4_com": "0.1459"
+        }
+      ],
+      "event": "[2021-01-03T14:00:00Z : Atalanta v Sassuolo]"
+    }
+  ]
+}

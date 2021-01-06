@@ -1,0 +1,212 @@
+{
+  "total_investment": "5.04495",
+  "max_return": "5.004877",
+  "min_return": "5.004824",
+  "prof_ratio": "-0.007953696271",
+  "bets": [
+    "CORRECT-SCORE_2-2_BACK",
+    "CORRECT-SCORE_2-2_LAY"
+  ],
+  "items": [
+    {
+      "bet": "CORRECT-SCORE_2-2_BACK",
+      "bet_plans": [
+        {
+          "raw_request": {
+            "side": "buy",
+            "quantity": 50488,
+            "contract_id": "40983478",
+            "price": 714,
+            "market_id": "11760731",
+            "label": "119888789591",
+            "minimum_accepted_quantity": 50488,
+            "type": "immediate_or_cancel"
+          },
+          "tot_inv": "0.328856",
+          "pot_returns": "5.004824",
+          "bet_id": "202861831650009100",
+          "backersProfit_layersStake": "4.7232",
+          "type": "BACK",
+          "backersStake_layersProfit": "0.3256",
+          "avg_odds": "15.503875968992",
+          "betOrder": {
+            "stake": "0.325647985104",
+            "pot_profit": "4.67592640564556467807621632",
+            "back_stake": "0.325647985104",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "CORRECT-SCORE_2-2_BACK",
+                  "volume": "2.1983406",
+                  "site": "smarkets",
+                  "roi_ratio": "15.21667050426",
+                  "metadata": "{CONTRACT_ID=40983478, SMARKETS_PRICE=645, MARKET_ID=11760731}",
+                  "created": "2020-12-08T15:46:05.425Z",
+                  "odds": "15.503875968992",
+                  "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+                },
+                {
+                  "bet": "CORRECT-SCORE_2-2_BACK",
+                  "volume": "2.3752905",
+                  "site": "smarkets",
+                  "roi_ratio": "14.225570383125",
+                  "metadata": "{CONTRACT_ID=40983478, SMARKETS_PRICE=690, MARKET_ID=11760731}",
+                  "created": "2020-12-08T15:46:05.425Z",
+                  "odds": "14.492753623188",
+                  "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+                },
+                {
+                  "bet": "CORRECT-SCORE_2-2_BACK",
+                  "volume": "24.99999775",
+                  "site": "smarkets",
+                  "roi_ratio": "12.766200157077",
+                  "metadata": "{CONTRACT_ID=40983478, SMARKETS_PRICE=769, MARKET_ID=11760731}",
+                  "created": "2020-12-08T15:46:05.425Z",
+                  "odds": "13.003901170351",
+                  "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+                },
+                {
+                  "bet": "CORRECT-SCORE_2-2_BACK",
+                  "volume": "2.89731561",
+                  "site": "smarkets",
+                  "roi_ratio": "11.78688505105",
+                  "metadata": "{CONTRACT_ID=40983478, SMARKETS_PRICE=833, MARKET_ID=11760731}",
+                  "created": "2020-12-08T15:46:05.425Z",
+                  "odds": "12.004801920768",
+                  "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+                }
+              ],
+              "site": "smarkets",
+              "event": "Göztepe v Alanyaspor"
+            },
+            "investment": "0.32890446495504",
+            "pot_return": "5.00483087060060467807621632",
+            "pot_prof_b4_com": "4.723157985500570381895168"
+          },
+          "comission": {
+            "win_com": "0.047232",
+            "loss_com": "0.003256",
+            "win_com_rate": "0.01",
+            "loss_com_rate": "0.01"
+          },
+          "timings": {
+            "time_sent": "2020-12-08T15:46:05.468Z"
+          },
+          "state": "SUCCESS",
+          "pot_prof": "4.675968",
+          "raw_response": {
+            "available_quantity": 0,
+            "orig_price": 714,
+            "side": "buy",
+            "quantity": 50488,
+            "exposure": "-0.04",
+            "contract_id": "40983478",
+            "price": 645,
+            "executed_avg_price": 645,
+            "market_id": "11760731",
+            "available_balance": "213.74",
+            "order_id": "202861831650009100",
+            "total_executed_quantity": 50488
+          },
+          "pot_prof_b4_com": "4.7232"
+        }
+      ],
+      "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+    },
+    {
+      "bet": "CORRECT-SCORE_2-2_LAY",
+      "bet_plans": [
+        {
+          "raw_request": {
+            "side": "sell",
+            "quantity": 49611,
+            "contract_id": "40983478",
+            "price": 526,
+            "market_id": "11760731",
+            "label": "943018765846",
+            "minimum_accepted_quantity": 49611,
+            "type": "immediate_or_cancel"
+          },
+          "tot_inv": "4.716094",
+          "pot_returns": "5.004877",
+          "bet_id": "202861831649857539",
+          "backersProfit_layersStake": "4.6694",
+          "type": "LAY",
+          "backersStake_layersProfit": "0.2917",
+          "avg_odds": "17.006802721088",
+          "betOrder": {
+            "stake": "4.669344519378063473194624",
+            "pot_profit": "0.28879290603702",
+            "back_stake": "0.291710006098",
+            "betExchange": {
+              "offers": [
+                {
+                  "bet": "CORRECT-SCORE_2-2_LAY",
+                  "volume": "20.33569776",
+                  "site": "smarkets",
+                  "roi_ratio": "1.061236340378",
+                  "metadata": "{CONTRACT_ID=40983478, SMARKETS_PRICE=588, MARKET_ID=11760731}",
+                  "created": "2020-12-08T15:46:05.423Z",
+                  "odds": "17.006802721088",
+                  "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+                },
+                {
+                  "bet": "CORRECT-SCORE_2-2_LAY",
+                  "volume": "20.33569678",
+                  "site": "smarkets",
+                  "roi_ratio": "1.059358688017",
+                  "metadata": "{CONTRACT_ID=40983478, SMARKETS_PRICE=571, MARKET_ID=11760731}",
+                  "created": "2020-12-08T15:46:05.424Z",
+                  "odds": "17.513134851138",
+                  "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+                },
+                {
+                  "bet": "CORRECT-SCORE_2-2_LAY",
+                  "volume": "20.3357",
+                  "site": "smarkets",
+                  "roi_ratio": "1.051589369463",
+                  "metadata": "{CONTRACT_ID=40983478, SMARKETS_PRICE=500, MARKET_ID=11760731}",
+                  "created": "2020-12-08T15:46:05.424Z",
+                  "odds": "20",
+                  "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+                }
+              ],
+              "site": "smarkets",
+              "event": "Göztepe v Alanyaspor"
+            },
+            "investment": "4.71603796457184410792657024",
+            "pot_return": "5.00483087060886410792657024",
+            "pot_prof_b4_com": "0.291710006098"
+          },
+          "comission": {
+            "win_com": "0.002917",
+            "loss_com": "0.046694",
+            "win_com_rate": "0.01",
+            "loss_com_rate": "0.01"
+          },
+          "timings": {
+            "time_sent": "2020-12-08T15:46:05.468Z"
+          },
+          "state": "SUCCESS",
+          "pot_prof": "0.288783",
+          "raw_response": {
+            "available_quantity": 0,
+            "orig_price": 526,
+            "side": "sell",
+            "quantity": 49611,
+            "exposure": "-4.67",
+            "contract_id": "40983478",
+            "price": 588,
+            "executed_avg_price": 588,
+            "market_id": "11760731",
+            "available_balance": "209.11",
+            "order_id": "202861831649857539",
+            "total_executed_quantity": 49611
+          },
+          "pot_prof_b4_com": "0.2917"
+        }
+      ],
+      "event": "[2020-12-09T15:30:00Z : Göztepe v Alanyaspor]"
+    }
+  ]
+}

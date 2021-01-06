@@ -8,7 +8,6 @@ import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Sport.FootballTeam;
-import com.lowagie.text.ExceptionConverter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -112,8 +111,12 @@ public class Smarkets extends BettingSite {
         public void safe_exit(){
             exit_flag = true;
             thread.interrupt();
-            for (PriceQuoteRequestSender priceQuoteRequestSender: priceQuoteRequestSenders){
-                priceQuoteRequestSender.safe_exit();
+            if (priceQuotesRequestHandler != null) {
+                for (PriceQuoteRequestSender priceQuoteRequestSender : priceQuoteRequestSenders) {
+                    if (priceQuoteRequestSender != null){
+                        priceQuoteRequestSender.safe_exit();
+                    }
+                }
             }
         }
 
@@ -309,6 +312,12 @@ public class Smarkets extends BettingSite {
         }
     }
 
+
+    @Override
+    public boolean sendHeartbeat() throws URISyntaxException, IOException {
+        // No heartbeat available for smarkets
+        return true;
+    }
 
     public static BigDecimal[] priceArray2DecOddsArray(int[] int_array){
         BigDecimal[] bd_array = new BigDecimal[int_array.length];
@@ -918,14 +927,9 @@ public class Smarkets extends BettingSite {
     }
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
 
-        try{
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        print(price2DecOdds(5405));
 
     }
 }

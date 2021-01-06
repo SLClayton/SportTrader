@@ -11,6 +11,7 @@ import SiteConnectors.TestBetSite;
 import Sport.Event;
 import Sport.FootballMatch;
 import Trader.SportsTrader;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import tools.BigDecimalTools;
 
@@ -297,9 +298,23 @@ public class BetExchange {
 
     public JSONObject toJSON(){
         JSONObject j = new JSONObject();
-        j.put("event", event.name);
+        j.put("event", stringValue(event));
         j.put("site", site.getName());
-        j.put("offers", BetOffer.list2JSON(betOffers));
+        j.put("created", stringValue(time_created));
+        j.put("bet", stringValue(bet));
+
+
+        JSONArray offers = new JSONArray();
+        for (BetOffer betOffer: betOffers){
+            JSONObject offer_json = betOffer.toJSON();
+            offer_json.remove("event");
+            offer_json.remove("created");
+            offer_json.remove("site");
+            offer_json.remove("bet");
+            offers.add(offer_json);
+        }
+        j.put("offers", offers);
+
         return j;
     }
 

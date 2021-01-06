@@ -90,10 +90,22 @@ public class BetdaqEventTracker extends SiteEventTracker {
             return MarketOddsReport.ERROR("NULL event in betdaq  event tracker");
         }
 
+        // Find which markets to request given the requested bets
+        Set<Long> market_ids = new HashSet<>();
+        for (Bet bet: bets){
+            Long selection_id = bet_selectionId_map.get(bet.id());
+            if (selection_id == null){
+                continue;
+            }
+            Long market_id = selectionId_marketId_map.get(selection_id);
+            market_ids.add(market_id);
+        }
+
+
         // Get list of prices for each market
         GetPricesResponse resp = null;
         try {
-            resp = betdaq.getPrices(marketName_id_map.values());
+            resp = betdaq.getPrices(market_ids);
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -185,16 +197,6 @@ public class BetdaqEventTracker extends SiteEventTracker {
     }
 
 
-    public static String remove_selectionName_suffix(String raw_selectionName){
-        // If selection name contains some shortened names like '(Shef - ManC)' remove it
-        Matcher m = unneeded_market_suffix.matcher(raw_selectionName);
-        String new_selectionName = raw_selectionName;
-        if (m.find()){
-            new_selectionName = new_selectionName.substring(0, m.start()) + new_selectionName.substring(m.end()).trim();
-        }
-        return new_selectionName;
-    }
-
     @Override
     public boolean siteSpecificSetup() throws IOException, URISyntaxException, InterruptedException {
 
@@ -214,6 +216,9 @@ public class BetdaqEventTracker extends SiteEventTracker {
 
         // Find what each team is referred to as in betdaqs selector names
         String[] team_names = getTeamNames(betdaq_event);
+        if (team_names == null){
+            return false;
+        }
         String team_a = team_names[0];
         String team_b = team_names[1];
 

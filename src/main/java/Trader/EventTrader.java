@@ -195,15 +195,15 @@ public class EventTrader implements Runnable {
         if (profit_ratio == null || profit_ratio.compareTo(new BigDecimal("-0.08")) == -1) {
             return 10000;
         } else if (profit_ratio.compareTo(new BigDecimal("-0.05")) == -1){
-            return 6000;
+            return 12000;
         } else if (profit_ratio.compareTo(new BigDecimal("-0.03")) == -1){
-            return 5000;
+            return 8000;
         } else if (profit_ratio.compareTo(new BigDecimal("-0.02")) == -1){
-            return 3000;
+            return 6000;
         } else if (profit_ratio.compareTo(new BigDecimal("-0.01")) == -1){
-            return 2000;
+            return 4000;
         } else if (profit_ratio.compareTo(new BigDecimal("-0.005")) == -1){
-            return 1000;
+            return 2000;
         } else {
             return 0;
         }
@@ -224,11 +224,6 @@ public class EventTrader implements Runnable {
     }
 
 
-    public RequestHandler requestMarketOddsReport(SiteEventTracker siteEventTracker, Collection<Bet> bets){
-        return sportsTrader.requestMarketOddsReport(siteEventTracker, bets);
-    }
-
-
     private void checkArbs() throws InterruptedException {
 
         Instant now = Instant.now();
@@ -246,7 +241,7 @@ public class EventTrader implements Runnable {
         // Start threads to get Markets Odds Reports for this event for each site
         Map<SiteEventTracker, RequestHandler> requestHandlers = new HashMap<>();
         for (SiteEventTracker siteEventTracker: siteEventTrackers.values()){
-            RequestHandler rh = requestMarketOddsReport(siteEventTracker, bets_to_request);
+            RequestHandler rh = sportsTrader.requestMarketOddsReport(siteEventTracker, bets_to_request);
             requestHandlers.put(siteEventTracker, rh);
         }
 
@@ -301,29 +296,27 @@ public class EventTrader implements Runnable {
         log.fine(String.format("Combined %d site odds together for %s.", marketOddsReports.size(), match));
 
 
-        // Create a profit report for each tautology, made of the best bets that return 0.01
-        ProfitReportSet penny_pPRs = fullOddsReport
+        // Create a profit report for each tautology, made of the best bets that return a penny (0.01)
+        ProfitReportSet penny_profitReports = fullOddsReport
                 .getTautologyProfitReportSet_targetReturn(tautologies.values(), penny, false);
-        penny_pPRs.sort_by_profit();
+        penny_profitReports.sort_by_profit();
 
         // Filter these for those that have a profit over the configured amount
-        ProfitReportSet in_profit = penny_pPRs.filter_reports(config.MIN_PROFIT_RATIO);
-        if (in_profit.size() > 0){
+        ProfitReportSet in_profit = penny_profitReports.filter_reports(config.MIN_PROFIT_RATIO);
+        if (!in_profit.isEmpty()){
             log.info(sf("Found %s profit reports with return ratio > %s", in_profit.size(), config.MIN_PROFIT_RATIO));
             profitFound(fullOddsReport, in_profit);
         }
 
-
         // Update the best profit for the last round of arbs checked.
         last_best_profit = null;
-        if (!penny_pPRs.isEmpty()){
-            last_best_profit = penny_pPRs.get(0).minProfitRatio();
+        if (!penny_profitReports.isEmpty()){
+            last_best_profit = penny_profitReports.get(0).minProfitRatio();
         }
-
 
         // Update sleep times for certain tautologies based on profit ratio of last check
         Map<Integer, BigDecimal> latest_profit_ratios = new HashMap<>();
-        for (ProfitReport profitReport: penny_pPRs.profitReports()){
+        for (ProfitReport profitReport: penny_profitReports.profitReports()){
             latest_profit_ratios.put(profitReport.getBets().id, profitReport.minProfitRatio());
         }
         for (BetGroup tautology: tautologies.values()){
@@ -337,25 +330,29 @@ public class EventTrader implements Runnable {
 
     public void profitFound(MarketOddsReport marketOddsReport, ProfitReportSet reports_in_profit){
 
+        // Using Profit Reports that hypothetically return a penny (not real).
+        // Test out real world uses and make any bets if good ones found.
+
         Instant time = Instant.now();
-        ProfitReport profitReport = null;
-
-
+        ProfitReport chosen_ProfitReport = null;
 
         for (ProfitReport this_profitReport: reports_in_profit.profitReports()){
 
+            // Get target return by multiplying target investment (from config)
+            // by the ROI on the penny profit report
             BigDecimal target_return = this_profitReport.getMinROI().multiply(config.TARGET_INVESTMENT);
             log.info(sf("Using profReport with %s minProfRatio with target ret of %s",
                     BDString(this_profitReport.minProfitRatio(), 4),
                     BDString(target_return, 4)));
 
-            // Find the best profit report that returns the target
+
+            // Re-calculate the profit report, using the new target return
+            // (new odds may not be valid for target
             ProfitReport PR_targetReturn = marketOddsReport
                     .getTautologyProfitReport_targetReturn(this_profitReport.getBets(), target_return, true);
 
 
-
-            // Break on first valid profit report.
+            // Check the new profit report generated to see if it is valid, break if so.
             if (PR_targetReturn == null){
                 log.warning(sf("Profit report NULL."));
             }
@@ -369,16 +366,17 @@ public class EventTrader implements Runnable {
                         BDString(PR_targetReturn.getTotalInvestment(), 4), config.MAX_INVESTMENT));
             }
             else{
-                profitReport = PR_targetReturn;
+                chosen_ProfitReport = PR_targetReturn;
                 break;
             }
-
         }
 
-        if (profitReport == null){
+        // Return if no valid PRs found.
+        if (chosen_ProfitReport == null){
             log.warning("No profit report that was in profit, was valid after checking real values.");
             return;
         }
+
 
         // If ending after bet, lock out all other threads to prevent multiple bets being placed.
         if (config.END_ON_BET){
@@ -387,20 +385,25 @@ public class EventTrader implements Runnable {
 
 
         if (config.PLACE_BETS){
-            List<PlacedBet> placedBets = profitReport.placeBets();
-            ProfitReport PR_placedBets = profitReport.fromPlacedBets(placedBets);
+            List<PlacedBet> placedBets = chosen_ProfitReport.placeBets();
+            ProfitReport placedBets_profitReport = chosen_ProfitReport.fromPlacedBets(placedBets);
 
             log.info(sf("Placed %s on %s bets with %s return (%s prof) on %s from sites %s",
-                    BDString(PR_placedBets.getTotalInvestment(), 4),
+                    BDString(placedBets_profitReport.getTotalInvestment(), 4),
                     placedBets.size(),
-                    BDString(PR_placedBets.getMinReturn(), 4),
-                    BDString(PR_placedBets.minProfit(), 4),
-                    PR_placedBets.getBets().toString(),
-                    PR_placedBets.sites_used().toString()));
+                    BDString(placedBets_profitReport.getMinReturn(), 4),
+                    BDString(placedBets_profitReport.minProfit(), 4),
+                    placedBets_profitReport.getBets().toString(),
+                    placedBets_profitReport.sites_used().toString()));
+
+
+            String prePlacement_dir = "pre_placed_bets";
+            makeDirIfNotExists(prePlacement_dir);
+            chosen_ProfitReport.saveJSON(time, prePlacement_dir);
 
             String placed_dir = "placed_bets";
             makeDirIfNotExists(placed_dir);
-            PR_placedBets.saveJSON(time, placed_dir);
+            placedBets_profitReport.saveJSON(time, placed_dir);
         }
 
 

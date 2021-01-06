@@ -183,7 +183,8 @@ public class ProfitReport implements Comparable<ProfitReport> {
 
     public JSONObject toJSON(boolean include_items) {
         JSONObject j = new JSONObject();
-        j.put("items", items.size());
+
+        j.put("Site_Bets", items.size());
         j.put("min_return", BDString(min_return));
         j.put("max_return", BDString(max_return));
         j.put("total_investment", BDString(total_investment));

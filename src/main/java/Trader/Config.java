@@ -24,6 +24,7 @@ public class Config {
     public boolean RUN_STATS;
     public String LOG_LEVEL;
     public String SSL_DIR;
+    public long HEARTBEAT_INTERVAL;
 
     public int MAX_MATCHES;
     public boolean IN_PLAY;
@@ -103,6 +104,7 @@ public class Config {
         LOG_LEVEL = getString("LOG_LEVEL");
         LIMIT_LOW_PROFIT = getBoolean("LIMIT_LOW_PROFIT");
         PRINT_STATS_INTERVAL = getInt("PRINT_STATS_INTERVAL");
+        HEARTBEAT_INTERVAL = getLong("HEARTBEAT_INTERVAL");
 
         BETDAQ_RH_WAIT = getLong("BETDAQ_RH_WAIT");
 

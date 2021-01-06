@@ -1,6 +1,5 @@
 package SiteConnectors.Betfair;
 
-import Bet.Bet;
 import Bet.Bet.BetType;
 import Bet.BetPlan;
 import Bet.PlacedBet;
@@ -52,6 +51,7 @@ public class Betfair extends BettingSite {
     public static String hostname = "https://api.betfair.com/";
     public static String betting_endpoint = hostname + "/exchange/betting/json-rpc/v1";
     public static String accounts_endpoint = hostname + "/exchange/account/json-rpc/v1";
+    public static String heartbeat_endpoint = hostname + "/exchange/heartbeat/json-rpc/v1";
     public static String app_id_prod = "3BD65v2qKzw9ETp9";
     public static String app_id_dev = "DfgkZAnb0qi6Wmk1";
     public static String app_id = app_id_prod;
@@ -775,6 +775,41 @@ public class Betfair extends BettingSite {
     }
 
 
+    @Override
+    public boolean sendHeartbeat() throws URISyntaxException, IOException {
+
+        JSONObject params = new JSONObject();
+        params.put("preferredTimeoutSeconds", 10);
+
+        JSONObject rpc = new JSONObject();
+        rpc.put("jsonrpc", 20);
+        rpc.put("method", "HeartbeatAPING/v1.0/heartbeat");
+        rpc.put("id", 1);
+        rpc.put("params", params);
+
+        JSONObject r = (JSONObject) requester.post(heartbeat_endpoint, rpc);
+
+        if (r == null){
+            log.severe("Unable to setup heartbeat for betfair. NULL response.");
+            return false;
+        }
+
+        JSONObject result = (JSONObject) r.get("result");
+        String actionPerformed = (String) result.get("actionPerformed");
+
+        if (!actionPerformed.equals("NONE")){
+            log.warning(sf("Action performed '%s' while sending heartbeat for betfair", actionPerformed));
+        }
+
+        if (!result.containsKey("actualTimeoutSeconds")){
+            log.severe(sf("Betfair heartbeat response missing actualTimeoutSeconds field. - %s", r.toJSONString()));
+            return false;
+        }
+
+        return true;
+    }
+
+
     public void testbet(String side, Double size, Double price, String market, String selection, Double handicap) throws IOException, URISyntaxException {
 
         if (handicap == null){
@@ -830,15 +865,11 @@ public class Betfair extends BettingSite {
 
 
 
-    public static void main(String[] args){
-        try {
+    public static void main(String[] args) throws Exception{
+        Betfair b = new Betfair();
+        b.sendHeartbeat();
 
-            Betfair b = new Betfair();
 
-            print(b.winCommissionRate());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

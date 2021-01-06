@@ -310,8 +310,9 @@ public class PlacedBet implements SiteBet {
         JSONObject time_info = new JSONObject();
         JSONObject com_info = new JSONObject();
 
-        j.put("backersStake_layersProfit", BDString(backersStake_layersProfit));
-        j.put("backersProfit_layersStake", BDString(backersProfit_layersStake));
+        j.put("site", stringValue(getSite()));
+        j.put("backers_stake", BDString(backersStake_layersProfit));
+        j.put("layers_stake", BDString(backersProfit_layersStake));
         j.put("state", stringValue(state));
         j.put("bet_id", stringValue(bet_id));
         j.put("avg_odds", BDString(avg_odds));
@@ -322,6 +323,7 @@ public class PlacedBet implements SiteBet {
         j.put("pot_returns", BDString(getReturn()));
 
 
+        // COMMISSION
         if (getSite() != null){
             BigDecimal loss_com_rate = getSite().lossCommissionRate();
             if (loss_com_rate.signum() != 0){
@@ -331,9 +333,10 @@ public class PlacedBet implements SiteBet {
             com_info.put("win_com", BDString(winCommission()));
             com_info.put("win_com_rate", BDString(getSite().winCommissionRate()));
         }
-        if (betPlan != null){
-            j.put("betOrder", betPlan.toJSON());
-        }
+        j.put("comission", com_info);
+
+
+        // TIMINGS
         if (time_placed != null){
             time_info.put("time_placed", time_placed.toString());
         }
@@ -341,24 +344,31 @@ public class PlacedBet implements SiteBet {
             time_info.put("time_sent", time_sent.toString());
         }
         if (time_placed != null && time_sent != null){
-            time_info.put("sent_to_placed", time_placed.toEpochMilli() - time_sent.toEpochMilli());
+            time_info.put("sent_to_placed", sf("%s secs", secs_between(time_sent, time_placed)));
+        }
+        j.put("timings", time_info);
+
+
+        // RAW request and response objects
+        JSONObject raws = new JSONObject();
+        if (raw_response != null){
+            raws.put("response", stringObject(raw_response));
+        }
+        if (raw_request != null){
+            raws.put("request", stringObject(raw_request));
+        }
+        if (raw_response != null || raw_request != null){
+            j.put("raws", raws);
         }
 
-
+        // OTHER
+        if (betPlan != null){
+            j.put("betPlan", betPlan.toJSON());
+        }
         if (error != null){
             j.put("error", error);
         }
 
-        if (raw_response != null){
-            j.put("raw_response", stringObject(raw_response));
-        }
-        if (raw_request != null){
-            j.put("raw_request", stringObject(raw_request));
-        }
-
-
-        j.put("timings", time_info);
-        j.put("comission", com_info);
 
         return j;
     }

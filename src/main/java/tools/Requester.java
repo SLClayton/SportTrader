@@ -14,6 +14,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.execchain.RequestAbortedException;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -194,7 +195,8 @@ public class Requester {
     }
 
 
-    public Object post(String url, String json, Map<String, String> headers, Collection<Integer> returnCodes) throws IOException, URISyntaxException {
+    public Object post(String url, String json, Map<String, String> headers, Collection<Integer> returnCodes)
+            throws IOException, URISyntaxException, RequestAbortedException {
 
         // Create new http POST object
         HttpPost httpPost = new HttpPost(new URI(url));
@@ -278,6 +280,9 @@ public class Requester {
             InterruptedException {
 
         String raw_response = getRaw(url);
+        if (raw_response == null){
+            return null;
+        }
         return JSONValue.parse(raw_response);
     }
 
@@ -309,7 +314,7 @@ public class Requester {
             response = httpClient.execute(httpGet);
         }
         catch (Exception e){
-            log.severe(sf("%s exception when getting http client response."));
+            log.severe(sf("%s exception when getting http client response.", e.toString()));
             return null;
         }
 

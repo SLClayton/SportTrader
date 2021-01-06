@@ -40,7 +40,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
     public Map<String, JSONObject> id_market_map;
     public Map<String, String> betId_contract_map;
-    public Map<String, String> fullname_contract_map;
     public Map<String, String> contract_market_map;
     public Set<String> bet_blacklist;
 
@@ -51,7 +50,6 @@ public class SmarketsEventTracker extends SiteEventTracker {
         super(smarkets);
         this.smarkets = smarkets;
         id_market_map = new HashMap<>();
-        fullname_contract_map = new HashMap<>();
         contract_market_map = new HashMap<>();
         bet_blacklist = new HashSet<>();
     }
@@ -248,8 +246,21 @@ public class SmarketsEventTracker extends SiteEventTracker {
             return MarketOddsReport.ERROR(String.format("No event id for smarkets event %s", event));
         }
 
+
+        // Collect which markets are needed for chosen bets
+        Set<String> market_ids = new HashSet<>();
+        for (Bet bet: bets){
+            String contract_id = betId_contract_map.get(bet.id());
+            if (contract_id == null){
+                continue;
+            }
+            String market_id = contract_market_map.get(contract_id);
+            market_ids.add(market_id);
+        }
+
+
         // Get most up to date odds for the market ids chosen
-        JSONObject lastPrices = smarkets.getPrices(id_market_map.keySet());
+        JSONObject lastPrices = smarkets.getPrices(market_ids);
         if (lastPrices == null){
             return MarketOddsReport.ERROR("Smarkets last prices returned null.");
         }

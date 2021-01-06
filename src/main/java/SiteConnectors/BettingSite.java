@@ -192,6 +192,7 @@ public abstract class BettingSite {
 
 
 
+
     public abstract List<FootballMatch> getFootballMatches(Instant from, Instant until)
             throws IOException, URISyntaxException, InterruptedException;
 
@@ -273,6 +274,10 @@ public abstract class BettingSite {
     }
 
 
+    public boolean sendHeartbeat() throws URISyntaxException, IOException {
+        log.warning("NO HEARTBEAT SETUP FOR THIS SITE");
+        return true;
+    }
 
     public static void main(String[] args) throws Exception{
 
