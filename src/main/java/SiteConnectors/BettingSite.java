@@ -128,7 +128,15 @@ public abstract class BettingSite {
     }
 
 
-    public abstract void safe_exit();
+    public void safe_exit(){
+        exit_flag = true;
+        try {
+            cancelAllOpenBets();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.severe(sf("Exception when trying to cancel %s bets: %s", getName(), e.toString()));
+        }
+    }
 
 
     public abstract void updateAccountInfo() throws InterruptedException, IOException, URISyntaxException;
@@ -236,6 +244,18 @@ public abstract class BettingSite {
         return Bet.return2BackStake(betType, odds, target_return, winCommissionRate(), lossCommissionRate());
     }
 
+
+    public Map<String, Collection<String>> cancelOpenBets(Map<String, Collection<String>> market_bet_ids)
+            throws IOException, URISyntaxException {
+        log.severe(sf("cancelBets has not been configured for %s yet", getName()));
+        return null;
+    }
+
+
+    public boolean cancelAllOpenBets() throws IOException, URISyntaxException {
+        log.severe(sf("cancelAllBets has not been configured for %s yet", getName()));
+        return false;
+    }
 
 
     @Override

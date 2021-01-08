@@ -862,6 +862,50 @@ public class Betdaq extends BettingSite {
     }
 
 
+    @Override
+    public boolean cancelAllOpenBets() throws IOException, URISyntaxException {
+
+        String xml_body = "<ext:CancelAllOrders><ext:cancelAllOrdersRequest/></ext:CancelAllOrders>";
+        CancelAllOrdersResponse2 resp = ((CancelAllOrdersResponse)
+                requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), xml_body, CancelAllOrdersResponse.class))
+                .getCancelAllOrdersResult();
+
+        ReturnStatus rs = resp.getReturnStatus();
+        if (rs.getCode() != 0){
+            log.severe(sf("Error cancelling all betdaq bets. Code %s: %s", rs.getCode(), rs.getDescription()));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public Map<String, Collection<String>> cancelOpenBets(Map<String, Collection<String>> market_bet_ids)
+            throws IOException, URISyntaxException {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<ext:CancelOrders><ext:cancelOrdersRequest>");
+        for (Collection<String> bet_ids: market_bet_ids.values()){
+            for (String bet_id: bet_ids){
+                sb.append(sf("<ext:OrderHandle>%s</ext:OrderHandle>", bet_id));
+            }
+        }
+        sb.append("</ext:cancelOrdersRequest></ext:CancelOrders>");
+        String xml_body = sb.toString();
+
+        CancelOrdersResponse2 resp = ((CancelOrdersResponse)
+                requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), xml_body, CancelOrdersResponse.class))
+                .getCancelOrdersResult();
+
+        ReturnStatus rs = resp.getReturnStatus();
+        if (rs.getCode() != 0){
+            log.severe(sf("Error cancelling all betdaq bets. Code %s: %s", rs.getCode(), rs.getDescription()));
+            return market_bet_ids;
+        }
+
+        return new HashMap<>();
+    }
+
     public static Short betType2Polarity(BetType bet_type){
         if (bet_type == BetType.BACK){ return 1; }
         else{ return 2; }
@@ -1283,7 +1327,13 @@ public class Betdaq extends BettingSite {
 
         Betdaq b = new Betdaq();
 
-        b.sendHeartbeat();
+        Collection<String> bet_ids = Arrays.asList("7136658012");
+
+        Map<String, Collection<String>> x = new HashMap<>();
+        x.put("sam", bet_ids);
+
+
+        print(b.cancelOpenBets(x));
 
     }
 

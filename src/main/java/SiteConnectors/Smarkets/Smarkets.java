@@ -8,6 +8,7 @@ import SiteConnectors.RequestHandler;
 import SiteConnectors.SiteEventTracker;
 import Sport.FootballMatch;
 import Sport.FootballTeam;
+import org.apache.http.client.HttpResponseException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -17,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.HttpRetryException;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -695,6 +697,68 @@ public class Smarkets extends BettingSite {
     }
 
 
+    @Override
+    public boolean cancelAllOpenBets() throws IOException, URISyntaxException {
+        return cancelOrder("ALL");
+    }
+
+    @Override
+    public Map<String, Collection<String>> cancelOpenBets(Map<String, Collection<String>> market_bet_ids)
+            throws IOException, URISyntaxException {
+
+        Map<String, Collection<String>> failed_cancels = new HashMap<>();
+
+        for (String market_id: market_bet_ids.keySet()){
+            Collection<String> bet_ids = market_bet_ids.get(market_id);
+            for (String bet_id: bet_ids){
+
+                if (!cancelOrder(bet_id)){
+                    failed_cancels.computeIfAbsent(market_id, k-> new ArrayList<>()).add(bet_id);
+                }
+            }
+        }
+        return failed_cancels;
+    }
+
+    public boolean cancelOrder(String order_id) throws IOException, URISyntaxException {
+
+        JSONObject resp = null;
+        try {
+
+            String url_suffix;
+            if (order_id == "ALL"){
+                url_suffix = "orders/";
+            } else {
+                url_suffix = sf("orders/%s/", order_id);
+            }
+
+            resp = (JSONObject) requester.delete(baseurl + url_suffix);
+
+            if (resp == null){
+                log.severe(sf("Error trying to cancel all smarkets bets: resp was null"));
+                return false;
+            }
+
+            if (resp.containsKey("error_type")){
+                String error_type = (String) resp.get("error_type");
+                log.severe(sf("Error trying to cancel all smarkets bets: %s", error_type));
+                return false;
+            }
+
+        }
+        catch (HttpResponseException e){
+            log.severe(sf("Error cancelling smarkets bet %s, http code: %s", order_id, e.getStatusCode()));
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean cancelOrder(long order_id) throws IOException, URISyntaxException {
+        return cancelOrder(sv(order_id));
+    }
+
+
     public class PlaceBetRunnable implements Runnable{
 
         // Runs the process of sending off a bet and
@@ -929,7 +993,9 @@ public class Smarkets extends BettingSite {
 
     public static void main(String[] args) throws Exception{
 
-        print(price2DecOdds(5405));
+        Smarkets s = new Smarkets();
+
+        s.cancelAllOpenBets();
 
     }
 }

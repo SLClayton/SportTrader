@@ -383,7 +383,7 @@ public class Betfair extends BettingSite {
 
     @Override
     public void safe_exit() {
-        exit_flag = true;
+        super.safe_exit();
         if (rpcRequestHandler != null) {
             rpcRequestHandler.safe_exit();
         }
@@ -641,7 +641,6 @@ public class Betfair extends BettingSite {
     }
 
 
-
     public PlacedBet instructionReport2PlacedBet(JSONObject report){
         PlacedBet pb = new PlacedBet();
         pb.setSite(this);
@@ -715,6 +714,86 @@ public class Betfair extends BettingSite {
         return placedBets;
     }
 
+    @Override
+    public Map<String, Collection<String>> cancelOpenBets(Map<String, Collection<String>> market_bet_ids)
+            throws IOException, URISyntaxException {
+
+        JSONArray RPC_reqs = new JSONArray();
+        for (String market_id : market_bet_ids.keySet()) {
+
+            JSONArray cancel_instructions = new JSONArray();
+            for (String bet_id : market_bet_ids.get(market_id)) {
+                JSONObject cancel_instruction = new JSONObject();
+                cancel_instruction.put("betId", bet_id);
+                cancel_instructions.add(cancel_instruction);
+            }
+
+            JSONObject params = new JSONObject();
+            params.put("marketId", market_id);
+            params.put("instructions", cancel_instructions);
+
+            JSONObject rpc = new JSONObject();
+            rpc.put("jsonrpc", "2.0");
+            rpc.put("method", "SportsAPING/v1.0/cancelOrders");
+            rpc.put("id", 1);
+            rpc.put("params", params);
+
+            RPC_reqs.add(rpc);
+        }
+
+        JSONArray resp = (JSONArray) requester.post(betting_endpoint, RPC_reqs);
+
+        toFile(RPC_reqs);
+        toFile(resp, 1);
+
+        Map<String, Collection<String>> failed_market_bets_cancellations = new HashMap<>();
+
+        for (Object rpc_response_obj: resp){
+            JSONObject rpc_resp = (JSONObject) rpc_response_obj;
+
+            JSONObject result = (JSONObject) rpc_resp.get("result");
+            String market_id = (String) result.get("marketId");
+
+            for (Object inst_rep_obj: (JSONArray) result.get("instructionReports")){
+                JSONObject inst_rep = (JSONObject) inst_rep_obj;
+
+                String bet_id = (String) ((JSONObject) inst_rep.get("instruction")).get("betId");
+                boolean success = ((String) inst_rep.get("status")).equals("SUCCESS");
+                if (!success){
+                    failed_market_bets_cancellations.computeIfAbsent(market_id, k-> new ArrayList<>()).add(bet_id);
+                }
+            }
+        }
+
+        return failed_market_bets_cancellations;
+    }
+
+
+    @Override
+    public boolean cancelAllOpenBets() throws IOException, URISyntaxException {
+
+        JSONObject rpc = new JSONObject();
+        rpc.put("jsonrpc", "2.0");
+        rpc.put("method", "SportsAPING/v1.0/cancelOrders");
+        rpc.put("id", 1);
+        rpc.put("params", new JSONObject());
+
+        JSONObject resp = (JSONObject) requester.post(betting_endpoint, rpc);
+
+        try {
+            JSONObject result = (JSONObject) resp.get("result");
+            String status = (String) result.get("status");
+            if (status.equals("SUCCESS")){
+                return true;
+            }
+            log.severe(sf("Unable to cancel all betfair open bets. Status: %s", status));
+            return false;
+        }
+        catch (NullPointerException e){
+            log.severe("Error with return JSON for cancel all betfair bets." + resp.toJSONString());
+            return false;
+        }
+    }
 
     @Override
     public BigDecimal getValidOdds(BigDecimal odds, RoundingMode roundingMode) {
@@ -867,8 +946,11 @@ public class Betfair extends BettingSite {
 
     public static void main(String[] args) throws Exception{
         Betfair b = new Betfair();
-        b.sendHeartbeat();
 
+        Map<String, Collection<String>> market_bets = new HashMap<>();
+        List<String> x = new ArrayList<>();
+        x.add("221172559568");
+        market_bets.put("1.177554745", x);
 
 
     }
