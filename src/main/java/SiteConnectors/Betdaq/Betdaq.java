@@ -1261,17 +1261,32 @@ public class Betdaq extends BettingSite {
     }
 
 
-    public RegisterHeartbeatResponse registerHeartbeat(long threshold, Short action) throws IOException, URISyntaxException {
+    public RegisterHeartbeatResponse registerHeartbeat(long threshold) throws IOException, URISyntaxException {
 
-        // 'CancelOrders' or 'SuspendOrders'
         String xml_body = "<ext:RegisterHeartbeat>" +
                 "<ext:registerHeartbeatRequest " +
                 sf("ThresholdMs=\"%s\" ", threshold)  +
-                sf("HeartbeatAction=\"%s\"/>", action) +
+                sf("HeartbeatAction=\"%s\"/>", HEARTBEAT_CANCEL_ORDERS) +
                 "</ext:RegisterHeartbeat>";
 
         RegisterHeartbeatResponse resp = (RegisterHeartbeatResponse)
                 requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), xml_body, RegisterHeartbeatResponse.class);
+
+        ReturnStatus rs = resp.getRegisterHeartbeatResult().getReturnStatus();
+        print(sf("reg result: %s - %s", rs.getCode(), rs.getDescription()));
+
+        return resp;
+    }
+
+    public DeregisterHeartbeatResponse deregisterHeartbeat() throws IOException, URISyntaxException {
+
+        String xml_body = "<ext:DeregisterHeartbeat><ext:deregisterHeartbeatRequest/></ext:DeregisterHeartbeat>";
+
+        DeregisterHeartbeatResponse resp = (DeregisterHeartbeatResponse)
+                requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), xml_body, DeregisterHeartbeatResponse.class);
+
+        ReturnStatus rs = resp.getDeregisterHeartbeatResult().getReturnStatus();
+        print(sf("dereg result: %s - %s", rs.getCode(), rs.getDescription()));
 
         return resp;
     }
@@ -1279,9 +1294,11 @@ public class Betdaq extends BettingSite {
     public PulseResponse pulse() throws IOException, URISyntaxException {
 
         String xml_body = "<ext:Pulse><ext:pulseRequest/></ext:Pulse>";
-
         PulseResponse resp = (PulseResponse)
                 requester.SOAPRequest(secureServiceUrl, getSOAPHeader(), xml_body, PulseResponse.class);
+
+        ReturnStatus rs = resp.getPulseResult().getReturnStatus();
+        print(sf("pulse result: %s - %s", rs.getCode(), rs.getDescription()));
 
         return resp;
     }
@@ -1290,32 +1307,36 @@ public class Betdaq extends BettingSite {
     @Override
     public boolean sendHeartbeat() throws URISyntaxException, IOException {
 
-        // If we think heartbeat is registered, try sending a pulse
-        if (heartbeat_registered) {
-            PulseResponse2 pulse_resp = pulse().getPulseResult();
-            ReturnStatus rs = pulse_resp.getReturnStatus();
+        if (true){ return true; }
 
-            // Un-flag as registered if it's found not to be
-            if (rs.getCode() == 462){
-                log.info("Betdaq heartbeat not yet registered. Registering now.");
-                heartbeat_registered = false;
-            }
-            else if (rs.getCode() != 0){
-                log.severe(sf("Betdaq pulse return code %s: %s Trying to re-register",
-                        rs.getCode(), rs.getDescription()));
-                heartbeat_registered = false;
-            }
+        // Try sending a pulse
+        PulseResponse2 pulse_resp = pulse().getPulseResult();
+        ReturnStatus rs = pulse_resp.getReturnStatus();
+
+        // Un-flag as registered if it's found not to be
+        if (rs.getCode() == 0){
+            heartbeat_registered = true;
+        }
+        else if (rs.getCode() == 462){
+            log.info("Betdaq heartbeat not yet registered. Registering now.");
+            heartbeat_registered = false;
+        }
+        else {
+            log.severe(sf("Betdaq pulse return code %s: %s, Trying to re-register",
+                    rs.getCode(), rs.getDescription()));
+            heartbeat_registered = false;
         }
 
         // If heartbeat not registered, register it.
         if (!heartbeat_registered){
             RegisterHeartbeatResponse2 reg_resp =
-                    registerHeartbeat(10000, HEARTBEAT_CANCEL_ORDERS).getRegisterHeartbeatResult();
-            ReturnStatus rs = reg_resp.getReturnStatus();
+                    registerHeartbeat(10000).getRegisterHeartbeatResult();
+            ReturnStatus reg_rs = reg_resp.getReturnStatus();
 
 
-            if (rs.getCode() != 463 && rs.getCode() != 0){
-                log.severe(sf("Betdaq register heartbeat return code %s: %s", rs.getCode(), rs.getDescription()));
+            if (reg_rs.getCode() != 463 && reg_rs.getCode() != 0){
+                log.severe(sf("Betdaq register heartbeat return code %s: %s",
+                        reg_rs.getCode(), reg_rs.getDescription()));
                 return false;
             }
         }
@@ -1327,13 +1348,8 @@ public class Betdaq extends BettingSite {
 
         Betdaq b = new Betdaq();
 
-        Collection<String> bet_ids = Arrays.asList("7136658012");
+        b.sendHeartbeat();
 
-        Map<String, Collection<String>> x = new HashMap<>();
-        x.put("sam", bet_ids);
-
-
-        print(b.cancelOpenBets(x));
 
     }
 

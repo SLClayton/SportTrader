@@ -3,7 +3,10 @@ package SiteConnectors.Smarkets;
 import Bet.*;
 import Bet.FootballBet.*;
 import Bet.MarketOddsReport;
+import SiteConnectors.Betfair.Betfair;
+import SiteConnectors.Betfair.BetfairEventTracker;
 import SiteConnectors.SiteEventTracker;
+import Sport.Event;
 import Sport.FootballMatch;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -331,20 +334,11 @@ public class SmarketsEventTracker extends SiteEventTracker {
 
     public static void main(String[] args) throws Exception {
 
-        FootballMatch match = FootballMatch.parse("2020-10-17T11:30:00.00Z", "Everton vs Liverpool");
+        Smarkets b = new Smarkets();
+        SmarketsEventTracker set = (SmarketsEventTracker) b.getEventTracker();
 
-        print(match);
-
-
-        Smarkets s = new Smarkets();
-        SiteEventTracker set = s.getEventTracker();
-        set.setupMatch(match);
-
-
-        List<Bet> fbb = FootballBetGenerator._getAllBets();
-        MarketOddsReport mor = set._getMarketOddsReport(fbb);
-
-        toFile(mor.toJSON());
+        Event fm = FootballMatch.parse("2021-01-26T20:15:00.000Z", "West Bromwich Albion v Manchester City");
+        set.setupMatch(fm);
 
 
 

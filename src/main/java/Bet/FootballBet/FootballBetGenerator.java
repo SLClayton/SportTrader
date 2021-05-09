@@ -138,7 +138,7 @@ public class FootballBetGenerator {
     }
 
 
-    public ArrayList<FootballOtherScoreBet> getOtherScoreBetsHT(int lowest, int highest){
+    public static ArrayList<FootballOtherScoreBet> getOtherScoreBetsHT(int lowest, int highest){
         ArrayList<FootballOtherScoreBet> bets = new ArrayList<>();
         for (int score=lowest; score<=highest; score++){
             for (int j=0; j<BetType.values().length; j++) {
@@ -165,7 +165,7 @@ public class FootballBetGenerator {
     }
 
 
-    public ArrayList<FootballHandicapBet> getHandicapBets(int highest){
+    public static ArrayList<FootballHandicapBet> getHandicapBets(int highest){
         ArrayList<FootballHandicapBet> bets = new ArrayList<FootballHandicapBet>();
 
         BigDecimal smallest = new BigDecimal(-1*highest);

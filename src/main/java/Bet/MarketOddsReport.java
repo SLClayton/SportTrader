@@ -79,7 +79,9 @@ public class MarketOddsReport {
     }
 
 
-
+    public Set<String> getBets(){
+        return bet_site_exchanges.keySet();
+    }
 
     public boolean timed_out(){
         return errorType.equals(ErrorType.TIMED_OUT);

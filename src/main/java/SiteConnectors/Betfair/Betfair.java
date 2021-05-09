@@ -46,6 +46,7 @@ public class Betfair extends BettingSite {
     public final static String BETFAIR_MARKET_ID = "BETFAIR_MARKET_ID";
     public final static String BETFAIR_SELECTION_ID = "BETFAIR_SELECTION_ID";
     public final static String BETFAIR_HANDICAP = "BETFAIR_HANDICAP";
+    public final static String BETFAIR_MARKET_TYPE = "BETFAIR_MARKET_TYPE";
 
     public static String loginurl = "https://identitysso-cert.betfair.com/api/certlogin";
     public static String hostname = "https://api.betfair.com/";
@@ -708,7 +709,7 @@ public class Betfair extends BettingSite {
             updateAccountInfo();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            log.severe(e.toString());
+            log.severe(e.getMessage());
         }
 
         return placedBets;

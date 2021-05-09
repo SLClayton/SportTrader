@@ -56,17 +56,22 @@ public class FlashScores implements SportData {
         params.put("sid", "1");
         String response = null;
         try {
-            response = requester.getRaw("https://s.livesport.services/search/", params).trim();
-        } catch (NullPointerException | IOException | URISyntaxException e) {
+            response = requester.getRaw("https://s.livesport.services/search/", params);
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             log.severe(String.format("%s while getting response from flashscores for team '%s' query.",
                     e.toString(), query));
             return null;
         }
 
+        if (response == null){
+            log.severe(sf("queryFootballTeam returned null for '%s' query term", query));
+            return null;
+        }
+
         // Confirm pattern with JSON in right place
         Pattern pattern = Pattern.compile("\\Acjs.search.jsonpCallback\\(.*\\);\\z");
-        Matcher m = pattern.matcher(response);
+        Matcher m = pattern.matcher(response.trim());
         if (!m.matches()){
             log.severe(String.format("Cannot decipher raw return when searching for teamID in flashscores.\n%s",
                     response));
@@ -156,21 +161,21 @@ public class FlashScores implements SportData {
         String raw = null;
         try {
             raw = requester.getRaw(url);
-            if (raw == null){
-                throw new NullPointerException();
+        }
+        catch (HttpResponseException e){
+            log.warning(sf("Flashscores http %s code when getting fixtures for '%s'", e.getStatusCode(), team.id));
+            if (e.getStatusCode() == 404){
+                invalid_team_ids.add(team.id);
             }
         }
         catch (NullPointerException | IOException | URISyntaxException e){
-            log.severe(String.format("Failed to get fixtures for " + team.name + " in flashscores."));
-            if (e instanceof HttpResponseException){
-                log.warning(String.format("Flashscores 404'd when trying to get team fixtures for %s", team.id));
-                invalid_team_ids.add(team.id);
-            }
-            else{
-                log.severe(((Exception) e).toString());
-            }
+            log.warning(sf("Failed to get fixtures for " + team.name + " in flashscores."));
             return null;
         }
+        if (raw == null){
+            return null;
+        }
+
 
         // Find needed element by id in html and extract text
         Document doc = Jsoup.parse(raw);
@@ -419,13 +424,14 @@ public class FlashScores implements SportData {
         // Otherwise, fill possibility list with the results from a search of its name.
         for (int i=0; i<2; i++){
             if (teams[i].getID() != null){
-                log.fine(String.format("Team %s already in local mem with id %s.", teams[i], teams[i].getID()));
                 possible_teams[i].add(teams[i]);
             }
             else{
-                possible_teams[i].addAll(queryFootballTeam(teams[i].normal_name()));
-                log.fine(String.format("Queried flashscores for team name '%s' and found %s",
-                        teams[i].normal_name(), possible_teams[i]));
+                List<FootballTeam> searched_teams = queryFootballTeam(teams[i].normal_name());
+                if (searched_teams == null){
+                    return false;
+                }
+                possible_teams[i].addAll(searched_teams);
             }
         }
         // Unable to verify match if either teams possibilities are empty.

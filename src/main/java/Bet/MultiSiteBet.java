@@ -76,6 +76,11 @@ public class MultiSiteBet {
     }
 
 
+    public int total_bets(){
+        return site_bets.size();
+    }
+
+
     public static MultiSiteBet fromSiteInvestments(Map<String, BetExchange> betExchangeMap,
                                                    Map<String, BigDecimal> site_investments){
 

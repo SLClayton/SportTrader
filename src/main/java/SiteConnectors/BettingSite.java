@@ -134,7 +134,7 @@ public abstract class BettingSite {
             cancelAllOpenBets();
         } catch (Exception e) {
             e.printStackTrace();
-            log.severe(sf("Exception when trying to cancel %s bets: %s", getName(), e.toString()));
+            log.severe(sf("Exception when trying to cancel all %s open bets: %s", getName(), e.toString()));
         }
     }
 

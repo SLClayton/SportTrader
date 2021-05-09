@@ -146,6 +146,23 @@ public class ProfitReport implements Comparable<ProfitReport> {
     }
 
 
+    public int total_bets(){
+        int n = 0;
+        for (MultiSiteBet msb: items){
+            n += msb.total_bets();
+        }
+        return n;
+    }
+
+    public Set<String> sites_used_strings(){
+        Set<String> sites_used = new HashSet<>();
+        for (BettingSite site: sites_used()){
+            sites_used.add(site.getName());
+        }
+        return sites_used;
+    }
+
+
     public boolean uses_site(String site_name){
         for (BettingSite bs: sites_used()){
             if (bs.getName().equals(site_name)){
@@ -188,7 +205,8 @@ public class ProfitReport implements Comparable<ProfitReport> {
         j.put("min_return", BDString(min_return));
         j.put("max_return", BDString(max_return));
         j.put("total_investment", BDString(total_investment));
-        j.put("prof_ratio", BDString(minProfitRatio()));
+        j.put("min_ProfitRatio", BDString(minProfitRatio()));
+        j.put("min_ROI", BDString(getMinROI()));
 
 
         JSONArray bet_ids = new JSONArray();
@@ -219,6 +237,18 @@ public class ProfitReport implements Comparable<ProfitReport> {
         return BetPlan.placeBets(betPlans);
     }
 
+
+    @Override
+    public String toString() {
+        return sf("[PR: inv %s, minRet %s, mROI %s, mProfRatio %s. %s bets using %s %s]",
+                BDString(getTotalInvestment(), 4),
+                BDString(getMinReturn(), 4),
+                BDString(getMinROI(), 4),
+                BDString(minProfitRatio(), 4),
+                total_bets(),
+                String.join(", ", sites_used_strings()),
+                getBets().toString());
+    }
 
     public void saveJSON(Instant time, String output_dir){
 

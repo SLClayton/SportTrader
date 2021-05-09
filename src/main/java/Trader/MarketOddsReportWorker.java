@@ -105,9 +105,9 @@ public class MarketOddsReportWorker implements Runnable {
 
                 // If bets null, return error mor and finish loop
                 if (bets == null){
-                    String error = String.format("Bets passed into MOR is null.");
-                    log.severe(error);
-                    requestHandler.setResponse(MarketOddsReport.ERROR(error));
+                    String msg = "Bets passed into MOR is null.";
+                    log.severe(msg);
+                    requestHandler.setResponse(MarketOddsReport.ERROR(msg));
                     continue;
                 }
 

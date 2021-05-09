@@ -498,7 +498,7 @@ public class SportsTrader {
                     log.warning("Account updater interrupted.");
                 }
                 catch (IOException | URISyntaxException e) {
-                    log.severe(e.toString());
+                    log.severe(sf("Exception during acc info updater loop: %s", e.toString()));
                 }
 
             }

@@ -304,7 +304,7 @@ public class EventTrader implements Runnable {
         // Filter these for those that have a profit over the configured amount
         ProfitReportSet in_profit = penny_profitReports.filter_reports(config.MIN_PROFIT_RATIO);
         if (!in_profit.isEmpty()){
-            log.info(sf("Found %s profit reports with return ratio > %s", in_profit.size(), config.MIN_PROFIT_RATIO));
+            log.info(sf("Found %s profit reports with profit ratio > %s", in_profit.size(), config.MIN_PROFIT_RATIO));
             profitFound(fullOddsReport, in_profit);
         }
 
@@ -335,37 +335,44 @@ public class EventTrader implements Runnable {
 
         Instant time = Instant.now();
         ProfitReport chosen_ProfitReport = null;
+        ProfitReport chosen_Penny_ProfitReport = null;
 
         for (ProfitReport this_profitReport: reports_in_profit.profitReports()){
+
+            log.info(sf("Trying out penny Profit Report %s", this_profitReport));
 
             // Get target return by multiplying target investment (from config)
             // by the ROI on the penny profit report
             BigDecimal target_return = this_profitReport.getMinROI().multiply(config.TARGET_INVESTMENT);
-            log.info(sf("Using profReport with %s minProfRatio with target ret of %s",
-                    BDString(this_profitReport.minProfitRatio(), 4),
+            log.info(sf("Re-doing profit report with target ret %s",
                     BDString(target_return, 4)));
-
 
             // Re-calculate the profit report, using the new target return
             // (new odds may not be valid for target
-            ProfitReport PR_targetReturn = marketOddsReport
-                    .getTautologyProfitReport_targetReturn(this_profitReport.getBets(), target_return, true);
+            ProfitReport PR_targetReturn = marketOddsReport.getTautologyProfitReport_targetReturn(
+                    this_profitReport.getBets(), target_return, true);
+            log.info(sf("New Profit Report = %s", PR_targetReturn));
 
+            log.info(sf("Profit Ratio = %s, min Profit Ratio = %s",
+                    BDString(PR_targetReturn.minProfitRatio(), 4),
+                    BDString(config.MIN_PROFIT_RATIO, 4)));
+            log.info(sf("Total Inv = %s, max Total Inv = %s",
+                    BDString(PR_targetReturn.getTotalInvestment(), 4),
+                    BDString(config.MAX_INVESTMENT, 4)));
 
             // Check the new profit report generated to see if it is valid, break if so.
             if (PR_targetReturn == null){
-                log.warning(sf("Profit report NULL."));
+                log.info(sf("Profit report NULL (impossible)."));
             }
-            else if (PR_targetReturn.minProfitRatio().compareTo(config.MIN_PROFIT_RATIO) >= 0){
-                log.warning(sf("MinProfitRatio reduced to %s which is lower than min %s required.",
-                        BDString(PR_targetReturn.minProfitRatio(), 4),
-                        config.MIN_PROFIT_RATIO));
+            else if (PR_targetReturn.minProfitRatio().compareTo(config.MIN_PROFIT_RATIO) < 0){
+                log.info("MinProfitRatio too low.");
             }
             else if (PR_targetReturn.getTotalInvestment().compareTo(config.MAX_INVESTMENT) > 0){
-                log.warning(sf("Investment needed %s is higher than max investment %s.",
-                        BDString(PR_targetReturn.getTotalInvestment(), 4), config.MAX_INVESTMENT));
+                log.info("Investment too high.");
             }
             else{
+                log.info("New Profit report passed checks.");
+                chosen_Penny_ProfitReport = this_profitReport;
                 chosen_ProfitReport = PR_targetReturn;
                 break;
             }
@@ -373,29 +380,28 @@ public class EventTrader implements Runnable {
 
         // Return if no valid PRs found.
         if (chosen_ProfitReport == null){
-            log.warning("No profit report that was in profit, was valid after checking real values.");
+            log.warning("No profit reports checked were valid after using new target returns.");
             return;
         }
-
 
         // If ending after bet, lock out all other threads to prevent multiple bets being placed.
         if (config.END_ON_BET){
             sportsTrader.betlock.lock();
         }
 
+        log.info(sf("chosen PR %s", chosen_ProfitReport));
 
         if (config.PLACE_BETS){
+
+            // Place Bets!
             List<PlacedBet> placedBets = chosen_ProfitReport.placeBets();
             ProfitReport placedBets_profitReport = chosen_ProfitReport.fromPlacedBets(placedBets);
+            log.info(sf("Placed Bets %s", placedBets_profitReport));
 
-            log.info(sf("Placed %s on %s bets with %s return (%s prof) on %s from sites %s",
-                    BDString(placedBets_profitReport.getTotalInvestment(), 4),
-                    placedBets.size(),
-                    BDString(placedBets_profitReport.getMinReturn(), 4),
-                    BDString(placedBets_profitReport.minProfit(), 4),
-                    placedBets_profitReport.getBets().toString(),
-                    placedBets_profitReport.sites_used().toString()));
 
+            String pennyProf_dir = "penny_prof";
+            makeDirIfNotExists(pennyProf_dir);
+            chosen_Penny_ProfitReport.saveJSON(time, pennyProf_dir);
 
             String prePlacement_dir = "pre_placed_bets";
             makeDirIfNotExists(prePlacement_dir);

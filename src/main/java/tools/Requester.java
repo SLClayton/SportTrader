@@ -127,14 +127,12 @@ public class Requester {
             throws IOException, URISyntaxException {
 
         // Build soap xml
-        String soap_xml = "<soapenv:Envelope " +
-                        "xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
+        String soap_xml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
                         "xmlns:ext=\"http://www.GlobalBettingExchange.com/ExternalAPI/\">" +
                         soap_header +
                         "<soapenv:Body>" +
                         soap_body +
-                        "</soapenv:Body>" +
-                        "</soapenv:Envelope>";
+                        "</soapenv:Body></soapenv:Envelope>";
 
 
         // Create new http POST object
@@ -314,13 +312,12 @@ public class Requester {
             response = httpClient.execute(httpGet);
         }
         catch (Exception e){
-            log.severe(sf("%s exception when getting http client response.", e.toString()));
+            log.severe(sf("Exception during getRaw httpClient resp: %s", e.toString()));
             return null;
         }
 
-
         if (response == null){
-            log.severe("HttpResponse object returned is null.");
+            log.severe("HttpResponse object returned is null in getRaw.");
             return "null";
         }
 
